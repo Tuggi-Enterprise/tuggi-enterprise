@@ -1,43 +1,24 @@
 {
-  "Metadata": {
-    "rootTitle": "Tuggi",
-    "rootDescription": "Tuggi Enterprise Solutions",
-    "homeTitle": "Tuggi | Trigger Simulator & Validation",
-    "homeDescription": "Interactive trigger simulator",
-    "driveTitle": "Tuggi Drive: Audio Guide & Travel App",
-    "driveDescription": "Download Tuggi Drive to navigate like a pro.",
-    "cityOsTitle": "City OS: Territorial Governance & Hands-Free Audio",
-    "cityOsDescription": "B2G Solutions for Smart Cities",
-    "fleetsTitle": "Tuggi Fleets | Ancillary Revenue for Car Rentals",
-    "fleetsDescription": "B2B2C solutions for fleets",
-    "techTitle": "Tuggi Technology | Swift Architecture & Cache",
-    "techDescription": "Our robust engine and caches",
-    "purposeTitle": "The Audio Thesis | Our Purpose",
-    "purposeDescription": "Institutional values of Tuggi",
-    "contactTitle": "Contact Tuggi | Lead Router",
-    "contactDescription": "Get in touch with our team",
-    "trustCenterTitle": "Tuggi Trust Center",
-    "trustCenterDescription": "Legal and Compliance",
-    "termsTitle": "Terms of Use | Tuggi",
-    "termsDescription": "Terms and conditions of our services",
-    "privacyTitle": "Privacy Policy | Tuggi",
-    "privacyDescription": "How we process your data",
-    "deletionTitle": "Data Deletion | Tuggi",
-    "deletionDescription": "Request your data to be deleted",
-    "securityTitle": "Security SLA | Tuggi",
-    "securityDescription": "Our security commitments",
-    "accessibilityTitle": "Accessibility | Tuggi",
-    "accessibilityDescription": "Accessibility policies"
+  "Header": {
+    "navPlatform": "Platform",
+    "navPurpose": "Our Purpose",
+    "downloadApp": "Download App"
   },
-  "Home": {
-    "title": "Simulator & Validation",
-    "welcome": "Welcome to Tuggi"
-  },
-  "Drive": {
-    "title": "Tuggi Drive: Audio Guide & Travel App"
-  },
-  "Enterprise": {
-    "cityOsTitle": "City OS",
-    "fleetsTitle": "Fleets"
+  "Footer": {
+    "driveB2c": "TUGGI Drive (B2C)",
+    "appDownload": "App Download",
+    "plans": "Plans",
+    "enterprise": "Enterprise (B2B/B2G)",
+    "cityOs": "City OS",
+    "fleets": "Fleets",
+    "technology": "Technology",
+    "institutional": "Institutional",
+    "ourPurpose": "Our Purpose",
+    "contact": "Contact",
+    "trustCenter": "Trust Center & Compliance",
+    "terms": "Terms of Use",
+    "privacy": "Privacy Policy",
+    "accessibility": "Accessibility",
+    "security": "B2G Security"
   }
 }
