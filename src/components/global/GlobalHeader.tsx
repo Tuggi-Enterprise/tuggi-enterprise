@@ -46,7 +46,7 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
                   <li key={loc.code}>
                     <Link
                       href={pathname}
-                      locale={loc.code as any}
+                      locale={loc.code as "en" | "es" | "pt-br" | "pt-pt"}
                       className={`block px-4 py-2 text-sm font-semibold ${
                         currentLocale === loc.code ? "text-tuggi-primary bg-gray-50" : "text-tuggi-slate hover:bg-gray-50 hover:text-tuggi-primary"
                       } focus:outline-none focus:bg-gray-50`}
