@@ -81,6 +81,39 @@
       "cta": "Solicitar Demostración de City OS"
     }
   },
+  "Fleets": {
+    "Hero": {
+      "title": "Descomoditiza tu Flota. Aumenta tu RevPA.",
+      "subtitle": "Transforma el alquiler de un vehículo estándar en una Experiencia Cultural Premium. Genera ingresos auxiliares masivos con cero inversión en hardware y costos de infraestructura casi nulos.",
+      "cta": "Asóciate con TUGGI"
+    },
+    "Financial": {
+      "col1Title": "RevPA Maximizado",
+      "col1Desc": "Reemplaza los ingresos muertos de alquiler de GPS por un generador de margen de software como servicio escalable.",
+      "col2Title": "CERO INVERSIÓN EN HARDWARE",
+      "col2Desc": "Costo de Entrada Casi Nulo: Sin hardware especializado que comprar o mantener. El modelo es 100% BYOD (Bring Your Own Device), eliminando cambios de batería y depreciación de equipos.",
+      "col3Title": "Escalabilidad Instantánea",
+      "col3Desc": "Implementa en toda tu flota nacional en 24 horas a través de la integración de códigos QR en el mostrador."
+    },
+    "Risk": {
+      "title": "Maximiza el Tiempo de Actividad. Minimiza la Responsabilidad.",
+      "desc": "La distracción del conductor es una de las principales causas de daños a la flota. Los activadores 100% manos libres y solo de audio de TUGGI mantienen los ojos del conductor en la carretera. Reduce las colisiones menores y el tiempo de inactividad de los vehículos en los talleres. La seguridad no es solo una característica; es un ahorro operativo."
+    },
+    "NPS": {
+      "title": "La Guerra por el NPS: Del Metal a la Experiencia.",
+      "desc": "En un mercado comoditizado, el ganador es el que proporciona el mejor viaje. TUGGI convierte el coche de alquiler en un guía local privado, disparando la satisfacción del cliente y la lealtad a la marca."
+    },
+    "Brand": {
+      "title": "Tu Marca, Nuestro Motor.",
+      "desc": "Ofrece una experiencia única sin las limitaciones de exclusividad tecnológica. Proporcionamos interfaces de Marca Blanca y Co-branding. Personaliza la voz, los colores de la aplicación e incluso crea 'Rutas Premium Exclusivas' patrocinadas por tu marca de alquiler para diferenciarte de la competencia."
+    },
+    "ESG": {
+      "title": "Implementación Digital Transparente",
+      "desc": "Tu única inversión es en activación digital y señalización en el lugar (displays QR), que típicamente alcanzan el ROI en el primer día de alquiler. Cultiva tus objetivos ESG fomentando la economía creativa local y descomprimiendo el exceso de turismo a través de rutas guiadas.",
+      "cta": "Solicitar Demostración B2B",
+      "cacDeployment": "Distribución de Bajo CAC"
+    }
+  },
   "Metadata": {
     "rootTitle": "Tuggi",
     "rootDescription": "Soluciones Empresariales Tuggi",

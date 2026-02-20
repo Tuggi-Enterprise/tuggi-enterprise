@@ -84,14 +84,14 @@
   "Fleets": {
     "Hero": {
       "title": "De-commoditize Your Fleet. Boost Your RevPA.",
-      "subtitle": "Transform a standard vehicle rental into a Premium Cultural Experience. Generate massive ancillary revenue with zero hardware installation and zero CAPEX.",
+      "subtitle": "Transform a standard vehicle rental into a Premium Cultural Experience. Generate massive ancillary revenue with zero hardware investment and near-zero infrastructure costs.",
       "cta": "Partner with TUGGI"
     },
     "Financial": {
       "col1Title": "Maximized RevPA",
       "col1Desc": "Replace dead GPS rental revenue with a scalable software-as-a-service margin driver.",
-      "col2Title": "Zero CAPEX",
-      "col2Desc": "No hardware to buy, install, or maintain. 100% BYOD (Bring Your Own Device).",
+      "col2Title": "ZERO HARDWARE INVESTMENT",
+      "col2Desc": "Near-Zero Entry Cost: No specialized hardware to buy or maintain. The model is 100% BYOD (Bring Your Own Device), eliminating battery swaps and equipment depreciation.",
       "col3Title": "Instant Scalability",
       "col3Desc": "Deploy across your entire national fleet in 24 hours via QR Code integration at the counter."
     },
@@ -108,9 +108,10 @@
       "desc": "Offer a unique experience without the constraints of tech exclusivity. We provide White-Label and Co-branded interfaces. Customize the app's voice, colors, and even create 'Exclusive Premium Routes' sponsored by your rental brand to differentiate from competitors."
     },
     "ESG": {
-      "title": "Digital Transformation with Social Impact.",
-      "desc": "Help your ESG targets by fostering the local creative economy and decompressing overtourism through guided routes.",
-      "cta": "Request B2B Demo"
+      "title": "Seamless Digital Deployment",
+      "desc": "Your only investment is in digital activation and on-site signage (QR displays), which typically ROI on day one of rentals. Cultivate your ESG targets by fostering the local creative economy and decompressing overtourism through guided routes.",
+      "cta": "Request B2B Demo",
+      "cacDeployment": "Low-CAC Distribution"
     }
   },
   "Metadata": {

@@ -81,6 +81,39 @@
       "cta": "Solicitar Demonstração do City OS"
     }
   },
+  "Fleets": {
+    "Hero": {
+      "title": "Descomoditize sua Frota. Aumente seu RevPA.",
+      "subtitle": "Transforme um aluguel de veículo padrão em uma Experiência Cultural Premium. Gere receitas auxiliares massivas com zero investimento em hardware e custos de infraestrutura quase nulos.",
+      "cta": "Seja Parceiro da TUGGI"
+    },
+    "Financial": {
+      "col1Title": "RevPA Maximizado",
+      "col1Desc": "Substitua a receita morta de aluguel de GPS por um gerador de margem de software-como-serviço escalável.",
+      "col2Title": "ZERO INVESTIMENTO EM HARDWARE",
+      "col2Desc": "Custo de Entrada Quase Nulo: Nenhum hardware especializado para comprar ou manter. O modelo é 100% BYOD (Bring Your Own Device), eliminando trocas de bateria e depreciação de equipamentos.",
+      "col3Title": "Escalabilidade Instantânea",
+      "col3Desc": "Implante em toda a sua frota nacional em 24 horas via integração com QR Code no balcão."
+    },
+    "Risk": {
+      "title": "Maximize o Tempo de Atividade. Minimize a Responsabilidade.",
+      "desc": "A distração do motorista é uma das principais causas de danos à frota. Os gatilhos 100% hands-free e apenas de áudio da TUGGI mantêm os olhos do motorista na estrada. Reduza colisões menores e o tempo de inatividade dos veículos nas oficinas. Segurança não é apenas um recurso; é uma economia operacional."
+    },
+    "NPS": {
+      "title": "A Guerra pelo NPS: Do Metal à Experiência.",
+      "desc": "Em um mercado comoditizado, o vencedor é aquele que proporciona a melhor jornada. O TUGGI transforma o carro alugado em um guia local privado, explodindo a satisfação do cliente e a lealdade à marca."
+    },
+    "Brand": {
+      "title": "Sua Marca, Nosso Motor.",
+      "desc": "Ofereça uma experiência única sem as restrições de exclusividade tecnológica. Fornecemos interfaces White-Label e Co-branded. Personalize a voz, as cores do aplicativo e até mesmo crie 'Rotas Premium Exclusivas' patrocinadas pela sua marca de aluguel para se diferenciar dos concorrentes."
+    },
+    "ESG": {
+      "title": "Implementação Digital Transparente",
+      "desc": "Seu único investimento é na ativação digital e na sinalização do local (displays QR), que tipicamente atingem o ROI no primeiro dia de alocação. Cultive suas metas ESG fomentando a economia criativa local e descomprimindo o excesso de turismo através de rotas guiadas.",
+      "cta": "Solicitar Demonstração B2B",
+      "cacDeployment": "Distribuição com Baixo CAC"
+    }
+  },
   "Metadata": {
     "rootTitle": "Tuggi",
     "rootDescription": "Soluções Corporativas Tuggi",
