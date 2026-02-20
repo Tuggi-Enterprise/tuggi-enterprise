@@ -254,6 +254,35 @@
       "pressValue": "press@tuggi.app"
     }
   },
+  "Purpose": {
+    "Hero": {
+      "title": "Antes de ver, nós ouvimos.",
+      "body": "A audição é o nosso sentido mais antigo e fundamental. Antes de nascer, reconhecemos o mundo através do som da voz de nossa mãe. Aprendemos a ouvir antes de aprender a falar, ler ou caminhar. O TUGGI nasceu desta verdade biológica: a maneira mais natural de absorver o mundo ao nosso redor não é a olhar para um ecrã, mas a ouvi-lo."
+    },
+    "Freedom": {
+      "title": "A Liberdade de Explorar.",
+      "body": "O turismo tem estado preso a horários rígidos, autocarros lotados e barreiras linguísticas. Acreditamos que a exploração deve ser liberdade absoluta. Não deveria ter de esperar por um guia turístico ou manter os olhos grudados num mapa. Com o TUGGI, conduz, caminha ou pedala ao seu próprio ritmo. As histórias encontram-no no exato momento geográfico em que importam."
+    },
+    "Sovereignty": {
+      "title": "Retomar a Narrativa.",
+      "body": "Historicamente, as cidades terceirizaram as suas memórias. As narrativas perdem-se na tradução, são alteradas por guias humanos não verificados ou ficam presas em livros desatualizados. Existimos para dar aos destinos o poder de retomar a sua história. Uma infraestrutura digital onde a verdadeira voz da cidade é preservada, curada e entregue globalmente, exatamente como aconteceu."
+    },
+    "Values": {
+      "title": "O Alicerce",
+      "v1Title": "Segurança Primeiro.",
+      "v1Desc": "Experiência 100% mãos-livres. Nunca competimos pela atenção do condutor.",
+      "v2Title": "Simplicidade Operacional.",
+      "v2Desc": "Zero atrito. Basta iniciar a rota e a aplicação cuida do resto.",
+      "v3Title": "Respeito Contextual.",
+      "v3Desc": "Histórias profundamente ligadas à rota física e coerência narrativa.",
+      "v4Title": "Precisão e Fiabilidade.",
+      "v4Desc": "Execução geográfica com timing perfeito.",
+      "v5Title": "Curadoria Cultural.",
+      "v5Desc": "Saltamos o básico para entregar as pérolas escondidas e o verdadeiro conhecimento local.",
+      "v6Title": "Acessibilidade Universal.",
+      "v6Desc": "Concebido para ser consumido em diferentes perfis e idiomas nativos."
+    }
+  },
   "Metadata": {
     "rootTitle": "Tuggi",
     "rootDescription": "Soluções Corporativas Tuggi",

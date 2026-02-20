@@ -15,14 +15,30 @@ export async function generateMetadata({
 
 export default async function TermsOfUsePage() {
   return (
-    <>
-      <h1 className="text-3xl font-bold tracking-tight mb-4 text-[#0B1220]">Terms of Use</h1>
-      <p className="text-sm font-semibold tracking-wider uppercase text-[#5B6472] mb-8 border-b border-gray-200 pb-4">Last updated: August 2026</p>
-      <div className="space-y-6 text-[#5B6472] leading-relaxed max-w-prose">
-        <p>1. Acceptance of Terms: By downloading and operating the TUGGI software, you agree to comply with these terms.</p>
-        <p>2. Liability Limitations: Our geospatial audio engine serves informational purposes only. Do not navigate roads using this product. The platform guarantees 100% hands-free driver operations.</p>
-        <p>3. Enterprise Licensing: B2G and B2B clients operate under tailored Master Service Agreements with rigid SLA constraints.</p>
-      </div>
-    </>
+    <article className="prose prose-slate max-w-none prose-headings:text-tuggi-dark prose-p:text-slate-600 prose-strong:text-tuggi-dark">
+      <h1>Terms of Use</h1>
+      <p className="text-sm font-semibold tracking-wider uppercase text-slate-400 !mb-8 border-b border-gray-100 pb-4">Last updated: February 2026</p>
+      
+      <section>
+        <h2>1. Acceptance of Terms</h2>
+        <p>By downloading, installing, or operating the TUGGI software application, you agree to be bound by these Terms of Use and all applicable laws and regulations.</p>
+      </section>
+
+      <section>
+        <h2 className="text-red-600">2. Hands-Free Operation & Liability Limit</h2>
+        <p><strong>TUGGI is strictly designed for background, hands-free operation.</strong> Our technology utilizes geographical triggers to deliver audio content without requiring the user to interact with a screen while driving.</p>
+        <p>The driver assumes full and sole responsibility for traffic safety, situational awareness, and the avoidance of traffic infractions. TUGGI Technologies, its B2G (Government) partners, and its B2B (Fleet/Enterprise) partners hold <strong>zero liability</strong> for any accidents, injuries, fines, or legal consequences resulting from the use of the application or the driver&apos;s failure to maintain focus on the road.</p>
+      </section>
+
+      <section>
+        <h2>3. Intellectual Property</h2>
+        <p>All narrative content, unique geographical trigger coordinates, and the TUGGI Engine architecture are the exclusive property of TUGGI Technologies. Unauthorized reproduction or reverse engineering is strictly prohibited.</p>
+      </section>
+
+      <section>
+        <h2>4. Enterprise & Government Use</h2>
+        <p>Users representing government jurisdictions or commercial fleets are subject to additional Master Service Agreements (MSA) which supersede specific clauses of these general terms where applicable.</p>
+      </section>
+    </article>
   );
 }

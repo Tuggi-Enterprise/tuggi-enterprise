@@ -254,6 +254,35 @@
       "pressValue": "press@tuggi.app"
     }
   },
+  "Purpose": {
+    "Hero": {
+      "title": "Antes de ver, oímos.",
+      "body": "El oído es nuestro sentido más antiguo y fundamental. Antes de nacer, reconocemos el mundo a través del sonido de la voz de nuestra madre. Aprendemos a escuchar antes de aprender a hablar, leer o caminar. TUGGI nació de esta verdad biológica: la forma más natural de absorber el mundo que nos rodea no es mirando una pantalla, sino escuchándolo."
+    },
+    "Freedom": {
+      "title": "La Libertad de Explorar.",
+      "body": "El turismo ha estado atrapado em horarios rígidos, autobuses llenos y barreras lingüísticas. Creemos que la exploración debe ser libertad absoluta. No deberías tener que esperar a un guía turístico ni mantener los ojos pegados a una aplicación de mapas. Con TUGGI, conduces, caminas o montas a tu propio ritmo. Las historias te encuentran en el momento geográfico exacto en que importan."
+    },
+    "Sovereignty": {
+      "title": "Recuperando la Narrativa.",
+      "body": "Históricamente, las ciudades han externalizado sus recuerdos. Las narrativas se pierden en la traducción, son alteradas por guías humanos no verificados o quedan atrapadas en libros obsoletos. Existimos para dar a los destinos el poder de recuperar su historia. Una infraestructura digital donde la voz verdadera de la ciudad es preservada, curada y entregada globalmente, exactamente como sucedió."
+    },
+    "Values": {
+      "title": "La Base",
+      "v1Title": "Seguridad Primero.",
+      "v1Desc": "Experiencia 100% manos libres. Nunca competimos con la atención del conductor.",
+      "v2Title": "Simplicidad Operacional.",
+      "v2Desc": "Cero fricción. Solo inicia la ruta y la app se encarga del resto.",
+      "v3Title": "Respeto Contextual.",
+      "v3Desc": "Historias profundamente conectadas con la ruta física y coherencia narrativa.",
+      "v4Title": "Precisión y Fiabilidad.",
+      "v4Desc": "Ejecución geográfica con sincronización perfecta.",
+      "v5Title": "Curaduría Cultural.",
+      "v5Desc": "Saltamos lo básico para entregar las joyas ocultas y el verdadero conocimiento local.",
+      "v6Title": "Accesibilidad Universal.",
+      "v6Desc": "Diseñado para ser consumido en diferentes perfiles e idiomas nativos."
+    }
+  },
   "Metadata": {
     "rootTitle": "Tuggi",
     "rootDescription": "Soluciones Empresariales Tuggi",

@@ -254,6 +254,35 @@
       "pressValue": "press@tuggi.app"
     }
   },
+  "Purpose": {
+    "Hero": {
+      "title": "Before we see, we hear.",
+      "body": "Hearing is our oldest and most fundamental sense. Before we are born, we recognize the world through the sound of our mother's voice. We learn to listen before we learn to speak, read, or walk. TUGGI was born from this biological truth: the most natural way to absorb the world around us is not by staring at a screen, but by listening to it."
+    },
+    "Freedom": {
+      "title": "The Freedom to Explore.",
+      "body": "Tourism has been trapped in rigid schedules, crowded buses, and language barriers. We believe exploration should be absolute freedom. You shouldn't have to wait for a tour guide or keep your eyes glued to a map app. With TUGGI, you drive, walk, or ride at your own pace. The stories find you at the exact geographical moment they matter."
+    },
+    "Sovereignty": {
+      "title": "Reclaiming the Story.",
+      "body": "Cities have historically outsourced their memories. Narratives get lost in translation, altered by unverified human guides, or trapped in outdated books. We exist to give destinations the power to reclaim their history. A digital infrastructure where the city's true voice is preserved, curated, and delivered globally, exactly as it happened."
+    },
+    "Values": {
+      "title": "The Foundation",
+      "v1Title": "Safety First.",
+      "v1Desc": "100% hands-free experience. We never compete with the driver's attention.",
+      "v2Title": "Operational Simplicity.",
+      "v2Desc": "Zero friction. Just start the route and the app takes care of the rest.",
+      "v3Title": "Contextual Respect.",
+      "v3Desc": "Stories deeply connected to the physical route and narrative coherence.",
+      "v4Title": "Precision & Reliability.",
+      "v4Desc": "Geographical execution with perfect timing.",
+      "v5Title": "Cultural Curation.",
+      "v5Desc": "We skip the basics to deliver the hidden gems and true local knowledge.",
+      "v6Title": "Universal Accessibility.",
+      "v6Desc": "Designed to be consumed across different profiles and native languages."
+    }
+  },
   "Metadata": {
     "rootTitle": "Tuggi",
     "rootDescription": "Tuggi Enterprise Solutions",
