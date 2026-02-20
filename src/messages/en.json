@@ -5,6 +5,8 @@
     "navFleets": "Fleets & Rentals",
     "navTech": "Technology",
     "navPurpose": "Our Purpose",
+    "navDrive": "TUGGI Drive",
+    "navContact": "Contact",
     "downloadApp": "Download App"
   },
   "Footer": {
@@ -207,6 +209,49 @@
       "title": "Upgrade your road trip today.",
       "downloadApp": "Download on the App Store",
       "downloadPlay": "Get it on Google Play"
+    }
+  },
+  "Contact": {
+    "Hero": {
+      "title": "Talk to TUGGI.",
+      "subtitle": "Select how we can help you today to be routed to the right team."
+    },
+    "Triage": {
+      "card1Title": "City / Government",
+      "card1Desc": "I represent a municipality or regional authority.",
+      "card2Title": "Car Rental / Fleet",
+      "card2Desc": "I represent an enterprise fleet or rental agency.",
+      "card3Title": "Tourist / App User",
+      "card3Desc": "I am a driver or passenger needing app support."
+    },
+    "B2G": {
+      "fullName": "Full Name",
+      "role": "Official Position / Role",
+      "city": "Municipality / City Name",
+      "email": "Work Email",
+      "emailError": "Please use an official government email address.",
+      "cta": "Request City OS Demo"
+    },
+    "B2B": {
+      "fullName": "Full Name",
+      "company": "Company Name",
+      "email": "Work Email",
+      "fleetSize": "Estimated Fleet Size",
+      "fleetTarget": "Select fleet size",
+      "emailError": "Please use a corporate email address.",
+      "cta": "Contact B2B Sales"
+    },
+    "B2C": {
+      "desc": "Need help with your trip? Our support team is ready to assist you.",
+      "cta": "Email Support Team"
+    },
+    "Sidebar": {
+      "hqTitle": "Corporate Headquarters",
+      "hqValue": "São Paulo, SP, Brazil",
+      "slaTitle": "Sales SLA",
+      "slaValue": "Our enterprise experts typically respond within 24 business hours.",
+      "pressTitle": "Press & Partnerships",
+      "pressValue": "press@tuggi.app"
     }
   },
   "Metadata": {

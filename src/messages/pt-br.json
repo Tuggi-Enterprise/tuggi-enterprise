@@ -5,6 +5,8 @@
     "navFleets": "Frotas e Locadoras",
     "navTech": "Tecnologia",
     "navPurpose": "Nosso Propósito",
+    "navDrive": "TUGGI Drive",
+    "navContact": "Contato",
     "downloadApp": "Baixar App"
   },
   "Footer": {
@@ -207,6 +209,49 @@
       "title": "Evolua sua viagem de carro hoje.",
       "downloadApp": "Baixar na App Store",
       "downloadPlay": "Disponível no Google Play"
+    }
+  },
+  "Contact": {
+    "Hero": {
+      "title": "Fale com o TUGGI.",
+      "subtitle": "Selecione como podemos ajudar você hoje para ser direcionado à equipe certa."
+    },
+    "Triage": {
+      "card1Title": "Cidade / Governo",
+      "card1Desc": "Eu represento um município ou autoridade regional.",
+      "card2Title": "Frotas / Locadoras",
+      "card2Desc": "Eu represento uma frota corporativa ou agência de aluguel.",
+      "card3Title": "Turista / Usuário do App",
+      "card3Desc": "Eu sou um motorista ou passageiro precisando de suporte."
+    },
+    "B2G": {
+      "fullName": "Nome Completo",
+      "role": "Cargo Oficial / Função",
+      "city": "Município / Nome da Cidade",
+      "email": "E-mail Profissional",
+      "emailError": "Por favor, use um e-mail governamental oficial.",
+      "cta": "Solicitar Demo City OS"
+    },
+    "B2B": {
+      "fullName": "Nome Completo",
+      "company": "Nome da Empresa",
+      "email": "E-mail Profissional",
+      "fleetSize": "Tamanho Estimado da Frota",
+      "fleetTarget": "Selecione o tamanho da frota",
+      "emailError": "Por favor, use um e-mail corporativo.",
+      "cta": "Contatar Vendas B2B"
+    },
+    "B2C": {
+      "desc": "Precisa de ajuda com a sua viagem? Nossa equipe de suporte está pronta para ajudar.",
+      "cta": "Enviar E-mail para o Suporte"
+    },
+    "Sidebar": {
+      "hqTitle": "Sede Corporativa",
+      "hqValue": "São Paulo, SP, Brasil",
+      "slaTitle": "SLA de Vendas",
+      "slaValue": "Nossos especialistas corporativos geralmente respondem em até 24 horas úteis.",
+      "pressTitle": "Imprensa e Parcerias",
+      "pressValue": "press@tuggi.app"
     }
   },
   "Metadata": {

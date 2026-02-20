@@ -5,6 +5,8 @@
     "navFleets": "Frotas e Rent-a-Car",
     "navTech": "Tecnologia",
     "navPurpose": "O Nosso Propósito",
+    "navDrive": "TUGGI Drive",
+    "navContact": "Contacto",
     "downloadApp": "Descarregar App"
   },
   "Footer": {
@@ -207,6 +209,49 @@
       "title": "Evolua a sua viagem de carro hoje.",
       "downloadApp": "Descarregar na App Store",
       "downloadPlay": "Disponível no Google Play"
+    }
+  },
+  "Contact": {
+    "Hero": {
+      "title": "Fale com o TUGGI.",
+      "subtitle": "Selecione como podemos ajudar hoje para ser direcionado para a equipa certa."
+    },
+    "Triage": {
+      "card1Title": "Cidade / Governo",
+      "card1Desc": "Represento um município ou autoridade regional.",
+      "card2Title": "Frotas / Rent-a-Car",
+      "card2Desc": "Represento uma frota empresarial ou agência de aluguer.",
+      "card3Title": "Turista / Utilizador da App",
+      "card3Desc": "Sou um condutor ou passageiro e preciso de suporte."
+    },
+    "B2G": {
+      "fullName": "Nome Completo",
+      "role": "Cargo Oficial / Função",
+      "city": "Município / Nome da Cidade",
+      "email": "E-mail Profissional",
+      "emailError": "Por favor, utilize um e-mail governamental oficial.",
+      "cta": "Solicitar Demonstração City OS"
+    },
+    "B2B": {
+      "fullName": "Nome Completo",
+      "company": "Nome da Empresa",
+      "email": "E-mail Profissional",
+      "fleetSize": "Tamanho Estimado da Frota",
+      "fleetTarget": "Selecione o tamanho da frota",
+      "emailError": "Por favor, utilize um e-mail corporativo.",
+      "cta": "Contactar Vendas B2B"
+    },
+    "B2C": {
+      "desc": "Precisa de ajuda com a sua viagem? A nossa equipa de suporte está pronta para ajudar.",
+      "cta": "Enviar E-mail para o Suporte"
+    },
+    "Sidebar": {
+      "hqTitle": "Sede Corporativa",
+      "hqValue": "São Paulo, SP, Brasil",
+      "slaTitle": "SLA de Vendas",
+      "slaValue": "Os nossos especialistas corporativos geralmente respondem em até 24 horas úteis.",
+      "pressTitle": "Imprensa e Parcerias",
+      "pressValue": "press@tuggi.app"
     }
   },
   "Metadata": {

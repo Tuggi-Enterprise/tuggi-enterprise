@@ -5,6 +5,8 @@
     "navFleets": "Flotas y Rentadoras",
     "navTech": "Tecnología",
     "navPurpose": "Nuestro Propósito",
+    "navDrive": "TUGGI Drive",
+    "navContact": "Contacto",
     "downloadApp": "Descargar App"
   },
   "Footer": {
@@ -207,6 +209,49 @@
       "title": "Mejora tu viaje por carretera hoy.",
       "downloadApp": "Descargar en la App Store",
       "downloadPlay": "Disponible en Google Play"
+    }
+  },
+  "Contact": {
+    "Hero": {
+      "title": "Habla con TUGGI.",
+      "subtitle": "Selecciona cómo podemos ayudarte hoy para dirigirte al equipo adecuado."
+    },
+    "Triage": {
+      "card1Title": "Ciudad / Gobierno",
+      "card1Desc": "Represento a un municipio o autoridad regional.",
+      "card2Title": "Flotas / Rent a Car",
+      "card2Desc": "Represento a una flota corporativa o agencia de alquiler.",
+      "card3Title": "Turista / Usuario de la App",
+      "card3Desc": "Soy un conductor o pasajero que necesita soporte."
+    },
+    "B2G": {
+      "fullName": "Nombre Completo",
+      "role": "Cargo Oficial / Rol",
+      "city": "Municipio / Nombre de la Ciudad",
+      "email": "Correo Electrónico Profesional",
+      "emailError": "Por favor, utiliza un correo electrónico gubernamental oficial.",
+      "cta": "Solicitar Demo City OS"
+    },
+    "B2B": {
+      "fullName": "Nombre Completo",
+      "company": "Nombre de la Empresa",
+      "email": "Correo Electrónico Profesional",
+      "fleetSize": "Tamaño Estimado de la Flota",
+      "fleetTarget": "Selecciona el tamaño de la flota",
+      "emailError": "Por favor, utiliza un correo electrónico corporativo.",
+      "cta": "Contactar Ventas B2B"
+    },
+    "B2C": {
+      "desc": "¿Necesitas ayuda con tu viaje? Nuestro equipo de soporte está listo para ayudarte.",
+      "cta": "Enviar un Correo al Soporte"
+    },
+    "Sidebar": {
+      "hqTitle": "Sede Corporativa",
+      "hqValue": "São Paulo, SP, Brasil",
+      "slaTitle": "SLA de Ventas",
+      "slaValue": "Nuestros expertos corporativos suelen responder en 24 horas hábiles.",
+      "pressTitle": "Prensa y Asociaciones",
+      "pressValue": "press@tuggi.app"
     }
   },
   "Metadata": {
