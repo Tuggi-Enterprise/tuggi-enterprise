@@ -1,6 +1,9 @@
 {
   "Header": {
     "navPlatform": "Plataforma",
+    "navCityOs": "City OS (Gobiernos)",
+    "navFleets": "Flotas y Rentadoras",
+    "navTech": "Tecnología",
     "navPurpose": "Nuestro Propósito",
     "downloadApp": "Descargar App"
   },
