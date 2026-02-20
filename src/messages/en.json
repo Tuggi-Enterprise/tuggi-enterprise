@@ -254,6 +254,42 @@
       "pressValue": "press@tuggi.app"
     }
   },
+  "Legal": {
+    "Sidebar": {
+      "title": "Legal & Compliance",
+      "terms": "Terms of Use",
+      "privacy": "Privacy Policy",
+      "deletion": "Data Deletion",
+      "security": "Security SLA",
+      "accessibility": "Accessibility"
+    },
+    "Terms": {
+      "title": "Terms of Use",
+      "lastUpdated": "February 2026",
+      "intro": "Welcome to TUGGI. By creating an account, logging in via partner platforms, or using our app, you expressly agree to the terms described below.",
+      "s1Title": "1. Eligibility and Account Creation",
+      "s1Item1": "<strong>Minimum Age:</strong> TUGGI is a cultural and educational application. The minimum age to create an account and use the service as a listener is 13 years old.",
+      "s1Item2": "<strong>Responsibility at the Wheel:</strong> If you are the driver of the vehicle, you represent and warrant that you are of legal age and possess the necessary license required by the laws of your country or state to drive.",
+      "s1Item3": "<strong>Data Accuracy:</strong> You agree not to create accounts on behalf of third parties or use false identities.",
+      "s2Title": "2. The Golden Rule: Traffic Liability Disclaimer (Safety First)",
+      "s2Item1": "<strong>TUGGI was strictly designed to operate in the background (hands-free).</strong>",
+      "s2Item2": "<strong>You are solely responsible for driving the vehicle.</strong> The app does not replace your attention to the road, traffic signs, or traffic conditions.",
+      "s2Item3": "TUGGI Technologies, as well as its government and corporate partners, fully disclaim any responsibility for accidents, material/physical damage, or traffic fines incurred during the use of the application. Always respect local traffic laws.",
+      "s3Title": "3. Technology Limitations (Artificial Intelligence and GPS)",
+      "s3Item1": "<strong>Location Signals:</strong> Our spatial trigger engine depends on third-party GPS signals and collaborative mapping (such as OpenStreetMap). We do not guarantee absolute trigger accuracy in network shadow areas, such as tunnels or deep valleys.",
+      "s3Item2": "<strong>AI-Assisted Content:</strong> Our audio narratives are compiled and generated using a combination of manual curation and advanced Artificial Intelligence (AI) models. The narrated content is cultural and educational in nature. TUGGI provides the content \"as-is\" and does not guarantee absolute academic, historical, or geographical accuracy, and is not responsible for factual discrepancies.",
+      "s4Title": "4. Content Reporting and Corrections (Safe Harbor)",
+      "s4Text": "We are committed to maintaining a respectful and accurate cultural environment. If you find incorrect information, cultural inaccuracies, or if you are the owner of a location and wish to request the removal of a Point of Interest (POI), use our Support Channel on the Contact page (selecting the \"Tourist / Support\" option). Our team reviews all feedback and reserves the right to correct, alter, or remove triggers at our sole discretion.",
+      "s5Title": "5. Civic Conduct and Public Use",
+      "s5Text": "When using the application in public transport, pedestrian paths, or shared vehicles, we request the use of headphones or the prior consent of other passengers.",
+      "s6Title": "6. Subscriptions, Travel Passes, and Refunds",
+      "s6Item1": "Travel Passes (e.g., 7 or 30 days) are digital consumer products.",
+      "s6Item2": "<strong>App Stores:</strong> Purchases made via Apple App Store or Google Play are subject exclusively to the Terms of Service and Refund Policies of those respective platforms.",
+      "s6Item3": "<strong>Local Legislation:</strong> We respect the 7-day Right of Withdrawal (Brazilian Consumer Defense Code - CDC), applicable only when the purchase is processed directly through our web systems, and strictly if the digital service has not been partially or fully consumed (use of audio triggers).",
+      "s7Title": "7. Jurisdiction and Venue",
+      "s7Text": "These Terms of Use are governed by the laws of the Federative Republic of Brazil. The courts of the District of São Paulo, State of São Paulo, are chosen to resolve any controversies arising from the use of TUGGI, with express waiver of any other."
+    }
+  },
   "Purpose": {
     "Hero": {
       "title": "Before we see, we hear.",

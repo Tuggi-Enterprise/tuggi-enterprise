@@ -254,6 +254,42 @@
       "pressValue": "press@tuggi.app"
     }
   },
+  "Legal": {
+    "Sidebar": {
+      "title": "Legal e Compliance",
+      "terms": "Termos de Uso",
+      "privacy": "Política de Privacidade",
+      "deletion": "Exclusão de Dados",
+      "security": "SLA de Segurança",
+      "accessibility": "Acessibilidade"
+    },
+    "Terms": {
+      "title": "Termos de Uso",
+      "lastUpdated": "Fevereiro 2026",
+      "intro": "Bem-vindo ao TUGGI. Ao criar uma conta, fazer login via plataformas parceiras ou utilizar nosso aplicativo, você concorda expressamente com os termos descritos abaixo.",
+      "s1Title": "1. Elegibilidade e Criação de Conta",
+      "s1Item1": "<strong>Idade Mínima:</strong> O TUGGI é um aplicativo cultural e educativo. A idade mínima para criar uma conta e utilizar o serviço como ouvinte é de 13 anos.",
+      "s1Item2": "<strong>Responsabilidade ao Volante:</strong> Se você for o condutor do veículo, você declara e garante que possui a idade legal e a habilitação necessária exigidas pelas leis do seu país ou estado para dirigir.",
+      "s1Item3": "<strong>Veracidade dos Dados:</strong> Você concorda em não criar contas em nome de terceiros ou usar identidades falsas.",
+      "s2Title": "2. A Regra de Ouro: Isenção de Responsabilidade no Trânsito (Safety First)",
+      "s2Item1": "<strong>O TUGGI foi estritamente projetado para operar em segundo plano (hands-free).</strong>",
+      "s2Item2": "<strong>Você é o único responsável pela condução do veículo.</strong> O aplicativo não substitui sua atenção à via, às placas de sinalização ou às condições do tráfego.",
+      "s2Item3": "A TUGGI Technologies, bem como seus parceiros governamentais e corporativos, isentam-se integralmente de qualquer responsabilidade por acidentes, danos materiais/físicos, ou multas de trânsito incorridas durante o uso do aplicativo. Respeite sempre as leis de trânsito locais.",
+      "s3Title": "3. Limitações da Tecnologia (Inteligência Artificial e GPS)",
+      "s3Item1": "<strong>Sinais de Localização:</strong> Nosso motor de gatilhos espaciais depende de sinais de GPS de terceiros e mapeamento colaborativo (como o OpenStreetMap). Não garantimos a precisão absoluta do gatilho em áreas de sombra de rede, como túneis ou vales profundos.",
+      "s3Item2": "<strong>Conteúdo Assistido por IA:</strong> Nossas narrativas em áudio são compiladas e geradas usando uma combinação de curadoria manual e modelos avançados de Inteligência Artificial (IA). O conteúdo narrado possui caráter cultural e de entretenimento. A TUGGI fornece o conteúdo \"no estado em que se encontra\" (as-is) e não garante precisão acadêmica, histórica ou geográfica absoluta, não se responsabilizando por divergências factuais.",
+      "s4Title": "4. Reporte de Conteúdo e Correções (Safe Harbor)",
+      "s4Text": "Estamos comprometidos em manter um ambiente cultural respeitoso e preciso. Caso encontre informações incorretas, imprecisões culturais, ou caso seja o proprietário de um local e deseje solicitar a remoção de um Ponto de Interesse (POI), utilize nosso Canal de Suporte na página de Contato (selecionando a opção \"Turista / Suporte\"). Nossa equipe analisa todos os feedbacks e reserva-se o direito de corrigir, alterar ou remover gatilhos a nosso exclusivo critério.",
+      "s5Title": "5. Conduta Cívica e Uso em Público",
+      "s5Text": "Ao utilizar o aplicativo em transporte público, vias de pedestres ou veículos compartilhados, solicitamos o uso de fones de ouvido ou o consentimento prévio dos demais passageiros.",
+      "s6Title": "6. Assinaturas, Passes de Viagem e Reembolsos",
+      "s6Item1": "Os Passes de Viagem (ex: 7 ou 30 dias) são produtos digitais de consumo.",
+      "s6Item2": "<strong>Lojas de Aplicativos:</strong> Compras realizadas via Apple App Store ou Google Play estão sujeitas exclusivamente aos Termos de Serviço e Políticas de Reembolso dessas respectivas plataformas.",
+      "s6Item3": "<strong>Legislação Local:</strong> Respeitamos o Direito de Arrependimento de 7 dias (CDC), aplicável apenas quando a compra for processada diretamente por nossos sistemas web, e estritamente se o serviço digital não houver sido parcial ou totalmente consumido (utilização dos gatilhos de áudio).",
+      "s7Title": "7. Jurisdição e Foro",
+      "s7Text": "Estes Termos de Uso são regidos pelas leis da República Federativa do Brasil. Fica eleito o foro da Comarca de São Paulo, Estado de São Paulo, para dirimir quaisquer controvérsias oriundas da utilização do TUGGI, com renúncia expressa a qualquer outro."
+    }
+  },
   "Purpose": {
     "Hero": {
       "title": "Antes de ver, nós ouvimos.",

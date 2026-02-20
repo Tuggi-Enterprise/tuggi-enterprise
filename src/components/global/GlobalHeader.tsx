@@ -16,6 +16,9 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
     { code: "pt-pt", label: "PT-PT" },
   ];
 
+  // Safeguard: Ensure pathname is completely stripped of any leftover locale prefix
+  const cleanPathname = pathname.replace(/^\/(?:en|es|pt-br|pt-pt)(?=\/|$)/, "") || "/";
+
   return (
     <header className="sticky top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between" aria-label="Main Navigation">
@@ -91,7 +94,7 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
                 {locales.map((loc) => (
                   <li key={loc.code}>
                     <Link
-                      href={pathname}
+                      href={cleanPathname}
                       locale={loc.code as "en" | "es" | "pt-br" | "pt-pt"}
                       className={`block px-4 py-2 text-sm font-medium ${
                         currentLocale === loc.code ? "text-tuggi-primary bg-slate-50" : "text-slate-600 hover:bg-slate-50 hover:text-tuggi-dark"

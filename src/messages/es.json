@@ -254,6 +254,42 @@
       "pressValue": "press@tuggi.app"
     }
   },
+  "Legal": {
+    "Sidebar": {
+      "title": "Legal y Cumplimiento",
+      "terms": "Términos de Uso",
+      "privacy": "Política de Privacidad",
+      "deletion": "Eliminación de Datos",
+      "security": "SLA de Seguridad",
+      "accessibility": "Accesibilidad"
+    },
+    "Terms": {
+      "title": "Términos de Uso",
+      "lastUpdated": "Febrero 2026",
+      "intro": "Bienvenido a TUGGI. Al crear una cuenta, iniciar sesión a través de plataformas asociadas o utilizar nuestra aplicación, usted acepta expresamente los términos descritos a continuación.",
+      "s1Title": "1. Elegibilidad e Creación de Cuenta",
+      "s1Item1": "<strong>Edad Mínima:</strong> TUGGI es una aplicación cultural y educativa. La edad mínima para crear una cuenta y utilizar el servicio como oyente es de 13 años.",
+      "s1Item2": "<strong>Responsabilidad al Volante:</strong> Si usted es el conductor del vehículo, declara y garantiza que tiene la edad legal y la licencia necesaria exigidas por las leyes de su país o estado para conducir.",
+      "s1Item3": "<strong>Veracidad de los Datos:</strong> Usted acepta no crear cuentas en nombre de terceros ni utilizar identidades falsas.",
+      "s2Title": "2. La Regla de Oro: Exención de Responsabilidad en el Tráfico (Safety First)",
+      "s2Item1": "<strong>TUGGI fue estrictamente diseñado para operar en segundo plano (hands-free).</strong>",
+      "s2Item2": "<strong>Usted es el único responsable de la conducción del vehículo.</strong> La aplicación no sustituye su atención a la vía, a las señales de tráfico o a las condiciones del tráfico.",
+      "s2Item3": "TUGGI Technologies, así como sus socios gubernamentales y corporativos, se eximen íntegramente de cualquier responsabilidad por accidentes, daños materiales/físicos o multas de tráfico incurridas durante el uso de la aplicación. Respete siempre las leyes de tráfico locales.",
+      "s3Title": "3. Limitaciones de la Tecnología (Inteligencia Artificial e GPS)",
+      "s3Item1": "<strong>Señales de Localización:</strong> Nuestro motor de activadores espaciales depende de señales de GPS de terceros y mapeo colaborativo (como OpenStreetMap). No garantizamos la precisión absoluta del activador en áreas de sombra de red, como túneles o valles profundos.",
+      "s3Item2": "<strong>Contenido Asistido por IA:</strong> Nuestras narrativas de audio son compiladas y generadas utilizando una combinación de curaduría manual y modelos avanzados de Inteligencia Artificial (IA). El contenido narrado tiene un carácter cultural y educativo. TUGGI proporciona el contenido \"tal cual\" (as-is) y no garantiza la precisión académica, histórica o geográfica absoluta, no responsabilizándose por divergencias fácticas.",
+      "s4Title": "4. Reporte de Contenido y Correcciones (Safe Harbor)",
+      "s4Text": "Estamos comprometidos a mantener un entorno cultural respetuoso y preciso. Si encuentra información incorrecta, imprecisiones culturales o si es el propietario de un lugar y desea solicitar la eliminación de un Punto de Interés (POI), utilice nuestro Canal de Soporte en la página de Contacto (seleccionando la opción \"Turista / Suporte\"). Nuestro equipo revisa todos los comentarios y se reserva el derecho de corregir, alterar o eliminar activadores a nuestra entera discreción.",
+      "s5Title": "5. Conducta Cívica y Uso en Público",
+      "s5Text": "Al utilizar la aplicación en transporte público, vías peatonales o vehículos compartidos, solicitamos el uso de auriculares o el consentimiento previo de los demás pasajeros.",
+      "s6Title": "6. Suscripciones, Pases de Viaje y Reembolsos",
+      "s6Item1": "Los Pases de Viaje (ej. 7 o 30 días) son productos digitales de consumo.",
+      "s6Item2": "<strong>Tiendas de Aplicaciones:</strong> Las compras realizadas a través de Apple App Store o Google Play están sujetas exclusivamente a los Términos de Servicio y Políticas de Reembolso de esas respectivas plataformas.",
+      "s6Item3": "<strong>Legislación Local:</strong> Respetamos el Derecho de Desistimiento de 7 días (CDC), aplicable solo cuando la compra se procese directamente a través de nuestros sistemas web, y estrictamente si el servicio digital no ha sido consumido parcial o totalmente (uso de activadores de audio).",
+      "s7Title": "7. Jurisdición y Foro",
+      "s7Text": "Estos Términos de Uso se rigen por las leyes de la República Federativa do Brasil. Se elige el foro de la Comarca de São Paulo, Estado de São Paulo, para resolver cualquier controversia derivada del uso de TUGGI, con renuncia expresa a cualquier otro."
+    }
+  },
   "Purpose": {
     "Hero": {
       "title": "Antes de ver, oímos.",
