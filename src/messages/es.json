@@ -1,11 +1,11 @@
 {
   "Header": {
     "navPlatform": "Plataforma",
-    "navCityOs": "City OS (Gobiernos)",
-    "navFleets": "Flotas y Rentadoras",
+    "navCityOs": "City OS",
+    "navFleets": "Flotas",
     "navTech": "Tecnología",
     "navPurpose": "Nuestro Propósito",
-    "navDrive": "TUGGI Drive",
+    "navB2c": "TUGGI",
     "navContact": "Contacto",
     "downloadApp": "Descargar App"
   },

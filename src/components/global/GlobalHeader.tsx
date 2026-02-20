@@ -70,15 +70,11 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
           </div>
 
           <Link href="/drive" className="text-sm font-medium text-slate-600 hover:text-tuggi-dark transition-colors focus:outline-none focus:ring-2 focus:ring-tuggi-primary rounded-sm py-2">
-            {t("navDrive")}
+            {t("navB2c")}
           </Link>
 
           <Link href="/purpose" className="text-sm font-medium text-slate-600 hover:text-tuggi-dark transition-colors focus:outline-none focus:ring-2 focus:ring-tuggi-primary rounded-sm py-2">
             {t("navPurpose")}
-          </Link>
-
-          <Link href="/contact" className="text-sm font-medium text-slate-600 hover:text-tuggi-dark transition-colors focus:outline-none focus:ring-2 focus:ring-tuggi-primary rounded-sm py-2">
-            {t("navContact")}
           </Link>
         </div>
 
@@ -107,7 +103,7 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
               </ul>
             </div>
           </div>
-          <Link href="/drive" className="bg-tuggi-secondary text-white font-semibold rounded-lg px-5 py-2.5 hover:opacity-90 transition-opacity shadow-sm focus:outline-none focus:ring-2 focus:ring-tuggi-secondary focus:ring-offset-2">
+          <Link href="/drive" className="bg-[#FF6F00] text-white font-semibold rounded-lg px-5 py-2.5 hover:bg-[#e66400] transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FF6F00] focus:ring-offset-2">
             {t("downloadApp")}
           </Link>
         </div>
