@@ -44,29 +44,38 @@
   },
   "CityOS": {
     "Hero": {
-      "title": "Reclaim Control of Your City's Historical Narrative.",
-      "subtitle": "City OS is the only White Label territorial intelligence and hands-free contextual audio infrastructure for local governments."
+      "title": "The Definitive Infrastructure for Smart Tourism Destinations (DTI).",
+      "subtitle": "Transform your city into a certified Smart Destination. TUGGI City OS aligns your territorial governance with global pillars of Technology, Sustainability, Accessibility, and Data.",
+      "cta": "Request City OS Demo"
     },
     "Regulatory": {
-      "title": "100% Street-Legal & Risk-Free Infrastructure.",
-      "desc": "While screen-based tourism apps create driver distractions and expose the municipality to legal liabilities, TUGGI's native hands-free architecture guarantees total legal compliance. We protect your management and your citizens."
+      "title": "100% Street-Legal & Risk-Free.",
+      "desc": "Endorsing screen-based tourism apps exposes the municipality to traffic violation liabilities. TUGGI's native 100% hands-free architecture guarantees legal compliance, protecting the Mayor's management and the citizens."
     },
-    "Decompression": {
-      "title": "Overtourism & Economic Decompression Routes",
-      "desc": "Our centralized CMS allows the municipality to instantly deploy localized audio narratives to actively redirect traffic flow from saturated historical centers to peripheral economic zones via real-time triggers."
+    "Sustainability": {
+      "title": "Sustainability & Public Utility",
+      "desc": "Redirect traffic and communicate efficiently without screen barriers.",
+      "feat1Title": "Economic Decompression routes",
+      "feat1Desc": "Use AI triggers to actively redirect tourists from saturated historical centers to peripheral economic zones.",
+      "feat2Title": "Public Utility & Emergencies",
+      "feat2Desc": "Deploy dynamic audio geofences for road closures, events, or severe weather alerts, communicating with foreign drivers in their native language hands-free."
     },
-    "WhiteLabel": {
-      "title": "White Label Ecosystem & Goverance",
-      "coBrandingTitle": "Native Co-branding",
-      "coBrandingDesc": "The city gets its own visual identity with a discreet 'Powered by TUGGI' badge.",
-      "auditTitle": "Immutable Audit Log",
-      "auditDesc": "Political Risk Mitigation: The city always knows who edited a historical monument's narrative via strict RBAC. (User, Action, Timestamp, IP).",
-      "aiTitle": "AI Multilanguage Pipeline",
-      "aiDesc": "Automated Text-to-Speech global scaling into any required language instantaneously."
+    "Accessibility": {
+      "tag": "Fast-Track Your DTI Accessibility Score",
+      "title": "Universal Accessibility",
+      "desc": "Universal Accessibility is the hardest DTI pillar. TUGGI solves sensory barriers instantly: Audio-first navigation for visually impaired tourists, and geolocated Closed Captions for hearing-impaired passengers. WCAG 2.1 AA compliant."
+    },
+    "Intelligence": {
+      "title": "Data-Driven Tourism Intelligence",
+      "desc": "Governments are usually blind to tourist flow. TUGGI delivers anonymized telemetry: know exactly which routes are taken, at what times, and in which languages, enabling hyper-targeted international marketing campaigns.",
+      "heatmaps": "Predictive Heatmaps",
+      "heatmapsDesc": "Real-time density graphs for any active route.",
+      "demographics": "Language Demographics",
+      "demographicsDesc": "Know exact demographics via active audio streams."
     },
     "Mandate": {
-      "title": "The Physical Mandate Infrastructure",
-      "desc": "The municipality acts as a zero-CAC distribution channel. The technology is physically deployed via QR codes integrated into official parking meters, highway toll booths, and historical center access totems.",
+      "title": "Zero CAPEX Deployment & Mega-Event Readiness",
+      "desc": "Distribute the OS without digital marketing spend: QR codes on official parking meters, highway toll booths, and historical access totems. Instant plug-and-play readiness for massive influxes like the 2026 Winter Games or World Cup.",
       "cta": "Request City OS Demo"
     }
   },

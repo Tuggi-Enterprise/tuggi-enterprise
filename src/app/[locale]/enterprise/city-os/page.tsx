@@ -1,7 +1,8 @@
 import { CityOSHero } from "@/components/blocks/CityOSHero";
 import { CityOSRegulatory } from "@/components/blocks/CityOSRegulatory";
-import { CityOSDecompression } from "@/components/blocks/CityOSDecompression";
-import { CityOSWhiteLabel } from "@/components/blocks/CityOSWhiteLabel";
+import { CityOSSustainability } from "@/components/blocks/CityOSSustainability";
+import { CityOSAccessibility } from "@/components/blocks/CityOSAccessibility";
+import { CityOSIntelligence } from "@/components/blocks/CityOSIntelligence";
 import { CityOSMandate } from "@/components/blocks/CityOSMandate";
 
 export async function generateMetadata() {
@@ -12,12 +13,13 @@ export async function generateMetadata() {
 
 export default async function CityOSPage() {
   return (
-    <>
+    <article className="min-h-screen">
       <CityOSHero />
       <CityOSRegulatory />
-      <CityOSDecompression />
-      <CityOSWhiteLabel />
+      <CityOSSustainability />
+      <CityOSAccessibility />
+      <CityOSIntelligence />
       <CityOSMandate />
-    </>
+    </article>
   );
 }
