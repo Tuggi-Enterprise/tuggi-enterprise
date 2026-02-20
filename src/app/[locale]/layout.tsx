@@ -1,5 +1,5 @@
 import { NextIntlClientProvider } from "next-intl";
-import { getMessages, getTranslations } from "next-intl/server";
+import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { notFound } from "next/navigation";
 import { ReactNode } from "react";
@@ -16,6 +16,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "Metadata" });
   return {
     title: t("rootTitle"),
@@ -36,12 +37,14 @@ export default async function RootLayout({
     notFound();
   }
 
+  setRequestLocale(locale);
+
   const messages = await getMessages();
 
   return (
     <html lang={locale} className={inter.className}>
       <body className="bg-white text-[#0B1220] antialiased">
-        <NextIntlClientProvider messages={messages}>
+        <NextIntlClientProvider messages={messages} locale={locale}>
           <GlobalHeader currentLocale={locale} />
           <main className="min-h-screen pt-16 bg-tuggi-bg">
             {children}
