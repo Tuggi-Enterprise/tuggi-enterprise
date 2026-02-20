@@ -1,112 +1,114 @@
 {
   "Header": {
-    "navPlatform": "Platform",
-    "navPurpose": "Our Purpose",
-    "downloadApp": "Download App"
+    "navPlatform": "Plataforma",
+    "navPurpose": "O Nosso Propósito",
+    "downloadApp": "Descarregar App"
   },
   "Footer": {
     "driveB2c": "TUGGI Drive (B2C)",
-    "appDownload": "App Download",
-    "plans": "Plans",
+    "appDownload": "Descarregar Aplicação",
+    "plans": "Planos",
     "enterprise": "Enterprise (B2B/B2G)",
     "cityOs": "City OS",
-    "fleets": "Fleets",
-    "technology": "Technology",
-    "institutional": "Institutional",
-    "ourPurpose": "Our Purpose",
-    "contact": "Contact",
-    "trustCenter": "Trust Center & Compliance",
-    "terms": "Terms of Use",
-    "privacy": "Privacy Policy",
-    "accessibility": "Accessibility",
-    "security": "B2G Security"
+    "fleets": "Frotas",
+    "technology": "Tecnologia",
+    "institutional": "Institucional",
+    "ourPurpose": "O Nosso Propósito",
+    "contact": "Contacto",
+    "trustCenter": "Centro de Confiança e Conformidade",
+    "terms": "Termos de Utilização",
+    "privacy": "Política de Privacidade",
+    "accessibility": "Acessibilidade",
+    "security": "Segurança B2G"
   },
   "Home": {
     "Hero": {
-      "title": "The Cultural Copilot for Drivers",
-      "subtitle": "Turn every kilometer into a contextual discovery. Zero screens, zero traffic violations.",
-      "downloadApp": "Download App",
-      "contactSales": "Contact Sales"
+      "title": "O Copiloto Cultural para Condutores",
+      "subtitle": "Transforme cada quilómetro numa descoberta contextual. Zero ecrãs, zero infrações de trânsito.",
+      "downloadApp": "Descarregar App",
+      "contactSales": "Contactar Vendas"
     },
     "Simulator": {
-      "tag": "Core Tech Demo",
-      "title": "100% Hands-Free Contextual Triggering",
-      "subtitle": "Our City OS engine uses bearing-logic and offline caching to trigger narratives exactly at the right monument, without the driver ever looking at a screen.",
-      "playing": "Playing: Historical Monument",
-      "approaching": "Approaching Geofence..."
+      "tag": "Demonstração Tecnológica",
+      "title": "Gatilhos Contextuais 100% Hands-Free",
+      "subtitle": "O nosso motor City OS utiliza lógica direcional e cache offline para acionar narrativas exatamente no monumento certo, sem que o condutor precise olhar para um ecrã.",
+      "playing": "A Reproduzir: Monumento Histórico",
+      "approaching": "A Aproximar da Cerca Geográfica..."
     },
     "EnterpriseFork": {
-      "b2gTitle": "For Smart Cities & Destinations",
-      "b2gDesc": "City OS provides narrative sovereignty, structural tourism mapping, and guaranteed legal compliance safely delivered at the wheel.",
-      "b2bTitle": "For Fleets & Car Rentals",
-      "b2bDesc": "Transform your fleet into automated local guides. Drive zero CAPEX and secure massive ancillary revenue streams."
+      "b2gTitle": "Para Cidades Inteligentes e Destinos",
+      "b2gDesc": "O City OS fornece soberania narrativa, mapeamento estrutural de turismo e conformidade legal garantida e entregue com segurança ao volante.",
+      "b2bTitle": "Para Frotas e Rent-a-Car",
+      "b2bDesc": "Transforme a sua frota em guias locais automatizados. Opere com zero CAPEX e garanta enormes fluxos de receita auxiliar.",
+      "b2gLinkLabel": "City OS",
+      "b2bLinkLabel": "Frotas"
     }
   },
   "CityOS": {
     "Hero": {
-      "title": "The Definitive Infrastructure for Smart Tourism Destinations (DTI).",
-      "subtitle": "Transform your city into a certified Smart Destination. TUGGI City OS aligns your territorial governance with global pillars of Technology, Sustainability, Accessibility, and Data.",
-      "cta": "Request City OS Demo"
+      "title": "A Infraestrutura Definitiva para Destinos Turísticos Inteligentes (DTI).",
+      "subtitle": "Transforme a sua cidade num Destino Inteligente certificado. O TUGGI City OS alinha a sua governança territorial com os pilares globais de Tecnologia, Sustentabilidade, Acessibilidade e Dados.",
+      "cta": "Solicitar Demonstração do City OS"
     },
     "Regulatory": {
-      "title": "100% Street-Legal & Risk-Free.",
-      "desc": "Endorsing screen-based tourism apps exposes the municipality to traffic violation liabilities. TUGGI's native 100% hands-free architecture guarantees legal compliance, protecting the Mayor's management and the citizens."
+      "title": "100% Legal e Sem Riscos.",
+      "desc": "Endossar aplicações de turismo baseadas em ecrãs expõe o município a responsabilidades por infrações de trânsito. A arquitetura 100% hands-free nativa da TUGGI garante conformidade legal, protegendo a gestão do Presidente da Câmara e os cidadãos."
     },
     "Sustainability": {
-      "title": "Sustainability & Public Utility",
-      "desc": "Redirect traffic and communicate efficiently without screen barriers.",
-      "feat1Title": "Economic Decompression routes",
-      "feat1Desc": "Use AI triggers to actively redirect tourists from saturated historical centers to peripheral economic zones.",
-      "feat2Title": "Public Utility & Emergencies",
-      "feat2Desc": "Deploy dynamic audio geofences for road closures, events, or severe weather alerts, communicating with foreign drivers in their native language hands-free."
+      "title": "Sustentabilidade e Utilidade Pública",
+      "desc": "Redirecione o tráfego e comunique de forma eficiente sem barreiras de ecrã.",
+      "feat1Title": "Rotas de Descompressão Económica",
+      "feat1Desc": "Utilize gatilhos de IA para redirecionar ativamente turistas de centros históricos saturados para zonas económicas periféricas.",
+      "feat2Title": "Utilidade Pública e Emergências",
+      "feat2Desc": "Implemente cercas geográficas de áudio dinâmicas para bloqueios de estradas, eventos ou alertas climáticos severos, comunicando com condutores estrangeiros no seu idioma nativo sem o uso das mãos."
     },
     "Accessibility": {
-      "tag": "Fast-Track Your DTI Accessibility Score",
-      "title": "Universal Accessibility",
-      "desc": "Universal Accessibility is the hardest DTI pillar. TUGGI solves sensory barriers instantly: Audio-first navigation for visually impaired tourists, and geolocated Closed Captions for hearing-impaired passengers. WCAG 2.1 AA compliant."
+      "tag": "Acelere a sua Pontuação de Acessibilidade DTI",
+      "title": "Acessibilidade Universal",
+      "desc": "Acessibilidade Universal é o pilar DTI mais difícil. O TUGGI resolve barreiras sensoriais instantaneamente: navegação 'Audio-first' para turistas com deficiência visual e legendas (Closed Captions) geolocalizadas para passageiros com deficiência auditiva. Compatível com WCAG 2.1 AA."
     },
     "Intelligence": {
-      "title": "Data-Driven Tourism Intelligence",
-      "desc": "Governments are usually blind to tourist flow. TUGGI delivers anonymized telemetry: know exactly which routes are taken, at what times, and in which languages, enabling hyper-targeted international marketing campaigns.",
-      "heatmaps": "Predictive Heatmaps",
-      "heatmapsDesc": "Real-time density graphs for any active route.",
-      "demographics": "Language Demographics",
-      "demographicsDesc": "Know exact demographics via active audio streams."
+      "title": "Inteligência de Turismo Baseada em Dados",
+      "desc": "Os governos geralmente são cegos ao fluxo turístico. O TUGGI fornece telemetria anonimizada: saiba exatamente que rotas são feitas, em que horários e em que idiomas, permitindo campanhas de marketing internacional hiper-direcionadas.",
+      "heatmaps": "Mapas de Calor Preditivos",
+      "heatmapsDesc": "Gráficos de densidade em tempo real para qualquer rota ativa.",
+      "demographics": "Demografia de Idiomas",
+      "demographicsDesc": "Saiba a demografia exata através de streams de áudio ativos."
     },
     "Mandate": {
-      "title": "Zero CAPEX Deployment & Mega-Event Readiness",
-      "desc": "Distribute the OS without digital marketing spend: QR codes on official parking meters, highway toll booths, and historical access totems. Instant plug-and-play readiness for massive influxes like the 2026 Winter Games or World Cup.",
-      "cta": "Request City OS Demo"
+      "title": "Implementação Zero CAPEX e Prontidão para Megaeventos",
+      "desc": "Distribua o OS sem gastos com marketing digital: códigos QR em parquímetros oficiais, portagens rodoviárias e totens de acesso histórico. Prontidão instantânea plug-and-play para influxos massivos, como os Jogos de Inverno de 2026 ou o Campeonato do Mundo.",
+      "cta": "Solicitar Demonstração do City OS"
     }
   },
   "Metadata": {
     "rootTitle": "Tuggi",
-    "rootDescription": "Tuggi Enterprise Solutions",
-    "homeTitle": "Tuggi | Trigger Simulator & Validation",
-    "homeDescription": "Interactive trigger simulator",
-    "driveTitle": "Tuggi Drive: Audio Guide & Travel App",
-    "driveDescription": "Download Tuggi Drive to navigate like a pro.",
-    "cityOsTitle": "City OS: Territorial Governance & Hands-Free Audio",
-    "cityOsDescription": "B2G Solutions for Smart Cities",
-    "fleetsTitle": "Tuggi Fleets | Ancillary Revenue for Car Rentals",
-    "fleetsDescription": "B2B2C solutions for fleets",
-    "techTitle": "Tuggi Technology | Swift Architecture & Cache",
-    "techDescription": "Our robust engine and caches",
-    "purposeTitle": "The Audio Thesis | Our Purpose",
-    "purposeDescription": "Institutional values of Tuggi",
-    "contactTitle": "Contact Tuggi | Lead Router",
-    "contactDescription": "Get in touch with our team",
-    "trustCenterTitle": "Tuggi Trust Center",
-    "trustCenterDescription": "Legal and Compliance",
-    "termsTitle": "Terms of Use | Tuggi",
-    "termsDescription": "Terms and conditions of our services",
-    "privacyTitle": "Privacy Policy | Tuggi",
-    "privacyDescription": "How we process your data",
-    "deletionTitle": "Data Deletion | Tuggi",
-    "deletionDescription": "Request your data to be deleted",
-    "securityTitle": "Security SLA | Tuggi",
-    "securityDescription": "Our security commitments",
-    "accessibilityTitle": "Accessibility | Tuggi",
-    "accessibilityDescription": "Accessibility policies"
+    "rootDescription": "Soluções Corporativas Tuggi",
+    "homeTitle": "Tuggi | Simulador de Acionamento e Validação",
+    "homeDescription": "Simulador interativo",
+    "driveTitle": "Tuggi Drive: Guia de Áudio e App de Viagens",
+    "driveDescription": "Descarregue o Tuggi Drive para navegar como um profissional.",
+    "cityOsTitle": "City OS: Governança Territorial e Áudio Hands-Free",
+    "cityOsDescription": "Soluções B2G para Cidades Inteligentes",
+    "fleetsTitle": "Tuggi Frotas | Receita Auxiliar para Rent-a-Car",
+    "fleetsDescription": "Soluções B2B2C para frotas",
+    "techTitle": "Tecnologia Tuggi | Arquitetura Rápida e Cache",
+    "techDescription": "O nosso motor e caches robustos",
+    "purposeTitle": "A Tese de Áudio | O Nosso Propósito",
+    "purposeDescription": "Valores institucionais da Tuggi",
+    "contactTitle": "Contacto Tuggi | Redirecionamento de Leads",
+    "contactDescription": "Entre em contacto com a nossa equipa",
+    "trustCenterTitle": "Centro de Confiança Tuggi",
+    "trustCenterDescription": "Legal e Conformidade",
+    "termsTitle": "Termos de Utilização | Tuggi",
+    "termsDescription": "Termos e condições dos nossos serviços",
+    "privacyTitle": "Política de Privacidade | Tuggi",
+    "privacyDescription": "Como processamos os seus dados",
+    "deletionTitle": "Exclusão de Dados | Tuggi",
+    "deletionDescription": "Solicite a exclusão dos seus dados",
+    "securityTitle": "SLA de Segurança | Tuggi",
+    "securityDescription": "Os nossos compromissos de segurança",
+    "accessibilityTitle": "Acessibilidade | Tuggi",
+    "accessibilityDescription": "Políticas de acessibilidade"
   }
 }

@@ -22,7 +22,7 @@ export function EnterpriseFork() {
               {t("b2gDesc")}
             </p>
             <div className="mt-auto flex items-center space-x-2 text-tuggi-primary font-semibold">
-              <span>City OS</span>
+              <span>{t("b2gLinkLabel")}</span>
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </div>
           </Link>
@@ -39,7 +39,7 @@ export function EnterpriseFork() {
               {t("b2bDesc")}
             </p>
             <div className="mt-auto flex items-center space-x-2 text-tuggi-primary font-semibold">
-              <span>Fleets</span>
+              <span>{t("b2bLinkLabel")}</span>
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </div>
           </Link>

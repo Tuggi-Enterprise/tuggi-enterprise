@@ -39,7 +39,9 @@
       "b2gTitle": "For Smart Cities & Destinations",
       "b2gDesc": "City OS provides narrative sovereignty, structural tourism mapping, and guaranteed legal compliance safely delivered at the wheel.",
       "b2bTitle": "For Fleets & Car Rentals",
-      "b2bDesc": "Transform your fleet into automated local guides. Drive zero CAPEX and secure massive ancillary revenue streams."
+      "b2bDesc": "Transform your fleet into automated local guides. Drive zero CAPEX and secure massive ancillary revenue streams.",
+      "b2gLinkLabel": "City OS",
+      "b2bLinkLabel": "Fleets"
     }
   },
   "CityOS": {
@@ -77,6 +79,38 @@
       "title": "Zero CAPEX Deployment & Mega-Event Readiness",
       "desc": "Distribute the OS without digital marketing spend: QR codes on official parking meters, highway toll booths, and historical access totems. Instant plug-and-play readiness for massive influxes like the 2026 Winter Games or World Cup.",
       "cta": "Request City OS Demo"
+    }
+  },
+  "Fleets": {
+    "Hero": {
+      "title": "De-commoditize Your Fleet. Boost Your RevPA.",
+      "subtitle": "Transform a standard vehicle rental into a Premium Cultural Experience. Generate massive ancillary revenue with zero hardware installation and zero CAPEX.",
+      "cta": "Partner with TUGGI"
+    },
+    "Financial": {
+      "col1Title": "Maximized RevPA",
+      "col1Desc": "Replace dead GPS rental revenue with a scalable software-as-a-service margin driver.",
+      "col2Title": "Zero CAPEX",
+      "col2Desc": "No hardware to buy, install, or maintain. 100% BYOD (Bring Your Own Device).",
+      "col3Title": "Instant Scalability",
+      "col3Desc": "Deploy across your entire national fleet in 24 hours via QR Code integration at the counter."
+    },
+    "Risk": {
+      "title": "Maximize Uptime. Minimize Liability.",
+      "desc": "Driver distraction is a major cause of fleet damage. TUGGI's 100% hands-free, audio-only triggers keep the driver's eyes on the road. Reduce minor collisions and vehicle downtime in workshops. Safety is not just a feature; it's an operational saving."
+    },
+    "NPS": {
+      "title": "The War on NPS: From Metal to Experience.",
+      "desc": "In a commoditized market, the winner is the one who provides the best journey. TUGGI turns the rental car into a private local guide, exploding customer satisfaction and brand loyalty."
+    },
+    "Brand": {
+      "title": "Your Brand, Our Engine.",
+      "desc": "Offer a unique experience without the constraints of tech exclusivity. We provide White-Label and Co-branded interfaces. Customize the app's voice, colors, and even create 'Exclusive Premium Routes' sponsored by your rental brand to differentiate from competitors."
+    },
+    "ESG": {
+      "title": "Digital Transformation with Social Impact.",
+      "desc": "Help your ESG targets by fostering the local creative economy and decompressing overtourism through guided routes.",
+      "cta": "Request B2B Demo"
     }
   },
   "Metadata": {
