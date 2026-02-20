@@ -38,7 +38,13 @@
       "title": "100% Hands-Free Contextual Triggering",
       "subtitle": "Our City OS engine uses bearing-logic and offline caching to trigger narratives exactly at the right monument, without the driver ever looking at a screen.",
       "playing": "Playing: Historical Monument",
-      "approaching": "Approaching Geofence..."
+      "approaching": "Approaching Geofence...",
+      "poiName": "National Museum",
+      "playingLabel": "Playing",
+      "playingText": "On your left: National Museum",
+      "ccLabel": "Caption",
+      "ccTranscriptTitle": "Active Captions (WCAG 2.1 AA)",
+      "ccTranscriptText": "On your left, National Museum, observe the preserved architecture of this monument erected in the 18th century, which represents a fundamental historical landmark for the region and symbolizes the cultural resistance of the colonial period..."
     },
     "EnterpriseFork": {
       "b2gTitle": "For Smart Cities & Destinations",
@@ -409,8 +415,8 @@
   "Metadata": {
     "rootTitle": "Tuggi",
     "rootDescription": "Tuggi Enterprise Solutions",
-    "homeTitle": "Tuggi | Trigger Simulator & Validation",
-    "homeDescription": "Interactive trigger simulator",
+    "homeTitle": "TUGGI | The Cultural Copilot for Drivers",
+    "homeDescription": "Turn every mile into a contextual discovery. Zero screens, zero traffic tickets.",
     "driveTitle": "Tuggi Drive: Audio Guide & Travel App",
     "driveDescription": "Download Tuggi Drive to navigate like a pro.",
     "cityOsTitle": "City OS: Territorial Governance & Hands-Free Audio",
@@ -435,5 +441,15 @@
     "securityDescription": "Our security commitments",
     "accessibilityTitle": "Accessibility | Tuggi",
     "accessibilityDescription": "Accessibility policies"
+  },
+  "SEO_CITY_OS": {
+    "title": "TUGGI City OS | Smart Tourism Destination Infrastructure",
+    "description": "Transform your municipality into a Smart Tourism Destination with zero CAPEX. TUGGI City OS delivers accessibility, data intelligence, and total narrative governance.",
+    "ogTitle": "TUGGI City OS: The Ultimate Smart Destination Infrastructure"
+  },
+  "SEO_FLEETS": {
+    "title": "TUGGI Fleets | Boost RevPA and NPS with the Cultural Copilot",
+    "description": "Transform standard car rentals into a Premium Cultural Experience. Generate massive ancillary revenue with zero hardware CAPEX and boost your rental's NPS.",
+    "ogTitle": "TUGGI Fleets: Ancillary Revenue and NPS for Rentals"
   }
 }

@@ -38,7 +38,13 @@
       "title": "Gatilhos Contextuais 100% Hands-Free",
       "subtitle": "Nosso motor City OS usa lógica direcional e cache offline para acionar narrativas exatamente no monumento certo, sem que o motorista precise olhar para uma tela.",
       "playing": "Reproduzindo: Monumento Histórico",
-      "approaching": "Aproximando da Cerca Geográfica..."
+      "approaching": "Aproximando da Cerca Geográfica...",
+      "poiName": "Museu Nacional",
+      "playingLabel": "Reproduzindo",
+      "playingText": "À sua esquerda: Museu Nacional",
+      "ccLabel": "Legenda",
+      "ccTranscriptTitle": "Legendas Ativas (WCAG 2.1 AA)",
+      "ccTranscriptText": "À sua esquerda, Museu Nacional, observe a arquitetura preservada deste monumento erguido no século XVIII, que representa um marco histórico fundamental para a região e simboliza a resistência cultural do período colonial..."
     },
     "EnterpriseFork": {
       "b2gTitle": "Para Cidades Inteligentes e Destinos",
@@ -409,8 +415,8 @@
   "Metadata": {
     "rootTitle": "Tuggi",
     "rootDescription": "Soluções Corporativas Tuggi",
-    "homeTitle": "Tuggi | Simulador de Acionamento e Validação",
-    "homeDescription": "Simulador de acionamento interativo",
+    "homeTitle": "TUGGI | O Copiloto Cultural para Motoristas",
+    "homeDescription": "Transforme cada quilômetro em uma descoberta contextual. Zero telas, zero multas de trânsito.",
     "driveTitle": "Tuggi Drive: Guia de Áudio e Aplicativo de Viagem",
     "driveDescription": "Baixe o Tuggi Drive para navegar como um profissional.",
     "cityOsTitle": "City OS: Governança Territorial e Áudio Hands-Free",
@@ -435,5 +441,15 @@
     "securityDescription": "Nossos compromissos de segurança",
     "accessibilityTitle": "Acessibilidade | Tuggi",
     "accessibilityDescription": "Políticas de acessibilidade"
+  },
+  "SEO_CITY_OS": {
+    "title": "TUGGI City OS | Infraestrutura para Destinos Inteligentes (DTI)",
+    "description": "Transforme seu município num Destino Turístico Inteligente (DTI) com zero CAPEX. O TUGGI City OS entrega acessibilidade, inteligência de dados e governança total da narrativa.",
+    "ogTitle": "TUGGI City OS: A Infraestrutura DTI Definitiva"
+  },
+  "SEO_FLEETS": {
+    "title": "TUGGI Frotas | Aumente seu RevPA e NPS com o Copiloto Cultural",
+    "description": "Transforme o aluguel de veículos padrão em uma Experiência Cultural Premium. Gere receita auxiliar massiva com zero CAPEX de hardware e impulsione o NPS da sua locadora.",
+    "ogTitle": "TUGGI Frotas: Receita Auxiliar e NPS para Locadoras"
   }
 }

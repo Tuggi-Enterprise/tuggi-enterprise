@@ -55,7 +55,7 @@ export async function generateMetadata({
 }
 
 import { HeroSection } from "@/components/blocks/HeroSection";
-import { TriggerSimulator } from "@/components/blocks/TriggerSimulator";
+import { InteractiveSimulator } from "@/components/blocks/InteractiveSimulator";
 import { EnterpriseFork } from "@/components/blocks/EnterpriseFork";
 
 export default async function HomePage() {
@@ -63,7 +63,7 @@ export default async function HomePage() {
   return (
     <>
       <HeroSection />
-      <TriggerSimulator />
+      <InteractiveSimulator />
       <EnterpriseFork />
     </>
   );
