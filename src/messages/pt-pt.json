@@ -318,6 +318,24 @@
       "s6P1": "Se tiver dúvidas sobre esta política ou sobre o tratamento dos seus dados, entre em contacto com o nosso Data Protection Officer (DPO) através da nossa página de ",
       "s6P2": "Contacto",
       "s6P3": ", selecionando a opção de Suporte."
+    },
+    "DataDeletion": {
+      "title": "Protocolo de Eliminação de Dados",
+      "intro": "Tem controlo absoluto sobre a sua telemetria e registos de conta. No TUGGI, garantimos que o seu direito ao esquecimento seja respeitado em toda a nossa infraestrutura.",
+      "formTitle": "Solicitar Eliminação de Conta",
+      "formDesc": "Insira o e-mail da sua conta abaixo. Enviaremos um Magic Link seguro para eliminar permanentemente os seus dados através da nossa infraestrutura de autenticação. Uma vez executada, esta ação é irreversível e os seus dados serão expurgados de todos os servidores TUGGI.",
+      "s1Title": "O que acontece com os meus dados?",
+      "s1Desc": "Quando executa um pedido de eliminação:",
+      "s1Item1": "O seu perfil de conta e credenciais de login são permanentemente removidos do nosso fornecedor de Autenticação.",
+      "s1Item2": "Todos os identificadores de dispositivo ligados às suas sessões anteriores são apagados da nossa base de dados de telemetria.",
+      "s1Item3": "Quaisquer dados de fluxo anonimizados gerados anteriormente permanecem de forma agregada, mas jamais poderão ser reassociados à sua identidade.",
+      "s2Title": "Dados Empresariais e City OS",
+      "s2Desc": "Se a sua conta foi provisionada através de um portal governamental City OS ou uma licença empresarial de Frotas, alguns registos podem estar sujeitos a períodos de retenção legal exigidos pela legislação municipal ou contratos B2B. O TUGGI processará estes pedidos em coordenação com a autoridade responsável.",
+      "Form": {
+        "placeholder": "o-seu@email.com",
+        "submit": "Solicitar Eliminação de Dados",
+        "success": "Link Enviado"
+      }
     }
   },
   "Purpose": {

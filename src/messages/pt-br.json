@@ -318,6 +318,24 @@
       "s6P1": "Se você tiver dúvidas sobre esta política ou sobre o tratamento dos seus dados, entre em contato com o nosso Data Protection Officer (DPO) através da nossa página de ",
       "s6P2": "Contato",
       "s6P3": ", selecionando a opção de Suporte."
+    },
+    "DataDeletion": {
+      "title": "Protocolo de Exclusão de Dados",
+      "intro": "Você possui controle absoluto sobre sua telemetria e registros de conta. No TUGGI, garantimos que o seu direito ao esquecimento seja respeitado em toda a nossa infraestrutura.",
+      "formTitle": "Solicitar Exclusão de Conta",
+      "formDesc": "Insira o e-mail da sua conta abaixo. Enviaremos um Magic Link seguro para excluir permanentemente seus dados através da nossa infraestrutura de autenticação. Uma vez executada, esta ação é irreversível e seus dados serão expurgados de todos os servidores TUGGI.",
+      "s1Title": "O que acontece com os meus dados?",
+      "s1Desc": "Quando você executa uma solicitação de exclusão:",
+      "s1Item1": "Seu perfil de conta e credenciais de login são permanentemente removidos do nosso provedor de Autenticação.",
+      "s1Item2": "Todos os identificadores de dispositivo vinculados às suas sessões anteriores são apagados do nosso banco de dados de telemetria.",
+      "s1Item3": "Quaisquer dados de fluxo anonimizados gerados anteriormente permanecem no agregado, mas jamais poderão ser reassociados à sua identidade.",
+      "s2Title": "Dados Corporativos e City OS",
+      "s2Desc": "Se a sua conta foi provisionada através de um portal governamental City OS ou uma licença corporativa de Frotas, alguns registros podem estar sujeitos a períodos de retenção legal exigidos pela legislação municipal ou contratos B2B. O TUGGI processará essas solicitações em coordenação com a autoridade responsável.",
+      "Form": {
+        "placeholder": "seu@email.com",
+        "submit": "Solicitar Exclusão de Dados",
+        "success": "Link Enviado"
+      }
     }
   },
   "Purpose": {

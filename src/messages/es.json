@@ -318,6 +318,24 @@
       "s6P1": "Si tiene preguntas sobre esta política o sobre el tratamiento de sus datos, contacte a nuestro Delegado de Protección de Datos (DPO) a través de nuestra página de ",
       "s6P2": "Contacto",
       "s6P3": ", seleccionando la opción de Soporte."
+    },
+    "DataDeletion": {
+      "title": "Protocolo de Eliminación de Datos",
+      "intro": "Usted tiene control absoluto sobre su telemetría y registros de cuenta. En TUGGI, garantizamos que su derecho al olvido sea respetado en toda nuestra infraestructura.",
+      "formTitle": "Solicitar Eliminación de Cuenta",
+      "formDesc": "Ingrese el correo electrónico de su cuenta a continuación. Enviaremos un Magic Link seguro para eliminar permanentemente sus datos a través de nuestra infraestructura de autenticación. Una vez ejecutada, esta acción es irreversible y sus datos serán expurgados de todos los servidores TUGGI.",
+      "s1Title": "¿Qué pasa con mis datos?",
+      "s1Desc": "Cuando ejecuta una solicitud de eliminación:",
+      "s1Item1": "Su perfil de cuenta y credenciales de inicio de sesión se eliminan permanentemente de nuestro proveedor de Autenticación.",
+      "s1Item2": "Todos los identificadores de dispositivo vinculados a sus sesiones anteriores se borran de nuestra base de datos de telemetría.",
+      "s1Item3": "Cualquier dato de flujo anonimizado generado anteriormente permanece en el agregado, pero nunca podrá volver a asociarse con su identidad.",
+      "s2Title": "Datos Corporativos y City OS",
+      "s2Desc": "Si su cuenta fue provisionada a través de un portal gubernamental City OS o una licencia corporativa de Flotas, algunos registros pueden estar sujetos a períodos de retención legal requeridos por la legislación municipal o contratos B2B. TUGGI procesará estas solicitudes en coordinación con la autoridad responsable.",
+      "Form": {
+        "placeholder": "su@email.com",
+        "submit": "Solicitar Eliminación de Datos",
+        "success": "Enlace Enviado"
+      }
     }
   },
   "Purpose": {

@@ -318,6 +318,24 @@
       "s6P1": "If you have questions about this policy or the processing of your data, please contact our Data Protection Officer (DPO) through our ",
       "s6P2": "Contact",
       "s6P3": " page, by selecting the Support option."
+    },
+    "DataDeletion": {
+      "title": "Data Deletion Protocol",
+      "intro": "You hold absolute control over your telemetry and account records. At TUGGI, we ensure that your right to be forgotten is respected across our entire infrastructure.",
+      "formTitle": "Request Account Deletion",
+      "formDesc": "Enter your account email below. We will send a secure Magic Link to permanently delete your data via our auth infrastructure. Once executed, this action is immutable and your data will be purged from all TUGGI servers.",
+      "s1Title": "What happens to my data?",
+      "s1Desc": "When you execute a deletion request:",
+      "s1Item1": "Your account profile and login credentials are permanently removed from our Auth provider.",
+      "s1Item2": "All device identifiers linked to your previous sessions are scrubbed from our telemetry database.",
+      "s1Item3": "Any anonymized flow data previously generated remains in the aggregate, but can never be re-associated with your identity.",
+      "s2Title": "Enterprise and City OS Data",
+      "s2Desc": "If your account was provisioned through a City OS government portal or a Fleet Enterprise license, some records may be subject to statutory retention periods required by municipal law or B2B contracts. TUGGI will handle these requests in coordination with the relevant authority.",
+      "Form": {
+        "placeholder": "your@email.com",
+        "submit": "Request Data Deletion",
+        "success": "Magic Link Sent"
+      }
     }
   },
   "Purpose": {
