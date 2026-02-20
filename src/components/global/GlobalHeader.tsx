@@ -26,7 +26,7 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
         <div className="flex items-center">
           <Link href="/" className="focus:outline-none focus:ring-2 focus:ring-tuggi-primary rounded-sm flex items-center">
             <Image
-              src="/tuggi-logos/logo_tuggi_full.png"
+              src="/images/logo_tuggi_full.png"
               alt="TUGGI Logo"
               width={140}
               height={32}

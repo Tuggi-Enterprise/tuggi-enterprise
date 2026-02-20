@@ -15,7 +15,7 @@ export function FatFooter() {
           <div className="lg:col-span-4 flex flex-col space-y-6 lg:pr-8">
             <Link href="/" className="inline-block focus:outline-none focus:ring-2 focus:ring-tuggi-primary rounded-sm w-max">
               <Image 
-                src="/tuggi-logos/logo_tuggi_full_white.png" 
+                src="/images/logo_tuggi_full_white.png" 
                 alt="TUGGI Logo White" 
                 width={150} 
                 height={32} 
