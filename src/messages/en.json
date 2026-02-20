@@ -42,6 +42,34 @@
       "b2bDesc": "Transform your fleet into automated local guides. Drive zero CAPEX and secure massive ancillary revenue streams."
     }
   },
+  "CityOS": {
+    "Hero": {
+      "title": "Reclaim Control of Your City's Historical Narrative.",
+      "subtitle": "City OS is the only White Label territorial intelligence and hands-free contextual audio infrastructure for local governments."
+    },
+    "Regulatory": {
+      "title": "100% Street-Legal & Risk-Free Infrastructure.",
+      "desc": "While screen-based tourism apps create driver distractions and expose the municipality to legal liabilities, TUGGI's native hands-free architecture guarantees total legal compliance. We protect your management and your citizens."
+    },
+    "Decompression": {
+      "title": "Overtourism & Economic Decompression Routes",
+      "desc": "Our centralized CMS allows the municipality to instantly deploy localized audio narratives to actively redirect traffic flow from saturated historical centers to peripheral economic zones via real-time triggers."
+    },
+    "WhiteLabel": {
+      "title": "White Label Ecosystem & Goverance",
+      "coBrandingTitle": "Native Co-branding",
+      "coBrandingDesc": "The city gets its own visual identity with a discreet 'Powered by TUGGI' badge.",
+      "auditTitle": "Immutable Audit Log",
+      "auditDesc": "Political Risk Mitigation: The city always knows who edited a historical monument's narrative via strict RBAC. (User, Action, Timestamp, IP).",
+      "aiTitle": "AI Multilanguage Pipeline",
+      "aiDesc": "Automated Text-to-Speech global scaling into any required language instantaneously."
+    },
+    "Mandate": {
+      "title": "The Physical Mandate Infrastructure",
+      "desc": "The municipality acts as a zero-CAC distribution channel. The technology is physically deployed via QR codes integrated into official parking meters, highway toll booths, and historical center access totems.",
+      "cta": "Request City OS Demo"
+    }
+  },
   "Metadata": {
     "rootTitle": "Tuggi",
     "rootDescription": "Tuggi Enterprise Solutions",
