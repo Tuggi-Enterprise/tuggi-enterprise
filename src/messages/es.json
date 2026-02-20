@@ -147,6 +147,68 @@
       "desc": "Estricto Control de Acceso Basado en Roles (RBAC). El municipio o la flota tiene un registro inmutable de cada acción dentro de City OS."
     }
   },
+  "Drive": {
+    "Hero": {
+      "title": "La Audioguía que Conduce Contigo.",
+      "subtitle": "Sin desplazarse. Sin buscar. Solo configura tu idioma y deja que tu GPS active historias contextuales mientras conduces. Mantén tu mapa en la pantalla, controla tu Spotify o simplemente guarda tu teléfono. TUGGI se ejecuta perfectamente en segundo plano.",
+      "downloadApp": "Descargar en la App Store",
+      "downloadPlay": "Disponible en Google Play"
+    },
+    "Behavior": {
+      "title": "Configúralo y Olvídate",
+      "step1Title": "1. Elige tu Idioma",
+      "step1Desc": "Selecciona entre más de 8 idiomas nativos para historias narradas con alta fidelidad.",
+      "step2Title": "2. Libera tu Pantalla",
+      "step2Desc": "Usa tu aplicación de navegación favorita, controla tu lista de reproducción o mantén la pantalla encendida para que los pasajeros lean los subtítulos. TUGGI hace su magia en segundo plano sin interrumpir tu flujo.",
+      "step3Title": "3. Conduce Normalmente",
+      "step3Desc": "Las historias se reproducen automáticamente al cruzar geocercas predefinidas."
+    },
+    "Features": {
+      "title": "Kit de Supervivencia del Viajero",
+      "feat1Title": "Modo 100% Offline",
+      "feat1Desc": "Descarga el paquete de la ciudad en tu hotel. Cero cargos por roaming de datos en la carretera.",
+      "feat2Title": "Alertas de Multas y Peligros",
+      "feat2Desc": "Avisos de audio antes de ingresar a zonas de tráfico restringido o áreas peligrosas, ahorrándote cientos en multas.",
+      "feat3Title": "Audio Multilingüe",
+      "feat3Desc": "Narración de historias de alta fidelidad en más de 8 idiomas nativos.",
+      "feat4Title": "Accesibilidad para Pasajeros",
+      "feat4Desc": "Subtítulos cerrados y opciones de lectura de texto sincronizadas con el audio, asegurando que los pasajeros con discapacidad auditiva nunca se pierdan una historia."
+    },
+    "Pricing": {
+      "title": "Los Pases de Viaje",
+      "subtitle": "Elige el plan perfecto para tu viaje.",
+      "mostPopular": "MÁS POPULAR",
+      "freeTitle": "Test Drive",
+      "freePrice": "Gratis",
+      "freeDesc": "Prueba TUGGI antes de tu viaje.",
+      "freeFeat1": "Sin tarjeta de crédito.",
+      "freeFeat2": "Alertas de Multas y Peligros.",
+      "freeLim1": "Requiere Internet (sin modo offline).",
+      "freeLim2": "Historias de audio diarias limitadas.",
+      "freeAction": "Descargar App para Probar",
+      "pass1Title": "Pase Explorador de 7 Días",
+      "pass1Desc": "Ideal para alquileres de fin de semana y escapadas cortas.",
+      "pass1Price": "$14.99",
+      "pass1Renewal": "Pago único. Sin renovación automática.",
+      "pass1Feat1": "Mapas y Audio 100% Offline.",
+      "pass1Feat2": "Disparos de Audio Premium Ilimitados.",
+      "pass1Feat3": "Alertas de Multas y Peligros.",
+      "pass1Feat4": "Accesibilidad Total y Subtítulos.",
+      "pass1Action": "Descargar y Desbloquear 7 Días",
+      "pass2Title": "Pase Nómada de 30 Días",
+      "pass2Desc": "Ideal para viajes por carretera a través del país y vacaciones prolongadas.",
+      "pass2Price": "$29.99",
+      "pass2Renewal": "Pago único. Sin renovación automática.",
+      "pass2Feat1": "Todas las funciones del Pase Explorador de 7 Días.",
+      "pass2Feat2": "Válido por un viaje de 30 días.",
+      "pass2Action": "Descargar y Desbloquear 30 Días"
+    },
+    "Conversion": {
+      "title": "Mejora tu viaje por carretera hoy.",
+      "downloadApp": "Descargar en la App Store",
+      "downloadPlay": "Disponible en Google Play"
+    }
+  },
   "Metadata": {
     "rootTitle": "Tuggi",
     "rootDescription": "Soluciones Empresariales Tuggi",

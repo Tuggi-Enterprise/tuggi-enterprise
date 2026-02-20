@@ -147,6 +147,68 @@
       "desc": "Strict Role-Based Access Control (RBAC). The municipality or fleet has an immutable record of every action inside the City OS."
     }
   },
+  "Drive": {
+    "Hero": {
+      "title": "The Audio Guide That Drives With You.",
+      "subtitle": "No scrolling. No searching. Just set your language and let your GPS trigger contextual stories as you drive. Keep your map on the screen, control your Spotify, or just put your phone away. TUGGI runs seamlessly in the background.",
+      "downloadApp": "Download on the App Store",
+      "downloadPlay": "Get it on Google Play"
+    },
+    "Behavior": {
+      "title": "Set It and Forget It",
+      "step1Title": "1. Choose Your Language",
+      "step1Desc": "Select from 8+ native languages for high-fidelity storytelling.",
+      "step2Title": "2. Free Your Screen",
+      "step2Desc": "Use your favorite navigation app, control your playlist, or keep the screen on for passengers to read the Closed Captions. TUGGI works its magic in the background without interrupting your flow.",
+      "step3Title": "3. Drive Normally",
+      "step3Desc": "Stories trigger automatically as you cross geofences."
+    },
+    "Features": {
+      "title": "The Traveler's Survival Kit",
+      "feat1Title": "100% Offline Mode",
+      "feat1Desc": "Download the city pack at your hotel. Zero data roaming charges on the road.",
+      "feat2Title": "Fines & Hazard Alerts",
+      "feat2Desc": "Audio warnings before you enter restricted traffic zones or dangerous areas, saving you hundreds in fines.",
+      "feat3Title": "Multilingual Audio",
+      "feat3Desc": "High-fidelity storytelling in 8+ native languages.",
+      "feat4Title": "Passenger Accessibility",
+      "feat4Desc": "Closed Captions and text-reading options synchronized with the audio, ensuring hearing-impaired passengers never miss a story."
+    },
+    "Pricing": {
+      "title": "The Travel Passes",
+      "subtitle": "Choose the perfect plan for your journey.",
+      "mostPopular": "Most Popular",
+      "freeTitle": "Test Drive",
+      "freePrice": "Free",
+      "freeDesc": "Try TUGGI before your trip.",
+      "freeFeat1": "No credit card required.",
+      "freeFeat2": "Fine & Hazard Alerts (Safety first).",
+      "freeLim1": "Requires Internet (No offline mode).",
+      "freeLim2": "Limited daily audio stories.",
+      "freeAction": "Download App to Try",
+      "pass1Title": "7-Day Explorer Pass",
+      "pass1Desc": "Ideal for weekend rentals and short getaways.",
+      "pass1Price": "$14.99",
+      "pass1Renewal": "Single Payment. No auto-renewal.",
+      "pass1Feat1": "100% Offline Maps & Audio.",
+      "pass1Feat2": "Unlimited Premium Audio Triggers.",
+      "pass1Feat3": "Fines & Hazard Alerts.",
+      "pass1Feat4": "Full Accessibility & Closed Captions.",
+      "pass1Action": "Download & Unlock 7 Days",
+      "pass2Title": "30-Day Nomad Pass",
+      "pass2Desc": "Ideal for cross-country road trips and extended holidays.",
+      "pass2Price": "$29.99",
+      "pass2Renewal": "Single Payment. No auto-renewal.",
+      "pass2Feat1": "All 7-Day Explorer features.",
+      "pass2Feat2": "Valid for a full 30-day journey.",
+      "pass2Action": "Download & Unlock 30 Days"
+    },
+    "Conversion": {
+      "title": "Upgrade your road trip today.",
+      "downloadApp": "Download on the App Store",
+      "downloadPlay": "Get it on Google Play"
+    }
+  },
   "Metadata": {
     "rootTitle": "Tuggi",
     "rootDescription": "Tuggi Enterprise Solutions",
