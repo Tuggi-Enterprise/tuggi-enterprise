@@ -356,6 +356,25 @@
       "s3Item3": "<strong>Seguridad Manos Libres:</strong> Nuestro compromiso número uno es con su seguridad física. El software está auditado para garantizar que no sea necesaria ninguna interacción visual mientras conduce, lo que permite centrarse por completo en la carretera.",
       "s4Title": "4. Infraestructura Global",
       "s4Desc": "Nuestros datos se alojan en centros de datos de clase mundial con cifrado AES-256 en reposo y TLS 1.3 en tránsito. Utilizamos Supabase para la gestión de identidades y Google Cloud para el procesamiento de audio, asegurando que TUGGI utilice los mismos estándares de seguridad que las empresas de tecnología más grandes del mundo."
+    },
+    "Accessibility": {
+      "title": "Declaración de Accesibilidad",
+      "subtitle": "Compromiso con la Inclusión y el Diseño Universal.",
+      "intro": "En TUGGI Technologies, creemos que el acceso a la cultura y la historia local no debe tener barreras. TUGGI fue concebido bajo la premisa \"Audio-First\", transformando la experiencia de descubrimiento en algo puramente sensorial y auditivo, lo que beneficia nativamente a usuarios con diferentes perfiles de accesibilidad.",
+      "s1Title": "1. Cumplimiento Técnico (WCAG 2.1)",
+      "s1Intro": "Estamos comprometidos a garantizar que nuestra plataforma digital y aplicación móvil sigan las Pautas de Accesibilidad para el Contenido Web (WCAG) 2.1, en el nivel AA.",
+      "s1Item1": "<strong>Diseño Visual:</strong> Utilizamos contrastes de colores adecuados y tipografía legible (Inter) para facilitar la lectura por parte de usuarios con baja visión.",
+      "s1Item2": "<strong>Navegación:</strong> Nuestra interfaz está estructurada para ser compatible con lectores de pantalla (como VoiceOver en iOS y TalkBack en Android).",
+      "s2Title": "2. Funciones de Inclusión en TUGGI Drive",
+      "s2Intro": "Nuestro producto está diseñado para ser accesible tanto para conductores como para pasajeros:",
+      "s2Item1": "<strong>Experiencia Audio-First:</strong> Eliminamos la necesidad de interacción visual o táctil con la pantalla durante el viaje. Las historias se activan automáticamente a través de la geolocalización, lo que permite a las personas con discapacidad visual y movilidad reducida disfrutar del contenido de forma autónoma.",
+      "s2Item2": "<strong>Closed Captions (Subtítulos):</strong> Para los pasajeros con discapacidad auditiva, TUGGI ofrece transcripción sincronizada en tiempo real. Mientras se reproduce el audio, el texto narrativo se muestra en la pantalla, asegurando que nadie pierda el contexto cultural de la ruta.",
+      "s2Item3": "<strong>Accesibilidad Lingüística:</strong> Ofrecemos soporte multilingüe en más de 8 idiomas, asegurando que la barrera del idioma no sea un impedimento para el conocimiento.",
+      "s3Title": "3. Canal de Feedback y Mejora Continua",
+      "s3Intro": "La accesibilidad es un proceso continuo. Reconocemos que siempre hay margen de mejora y estamos listos para escuchar a nuestros usuarios.",
+      "s3Item1": "<strong>Informar sobre una Barrera:</strong> Si encuentra alguna dificultad de acceso en nuestro sitio web o aplicación, comuníquese con nosotros a través de nuestra página de Contacto, seleccionando la opción \"Soporte / Accesibilidad\".",
+      "s3Item2": "<strong>Compromiso:</strong> Analizamos cada informe con prioridad técnica para garantizar que TUGGI siga siendo el copiloto cultural de todos, sin excepción.",
+      "contactEmail": "accessibility@tuggi.app"
     }
   },
   "Purpose": {
