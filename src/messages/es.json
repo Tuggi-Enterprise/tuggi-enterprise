@@ -336,6 +336,26 @@
         "submit": "Solicitar Eliminación de Datos",
         "success": "Enlace Enviado"
       }
+    },
+    "Security": {
+      "title": "Gobernanza, Seguridad y Disponibilidad",
+      "subtitle": "Compromiso de Confianza para Ciudadanos, Gobiernos y Empresas.",
+      "intro": "La arquitectura de TUGGI fue diseñada para garantizar que la narrativa cultural se entregue con precisión, seguridad y soberanía. Operamos un modelo de gobernanza híbrida que protege la integridad de la información a escala global y local.",
+      "s1Title": "1. Soberanía de Datos y Gestión de Zonas (Para B2G y B2B)",
+      "s1Intro": "TUGGI opera bajo un modelo de \"Soberanía Delegada\". Esto garantiza que el control de la narrativa esté siempre en las manos correctas:",
+      "s1Item1": "<strong>Zonas Gubernamentales (City OS):</strong> Cuando un municipio adquiere City OS, asume la \"Custodia de la Narrativa\" sobre su territorio. El ayuntamiento tiene control total y exclusivo para crear, editar y aprobar POIs y activadores dentro de su jurisdicción, garantizando la fidelidad histórica e institucional.",
+      "s1Item2": "<strong>Zonas Corporativas (Enterprise/Flotas):</strong> Para empresas de alquiler de vehículos y flotas, garantizamos que la información de soporte y las rutas exclusivas sean visibles solo para sus usuarios, manteniendo un aislamiento total de los datos y las configuraciones comerciales.",
+      "s1Item3": "<strong>Curación Global TUGGI:</strong> En áreas donde no hay gestión local activa, TUGGI mantiene su curación predeterminada a través de CMS, utilizando fuentes verificadas e inteligencia artificial para garantizar que el turista nunca se quede en silencio.",
+      "s2Title": "2. Registros de Auditoría e Integridad (Seguridad Institucional)",
+      "s2Item1": "<strong>Custodia de la Información:</strong> TUGGI actúa como el custodio técnico de la plataforma. Cada cambio en un activador de audio, ya sea realizado por TUGGI o por un socio gubernamental, se registra en logs de auditoría inmutables (RBAC), lo que permite rastrear quién, cuándo y dónde se alteró una narrativa.",
+      "s2Item2": "<strong>Consistencia de los Datos:</strong> Garantizamos que ninguna información de terceros interfiera en las zonas oficiales contratadas por ciudades o empresas.",
+      "s3Title": "3. Fiabilidad y Rendimiento (Para el Usuario B2C)",
+      "s3Intro": "Para el viajero en la carretera, nuestra promesa de SLA se traduce en continuidad y seguridad:",
+      "s3Item1": "<strong>Disponibilidad Offline-First:</strong> Diseñamos TUGGI para que no dependa de la nube en el momento de la activación. Una vez que se descarga el paquete de viaje, la activación del audio es local e inmediata, inmune a fallos de conexión en áreas remotas.",
+      "s3Item2": "<strong>Resiliencia de la Infraestructura:</strong> Mantenemos un SLA de disponibilidad del 99,9% en nuestros servicios de autenticación y sincronización, lo que garantiza que su pase de viaje esté siempre activo cuando lo necesite.",
+      "s3Item3": "<strong>Seguridad Manos Libres:</strong> Nuestro compromiso número uno es con su seguridad física. El software está auditado para garantizar que no sea necesaria ninguna interacción visual mientras conduce, lo que permite centrarse por completo en la carretera.",
+      "s4Title": "4. Infraestructura Global",
+      "s4Desc": "Nuestros datos se alojan en centros de datos de clase mundial con cifrado AES-256 en reposo y TLS 1.3 en tránsito. Utilizamos Supabase para la gestión de identidades y Google Cloud para el procesamiento de audio, asegurando que TUGGI utilice los mismos estándares de seguridad que las empresas de tecnología más grandes del mundo."
     }
   },
   "Purpose": {

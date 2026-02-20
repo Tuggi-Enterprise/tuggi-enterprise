@@ -336,6 +336,26 @@
         "submit": "Request Data Deletion",
         "success": "Magic Link Sent"
       }
+    },
+    "Security": {
+      "title": "Governance, Security, and Availability",
+      "subtitle": "A Commitment of Trust for Citizens, Governments, and Enterprises.",
+      "intro": "TUGGI's architecture was designed to ensure that cultural narratives are delivered with precision, security, and sovereignty. We operate a hybrid governance model that protects information integrity on a global and local scale.",
+      "s1Title": "1. Data Sovereignty and Zone Management (For B2G and B2B)",
+      "s1Intro": "TUGGI operates under a \"Delegated Sovereignty\" model. This ensures that narrative control is always in the right hands:",
+      "s1Item1": "<strong>Government Zones (City OS):</strong> When a municipality acquires City OS, it assumes the \"Custody of the Narrative\" over its territory. The city hall has full and exclusive control to create, edit, and approve POIs and triggers within its jurisdiction, ensuring historical and institutional fidelity.",
+      "s1Item2": "<strong>Corporate Zones (Enterprise/Fleets):</strong> For car rental companies and fleets, we ensure that support information and exclusive routes are visible only to their users, maintaining total isolation of data and business configurations.",
+      "s1Item3": "<strong>Global TUGGI Curation:</strong> In areas where there is no active local management, TUGGI maintains its standard curation via CMS, using verified sources and artificial intelligence to ensure the tourist is never left in silence.",
+      "s2Title": "2. Audit Logs and Integrity (Institutional Security)",
+      "s2Item1": "<strong>Information Custody:</strong> TUGGI acts as the technical custodian of the platform. Every change to an audio trigger, whether made by TUGGI or a government partner, is recorded in immutable audit logs (RBAC), making it possible to track who, when, and where a narrative was altered.",
+      "s2Item2": "<strong>Data Consistency:</strong> We guarantee that no third-party information interferes with the official zones contracted by cities or companies.",
+      "s3Title": "3. Reliability and Performance (For the B2C User)",
+      "s3Intro": "For the traveler on the road, our SLA promise translates into continuity and safety:",
+      "s3Item1": "<strong>Offline-First Availability:</strong> We designed TUGGI not to rely on the cloud at the moment of triggering. Once the travel package is downloaded, audio activation is local and immediate, immune to connection failures in remote areas.",
+      "s3Item2": "<strong>Infrastructure Resilience:</strong> We maintain a 99.9% uptime SLA on our authentication and synchronization services, ensuring your travel pass is always active when you need it.",
+      "s3Item3": "<strong>Hands-Free Safety:</strong> Our number one commitment is to your physical safety. The software is audited to ensure that no visual interaction is required while driving, allowing total focus on the road.",
+      "s4Title": "4. Global Infrastructure",
+      "s4Desc": "Our data is hosted in world-class data centers with AES-256 encryption at rest and TLS 1.3 in transit. We use Supabase for identity management and Google Cloud for audio processing, ensuring TUGGI follows the same security standards as the world's largest technology companies."
     }
   },
   "Purpose": {
