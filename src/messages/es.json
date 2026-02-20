@@ -117,6 +117,36 @@
       "cacDeployment": "Distribución de Bajo CAC"
     }
   },
+  "Technology": {
+    "Hero": {
+      "title": "Infraestructura de Audio Espacial Enterprise-Grade.",
+      "subtitle": "Construida para escala, resiliencia y seguridad absoluta. Descubre la arquitectura que impulsa el primer motor de enrutamiento contextual 100% manos libres del mundo."
+    },
+    "Engine": {
+      "title": "Geofencing de Precisión y Filtrado de Vectores.",
+      "desc": "El GPS estándar crea falsos positivos. TUGGI utiliza lógica direccional de rumbo para garantizar que las narrativas se activen SOLO cuando el vehículo está físicamente frente al PDI.",
+      "inputLabel": "Telemetría Bruta de Sensores",
+      "outputLabel": "Payload de Audio Contextual"
+    },
+    "Offline": {
+      "title": "Dependencia Cero de Conectividad.",
+      "desc": "Los departamentos de TI temen las zonas muertas. TUGGI utiliza un almacenamiento en caché agresivo offline-first. Todo el paquete narrativo de una ciudad se descarga localmente en el dispositivo (vía Wi-Fi en el hotel o mostrador de alquiler), garantizando cero fallos de reproducción en carreteras remotas."
+    },
+    "API": {
+      "title": "Integración Perfecta con ERP y Reservas.",
+      "desc": "Diseñado para TI de Alquiler de Coches. TUGGI es API-first. Aprovisiona licencias instantáneamente y sincroniza el acceso de los usuarios en el momento en que un cliente paga su reserva de vehículo online."
+    },
+    "Data": {
+      "col1Title": "Telemetría 100% Anonimizada.",
+      "col1Desc": "Estricto cumplimiento de las leyes de protección de datos europeas (RGPD) y sudamericanas (LGPD). Rastreamos flujos, no individuos.",
+      "col2Title": "Serverless y Listo para Mega Eventos.",
+      "col2Desc": "Respaldado por CDNs globales y una arquitectura edge-computing que garantiza un SLA de tiempo de actividad del 99.9%, listo para manejar picos masivos de tráfico durante eventos como la Copa del Mundo o los Juegos Olímpicos sin costos de infraestructura gubernamental."
+    },
+    "Governance": {
+      "title": "Gobernanza de Grado Militar y Registros de Auditoría.",
+      "desc": "Estricto Control de Acceso Basado en Roles (RBAC). El municipio o la flota tiene un registro inmutable de cada acción dentro de City OS."
+    }
+  },
   "Metadata": {
     "rootTitle": "Tuggi",
     "rootDescription": "Soluciones Empresariales Tuggi",

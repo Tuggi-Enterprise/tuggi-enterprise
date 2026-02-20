@@ -117,6 +117,36 @@
       "cacDeployment": "Low-CAC Distribution"
     }
   },
+  "Technology": {
+    "Hero": {
+      "title": "Enterprise-Grade Spatial Audio Infrastructure.",
+      "subtitle": "Built for scale, resilience, and absolute security. Discover the architecture powering the world's first 100% hands-free contextual routing engine."
+    },
+    "Engine": {
+      "title": "Precision Geofencing & Vector Filtering.",
+      "desc": "Standard GPS creates false positives. TUGGI uses directional bearing-logic to ensure narratives trigger ONLY when the vehicle is physically facing the POI.",
+      "inputLabel": "Raw Sensor Telemetry",
+      "outputLabel": "Contextual Audio Payload"
+    },
+    "Offline": {
+      "title": "Zero Connectivity Reliance.",
+      "desc": "IT departments fear dead zones. TUGGI utilizes aggressive offline-first caching. The entire narrative package of a city is pre-fetched locally on the device (via Wi-Fi at the hotel or rental desk), guaranteeing zero playback failures on remote highways."
+    },
+    "API": {
+      "title": "Seamless ERP & Booking Integration.",
+      "desc": "Designed for Car Rental IT. TUGGI is API-first. Instantly provision licenses and sync user access the moment a customer pays for their vehicle reservation online."
+    },
+    "Data": {
+      "col1Title": "100% Anonymized Telemetry.",
+      "col1Desc": "Strict adherence to European (GDPR) and South American (LGPD) data protection laws. We track flow, not individuals.",
+      "col2Title": "Serverless & Mega-Event Ready.",
+      "col2Desc": "Backed by global CDNs and an edge-computing architecture ensuring a 99.9% uptime SLA, ready to handle massive traffic spikes during events like the World Cup or Olympics without government infrastructure costs."
+    },
+    "Governance": {
+      "title": "Military-Grade Governance & Audit Trails.",
+      "desc": "Strict Role-Based Access Control (RBAC). The municipality or fleet has an immutable record of every action inside the City OS."
+    }
+  },
   "Metadata": {
     "rootTitle": "Tuggi",
     "rootDescription": "Tuggi Enterprise Solutions",

@@ -1,4 +1,10 @@
 import { getTranslations } from "next-intl/server";
+import { TechHero } from "@/components/blocks/TechHero";
+import { TechEngine } from "@/components/blocks/TechEngine";
+import { TechOffline } from "@/components/blocks/TechOffline";
+import { TechAPI } from "@/components/blocks/TechAPI";
+import { TechData } from "@/components/blocks/TechData";
+import { TechGovernance } from "@/components/blocks/TechGovernance";
 
 export async function generateMetadata({
   params,
@@ -15,13 +21,13 @@ export async function generateMetadata({
 
 export default async function TechnologyPage() {
   return (
-    <main className="py-20 lg:py-24 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-      <section className="mb-16">
-        <h1 className="text-4xl md:text-5xl font-bold mb-8 text-[#0B1220] tracking-tight">Technology</h1>
-        <p className="text-lg text-[#5B6472] max-w-prose leading-relaxed">
-          Built with robust Swift Architecture, Advanced Client-side Caching, and Geofenced Triggers to ensure offline-capability and 100% hands-free operations.
-        </p>
-      </section>
-    </main>
+    <article className="min-h-screen">
+      <TechHero />
+      <TechEngine />
+      <TechOffline />
+      <TechAPI />
+      <TechData />
+      <TechGovernance />
+    </article>
   );
 }
