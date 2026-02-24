@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { Metadata } from "next";
 import { ShieldCheck, Zap, Crosshair, Diamond, Globe, Accessibility } from "lucide-react";
+import { FreedomAnimation, SovereigntyAnimation } from "@/components/blocks/PurposeAnimations";
 
 export async function generateMetadata({
   params,
@@ -92,27 +93,14 @@ export default async function PurposePage() {
               {t("Freedom.body")}
             </p>
           </div>
-          <div className="hidden lg:flex justify-end">
-             {/* Abstract Visual / Minimalist Space */}
-             <div className="w-80 h-80 border border-slate-200 rounded-full flex items-center justify-center p-12">
-                <div className="w-full h-full border border-slate-300 rounded-full flex items-center justify-center animate-pulse">
-                   <div className="w-4 h-4 bg-tuggi-primary rounded-full" />
-                </div>
-             </div>
-          </div>
+          <FreedomAnimation />
         </div>
       </section>
 
       {/* 3. THE SOVEREIGNTY OF THE NARRATIVE */}
       <section className="py-24 md:py-32 px-4 bg-white">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-          <div className="hidden lg:block order-2 lg:order-1">
-             <div className="aspect-square bg-tuggi-bg rounded-3xl flex items-center justify-center">
-                <div className="w-1/2 h-1px bg-slate-300 absolute" />
-                <div className="h-1/2 w-1px bg-slate-300 absolute" />
-                <div className="w-32 h-32 border-2 border-tuggi-dark/10 rounded-full animate-ping" />
-             </div>
-          </div>
+          <SovereigntyAnimation />
           <div className="max-w-xl order-1 lg:order-2">
             <h2 className="text-4xl md:text-6xl font-bold tracking-tight mb-8">
               {t("Sovereignty.title")}
