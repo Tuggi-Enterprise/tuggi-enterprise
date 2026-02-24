@@ -47,6 +47,11 @@ export default async function AccessibilityPage({ params }: { params: Promise<{ 
       </section>
 
       <section>
+        <h2>{t("s4Title")}</h2>
+        <p>{t("s4Desc")}</p>
+      </section>
+
+      <section>
         <h2>{t("s3Title")}</h2>
         <p>{t("s3Intro")}</p>
         <ul>
