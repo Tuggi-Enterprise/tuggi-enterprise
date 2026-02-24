@@ -31,7 +31,10 @@ export function DriveConversion() {
         </h2>
         
         <div className="flex flex-col sm:flex-row justify-center items-center gap-6 sm:gap-8">
-          <button 
+          <a 
+            href="https://apps.apple.com/app/tuggi-drive/id6744379818"
+            target="_blank"
+            rel="noopener noreferrer"
             onClick={() => sendGAEvent({ event: 'click_download', value: 'app_store' })}
             className="hover:opacity-90 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-white rounded-xl"
           >
@@ -42,9 +45,12 @@ export function DriveConversion() {
               height={48}
               className="h-12 w-auto"
             />
-          </button>
+          </a>
           
-          <button 
+          <a 
+            href="https://play.google.com/store/apps/details?id=com.tuggidrive.app"
+            target="_blank"
+            rel="noopener noreferrer"
             onClick={() => sendGAEvent({ event: 'click_download', value: 'google_play' })}
             className="hover:opacity-90 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-white rounded-xl"
           >
@@ -55,7 +61,7 @@ export function DriveConversion() {
               height={48}
               className="h-12 w-auto"
             />
-          </button>
+          </a>
         </div>
 
       </div>

@@ -1,77 +1,125 @@
+"use client";
+
 import { useTranslations } from "next-intl";
-import { Play, Star } from "lucide-react";
+import { useState, useRef } from "react";
+import { Play, Pause, Volume2, Navigation } from "lucide-react";
+
+interface AudioCardProps {
+  title: string;
+  location: string;
+  dirSrc: string;
+  descSrc: string;
+}
+
+function AudioCard({ title, location, dirSrc, descSrc }: AudioCardProps) {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [activePart, setActivePart] = useState<1 | 2>(1); // 1 = Directional, 2 = Descriptive
+  const dirAudioRef = useRef<HTMLAudioElement>(null);
+  const descAudioRef = useRef<HTMLAudioElement>(null);
+
+  const handlePlayPause = () => {
+    if (isPlaying) {
+      if (activePart === 1) dirAudioRef.current?.pause();
+      else descAudioRef.current?.pause();
+      setIsPlaying(false);
+    } else {
+      if (activePart === 1) dirAudioRef.current?.play();
+      else descAudioRef.current?.play();
+      setIsPlaying(true);
+    }
+  };
+
+  const handleDirEnded = () => {
+    setActivePart(2);
+    descAudioRef.current?.play();
+  };
+
+  const handleDescEnded = () => {
+    setIsPlaying(false);
+    setActivePart(1); // Reset back to start
+  };
+
+  return (
+    <div className="bg-[#121a28] border border-slate-800 p-6 rounded-2xl flex flex-col gap-6 hover:border-tuggi-primary/50 transition-colors shadow-lg">
+      <div className="flex items-start justify-between">
+        <div>
+          <h4 className="text-lg font-bold text-white mb-1">{title}</h4>
+          <p className="text-sm text-slate-400 flex items-center gap-1">
+            {location}
+          </p>
+        </div>
+        <button 
+          onClick={handlePlayPause}
+          className="w-12 h-12 rounded-full bg-tuggi-primary text-white flex items-center justify-center hover:bg-blue-500 transition-colors flex-shrink-0 shadow-[0_0_15px_rgba(0,168,232,0.3)] focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-tuggi-dark"
+          aria-label={isPlaying ? "Pause" : "Play"}
+        >
+          {isPlaying ? <Pause className="w-5 h-5" aria-hidden="true" /> : <Play className="w-5 h-5 ml-1" aria-hidden="true" />}
+        </button>
+      </div>
+
+      {/* Visual Indicator of what is playing */}
+      <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-wider">
+        <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-colors ${activePart === 1 ? 'bg-tuggi-primary/20 text-tuggi-primary' : 'bg-slate-800 text-slate-500'}`}>
+          <Navigation className="w-3 h-3" aria-hidden="true" />
+          <span>Direcional</span>
+        </div>
+        <div className="w-4 h-px bg-slate-700" aria-hidden="true"></div>
+        <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-colors ${activePart === 2 ? 'bg-tuggi-secondary/20 text-tuggi-secondary' : 'bg-slate-800 text-slate-500'}`}>
+          <Volume2 className="w-3 h-3" aria-hidden="true" />
+          <span>História</span>
+        </div>
+      </div>
+
+      {/* Audio Elements (Hidden) */}
+      <audio ref={dirAudioRef} src={dirSrc} onEnded={handleDirEnded} />
+      <audio ref={descAudioRef} src={descSrc} onEnded={handleDescEnded} />
+    </div>
+  );
+}
 
 export function DriveSamples() {
   const t = useTranslations("Drive.Samples");
 
-  const samples = [
-    { title: t("sample1Title"), location: t("sample1Loc") },
-    { title: t("sample2Title"), location: t("sample2Loc") },
-    { title: t("sample3Title"), location: t("sample3Loc") },
-  ];
-
   return (
-    <section className="w-full py-24 bg-tuggi-dark text-white px-4 sm:px-6 lg:px-8 border-b border-gray-800">
-      <div className="max-w-7xl mx-auto flex flex-col items-center">
+    <section className="py-24 bg-tuggi-dark text-white border-b border-slate-800">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Header */}
-        <div className="text-center max-w-3xl mb-16 space-y-4">
-          <span className="inline-block px-4 py-1.5 bg-tuggi-primary/20 text-tuggi-primary rounded-full text-sm font-bold uppercase tracking-widest border border-tuggi-primary/30">
+        <div className="text-center mb-16 max-w-3xl mx-auto">
+          <span className="text-tuggi-primary font-bold text-sm tracking-widest uppercase mb-4 block">
             {t("tag")}
           </span>
-          <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-6">
             {t("title")}
           </h2>
-          <p className="text-xl text-gray-400 leading-relaxed">
+          <p className="text-lg text-slate-400 leading-relaxed">
             {t("subtitle")}
           </p>
         </div>
 
-        {/* Players Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full mb-16">
-          {samples.map((sample, index) => (
-            <article key={index} className="bg-[#161F32] p-8 rounded-xl border border-gray-800 flex flex-col gap-6 group hover:border-tuggi-primary transition-all duration-300">
-              <div className="flex items-center gap-6">
-                <button 
-                  className="w-14 h-14 bg-tuggi-primary rounded-full flex items-center justify-center shrink-0 shadow-lg shadow-tuggi-primary/20 hover:scale-105 transition-transform active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-tuggi-dark"
-                  aria-label={`${t("tag")}: ${sample.title}`}
-                >
-                  <Play className="w-6 h-6 text-white ml-1 fill-white" aria-hidden="true" />
-                </button>
-                <div className="flex flex-col gap-1">
-                  <h3 className="font-bold text-lg leading-tight group-hover:text-tuggi-primary transition-colors">
-                    {sample.title}
-                  </h3>
-                  <span className="text-sm text-gray-500 font-medium">
-                    {sample.location}
-                  </span>
-                </div>
-              </div>
-
-              {/* Waveform Mockup */}
-              <div className="flex items-end gap-[3px] h-10 w-full px-2">
-                {[...Array(24)].map((_, i) => {
-                   const heights = [40, 20, 60, 30, 80, 45, 70, 25, 50, 90, 40, 65, 30, 85, 50, 75, 20, 45, 60, 35, 70, 40, 55, 30];
-                   return (
-                     <div 
-                       key={i} 
-                       className={`flex-1 bg-tuggi-primary/30 rounded-t-full group-hover:bg-tuggi-primary/50 transition-colors duration-500`}
-                       style={{ height: `${heights[i % heights.length]}%` }}
-                     ></div>
-                   )
-                })}
-              </div>
-            </article>
-          ))}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          <AudioCard 
+            title={t("sample1Title")}
+            location={t("sample1Loc")}
+            dirSrc="/audio/sample1-dir.mp3"
+            descSrc="/audio/sample1-desc.mp3"
+          />
+          <AudioCard 
+            title={t("sample2Title")}
+            location={t("sample2Loc")}
+            dirSrc="/audio/sample2-dir.mp3"
+            descSrc="/audio/sample2-desc.mp3"
+          />
+          <AudioCard 
+            title={t("sample3Title")}
+            location={t("sample3Loc")}
+            dirSrc="/audio/sample3-dir.mp3"
+            descSrc="/audio/sample3-desc.mp3"
+          />
         </div>
 
-        {/* Social Proof Footer */}
-        <div className="flex items-center gap-2 text-tuggi-primary font-semibold tracking-wide bg-[#161F32] px-6 py-3 rounded-full border border-gray-800 shadow-xl">
-          <Star className="w-5 h-5 fill-tuggi-primary" aria-hidden="true" />
-          <span className="text-sm md:text-base">
-            {t("socialProof")}
-          </span>
-        </div>
+        <p className="text-center text-slate-500 text-sm font-medium">
+          {t("socialProof")}
+        </p>
 
       </div>
     </section>
