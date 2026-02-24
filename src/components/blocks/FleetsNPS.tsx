@@ -1,5 +1,8 @@
+"use client";
+
 import { useTranslations } from "next-intl";
 import { Star } from "lucide-react";
+import { motion } from "framer-motion";
 
 export function FleetsNPS() {
   const t = useTranslations("Fleets.NPS");
@@ -13,12 +16,33 @@ export function FleetsNPS() {
       
       <div className="max-w-4xl mx-auto space-y-8 relative z-10 flex flex-col items-center">
         
-        {/* Five Stars UI */}
-        <div className="flex space-x-2">
+        {/* Five Stars UI with Staggered Animation */}
+        <motion.div 
+          className="flex space-x-2"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={{
+            visible: {
+              transition: {
+                staggerChildren: 0.15,
+              },
+            },
+          }}
+        >
           {[1, 2, 3, 4, 5].map((star) => (
-            <Star key={star} className="w-8 h-8 text-yellow-400 fill-yellow-400 drop-shadow-[0_0_10px_rgba(250,204,21,0.5)]" />
+            <motion.div
+              key={star}
+              variants={{
+                hidden: { opacity: 0.3, scale: 0.8 },
+                visible: { opacity: 1, scale: 1 },
+              }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+            >
+              <Star className="w-8 h-8 text-yellow-400 fill-yellow-400 drop-shadow-[0_0_10px_rgba(250,204,21,0.5)]" />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-white leading-tight">
           {t("title")}

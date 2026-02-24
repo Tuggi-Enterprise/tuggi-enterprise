@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 type Stage = "map" | "panel-in" | "typing" | "uploading" | "deploying" | "live" | "waiting";
 
@@ -10,12 +11,14 @@ const CLICK_X = 52;
 const CLICK_Y = 58;
 // Deploy button position inside the CMS panel
 const DEPLOY_X = 78;
-const DEPLOY_Y = 82;
+const DEPLOY_Y = 95;
 
-const POI_NAME = "Monumento Central";
 const AUDIO_FILE = "audio_monumento.mp3";
 
 export function CityOSHeroAnimator() {
+  const t = useTranslations("CityOS.Animator");
+  const poiName = t("defaultPoiName");
+  
   const [stage, setStage] = useState<Stage>("map");
   const [typedText, setTypedText] = useState("");
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -52,8 +55,8 @@ export function CityOSHeroAnimator() {
         let i = 0;
         const type = () => {
           i++;
-          setTypedText(POI_NAME.slice(0, i));
-          if (i < POI_NAME.length) {
+          setTypedText(poiName.slice(0, i));
+          if (i < poiName.length) {
             const id = setTimeout(type, 85);
             timers.push(id);
           } else {
@@ -191,18 +194,18 @@ export function CityOSHeroAnimator() {
           </g>
         )}
 
-        {/* Green geo-trigger pin (live / waiting stages) */}
+        {/* Orange geo-trigger pin (live / waiting stages) */}
         {showPin && (
           <g transform={`translate(${(CLICK_X / 100) * 400}, ${(CLICK_Y / 100) * 280})`}>
-            <circle fill="none" stroke="#16a34a" strokeWidth="2" r="6">
+            <circle fill="none" stroke="#FF6F00" strokeWidth="2" r="6">
               <animate attributeName="r" values="6;24" dur="1.8s" repeatCount="indefinite" />
               <animate attributeName="opacity" values="0.7;0" dur="1.8s" repeatCount="indefinite" />
             </circle>
-            <circle fill="none" stroke="#16a34a" strokeWidth="1.5" r="6">
+            <circle fill="none" stroke="#FF6F00" strokeWidth="1.5" r="6">
               <animate attributeName="r" values="6;15" dur="1.8s" begin="0.6s" repeatCount="indefinite" />
               <animate attributeName="opacity" values="0.5;0" dur="1.8s" begin="0.6s" repeatCount="indefinite" />
             </circle>
-            <circle r="6" fill="#16a34a" />
+            <circle r="6" fill="#FF6F00" />
             <circle r="3" fill="white" />
           </g>
         )}
@@ -212,15 +215,15 @@ export function CityOSHeroAnimator() {
       <AnimatePresence>
         {showPin && (
           <motion.div
-            className="absolute top-3 left-3 z-20 flex items-center gap-1.5 bg-green-100 border border-green-300 px-2 py-1 rounded-sm shadow-sm"
+            className="absolute top-3 left-3 z-20 flex items-center gap-1.5 bg-orange-50 border border-orange-200 px-2 py-1 rounded-sm shadow-sm"
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-            <span className="text-green-700 text-[8px] font-mono font-bold tracking-widest uppercase">
-              GEO-TRIGGER ATIVO
+            <span className="w-1.5 h-1.5 rounded-full bg-[#FF6F00] animate-pulse" />
+            <span className="text-orange-700 text-[8px] font-mono font-bold tracking-widest uppercase">
+              {t("geoTriggerActive")}
             </span>
           </motion.div>
         )}
@@ -239,7 +242,7 @@ export function CityOSHeroAnimator() {
             {/* Panel header */}
             <div className="px-3 py-2 border-b border-gray-200 flex items-center justify-between flex-shrink-0 bg-gray-50">
               <span className="text-[8px] font-mono font-bold text-[#00A8E8] uppercase tracking-wider">
-                Novo POI
+                {t("newPoi")}
               </span>
               <div className="flex gap-1">
                 <div className="w-1.5 h-1.5 rounded-full bg-gray-300" />
@@ -253,7 +256,7 @@ export function CityOSHeroAnimator() {
               {/* Name field */}
               <div>
                 <label className="text-[7px] font-mono text-gray-400 uppercase tracking-wider block mb-1">
-                  Nome do POI
+                  {t("poiName")}
                 </label>
                 <div className="bg-white border border-gray-200 rounded-sm px-2 py-1.5 flex items-center min-h-[22px]">
                   <span className="text-[9px] font-mono text-gray-800">{typedText}</span>
@@ -266,7 +269,7 @@ export function CityOSHeroAnimator() {
               {/* Audio upload */}
               <div>
                 <label className="text-[7px] font-mono text-gray-400 uppercase tracking-wider block mb-1">
-                  Áudio
+                  {t("audio")}
                 </label>
                 <div className="bg-white border border-gray-200 rounded-sm px-2 py-1.5">
                   <div className="flex items-center justify-between mb-1">
@@ -287,7 +290,7 @@ export function CityOSHeroAnimator() {
               {/* Coordinates */}
               <div>
                 <label className="text-[7px] font-mono text-gray-400 uppercase tracking-wider block mb-1">
-                  Coordenadas
+                  {t("coordinates")}
                 </label>
                 <div className="bg-white border border-gray-200 rounded-sm px-2 py-1 flex items-center gap-2">
                   <span className="text-[7px] font-mono text-gray-600">38.7169°N</span>
@@ -299,7 +302,7 @@ export function CityOSHeroAnimator() {
               {/* Radius */}
               <div>
                 <label className="text-[7px] font-mono text-gray-400 uppercase tracking-wider block mb-1">
-                  Raio de Ativação
+                  {t("activationRadius")}
                 </label>
                 <div className="bg-white border border-gray-200 rounded-sm px-2 py-1">
                   <span className="text-[7px] font-mono text-gray-600">50m</span>
@@ -317,7 +320,7 @@ export function CityOSHeroAnimator() {
                 animate={isDeployClicking ? { scale: 0.96 } : { scale: 1 }}
                 transition={{ duration: 0.1 }}
               >
-                Publicar no Grid
+                {t("deployButton")}
               </motion.div>
             </div>
           </motion.div>

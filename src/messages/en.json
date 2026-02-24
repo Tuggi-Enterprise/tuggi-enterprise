@@ -64,6 +64,16 @@
       "subtitle": "Transform your city into a certified Smart Destination. TUGGI City OS aligns your territorial governance with global pillars of Technology, Sustainability, Accessibility, and Data.",
       "cta": "Request City OS Demo"
     },
+    "Animator": {
+      "geoTriggerActive": "GEO-TRIGGER ACTIVE",
+      "newPoi": "New POI",
+      "poiName": "POI Name",
+      "audio": "Audio",
+      "coordinates": "Coordinates",
+      "activationRadius": "Activation Radius",
+      "deployButton": "Deploy to Grid",
+      "defaultPoiName": "Main Monument"
+    },
     "Regulatory": {
       "title": "100% Street-Legal & Risk-Free.",
       "desc": "Endorsing screen-based tourism apps exposes the municipality to traffic violation liabilities. TUGGI's native 100% hands-free architecture guarantees legal compliance, protecting the Mayor's management and the citizens."

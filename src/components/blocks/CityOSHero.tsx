@@ -43,7 +43,7 @@ export function CityOSHero() {
               <div className="ml-4 text-[10px] font-mono text-gray-500 tracking-widest">Tuggi - CITY OS</div>
             </div>
             {/* Interface Body — CMS Animation */}
-            <div className="relative overflow-hidden h-64">
+            <div className="relative overflow-hidden h-[520px]">
               <CityOSHeroAnimator />
             </div>
           </div>

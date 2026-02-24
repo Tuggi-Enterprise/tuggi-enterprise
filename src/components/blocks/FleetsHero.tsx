@@ -1,6 +1,25 @@
+"use client";
+
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { LineChart, Smartphone, CarFront } from "lucide-react";
+import { motion, useMotionValue, useTransform, animate } from "framer-motion";
+import { useEffect, useRef } from "react";
+
+function Counter({ value, prefix = "", suffix = "", duration = 2 }: { value: number; prefix?: string; suffix?: string; duration?: number }) {
+  const count = useMotionValue(0);
+  const rounded = useTransform(count, (latest) => {
+    const formatted = Math.round(latest).toLocaleString();
+    return `${prefix}${formatted}${suffix}`;
+  });
+
+  useEffect(() => {
+    const controls = animate(count, value, { duration, ease: "easeOut" });
+    return controls.stop;
+  }, [count, value, duration]);
+
+  return <motion.span>{rounded}</motion.span>;
+}
 
 export function FleetsHero() {
   const t = useTranslations("Fleets.Hero");
@@ -50,10 +69,23 @@ export function FleetsHero() {
                  <div className="space-y-1">
                    <p className="text-gray-400 text-sm font-semibold uppercase tracking-wider">Total Ancillary Revenue</p>
                    <h3 className="text-3xl text-white font-bold flex items-center gap-2">
-                     $142,500 <span className="text-sm font-medium text-green-400 bg-green-400/10 px-2 py-1 rounded">+24% RevPA</span>
+                     <Counter value={142500} prefix="$" />
+                     <motion.span 
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 1.8, duration: 0.5 }}
+                        className="text-sm font-medium text-green-400 bg-green-400/10 px-2 py-1 rounded"
+                     >
+                        +24% RevPA
+                     </motion.span>
                    </h3>
                  </div>
-                 <LineChart className="w-8 h-8 text-tuggi-primary" />
+                 <motion.div
+                  animate={{ y: [0, -4, 0] }}
+                  transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+                 >
+                   <LineChart className="w-8 h-8 text-tuggi-primary" />
+                 </motion.div>
                </div>
 
                <div className="grid grid-cols-2 gap-4">
@@ -62,14 +94,18 @@ export function FleetsHero() {
                      <CarFront className="w-4 h-4 text-gray-400" />
                      <span className="text-xs text-gray-400 font-semibold uppercase">Active Fleets</span>
                    </div>
-                   <p className="text-xl text-white font-bold">4,205</p>
+                   <p className="text-xl text-white font-bold">
+                     <Counter value={4205} />
+                   </p>
                  </div>
                  <div className="bg-white/5 border border-white/10 p-4 rounded-md">
                    <div className="flex items-center gap-2 mb-2">
                      <Smartphone className="w-4 h-4 text-tuggi-primary" />
                      <span className="text-xs text-tuggi-primary font-semibold uppercase">Premium Upgrades</span>
                    </div>
-                   <p className="text-xl text-white font-bold">12,400</p>
+                   <p className="text-xl text-white font-bold">
+                     <Counter value={12400} />
+                   </p>
                  </div>
                </div>
             </div>

@@ -64,6 +64,16 @@
       "subtitle": "Transforme a sua cidade num Destino Inteligente certificado. O TUGGI City OS alinha a sua governança territorial com os pilares globais de Tecnologia, Sustentabilidade, Acessibilidade e Dados.",
       "cta": "Solicitar Demonstração do City OS"
     },
+    "Animator": {
+      "geoTriggerActive": "GEO-TRIGGER ATIVO",
+      "newPoi": "Novo POI",
+      "poiName": "Nome do POI",
+      "audio": "Áudio",
+      "coordinates": "Coordenadas",
+      "activationRadius": "Raio de Ativação",
+      "deployButton": "Publicar no Grid",
+      "defaultPoiName": "Monumento Central"
+    },
     "Regulatory": {
       "title": "100% Legal e Sem Riscos.",
       "desc": "Endossar aplicações de turismo baseadas em ecrãs expõe o município a responsabilidades por infrações de trânsito. A arquitetura 100% hands-free nativa da TUGGI garante conformidade legal, protegendo a gestão do Presidente da Câmara e os cidadãos."
