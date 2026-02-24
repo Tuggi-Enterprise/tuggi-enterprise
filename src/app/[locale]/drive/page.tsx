@@ -16,6 +16,16 @@ export async function generateMetadata({
   return {
     title: t("driveTitle"),
     description: t("driveDescription"),
+    alternates: {
+      canonical: `/${locale}/drive`,
+      languages: {
+        "en": "/en/drive",
+        "es": "/es/drive",
+        "pt-br": "/pt-br/drive",
+        "pt-pt": "/pt-pt/drive",
+        "x-default": "/en/drive",
+      },
+    },
   };
 }
 

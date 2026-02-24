@@ -34,9 +34,22 @@ export async function generateMetadata({
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://tuggi.app";
   
   return {
-    title: t("rootTitle"),
+    title: {
+      template: "%s | TUGGI",
+      default: t("rootTitle"),
+    },
     description: t("rootDescription"),
     metadataBase: new URL(baseUrl),
+    alternates: {
+      canonical: `/${locale}`,
+      languages: {
+        "en": "/en",
+        "es": "/es",
+        "pt-br": "/pt-br",
+        "pt-pt": "/pt-pt",
+        "x-default": "/en",
+      },
+    },
     icons: {
       icon: [
         { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },

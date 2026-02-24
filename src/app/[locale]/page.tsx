@@ -21,12 +21,13 @@ export async function generateMetadata({
     description,
     metadataBase: new URL("https://tuggi.app"),
     alternates: {
-      canonical: url,
+      canonical: `/${locale}`,
       languages: {
         "en": "/en",
         "es": "/es",
-        "pt-BR": "/pt-br",
-        "pt-PT": "/pt-pt",
+        "pt-br": "/pt-br",
+        "pt-pt": "/pt-pt",
+        "x-default": "/en",
       },
     },
     robots: {
