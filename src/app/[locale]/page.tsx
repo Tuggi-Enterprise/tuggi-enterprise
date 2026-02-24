@@ -1,5 +1,8 @@
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Metadata } from "next";
+import { HeroSection } from "@/components/blocks/HeroSection";
+import { InteractiveSimulator } from "@/components/blocks/InteractiveSimulator";
+import { EnterpriseFork } from "@/components/blocks/EnterpriseFork";
 
 export async function generateMetadata({
   params,
@@ -11,7 +14,7 @@ export async function generateMetadata({
 
   const title = t("homeTitle");
   const description = t("homeDescription");
-  const url = `https://tuggi.app/${locale === "en" ? "" : locale}`; // Default root or specific locale
+  const url = `https://tuggi.app/${locale === "en" ? "" : locale}`;
 
   return {
     title,
@@ -54,11 +57,13 @@ export async function generateMetadata({
   };
 }
 
-import { HeroSection } from "@/components/blocks/HeroSection";
-import { InteractiveSimulator } from "@/components/blocks/InteractiveSimulator";
-import { EnterpriseFork } from "@/components/blocks/EnterpriseFork";
-
-export default async function HomePage() {
+export default async function HomePage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
 
   return (
     <>

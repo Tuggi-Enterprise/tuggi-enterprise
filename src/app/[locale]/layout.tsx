@@ -8,6 +8,7 @@ import { Inter } from "next/font/google";
 import { Viewport } from "next";
 import { GlobalHeader } from "@/components/global/GlobalHeader";
 import { FatFooter } from "@/components/global/FatFooter";
+import MicrosoftClarity from "@/components/global/MicrosoftClarity";
 import "@/app/globals.css";
 
 const inter = Inter({ subsets: ["latin"], display: "swap" });
@@ -28,9 +29,12 @@ export async function generateMetadata({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "Metadata" });
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://tuggi.app";
+  
   return {
     title: t("rootTitle"),
     description: t("rootDescription"),
+    metadataBase: new URL(baseUrl),
     icons: {
       icon: [
         { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
@@ -72,6 +76,7 @@ export default async function RootLayout({
           <FatFooter />
         </NextIntlClientProvider>
         <GoogleAnalytics gaId="G-LFFNJDG7TJ" />
+        <MicrosoftClarity id="vmjex394bg" />
       </body>
     </html>
   );

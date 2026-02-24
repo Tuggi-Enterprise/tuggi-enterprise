@@ -5,7 +5,7 @@ import { FleetsNPS } from "@/components/blocks/FleetsNPS";
 import { FleetsBrand } from "@/components/blocks/FleetsBrand";
 import { FleetsESG } from "@/components/blocks/FleetsESG";
 
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Metadata } from "next";
 
 export async function generateMetadata({
@@ -64,7 +64,14 @@ export async function generateMetadata({
   };
 }
 
-export default async function FleetsPage() {
+export default async function FleetsPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   return (
     <article className="min-h-screen">
       <FleetsHero />

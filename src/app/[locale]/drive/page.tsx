@@ -1,4 +1,4 @@
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { DriveHero } from "@/components/blocks/DriveHero";
 import { DriveBehavior } from "@/components/blocks/DriveBehavior";
 import { DriveSamples } from "@/components/blocks/DriveSamples";
@@ -19,7 +19,14 @@ export async function generateMetadata({
   };
 }
 
-export default async function DrivePage() {
+export default async function DrivePage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   return (
     <article className="min-h-screen">
       <DriveHero />

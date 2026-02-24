@@ -1,4 +1,4 @@
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Metadata } from "next";
 import { ShieldCheck, Zap, Crosshair, Diamond, Globe, Accessibility } from "lucide-react";
 import { FreedomAnimation, SovereigntyAnimation } from "@/components/blocks/PurposeAnimations";
@@ -59,7 +59,13 @@ export async function generateMetadata({
   };
 }
 
-export default async function PurposePage() {
+export default async function PurposePage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
   const t = await getTranslations("Purpose");
 
   return (

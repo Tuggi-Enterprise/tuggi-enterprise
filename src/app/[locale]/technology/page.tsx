@@ -1,4 +1,4 @@
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { TechHero } from "@/components/blocks/TechHero";
 import { TechEngine } from "@/components/blocks/TechEngine";
 import { TechOffline } from "@/components/blocks/TechOffline";
@@ -19,7 +19,14 @@ export async function generateMetadata({
   };
 }
 
-export default async function TechnologyPage() {
+export default async function TechnologyPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   return (
     <article className="min-h-screen">
       <TechHero />
