@@ -11,6 +11,7 @@ import { FatFooter } from "@/components/global/FatFooter";
 import MicrosoftClarity from "@/components/global/MicrosoftClarity";
 import GoogleAnalyticsWrapper from "@/components/global/GoogleAnalyticsWrapper";
 import { CookieBanner } from "@/components/global/CookieBanner";
+import { JsonLd } from "@/components/global/JsonLd";
 import "@/app/globals.css";
 
 const inter = Inter({ subsets: ["latin"], display: "swap" });
@@ -96,6 +97,7 @@ export default async function RootLayout({
           </main>
           <FatFooter />
           <CookieBanner />
+          <JsonLd locale={locale} />
         </NextIntlClientProvider>
         <GoogleAnalyticsWrapper gaId="G-LFFNJDG7TJ" />
         <MicrosoftClarity id="vmjex394bg" />
