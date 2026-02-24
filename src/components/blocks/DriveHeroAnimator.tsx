@@ -206,7 +206,7 @@ export function DriveHeroAnimator() {
               {/* Blue directional circle — matches app screenshot */}
               <div className="w-12 h-12 rounded-full bg-[#00A8E8] flex items-center justify-center flex-shrink-0 shadow-md">
                 <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-                  <path d="M 11,3 L 17,17 L 11,13.5 L 5,17 Z" fill="white" />
+                  <path d="M 19,11 L 5,17 L 8.5,11 L 5,5 Z" fill="white" />
                 </svg>
               </div>
 
