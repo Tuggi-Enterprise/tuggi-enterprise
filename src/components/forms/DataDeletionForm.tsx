@@ -33,18 +33,20 @@ export function DataDeletionForm() {
   return (
     <form className="flex flex-col sm:flex-row gap-4 relative" onSubmit={handleSubmit}>
       <input 
+        id="deletion-email"
         type="email" 
         placeholder={t("placeholder")}
+        aria-label={t("placeholder")}
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         disabled={status === "loading" || status === "success"}
-        className="flex-1 bg-white border border-slate-300 rounded-lg px-4 py-3 text-tuggi-dark focus:outline-none focus:ring-2 focus:ring-tuggi-primary/50 transition-all disabled:opacity-60 disabled:bg-slate-50"
+        className="flex-1 bg-white border border-slate-300 rounded-lg px-4 py-3 text-tuggi-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary/50 transition-all disabled:opacity-60 disabled:bg-slate-50"
         required
       />
       <button 
         type="submit"
         disabled={status === "loading" || status === "success"}
-        className="bg-tuggi-dark text-white font-bold px-6 py-3 rounded-lg hover:bg-slate-800 transition-colors shadow-md whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center min-w-[200px]"
+        className="bg-tuggi-dark text-white font-bold px-6 py-3 rounded-lg hover:bg-slate-800 transition-colors shadow-md whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center min-w-[200px] focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary/50"
       >
         {status === "loading" && <Loader2 className="w-5 h-5 animate-spin mr-2" />}
         {status === "success" ? t("success") : t("submit")}

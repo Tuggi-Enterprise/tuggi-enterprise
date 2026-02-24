@@ -24,7 +24,7 @@ export function DriveConversion() {
       </div>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-        <Compass className="w-16 h-16 text-white mx-auto mb-8 animate-pulse" />
+        <Compass className="w-16 h-16 text-white mx-auto mb-8 animate-pulse" aria-hidden="true" />
         
         <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight mb-12">
           {t("title")}
@@ -33,7 +33,7 @@ export function DriveConversion() {
         <div className="flex flex-col sm:flex-row justify-center items-center gap-6 sm:gap-8">
           <button 
             onClick={() => sendGAEvent({ event: 'click_download', value: 'app_store' })}
-            className="hover:opacity-90 transition-opacity"
+            className="hover:opacity-90 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-white rounded-xl"
           >
             <Image 
               src="/images/badges/app-store-badge.svg"
@@ -46,7 +46,7 @@ export function DriveConversion() {
           
           <button 
             onClick={() => sendGAEvent({ event: 'click_download', value: 'google_play' })}
-            className="hover:opacity-90 transition-opacity"
+            className="hover:opacity-90 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-white rounded-xl"
           >
             <Image 
               src="/images/badges/google-play-badge.svg"

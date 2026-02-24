@@ -25,7 +25,7 @@ export function DriveHero() {
             <div className="flex flex-col sm:flex-row gap-4 items-start">
               <button 
                 onClick={() => sendGAEvent({ event: 'click_download', value: 'app_store' })}
-                className="hover:opacity-80 transition-opacity"
+                className="hover:opacity-80 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-xl"
               >
                 <Image 
                   src="/images/badges/app-store-badge.svg"
@@ -38,7 +38,7 @@ export function DriveHero() {
               
               <button 
                 onClick={() => sendGAEvent({ event: 'click_download', value: 'google_play' })}
-                className="hover:opacity-80 transition-opacity"
+                className="hover:opacity-80 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-xl"
               >
                 <Image 
                   src="/images/badges/google-play-badge.svg"

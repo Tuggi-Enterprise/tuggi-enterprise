@@ -20,7 +20,7 @@ export function EnterpriseFork() {
             className="group flex flex-col p-10 bg-white border border-gray-200 rounded-md shadow-sm hover:border-tuggi-primary hover:shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-tuggi-primary focus:ring-offset-2"
           >
             <div className="w-16 h-16 bg-tuggi-bg text-tuggi-primary flex items-center justify-center rounded-sm mb-8 group-hover:bg-tuggi-primary group-hover:text-white transition-colors duration-300">
-              <Compass className="w-8 h-8" />
+              <Compass className="w-8 h-8" aria-hidden="true" />
             </div>
             <h3 className="text-3xl font-bold tracking-tight text-tuggi-dark mb-4">
               {t("b2cTitle")}
@@ -28,9 +28,9 @@ export function EnterpriseFork() {
             <p className="text-lg text-tuggi-slate leading-relaxed mb-8 flex-1">
               {t("b2cDesc")}
             </p>
-            <div className="mt-auto flex items-center space-x-2 text-tuggi-primary font-semibold">
+            <div className="mt-auto flex items-center space-x-2 text-tuggi-primary-text font-semibold">
               <span>{t("b2cLinkLabel")}</span>
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
             </div>
           </Link>
 
@@ -41,7 +41,7 @@ export function EnterpriseFork() {
             className="group flex flex-col p-10 bg-white border border-gray-200 rounded-md shadow-sm hover:border-tuggi-primary hover:shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-tuggi-primary focus:ring-offset-2"
           >
             <div className="w-16 h-16 bg-tuggi-bg text-tuggi-primary flex items-center justify-center rounded-sm mb-8 group-hover:bg-tuggi-primary group-hover:text-white transition-colors duration-300">
-              <Building2 className="w-8 h-8" />
+              <Building2 className="w-8 h-8" aria-hidden="true" />
             </div>
             <h3 className="text-3xl font-bold tracking-tight text-tuggi-dark mb-4">
               {t("b2gTitle")}
@@ -49,9 +49,9 @@ export function EnterpriseFork() {
             <p className="text-lg text-tuggi-slate leading-relaxed mb-8 flex-1">
               {t("b2gDesc")}
             </p>
-            <div className="mt-auto flex items-center space-x-2 text-tuggi-primary font-semibold">
+            <div className="mt-auto flex items-center space-x-2 text-tuggi-primary-text font-semibold">
               <span>{t("b2gLinkLabel")}</span>
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
             </div>
           </Link>
 
@@ -62,7 +62,7 @@ export function EnterpriseFork() {
             className="group flex flex-col p-10 bg-white border border-gray-200 rounded-md shadow-sm hover:border-tuggi-primary hover:shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-tuggi-primary focus:ring-offset-2"
           >
             <div className="w-16 h-16 bg-tuggi-bg text-tuggi-primary flex items-center justify-center rounded-sm mb-8 group-hover:bg-tuggi-primary group-hover:text-white transition-colors duration-300">
-              <CarFront className="w-8 h-8" />
+              <CarFront className="w-8 h-8" aria-hidden="true" />
             </div>
             <h3 className="text-3xl font-bold tracking-tight text-tuggi-dark mb-4">
               {t("b2bTitle")}
@@ -70,9 +70,9 @@ export function EnterpriseFork() {
             <p className="text-lg text-tuggi-slate leading-relaxed mb-8 flex-1">
               {t("b2bDesc")}
             </p>
-            <div className="mt-auto flex items-center space-x-2 text-tuggi-primary font-semibold">
+            <div className="mt-auto flex items-center space-x-2 text-tuggi-primary-text font-semibold">
               <span>{t("b2bLinkLabel")}</span>
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
             </div>
           </Link>
 

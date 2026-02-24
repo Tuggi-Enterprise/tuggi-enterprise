@@ -10,8 +10,8 @@ export function CityOSAccessibility() {
         
         {/* Copy Focus */}
         <div className="flex-1 space-y-8 text-center lg:text-left">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 border border-tuggi-primary/20 rounded-full text-tuggi-primary font-semibold text-sm">
-             <ShieldCheck className="w-4 h-4" />
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 border border-tuggi-primary/20 rounded-full text-tuggi-primary-text font-semibold text-sm">
+             <ShieldCheck className="w-4 h-4" aria-hidden="true" />
              {t("tag")}
           </div>
           <h2 className="text-3xl lg:text-4xl font-bold tracking-tight text-tuggi-dark">
@@ -41,7 +41,7 @@ export function CityOSAccessibility() {
               {/* Feature: Audio-first navigation */}
               <div className="bg-white/5 border border-white/10 rounded-md p-4 flex items-center gap-4 hover:border-tuggi-primary/50 transition-colors">
                 <div className="bg-tuggi-primary/20 p-2 rounded-sm shrink-0">
-                  <EyeOff className="w-6 h-6 text-tuggi-primary" />
+                  <EyeOff className="w-6 h-6 text-tuggi-primary" aria-hidden="true" />
                 </div>
                 <div className="flex-1 flex flex-col">
                   <span className="text-white font-semibold text-sm tracking-wide">Audio-First Navigation</span>
@@ -55,7 +55,7 @@ export function CityOSAccessibility() {
               {/* Feature: Spatial Audio */}
               <div className="bg-white/5 border border-white/10 rounded-md p-4 flex items-center gap-4 hover:border-tuggi-primary/50 transition-colors">
                 <div className="bg-tuggi-primary/20 p-2 rounded-sm shrink-0">
-                  <Ear className="w-6 h-6 text-tuggi-primary" />
+                  <Ear className="w-6 h-6 text-tuggi-primary" aria-hidden="true" />
                 </div>
                 <div className="flex-1 flex flex-col">
                   <span className="text-white font-semibold text-sm tracking-wide">Spatial Context</span>
@@ -69,7 +69,7 @@ export function CityOSAccessibility() {
                {/* Feature: Closed Captions */}
                <div className="bg-white/5 border border-white/10 rounded-md p-4 flex items-center gap-4 hover:border-tuggi-primary/50 transition-colors">
                 <div className="bg-tuggi-primary/20 p-2 rounded-sm shrink-0">
-                  <Captions className="w-6 h-6 text-tuggi-primary" />
+                  <Captions className="w-6 h-6 text-tuggi-primary" aria-hidden="true" />
                 </div>
                 <div className="flex-1 flex flex-col">
                   <span className="text-white font-semibold text-sm tracking-wide">Dynamic Subtitles</span>

@@ -33,8 +33,8 @@ export function TriggerSimulator() {
       <div className="max-w-7xl mx-auto w-full flex flex-col lg:flex-row gap-16 items-center">
         {/* Copy */}
         <div className="flex-1 space-y-6">
-          <div className="inline-flex items-center space-x-2 text-tuggi-primary font-semibold tracking-wider text-sm uppercase">
-            <Volume2 className="w-5 h-5" />
+          <div className="inline-flex items-center space-x-2 text-tuggi-primary-text font-semibold tracking-wider text-sm uppercase">
+            <Volume2 className="w-5 h-5" aria-hidden="true" />
             <span>{t("tag")}</span>
           </div>
           <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-tuggi-dark">
@@ -66,7 +66,7 @@ export function TriggerSimulator() {
             <div className="absolute right-[25%] -translate-y-1/2 top-1/2 flex flex-col items-center">
               <div className={`w-16 h-16 rounded-full border-2 border-tuggi-primary absolute -top-8 -left-8 ${isTriggered ? 'animate-ping opacity-50' : 'opacity-20'}`} />
               <div className="w-4 h-4 bg-tuggi-primary rounded-full relative z-10 shadow-[0_0_15px_rgba(0,168,232,0.8)]" />
-              <MapPin className="text-tuggi-primary w-6 h-6 absolute -top-8 z-20" />
+              <MapPin className="text-tuggi-primary w-6 h-6 absolute -top-8 z-20" aria-hidden="true" />
             </div>
 
             {/* Simulated Live Vehicle Marker */}
@@ -82,12 +82,12 @@ export function TriggerSimulator() {
           <div className={`absolute bottom-6 left-1/2 -translate-x-1/2 px-6 py-3 rounded-md border backdrop-blur-md transition-all duration-500 flex items-center space-x-3 ${isTriggered ? 'bg-tuggi-primary/20 border-tuggi-primary text-white' : 'bg-gray-800/80 border-gray-700 text-tuggi-slate'}`}>
             {isTriggered ? (
               <>
-                <Volume2 className="w-5 h-5 text-tuggi-primary animate-pulse" />
+                <Volume2 className="w-5 h-5 text-tuggi-primary animate-pulse" aria-hidden="true" />
                 <span className="font-semibold text-sm whitespace-nowrap">{t("playing")}</span>
               </>
             ) : (
               <>
-                <Car className="w-5 h-5 text-tuggi-slate" />
+                <Car className="w-5 h-5 text-tuggi-slate" aria-hidden="true" />
                 <span className="font-semibold text-sm whitespace-nowrap">{t("approaching")}</span>
               </>
             )}

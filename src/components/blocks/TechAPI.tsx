@@ -9,7 +9,7 @@ export function TechAPI() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           
           <div>
-            <div className="inline-flex items-center space-x-2 text-tuggi-primary font-semibold text-sm tracking-wider uppercase mb-4">
+            <div className="inline-flex items-center space-x-2 text-tuggi-primary-text font-semibold text-sm tracking-wider uppercase mb-4">
               <span>Rest API</span>
             </div>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-tuggi-dark tracking-tight mb-6">

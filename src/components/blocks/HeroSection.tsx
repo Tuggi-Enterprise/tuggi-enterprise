@@ -16,13 +16,13 @@ export function HeroSection() {
         <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
           <Link
             href="/drive"
-            className="px-8 py-4 bg-tuggi-secondary text-white font-semibold rounded-md shadow-sm hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-tuggi-secondary focus:ring-offset-2 w-full sm:w-auto text-center"
+            className="px-8 py-4 bg-tuggi-secondary text-white font-semibold rounded-md shadow-sm hover:opacity-90 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-secondary focus-visible:ring-offset-2 w-full sm:w-auto text-center"
           >
             {t("downloadApp")}
           </Link>
           <Link
             href="/contact"
-            className="px-8 py-4 bg-transparent border-2 border-tuggi-primary text-tuggi-primary font-semibold rounded-md hover:bg-tuggi-primary hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-tuggi-primary focus:ring-offset-2 w-full sm:w-auto text-center"
+            className="px-8 py-4 bg-transparent border-2 border-tuggi-primary text-tuggi-primary-text font-semibold rounded-md hover:bg-tuggi-primary hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary focus-visible:ring-offset-2 w-full sm:w-auto text-center"
           >
             {t("contactSales")}
           </Link>

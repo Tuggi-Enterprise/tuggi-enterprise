@@ -24,7 +24,7 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between" aria-label="Main Navigation">
         {/* Left: Logo */}
         <div className="flex items-center">
-          <Link href="/" className="focus:outline-none focus:ring-2 focus:ring-tuggi-primary rounded-sm flex items-center">
+          <Link href="/" className="focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-sm flex items-center">
             <Image
               src="/images/logo_tuggi_full.png"
               alt="TUGGI Logo"
@@ -42,26 +42,26 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
           {/* Dropdown for Platform */}
           <div className="relative group/platform">
             <button
-              className="text-sm font-medium text-slate-600 hover:text-tuggi-dark transition-colors focus:outline-none focus:ring-2 focus:ring-tuggi-primary rounded-sm py-2 flex items-center gap-1"
+              className="text-sm font-medium text-slate-600 hover:text-tuggi-dark transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-sm py-2 flex items-center gap-1"
               aria-haspopup="true"
             >
               <span>{t("navPlatform")}</span>
-              <ChevronDown className="w-4 h-4 text-slate-400 group-hover/platform:text-tuggi-dark transition-colors" />
+              <ChevronDown className="w-4 h-4 text-slate-400 group-hover/platform:text-tuggi-dark transition-colors" aria-hidden="true" />
             </button>
             <div className="absolute top-full left-0 mt-2 w-56 bg-white border border-gray-100 rounded-lg shadow-lg opacity-0 invisible group-hover/platform:opacity-100 group-hover/platform:visible transition-all duration-200 z-50 overflow-hidden">
               <ul className="py-2">
                 <li>
-                  <Link href="/enterprise/city-os" className="block px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-tuggi-primary transition-colors focus:outline-none focus:bg-slate-50">
+                  <Link href="/enterprise/city-os" className="block px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-tuggi-primary-text transition-colors focus:outline-none focus-visible:bg-slate-50">
                     {t("navCityOs")}
                   </Link>
                 </li>
                 <li>
-                  <Link href="/enterprise/fleets" className="block px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-tuggi-primary transition-colors focus:outline-none focus:bg-slate-50">
+                  <Link href="/enterprise/fleets" className="block px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-tuggi-primary-text transition-colors focus:outline-none focus-visible:bg-slate-50">
                     {t("navFleets")}
                   </Link>
                 </li>
                 <li>
-                  <Link href="/technology" className="block px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-tuggi-primary transition-colors focus:outline-none focus:bg-slate-50">
+                  <Link href="/technology" className="block px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-tuggi-primary-text transition-colors focus:outline-none focus-visible:bg-slate-50">
                     {t("navTech")}
                   </Link>
                 </li>
@@ -69,11 +69,11 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
             </div>
           </div>
 
-          <Link href="/drive" className="text-sm font-medium text-slate-600 hover:text-tuggi-dark transition-colors focus:outline-none focus:ring-2 focus:ring-tuggi-primary rounded-sm py-2">
+          <Link href="/drive" className="text-sm font-medium text-slate-600 hover:text-tuggi-dark transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-sm py-2">
             {t("navB2c")}
           </Link>
 
-          <Link href="/purpose" className="text-sm font-medium text-slate-600 hover:text-tuggi-dark transition-colors focus:outline-none focus:ring-2 focus:ring-tuggi-primary rounded-sm py-2">
+          <Link href="/purpose" className="text-sm font-medium text-slate-600 hover:text-tuggi-dark transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-sm py-2">
             {t("navPurpose")}
           </Link>
         </div>
@@ -81,9 +81,9 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
         {/* Right: Actions */}
         <div className="flex items-center space-x-6">
           <div className="relative group">
-            <button className="text-sm font-medium text-slate-600 hover:text-tuggi-dark uppercase flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-tuggi-primary rounded-sm" aria-haspopup="true">
+            <button className="text-sm font-medium text-slate-600 hover:text-tuggi-dark uppercase flex items-center gap-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-sm" aria-haspopup="true">
               <span>{currentLocale}</span>
-              <ChevronDown className="w-4 h-4 text-slate-400 group-hover:text-tuggi-dark transition-colors" />
+              <ChevronDown className="w-4 h-4 text-slate-400 group-hover:text-tuggi-dark transition-colors" aria-hidden="true" />
             </button>
             <div className="absolute right-0 mt-2 w-28 bg-white border border-gray-100 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 overflow-hidden">
               <ul className="py-1">
@@ -96,8 +96,8 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
                         document.cookie = `NEXT_LOCALE=${loc.code}; path=/; max-age=31536000`;
                       }}
                       className={`block px-4 py-2 text-sm font-medium ${
-                        currentLocale === loc.code ? "text-tuggi-primary bg-slate-50" : "text-slate-600 hover:bg-slate-50 hover:text-tuggi-dark"
-                      } focus:outline-none focus:bg-slate-50 transition-colors`}
+                        currentLocale === loc.code ? "text-tuggi-primary-text bg-slate-50" : "text-slate-600 hover:bg-slate-50 hover:text-tuggi-dark"
+                      } focus:outline-none focus-visible:bg-slate-50 transition-colors`}
                     >
                       {loc.label}
                     </Link>
@@ -106,7 +106,7 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
               </ul>
             </div>
           </div>
-          <Link href="/drive" className="bg-[#FF6F00] text-white font-semibold rounded-lg px-5 py-2.5 hover:bg-[#e66400] transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FF6F00] focus:ring-offset-2">
+          <Link href="/drive" className="bg-[#FF6F00] text-white font-semibold rounded-lg px-5 py-2.5 hover:bg-[#e66400] transition-colors shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6F00] focus:ring-offset-2">
             {t("downloadApp")}
           </Link>
         </div>

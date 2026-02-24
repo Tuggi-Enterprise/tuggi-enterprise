@@ -32,8 +32,11 @@ export function DriveSamples() {
           {samples.map((sample, index) => (
             <article key={index} className="bg-[#161F32] p-8 rounded-xl border border-gray-800 flex flex-col gap-6 group hover:border-tuggi-primary transition-all duration-300">
               <div className="flex items-center gap-6">
-                <button className="w-14 h-14 bg-tuggi-primary rounded-full flex items-center justify-center shrink-0 shadow-lg shadow-tuggi-primary/20 hover:scale-105 transition-transform active:scale-95">
-                  <Play className="w-6 h-6 text-white ml-1 fill-white" />
+                <button 
+                  className="w-14 h-14 bg-tuggi-primary rounded-full flex items-center justify-center shrink-0 shadow-lg shadow-tuggi-primary/20 hover:scale-105 transition-transform active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-tuggi-dark"
+                  aria-label={`${t("tag")}: ${sample.title}`}
+                >
+                  <Play className="w-6 h-6 text-white ml-1 fill-white" aria-hidden="true" />
                 </button>
                 <div className="flex flex-col gap-1">
                   <h3 className="font-bold text-lg leading-tight group-hover:text-tuggi-primary transition-colors">
@@ -64,7 +67,7 @@ export function DriveSamples() {
 
         {/* Social Proof Footer */}
         <div className="flex items-center gap-2 text-tuggi-primary font-semibold tracking-wide bg-[#161F32] px-6 py-3 rounded-full border border-gray-800 shadow-xl">
-          <Star className="w-5 h-5 fill-tuggi-primary" />
+          <Star className="w-5 h-5 fill-tuggi-primary" aria-hidden="true" />
           <span className="text-sm md:text-base">
             {t("socialProof")}
           </span>

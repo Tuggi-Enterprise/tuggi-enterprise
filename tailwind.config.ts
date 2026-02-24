@@ -14,6 +14,7 @@ const config: Config = {
       },
       colors: {
         "tuggi-primary": "#00A8E8",
+        "tuggi-primary-text": "#007AA5",
         "tuggi-secondary": "#FF6F00",
         "tuggi-dark": "#0B1220",
         "tuggi-slate": "#5B6472",

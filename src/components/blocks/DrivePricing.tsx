@@ -29,24 +29,24 @@ export function DrivePricing() {
             
             <ul className="space-y-4 mb-10 text-slate-600 flex-1">
               <li className="flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
+                <CheckCircle2 className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
                 <span>{t("freeFeat1")}</span>
               </li>
               <li className="flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
+                <CheckCircle2 className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
                 <span>{t("freeFeat2")}</span>
               </li>
               <li className="flex items-start gap-3 text-slate-400">
-                <XCircle className="w-5 h-5 text-slate-300 flex-shrink-0 mt-0.5" />
+                <XCircle className="w-5 h-5 text-slate-300 flex-shrink-0 mt-0.5" aria-hidden="true" />
                 <span>{t("freeLim1")}</span>
               </li>
               <li className="flex items-start gap-3 text-slate-400">
-                <XCircle className="w-5 h-5 text-slate-300 flex-shrink-0 mt-0.5" />
+                <XCircle className="w-5 h-5 text-slate-300 flex-shrink-0 mt-0.5" aria-hidden="true" />
                 <span>{t("freeLim2")}</span>
               </li>
             </ul>
 
-            <button className="w-full bg-white text-tuggi-primary font-semibold py-4 rounded-xl border-2 border-tuggi-primary hover:bg-tuggi-primary/5 transition-colors">
+            <button className="w-full bg-white text-tuggi-primary-text font-semibold py-4 rounded-xl border-2 border-tuggi-primary hover:bg-tuggi-primary/5 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary/50">
               {t("freeAction")}
             </button>
           </div>
@@ -68,24 +68,24 @@ export function DrivePricing() {
             
             <ul className="space-y-4 mb-10 text-slate-600 flex-1 font-medium">
               <li className="flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-tuggi-primary flex-shrink-0 mt-0.5" />
+                <CheckCircle2 className="w-5 h-5 text-tuggi-primary-text flex-shrink-0 mt-0.5" aria-hidden="true" />
                 <span>{t("pass1Feat1")}</span>
               </li>
               <li className="flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-tuggi-primary flex-shrink-0 mt-0.5" />
+                <CheckCircle2 className="w-5 h-5 text-tuggi-primary-text flex-shrink-0 mt-0.5" aria-hidden="true" />
                 <span>{t("pass1Feat2")}</span>
               </li>
               <li className="flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-tuggi-primary flex-shrink-0 mt-0.5" />
+                <CheckCircle2 className="w-5 h-5 text-tuggi-primary-text flex-shrink-0 mt-0.5" aria-hidden="true" />
                 <span>{t("pass1Feat3")}</span>
               </li>
               <li className="flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-tuggi-primary flex-shrink-0 mt-0.5" />
+                <CheckCircle2 className="w-5 h-5 text-tuggi-primary-text flex-shrink-0 mt-0.5" aria-hidden="true" />
                 <span>{t("pass1Feat4")}</span>
               </li>
             </ul>
 
-            <button className="w-full bg-tuggi-primary text-white font-bold py-4 rounded-xl hover:bg-blue-500 transition-colors shadow-lg">
+            <button className="w-full bg-tuggi-primary text-white font-bold py-4 rounded-xl hover:bg-blue-500 transition-colors shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-tuggi-primary">
               {t("pass1Action")}
             </button>
           </div>
@@ -103,16 +103,16 @@ export function DrivePricing() {
             
             <ul className="space-y-4 mb-10 text-slate-300 flex-1">
               <li className="flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" aria-hidden="true" />
                 <span>{t("pass2Feat1")}</span>
               </li>
               <li className="flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" aria-hidden="true" />
                 <span>{t("pass2Feat2")}</span>
               </li>
             </ul>
 
-            <button className="w-full bg-white text-tuggi-dark font-bold py-4 rounded-xl hover:bg-slate-100 transition-colors">
+            <button className="w-full bg-white text-tuggi-dark font-bold py-4 rounded-xl hover:bg-slate-100 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-tuggi-dark">
               {t("pass2Action")}
             </button>
           </div>

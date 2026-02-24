@@ -70,9 +70,15 @@ export default async function RootLayout({
   return (
     <html lang={locale} className={inter.className}>
       <body className="bg-white text-[#0B1220] antialiased">
+        <a 
+          href="#main-content" 
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-6 focus:py-3 focus:bg-tuggi-primary focus:text-white focus:font-bold focus:rounded-xl focus:shadow-2xl focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2"
+        >
+          Skip to main content
+        </a>
         <NextIntlClientProvider messages={messages} locale={locale}>
           <GlobalHeader currentLocale={locale} />
-          <main className="min-h-screen bg-tuggi-bg">
+          <main id="main-content" className="min-h-screen bg-tuggi-bg">
             {children}
           </main>
           <FatFooter />

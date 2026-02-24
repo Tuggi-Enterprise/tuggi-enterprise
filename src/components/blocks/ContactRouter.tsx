@@ -99,9 +99,9 @@ export function ContactRouter() {
           {/* Card 1: B2G */}
           <button 
             onClick={() => { setActiveState("B2G"); setSubmitted(false); setEmail(""); setEmailError(""); }}
-            className={`p-6 rounded-2xl border-2 text-left transition-all duration-200 ${activeState === "B2G" ? "border-tuggi-primary bg-white shadow-xl scale-105" : "border-slate-200 bg-white hover:border-slate-300 hover:shadow-md"}`}
+            className={`p-6 rounded-2xl border-2 text-left transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary/50 ${activeState === "B2G" ? "border-tuggi-primary bg-white shadow-xl scale-105" : "border-slate-200 bg-white hover:border-slate-300 hover:shadow-md"}`}
           >
-            <Building2 className={`w-8 h-8 mb-4 ${activeState === "B2G" ? "text-tuggi-primary" : "text-slate-400"}`} />
+            <Building2 className={`w-8 h-8 mb-4 ${activeState === "B2G" ? "text-tuggi-primary" : "text-slate-400"}`} aria-hidden="true" />
             <h3 className="text-lg font-bold text-tuggi-dark mb-2">{t("Triage.card1Title")}</h3>
             <p className="text-sm text-slate-500">{t("Triage.card1Desc")}</p>
           </button>
@@ -109,9 +109,9 @@ export function ContactRouter() {
           {/* Card 2: B2B */}
           <button 
              onClick={() => { setActiveState("B2B"); setSubmitted(false); setEmail(""); setEmailError(""); }}
-            className={`p-6 rounded-2xl border-2 text-left transition-all duration-200 ${activeState === "B2B" ? "border-tuggi-primary bg-white shadow-xl scale-105" : "border-slate-200 bg-white hover:border-slate-300 hover:shadow-md"}`}
+            className={`p-6 rounded-2xl border-2 text-left transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary/50 ${activeState === "B2B" ? "border-tuggi-primary bg-white shadow-xl scale-105" : "border-slate-200 bg-white hover:border-slate-300 hover:shadow-md"}`}
           >
-            <Car className={`w-8 h-8 mb-4 ${activeState === "B2B" ? "text-tuggi-primary" : "text-slate-400"}`} />
+            <Car className={`w-8 h-8 mb-4 ${activeState === "B2B" ? "text-tuggi-primary" : "text-slate-400"}`} aria-hidden="true" />
             <h3 className="text-lg font-bold text-tuggi-dark mb-2">{t("Triage.card2Title")}</h3>
             <p className="text-sm text-slate-500">{t("Triage.card2Desc")}</p>
           </button>
@@ -119,9 +119,9 @@ export function ContactRouter() {
           {/* Card 3: B2C */}
           <button 
              onClick={() => { setActiveState("B2C"); setSubmitted(false); setEmail(""); setEmailError(""); }}
-            className={`p-6 rounded-2xl border-2 text-left transition-all duration-200 ${activeState === "B2C" ? "border-emerald-500 bg-white shadow-xl scale-105" : "border-slate-200 bg-white hover:border-slate-300 hover:shadow-md"}`}
+            className={`p-6 rounded-2xl border-2 text-left transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 ${activeState === "B2C" ? "border-emerald-500 bg-white shadow-xl scale-105" : "border-slate-200 bg-white hover:border-slate-300 hover:shadow-md"}`}
           >
-            <UserCircle2 className={`w-8 h-8 mb-4 ${activeState === "B2C" ? "text-emerald-500" : "text-slate-400"}`} />
+            <UserCircle2 className={`w-8 h-8 mb-4 ${activeState === "B2C" ? "text-emerald-500" : "text-slate-400"}`} aria-hidden="true" />
             <h3 className="text-lg font-bold text-tuggi-dark mb-2">{t("Triage.card3Title")}</h3>
             <p className="text-sm text-slate-500">{t("Triage.card3Desc")}</p>
           </button>
@@ -137,7 +137,7 @@ export function ContactRouter() {
               {submitted ? (
                 <div className="text-center space-y-4 animate-in fade-in zoom-in duration-500">
                   <div className="w-16 h-16 bg-green-50 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <Mail className="w-8 h-8" />
+                    <Mail className="w-8 h-8" aria-hidden="true" />
                   </div>
                   <h3 className="text-2xl font-bold text-tuggi-dark">Request Received</h3>
                   <p className="text-slate-600 max-w-sm mx-auto">
@@ -145,7 +145,7 @@ export function ContactRouter() {
                   </p>
                   <button 
                     onClick={() => setSubmitted(false)}
-                    className="text-tuggi-primary font-semibold hover:underline mt-4"
+                    className="text-tuggi-primary-text font-semibold hover:underline mt-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary/50 rounded-sm"
                   >
                     Send another message
                   </button>
@@ -157,43 +157,47 @@ export function ContactRouter() {
                     <form className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500" onSubmit={(e) => handleSubmit(e, "B2G")}>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
-                          <label className="text-sm font-semibold text-tuggi-dark">{t("B2G.fullName")}</label>
+                          <label htmlFor="b2g-fullname" className="text-sm font-semibold text-tuggi-dark">{t("B2G.fullName")}</label>
                           <input 
+                            id="b2g-fullname"
                             type="text" 
                             value={fullName}
                             onChange={(e) => setFullName(e.target.value)}
-                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-tuggi-dark focus:outline-none focus:ring-2 focus:ring-tuggi-primary/50" 
+                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-tuggi-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary/50" 
                             required 
                           />
                         </div>
                         <div className="space-y-2">
-                          <label className="text-sm font-semibold text-tuggi-dark">{t("B2G.role")}</label>
+                          <label htmlFor="b2g-role" className="text-sm font-semibold text-tuggi-dark">{t("B2G.role")}</label>
                           <input 
+                            id="b2g-role"
                             type="text" 
                             value={role}
                             onChange={(e) => setRole(e.target.value)}
-                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-tuggi-dark focus:outline-none focus:ring-2 focus:ring-tuggi-primary/50" 
+                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-tuggi-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary/50" 
                             required 
                           />
                         </div>
                       </div>
                       <div className="space-y-2">
-                        <label className="text-sm font-semibold text-tuggi-dark">{t("B2G.city")}</label>
+                        <label htmlFor="b2g-city" className="text-sm font-semibold text-tuggi-dark">{t("B2G.city")}</label>
                         <input 
+                          id="b2g-city"
                           type="text" 
                           value={city}
                           onChange={(e) => setCity(e.target.value)}
-                          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-tuggi-dark focus:outline-none focus:ring-2 focus:ring-tuggi-primary/50" 
+                          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-tuggi-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary/50" 
                           required 
                         />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-sm font-semibold text-tuggi-dark">{t("B2G.email")}</label>
+                        <label htmlFor="b2g-email" className="text-sm font-semibold text-tuggi-dark">{t("B2G.email")}</label>
                         <input 
+                          id="b2g-email"
                           type="email" 
                           value={email}
                           onChange={(e) => handleEmailChange(e, "B2G")}
-                          className={`w-full bg-slate-50 border ${emailError ? 'border-red-400 focus:ring-red-400' : 'border-slate-200 focus:ring-tuggi-primary/50'} rounded-xl px-4 py-3 text-tuggi-dark focus:outline-none focus:ring-2`} 
+                          className={`w-full bg-slate-50 border ${emailError ? 'border-red-400 focus:ring-red-400' : 'border-slate-200 focus:ring-tuggi-primary/50'} rounded-xl px-4 py-3 text-tuggi-dark focus:outline-none focus-visible:ring-2`} 
                           required 
                         />
                         {emailError && <p className="text-xs text-red-500 font-medium mt-1">{emailError}</p>}
@@ -202,8 +206,8 @@ export function ContactRouter() {
                       <button 
                         type="submit" 
                         disabled={!!emailError || !email || !fullName || isSubmitting}
-                        className="w-full bg-tuggi-dark text-white font-bold py-4 rounded-xl hover:bg-slate-800 transition-colors shadow-md disabled:bg-slate-300 disabled:cursor-not-allowed mt-4 flex items-center justify-center gap-2">
-                        {isSubmitting && <Loader2 className="w-5 h-5 animate-spin" />}
+                        className="w-full bg-tuggi-dark text-white font-bold py-4 rounded-xl hover:bg-slate-800 transition-colors shadow-md disabled:bg-slate-300 disabled:cursor-not-allowed mt-4 flex items-center justify-center gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary/50">
+                        {isSubmitting && <Loader2 className="w-5 h-5 animate-spin" aria-hidden="true" />}
                         {t("B2G.cta")}
                       </button>
                     </form>
@@ -214,32 +218,35 @@ export function ContactRouter() {
                     <form className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500" onSubmit={(e) => handleSubmit(e, "B2B")}>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
-                          <label className="text-sm font-semibold text-tuggi-dark">{t("B2B.fullName")}</label>
+                          <label htmlFor="b2b-fullname" className="text-sm font-semibold text-tuggi-dark">{t("B2B.fullName")}</label>
                           <input 
+                            id="b2b-fullname"
                             type="text" 
                             value={fullName}
                             onChange={(e) => setFullName(e.target.value)}
-                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-tuggi-dark focus:outline-none focus:ring-2 focus:ring-tuggi-primary/50" 
+                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-tuggi-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary/50" 
                             required 
                           />
                         </div>
                         <div className="space-y-2">
-                          <label className="text-sm font-semibold text-tuggi-dark">{t("B2B.company")}</label>
+                          <label htmlFor="b2b-company" className="text-sm font-semibold text-tuggi-dark">{t("B2B.company")}</label>
                           <input 
+                            id="b2b-company"
                             type="text" 
                             value={company}
                             onChange={(e) => setCompany(e.target.value)}
-                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-tuggi-dark focus:outline-none focus:ring-2 focus:ring-tuggi-primary/50" 
+                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-tuggi-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary/50" 
                             required 
                           />
                         </div>
                       </div>
                       <div className="space-y-2">
-                        <label className="text-sm font-semibold text-tuggi-dark">{t("B2B.fleetSize")}</label>
+                        <label htmlFor="b2b-fleet" className="text-sm font-semibold text-tuggi-dark">{t("B2B.fleetSize")}</label>
                         <select 
+                          id="b2b-fleet"
                           value={fleetSize}
                           onChange={(e) => setFleetSize(e.target.value)}
-                          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-tuggi-dark focus:outline-none focus:ring-2 focus:ring-tuggi-primary/50 appearance-none" 
+                          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-tuggi-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary/50 appearance-none" 
                           required
                         >
                           <option value="" disabled>{t("B2B.fleetTarget")}</option>
@@ -250,12 +257,13 @@ export function ContactRouter() {
                         </select>
                       </div>
                       <div className="space-y-2">
-                        <label className="text-sm font-semibold text-tuggi-dark">{t("B2B.email")}</label>
+                        <label htmlFor="b2b-email" className="text-sm font-semibold text-tuggi-dark">{t("B2B.email")}</label>
                         <input 
+                          id="b2b-email"
                           type="email" 
                           value={email}
                           onChange={(e) => handleEmailChange(e, "B2B")}
-                          className={`w-full bg-slate-50 border ${emailError ? 'border-red-400 focus:ring-red-400' : 'border-slate-200 focus:ring-tuggi-primary/50'} rounded-xl px-4 py-3 text-tuggi-dark focus:outline-none focus:ring-2`} 
+                          className={`w-full bg-slate-50 border ${emailError ? 'border-red-400 focus:ring-red-400' : 'border-slate-200 focus:ring-tuggi-primary/50'} rounded-xl px-4 py-3 text-tuggi-dark focus:outline-none focus-visible:ring-2`} 
                           required 
                         />
                         {emailError && <p className="text-xs text-red-500 font-medium mt-1">{emailError}</p>}
@@ -264,8 +272,8 @@ export function ContactRouter() {
                       <button 
                         type="submit" 
                         disabled={!!emailError || !email || !fullName || isSubmitting}
-                        className="w-full bg-tuggi-dark text-white font-bold py-4 rounded-xl hover:bg-slate-800 transition-colors shadow-md disabled:bg-slate-300 disabled:cursor-not-allowed mt-4 flex items-center justify-center gap-2">
-                        {isSubmitting && <Loader2 className="w-5 h-5 animate-spin" />}
+                        className="w-full bg-tuggi-dark text-white font-bold py-4 rounded-xl hover:bg-slate-800 transition-colors shadow-md disabled:bg-slate-300 disabled:cursor-not-allowed mt-4 flex items-center justify-center gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary/50">
+                        {isSubmitting && <Loader2 className="w-5 h-5 animate-spin" aria-hidden="true" />}
                         {t("B2B.cta")}
                       </button>
                     </form>
@@ -275,7 +283,7 @@ export function ContactRouter() {
                   {activeState === "B2C" && (
                     <div className="flex flex-col items-center justify-center py-8 text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
                       <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mb-6">
-                        <Mail className="w-10 h-10 text-emerald-500" />
+                        <Mail className="w-10 h-10 text-emerald-500" aria-hidden="true" />
                       </div>
                       <h3 className="text-2xl font-bold text-tuggi-dark mb-4">{t("Triage.card3Title")}</h3>
                       <p className="text-slate-600 mb-10 max-w-md leading-relaxed">
@@ -284,7 +292,7 @@ export function ContactRouter() {
                       <a 
                         href="mailto:support@tuggi.app"
                         onClick={() => sendGAEvent({ event: 'contact_support' })}
-                        className="inline-flex items-center justify-center bg-emerald-500 text-white font-bold py-4 px-10 rounded-xl hover:bg-emerald-600 transition-colors shadow-lg shadow-emerald-500/30"
+                        className="inline-flex items-center justify-center bg-emerald-500 text-white font-bold py-4 px-10 rounded-xl hover:bg-emerald-600 transition-colors shadow-lg shadow-emerald-500/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50"
                       >
                         {t("B2C.cta")}
                       </a>
@@ -299,8 +307,8 @@ export function ContactRouter() {
             <div className="lg:w-80 flex flex-col gap-6">
               
               <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
-                <div className="w-10 h-10 bg-blue-50 text-tuggi-primary rounded-lg flex items-center justify-center mb-4">
-                  <Building2 className="w-5 h-5" />
+                <div className="w-10 h-10 bg-blue-50 text-tuggi-primary-text rounded-lg flex items-center justify-center mb-4">
+                  <Building2 className="w-5 h-5" aria-hidden="true" />
                 </div>
                 <h4 className="text-sm font-bold text-tuggi-dark uppercase tracking-wider mb-1">{t("Sidebar.hqTitle")}</h4>
                 <p className="text-slate-600">{t("Sidebar.hqValue")}</p>
@@ -309,7 +317,7 @@ export function ContactRouter() {
               {activeState !== "B2C" && (
                 <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
                   <div className="w-10 h-10 bg-amber-50 text-amber-500 rounded-lg flex items-center justify-center mb-4">
-                    <Info className="w-5 h-5" />
+                    <Info className="w-5 h-5" aria-hidden="true" />
                   </div>
                   <h4 className="text-sm font-bold text-tuggi-dark uppercase tracking-wider mb-1">{t("Sidebar.slaTitle")}</h4>
                   <p className="text-slate-600">{t("Sidebar.slaValue")}</p>
@@ -318,10 +326,10 @@ export function ContactRouter() {
 
               <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 bg-gradient-to-br from-white to-slate-50">
                 <div className="w-10 h-10 bg-slate-100 text-slate-500 rounded-lg flex items-center justify-center mb-4">
-                  <Mail className="w-5 h-5" />
+                  <Mail className="w-5 h-5" aria-hidden="true" />
                 </div>
                 <h4 className="text-sm font-bold text-tuggi-dark uppercase tracking-wider mb-1">{t("Sidebar.pressTitle")}</h4>
-                <a href={`mailto:${t("Sidebar.pressValue")}`} className="text-tuggi-primary font-medium hover:underline">
+                <a href={`mailto:${t("Sidebar.pressValue")}`} className="text-tuggi-primary-text font-medium hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary/50 rounded-sm">
                   {t("Sidebar.pressValue")}
                 </a>
               </div>
