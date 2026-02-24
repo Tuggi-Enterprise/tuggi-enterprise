@@ -172,7 +172,19 @@
       "step2Title": "2. Libera tu Pantalla",
       "step2Desc": "Usa tu aplicación de navegación favorita, controla tu lista de reproducción o mantén la pantalla encendida para que los pasajeros lean los subtítulos. TUGGI hace su magia en segundo plano sin interrumpir tu flujo.",
       "step3Title": "3. Conduce Normalmente",
-      "step3Desc": "Las historias se reproducen automáticamente al cruzar geocercas predefinidas."
+      "step3Desc": "Las historias se reproducen automáticamente al cruzar cercas virtuales."
+    },
+    "Samples": {
+      "tag": "Curaduría Premium",
+      "title": "Escucha al mundo cobrar vida.",
+      "subtitle": "Ve mucho más allá de Wikipedia. Sin itinerarios fijos, la libertad de explorar es tuya. Nuestras historias inmersivas se activan exactamente en el monumento en el que te encuentres.",
+      "sample1Title": "El Coliseo: El Inframundo",
+      "sample1Loc": "Roma, Italia",
+      "sample2Title": "El Templo de Diana",
+      "sample2Loc": "Évora, Portugal",
+      "sample3Title": "Los Secretos del Teatro Municipal",
+      "sample3Loc": "São Paulo, Brasil",
+      "socialProof": "⭐⭐⭐⭐⭐ Más de 50.000 historias reproducidas por viajeros globales."
     },
     "Features": {
       "title": "Kit de Supervivencia del Viajero",

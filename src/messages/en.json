@@ -172,7 +172,19 @@
       "step2Title": "2. Free Your Screen",
       "step2Desc": "Use your favorite navigation app, control your playlist, or keep the screen on for passengers to read the Closed Captions. TUGGI works its magic in the background without interrupting your flow.",
       "step3Title": "3. Drive Normally",
-      "step3Desc": "Stories trigger automatically as you cross geofences."
+      "step3Desc": "Stories play automatically as you cross virtual fences."
+    },
+    "Samples": {
+      "tag": "Premium Curation",
+      "title": "Hear the world come alive.",
+      "subtitle": "Go way beyond Wikipedia. With no fixed itineraries, the freedom to explore is yours. Our immersive stories are triggered exactly at the monument you are facing.",
+      "sample1Title": "The Colosseum: The Underworld",
+      "sample1Loc": "Rome, Italy",
+      "sample2Title": "The Temple of Diana",
+      "sample2Loc": "Évora, Portugal",
+      "sample3Title": "Secrets of the Municipal Theater",
+      "sample3Loc": "São Paulo, Brazil",
+      "socialProof": "⭐⭐⭐⭐⭐ Over 50,000 stories played by global travelers."
     },
     "Features": {
       "title": "The Traveler's Survival Kit",

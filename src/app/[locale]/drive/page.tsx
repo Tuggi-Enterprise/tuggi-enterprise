@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { DriveHero } from "@/components/blocks/DriveHero";
 import { DriveBehavior } from "@/components/blocks/DriveBehavior";
+import { DriveSamples } from "@/components/blocks/DriveSamples";
 import { DriveFeatures } from "@/components/blocks/DriveFeatures";
 import { DrivePricing } from "@/components/blocks/DrivePricing";
 import { DriveConversion } from "@/components/blocks/DriveConversion";
@@ -23,6 +24,7 @@ export default async function DrivePage() {
     <article className="min-h-screen">
       <DriveHero />
       <DriveBehavior />
+      <DriveSamples />
       <DriveFeatures />
       <DrivePricing />
       <DriveConversion />
