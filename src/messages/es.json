@@ -163,7 +163,13 @@
       "title": "La Audioguía que Conduce Contigo.",
       "subtitle": "Sin desplazarse. Sin buscar. Solo configura tu idioma y deja que tu GPS active historias contextuales mientras conduces. Mantén tu mapa en la pantalla, controla tu Spotify o simplemente guarda tu teléfono. TUGGI se ejecuta perfectamente en segundo plano.",
       "downloadApp": "Descargar en la App Store",
-      "downloadPlay": "Disponible en Google Play"
+      "downloadPlay": "Disponible en Google Play",
+      "animatorLabel": "Reproduciendo",
+      "animatorPoi": "Miradouro da Serra",
+      "animatorAhead": "A su derecha",
+      "stopGuide": "Parar Guía",
+      "startGuide": "Iniciar Guía",
+      "ccText": "Miradouro da Serra, a 847 metros de altitud, ofrece una de las vistas más impresionantes de la región serrana, con un panorama de 360° sobre los valles y montañas circundantes..."
     },
     "Behavior": {
       "title": "Configúralo y Olvídate",

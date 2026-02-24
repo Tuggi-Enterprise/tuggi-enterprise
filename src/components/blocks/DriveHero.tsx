@@ -1,5 +1,6 @@
 import { useTranslations } from "next-intl";
 import { Apple, Play } from "lucide-react";
+import { DriveHeroAnimator } from "./DriveHeroAnimator";
 
 export function DriveHero() {
   const t = useTranslations("Drive.Hero");
@@ -37,42 +38,10 @@ export function DriveHero() {
             </div>
           </div>
 
-          {/* Abstract Visual Simulation */}
+          {/* Phone Mockup with Live Animation */}
           <div className="relative flex justify-center lg:justify-end">
-            <div className="w-[320px] h-[640px] bg-slate-900 rounded-[3rem] border-8 border-slate-800 shadow-2xl relative overflow-hidden flex flex-col justify-between">
-              
-              {/* Fake Waze Map UI in background */}
-              <div className="absolute inset-0 bg-[#E5E9E2]">
-                <div className="absolute top-[20%] left-[-20%] w-[150%] h-[150%] border-[20px] border-[#CBD1BE] rounded-full opacity-50"></div>
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-blue-500 border-4 border-white shadow-lg"></div>
-              </div>
-
-              {/* Status Bar */}
-              <div className="h-8 w-full bg-slate-900/10 backdrop-blur-md absolute top-0 flex items-center justify-center pointer-events-none">
-                <div className="w-1/3 h-4 bg-black rounded-b-xl"></div>
-              </div>
-
-              {/* Foreground TUGGI Element (Notification) */}
-              <div className="absolute top-16 left-4 right-4 bg-white/95 backdrop-blur-xl p-4 rounded-2xl shadow-xl border border-gray-100 flex items-start gap-4 transform transition-transform animate-bounce-slow">
-                <div className="w-10 h-10 bg-tuggi-dark rounded-full flex items-center justify-center flex-shrink-0">
-                  <span className="text-tuggi-primary font-bold text-xs">T.</span>
-                </div>
-                <div>
-                  <h4 className="text-sm font-bold text-tuggi-dark leading-tight">The Colosseum</h4>
-                  <p className="text-xs text-slate-500 mt-1">Playing audio... (2:15)</p>
-                  
-                  {/* Fake Audio Waveform */}
-                  <div className="flex gap-1 mt-3 items-end h-3">
-                     <span className="w-1 h-3 bg-tuggi-primary rounded-full animate-pulse"></span>
-                     <span className="w-1 h-1 bg-tuggi-primary rounded-full animate-pulse delay-75"></span>
-                     <span className="w-1 h-2 bg-tuggi-primary rounded-full animate-pulse delay-150"></span>
-                     <span className="w-1 h-3 bg-tuggi-primary rounded-full animate-pulse delay-200"></span>
-                     <span className="w-1 h-1 bg-tuggi-primary rounded-full animate-pulse delay-300"></span>
-                     <span className="w-1 h-2 bg-tuggi-primary rounded-full animate-pulse delay-[400ms]"></span>
-                  </div>
-                </div>
-              </div>
-
+            <div className="w-[320px] h-[640px] bg-slate-900 rounded-[3rem] border-8 border-slate-800 shadow-2xl relative overflow-hidden">
+              <DriveHeroAnimator />
             </div>
           </div>
           
