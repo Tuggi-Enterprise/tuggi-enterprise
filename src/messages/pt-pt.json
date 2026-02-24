@@ -47,12 +47,15 @@
       "ccTranscriptText": "À sua esquerda, Museu Nacional, observe a arquitetura preservada deste monumento erguido no século XVIII, que representa um marco histórico fundamental para a região e simboliza a resistência cultural do período colonial..."
     },
     "EnterpriseFork": {
-      "b2gTitle": "Para Cidades Inteligentes e Destinos",
-      "b2gDesc": "O City OS fornece soberania narrativa, mapeamento estrutural de turismo e conformidade legal garantida e entregue com segurança ao volante.",
+      "b2cTitle": "Para Turistas e Viajantes",
+      "b2cDesc": "Descarregue a aplicação e transforme a sua próxima viagem de carro numa imersão cultural guiada por GPS e 100% hands-free.",
+      "b2cLinkLabel": "Conhecer a App",
+      "b2gTitle": "Para Destinos Inteligentes (DTI)",
+      "b2gDesc": "Transforme o seu município com o City OS. Garanta soberania narrativa, conformidade legal e inteligência de dados com CAPEX mínimo.",
+      "b2gLinkLabel": "Conhecer o City OS",
       "b2bTitle": "Para Frotas e Rent-a-Car",
-      "b2bDesc": "Transforme a sua frota em guias locais automatizados. Opere com zero CAPEX e garanta enormes fluxos de receita auxiliar.",
-      "b2gLinkLabel": "City OS",
-      "b2bLinkLabel": "Frotas"
+      "b2bDesc": "Descomoditize a sua frota e dispare o seu NPS. Opere como um guia local automatizado e gere novas linhas de RevPA.",
+      "b2bLinkLabel": "Soluções para Frotas"
     }
   },
   "CityOS": {
@@ -87,7 +90,7 @@
       "demographicsDesc": "Saiba a demografia exata através de streams de áudio ativos."
     },
     "Mandate": {
-      "title": "Implementação Zero CAPEX e Prontidão para Megaeventos",
+      "title": "Implementação com CAPEX Mínimo e Prontidão para Megaeventos",
       "desc": "Distribua o OS sem gastos com marketing digital: códigos QR em parquímetros oficiais, portagens rodoviárias e totens de acesso histórico. Prontidão instantânea plug-and-play para influxos massivos, como os Jogos de Inverno de 2026 ou o Campeonato do Mundo.",
       "cta": "Solicitar Demonstração do City OS"
     }
@@ -95,13 +98,13 @@
   "Fleets": {
     "Hero": {
       "title": "Descomoditize a sua Frota. Aumente o seu RevPA.",
-      "subtitle": "Transforme o aluguer de um veículo padrão numa Experiência Cultural Premium. Gere receitas auxiliares massivas com zero investimento em hardware e custos de infraestrutura quase nulos.",
+      "subtitle": "Transforme o aluguer de um veículo padrão numa Experiência Cultural Premium. Gere receitas auxiliares massivas com mínimo investimento em hardware e custos de infraestrutura quase nulos.",
       "cta": "Seja Parceiro da TUGGI"
     },
     "Financial": {
       "col1Title": "RevPA Maximizado",
       "col1Desc": "Substitua a receita morta de aluguer de GPS por um gerador de margem de software-como-serviço escalável.",
-      "col2Title": "ZERO INVESTIMENTO EM HARDWARE",
+      "col2Title": "INVESTIMENTO MÍNIMO EM HARDWARE",
       "col2Desc": "Custo de Entrada Quase Nulo: Nenhum hardware especializado para comprar ou manter. O modelo é 100% BYOD (Bring Your Own Device), eliminando trocas de bateria e depreciação de equipamentos.",
       "col3Title": "Escalabilidade Instantânea",
       "col3Desc": "Implemente em toda a sua frota nacional em 24 horas via integração com QR Code no balcão de atendimento."
@@ -444,12 +447,17 @@
   },
   "SEO_CITY_OS": {
     "title": "TUGGI City OS | Infraestrutura para Destinos Inteligentes (DTI)",
-    "description": "Transforme o seu município num Destino Turístico Inteligente (DTI) com zero CAPEX. O TUGGI City OS entrega acessibilidade, inteligência de dados e governança da narrativa.",
+    "description": "Transforme o seu município num Destino Turístico Inteligente (DTI) com CAPEX mínimo. O TUGGI City OS entrega acessibilidade, inteligência de dados e governança da narrativa.",
     "ogTitle": "TUGGI City OS: A Infraestrutura DTI Definitiva"
   },
   "SEO_FLEETS": {
     "title": "TUGGI Frotas | Aumente o seu RevPA e NPS com o Copiloto Cultural",
-    "description": "Transforme o aluguer de veículos padrão numa Experiência Cultural Premium. Gere receita auxiliar massiva com zero CAPEX de hardware e impulsione o NPS da sua rent-a-car.",
+    "description": "Transforme o aluguer de veículos padrão numa Experiência Cultural Premium. Gere receita auxiliar massiva com mínimo investimento em hardware e impulsione o NPS da sua rent-a-car.",
     "ogTitle": "TUGGI Frotas: Receita Auxiliar e NPS para Rent-a-Car"
+  },
+  "SEO_PURPOSE": {
+    "title": "TUGGI | O Nosso Propósito e o Manifesto do Áudio",
+    "description": "Descubra a tese por trás do TUGGI. Porque acreditamos que o áudio é a forma mais natural de explorar o mundo e como estamos a devolver a soberania da narrativa às cidades.",
+    "ogTitle": "TUGGI: O Manifesto do Áudio e O Nosso Propósito"
   }
 }

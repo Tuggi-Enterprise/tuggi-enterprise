@@ -23,7 +23,7 @@ export function FleetsFinancial() {
             </p>
           </article>
 
-          {/* Column 2: Zero CAPEX */}
+          {/* Column 2: Minimal CAPEX */}
           <article className="bg-[#0B1220] p-10 border border-gray-800 rounded-md shadow-lg flex flex-col items-start gap-4 ring-1 ring-tuggi-primary/30">
             <div className="bg-tuggi-primary/20 p-4 rounded-md">
               <Banknote className="w-8 h-8 text-tuggi-primary" />

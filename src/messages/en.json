@@ -47,12 +47,15 @@
       "ccTranscriptText": "On your left, National Museum, observe the preserved architecture of this monument erected in the 18th century, which represents a fundamental historical landmark for the region and symbolizes the cultural resistance of the colonial period..."
     },
     "EnterpriseFork": {
-      "b2gTitle": "For Smart Cities & Destinations",
-      "b2gDesc": "City OS provides narrative sovereignty, structural tourism mapping, and guaranteed legal compliance safely delivered at the wheel.",
-      "b2bTitle": "For Fleets & Car Rentals",
-      "b2bDesc": "Transform your fleet into automated local guides. Drive zero CAPEX and secure massive ancillary revenue streams.",
-      "b2gLinkLabel": "City OS",
-      "b2bLinkLabel": "Fleets"
+      "b2cTitle": "For Tourists & Travelers",
+      "b2cDesc": "Download the app and transform your next road trip into a GPS-guided cultural immersion that is 100% hands-free.",
+      "b2cLinkLabel": "Explore the App",
+      "b2gTitle": "For Smart Destinations (DTI)",
+      "b2gDesc": "Transform your municipality with City OS. Ensure narrative sovereignty, legal compliance, and data intelligence with minimal CAPEX.",
+      "b2gLinkLabel": "Explore City OS",
+      "b2bTitle": "For Fleets & Rentals",
+      "b2bDesc": "De-commoditize your fleet and boost your NPS. Operate as an automated local guide and generate new RevPA streams.",
+      "b2bLinkLabel": "Fleet Solutions"
     }
   },
   "CityOS": {
@@ -87,7 +90,7 @@
       "demographicsDesc": "Know exact demographics via active audio streams."
     },
     "Mandate": {
-      "title": "Zero CAPEX Deployment & Mega-Event Readiness",
+      "title": "Minimal CAPEX Deployment & Mega-Event Readiness",
       "desc": "Distribute the OS without digital marketing spend: QR codes on official parking meters, highway toll booths, and historical access totems. Instant plug-and-play readiness for massive influxes like the 2026 Winter Games or World Cup.",
       "cta": "Request City OS Demo"
     }
@@ -95,13 +98,13 @@
   "Fleets": {
     "Hero": {
       "title": "De-commoditize Your Fleet. Boost Your RevPA.",
-      "subtitle": "Transform a standard vehicle rental into a Premium Cultural Experience. Generate massive ancillary revenue with zero hardware investment and near-zero infrastructure costs.",
+      "subtitle": "Transform a standard vehicle rental into a Premium Cultural Experience. Generate massive ancillary revenue with minimal hardware investment and near-zero infrastructure costs.",
       "cta": "Partner with TUGGI"
     },
     "Financial": {
       "col1Title": "Maximized RevPA",
       "col1Desc": "Replace dead GPS rental revenue with a scalable software-as-a-service margin driver.",
-      "col2Title": "ZERO HARDWARE INVESTMENT",
+      "col2Title": "MINIMAL HARDWARE INVESTMENT",
       "col2Desc": "Near-Zero Entry Cost: No specialized hardware to buy or maintain. The model is 100% BYOD (Bring Your Own Device), eliminating battery swaps and equipment depreciation.",
       "col3Title": "Instant Scalability",
       "col3Desc": "Deploy across your entire national fleet in 24 hours via QR Code integration at the counter."
@@ -444,12 +447,17 @@
   },
   "SEO_CITY_OS": {
     "title": "TUGGI City OS | Smart Tourism Destination Infrastructure",
-    "description": "Transform your municipality into a Smart Tourism Destination with zero CAPEX. TUGGI City OS delivers accessibility, data intelligence, and total narrative governance.",
+    "description": "Transform your municipality into a Smart Tourism Destination with minimal CAPEX. TUGGI City OS delivers accessibility, data intelligence, and total narrative governance.",
     "ogTitle": "TUGGI City OS: The Ultimate Smart Destination Infrastructure"
   },
   "SEO_FLEETS": {
     "title": "TUGGI Fleets | Boost RevPA and NPS with the Cultural Copilot",
-    "description": "Transform standard car rentals into a Premium Cultural Experience. Generate massive ancillary revenue with zero hardware CAPEX and boost your rental's NPS.",
+    "description": "Transform standard car rentals into a Premium Cultural Experience. Generate massive ancillary revenue with minimal hardware investment and boost your rental's NPS.",
     "ogTitle": "TUGGI Fleets: Ancillary Revenue and NPS for Rentals"
+  },
+  "SEO_PURPOSE": {
+    "title": "TUGGI | Our Purpose & The Audio Manifesto",
+    "description": "Discover the thesis behind TUGGI. Why we believe audio is the most natural way to explore the world and how we are giving narrative sovereignty back to destinations.",
+    "ogTitle": "TUGGI: The Audio Manifesto & Our Purpose"
   }
 }

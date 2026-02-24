@@ -1,16 +1,60 @@
 import { getTranslations } from "next-intl/server";
+import { Metadata } from "next";
 import { ShieldCheck, Zap, Crosshair, Diamond, Globe, Accessibility } from "lucide-react";
 
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ locale: string }>;
-}) {
+}): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "Metadata" });
+  const t = await getTranslations({ locale, namespace: "SEO_PURPOSE" });
+
+  const title = t("title");
+  const description = t("description");
+  const ogTitle = t("ogTitle");
+
+  // Construct proper canonical URL
+  const baseUrlPath = locale === "en" ? "/purpose" : `/${locale}/purpose`;
+  const url = `https://tuggi.app${baseUrlPath}`;
+
   return {
-    title: t("purposeTitle"),
-    description: t("purposeDescription"),
+    title,
+    description,
+    alternates: {
+      canonical: url,
+      languages: {
+        "en": "https://tuggi.app/purpose",
+        "es": "https://tuggi.app/es/purpose",
+        "pt-BR": "https://tuggi.app/pt-br/purpose",
+        "pt-PT": "https://tuggi.app/pt-pt/purpose",
+      },
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+    openGraph: {
+      title: ogTitle,
+      description,
+      url,
+      siteName: "TUGGI",
+      type: "website",
+      images: [
+        {
+          url: "/images/og-image-purpose.jpg", // MUST BE 1200x630 - CLEAN & INSPIRATIONAL
+          width: 1200,
+          height: 630,
+          alt: "TUGGI - The Audio Manifesto",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: ogTitle,
+      description,
+      images: ["/images/og-image-purpose.jpg"],
+    },
   };
 }
 
