@@ -443,6 +443,12 @@
       "v6Desc": "Projetado para ser consumido em diferentes perfis e idiomas nativos."
     }
   },
+  "NotFound": {
+    "title": "Território Inexplorado",
+    "subtitle": "Você tem liberdade total para ir a qualquer lugar e nosso app funciona offline, mas parece que você descobriu uma página que nós ainda não mapeamos.",
+    "backHome": "Voltar à Civilização",
+    "support": "Relatar ao Suporte"
+  },
   "Metadata": {
     "rootTitle": "Tuggi",
     "rootDescription": "Soluções Corporativas Tuggi",

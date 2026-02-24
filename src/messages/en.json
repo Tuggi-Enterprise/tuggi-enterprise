@@ -443,6 +443,12 @@
       "v6Desc": "Designed to be consumed across different profiles and native languages."
     }
   },
+  "NotFound": {
+    "title": "Uncharted Territory",
+    "subtitle": "You have total freedom to go anywhere and our app works offline, but it seems you've discovered a page that we haven't mapped yet.",
+    "backHome": "Back to Civilization",
+    "support": "Report to Support"
+  },
   "Metadata": {
     "rootTitle": "Tuggi",
     "rootDescription": "Tuggi Enterprise Solutions",

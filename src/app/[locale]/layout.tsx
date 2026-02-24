@@ -12,6 +12,10 @@ import "@/app/globals.css";
 
 const inter = Inter({ subsets: ["latin"], display: "swap" });
 
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
 export const viewport: Viewport = {
   themeColor: "#0B1220",
 };
