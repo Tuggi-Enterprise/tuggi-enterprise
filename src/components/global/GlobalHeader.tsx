@@ -92,6 +92,9 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
                     <Link
                       href={cleanPathname}
                       locale={loc.code as "en" | "es" | "pt-br" | "pt-pt"}
+                      onClick={() => {
+                        document.cookie = `NEXT_LOCALE=${loc.code}; path=/; max-age=31536000`;
+                      }}
                       className={`block px-4 py-2 text-sm font-medium ${
                         currentLocale === loc.code ? "text-tuggi-primary bg-slate-50" : "text-slate-600 hover:bg-slate-50 hover:text-tuggi-dark"
                       } focus:outline-none focus:bg-slate-50 transition-colors`}

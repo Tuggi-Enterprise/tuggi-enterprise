@@ -9,6 +9,8 @@ import { Viewport } from "next";
 import { GlobalHeader } from "@/components/global/GlobalHeader";
 import { FatFooter } from "@/components/global/FatFooter";
 import MicrosoftClarity from "@/components/global/MicrosoftClarity";
+import GoogleAnalyticsWrapper from "@/components/global/GoogleAnalyticsWrapper";
+import { CookieBanner } from "@/components/global/CookieBanner";
 import "@/app/globals.css";
 
 const inter = Inter({ subsets: ["latin"], display: "swap" });
@@ -74,8 +76,9 @@ export default async function RootLayout({
             {children}
           </main>
           <FatFooter />
+          <CookieBanner />
         </NextIntlClientProvider>
-        <GoogleAnalytics gaId="G-LFFNJDG7TJ" />
+        <GoogleAnalyticsWrapper gaId="G-LFFNJDG7TJ" />
         <MicrosoftClarity id="vmjex394bg" />
       </body>
     </html>

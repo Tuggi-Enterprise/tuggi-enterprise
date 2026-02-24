@@ -1,8 +1,9 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Apple, Play, Compass } from "lucide-react";
+import { Compass } from "lucide-react";
 import { sendGAEvent } from "@next/third-parties/google";
+import Image from "next/image";
 
 export function DriveConversion() {
   const t = useTranslations("Drive.Conversion");
@@ -29,27 +30,31 @@ export function DriveConversion() {
           {t("title")}
         </h2>
         
-        <div className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6">
+        <div className="flex flex-col sm:flex-row justify-center items-center gap-6 sm:gap-8">
           <button 
             onClick={() => sendGAEvent({ event: 'click_download', value: 'app_store' })}
-            className="w-full sm:w-auto flex items-center justify-center gap-3 bg-tuggi-dark text-white px-8 py-4 rounded-xl font-semibold hover:bg-slate-900 transition-colors shadow-xl"
+            className="hover:opacity-90 transition-opacity"
           >
-            <Apple className="w-6 h-6" />
-            <span className="flex flex-col items-start leading-none">
-              <span className="text-[10px] text-slate-300 uppercase tracking-widest">{t("downloadApp").split(" ")[0]}</span>
-              <span className="text-lg">App Store</span>
-            </span>
+            <Image 
+              src="/images/badges/app-store-badge.svg"
+              alt="Download on the App Store"
+              width={162}
+              height={48}
+              className="h-12 w-auto"
+            />
           </button>
           
           <button 
             onClick={() => sendGAEvent({ event: 'click_download', value: 'google_play' })}
-            className="w-full sm:w-auto flex items-center justify-center gap-3 bg-white text-tuggi-dark px-8 py-4 rounded-xl font-semibold hover:bg-gray-50 transition-colors shadow-xl"
+            className="hover:opacity-90 transition-opacity"
           >
-            <Play className="w-6 h-6" />
-            <span className="flex flex-col items-start leading-none">
-              <span className="text-[10px] text-slate-500 uppercase tracking-widest">{t("downloadPlay").split(" ")[0]}</span>
-              <span className="text-lg">Google Play</span>
-            </span>
+            <Image 
+              src="/images/badges/google-play-badge.svg"
+              alt="Get it on Google Play"
+              width={162}
+              height={48}
+              className="h-12 w-auto"
+            />
           </button>
         </div>
 

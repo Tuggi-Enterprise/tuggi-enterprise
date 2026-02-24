@@ -414,6 +414,11 @@
       "contactEmail": "accessibility@tuggi.app"
     }
   },
+  "CookieBanner": {
+    "text": "We use cookies to improve your experience and analyze traffic. By clicking 'Accept', you consent to our use of cookies.",
+    "accept": "Accept",
+    "decline": "Decline"
+  },
   "Purpose": {
     "Hero": {
       "title": "Before we see, we hear.",
