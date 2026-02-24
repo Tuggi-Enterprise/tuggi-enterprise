@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { Building2, Car, UserCircle2, Mail, Info, Loader2 } from "lucide-react";
+import { sendGAEvent } from "@next/third-parties/google";
 
 type TriageState = "B2G" | "B2B" | "B2C" | null;
 
@@ -61,6 +62,7 @@ export function ContactRouter() {
 
       if (response.ok) {
         setSubmitted(true);
+        sendGAEvent({ event: 'generate_lead', lead_type: type });
         // Reset form
         setFullName("");
         setEmail("");
@@ -281,6 +283,7 @@ export function ContactRouter() {
                       </p>
                       <a 
                         href="mailto:support@tuggi.app"
+                        onClick={() => sendGAEvent({ event: 'contact_support' })}
                         className="inline-flex items-center justify-center bg-emerald-500 text-white font-bold py-4 px-10 rounded-xl hover:bg-emerald-600 transition-colors shadow-lg shadow-emerald-500/30"
                       >
                         {t("B2C.cta")}

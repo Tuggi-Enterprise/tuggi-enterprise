@@ -1,6 +1,9 @@
+"use client";
+
 import { useTranslations } from "next-intl";
 import { Apple, Play } from "lucide-react";
 import { DriveHeroAnimator } from "./DriveHeroAnimator";
+import { sendGAEvent } from "@next/third-parties/google";
 
 export function DriveHero() {
   const t = useTranslations("Drive.Hero");
@@ -20,15 +23,21 @@ export function DriveHero() {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4">
-              <button className="flex items-center justify-center gap-3 bg-tuggi-dark text-white px-8 py-4 rounded-xl font-semibold hover:bg-slate-800 transition-colors shadow-lg">
+              <button 
+                onClick={() => sendGAEvent({ event: 'click_download', value: 'app_store' })}
+                className="flex items-center justify-center gap-3 bg-tuggi-dark text-white px-8 py-4 rounded-xl font-semibold hover:bg-slate-800 transition-colors shadow-lg"
+              >
                 <Apple className="w-6 h-6" />
                 <span className="flex flex-col items-start leading-none">
-                  <span className="text-[10px] text-slate-300 uppercase tracking-widest">{t("downloadApp").split(" ")[0]}</span>
+                   <span className="text-[10px] text-slate-300 uppercase tracking-widest">{t("downloadApp").split(" ")[0]}</span>
                   <span className="text-lg">App Store</span>
                 </span>
               </button>
               
-              <button className="flex items-center justify-center gap-3 bg-white text-tuggi-dark border border-gray-200 px-8 py-4 rounded-xl font-semibold hover:bg-gray-50 transition-colors shadow-lg">
+              <button 
+                onClick={() => sendGAEvent({ event: 'click_download', value: 'google_play' })}
+                className="flex items-center justify-center gap-3 bg-white text-tuggi-dark border border-gray-200 px-8 py-4 rounded-xl font-semibold hover:bg-gray-50 transition-colors shadow-lg"
+              >
                 <Play className="w-6 h-6" />
                 <span className="flex flex-col items-start leading-none">
                   <span className="text-[10px] text-slate-500 uppercase tracking-widest">{t("downloadPlay").split(" ")[0]}</span>

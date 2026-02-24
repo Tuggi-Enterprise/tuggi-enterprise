@@ -1,6 +1,9 @@
+"use client";
+
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { Building2, CarFront, ArrowRight, Compass } from "lucide-react";
+import { sendGAEvent } from "@next/third-parties/google";
 
 export function EnterpriseFork() {
   const t = useTranslations("Home.EnterpriseFork");
@@ -11,7 +14,11 @@ export function EnterpriseFork() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-7xl">
           
           {/* Card 1: B2C Route */}
-          <Link href="/drive" className="group flex flex-col p-10 bg-white border border-gray-200 rounded-md shadow-sm hover:border-tuggi-primary hover:shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-tuggi-primary focus:ring-offset-2">
+          <Link 
+            href="/drive" 
+            onClick={() => sendGAEvent({ event: 'click_enterprise_fork', value: 'b2c_drive' })}
+            className="group flex flex-col p-10 bg-white border border-gray-200 rounded-md shadow-sm hover:border-tuggi-primary hover:shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-tuggi-primary focus:ring-offset-2"
+          >
             <div className="w-16 h-16 bg-tuggi-bg text-tuggi-primary flex items-center justify-center rounded-sm mb-8 group-hover:bg-tuggi-primary group-hover:text-white transition-colors duration-300">
               <Compass className="w-8 h-8" />
             </div>
@@ -28,7 +35,11 @@ export function EnterpriseFork() {
           </Link>
 
           {/* Card 2: B2G Route */}
-          <Link href="/enterprise/city-os" className="group flex flex-col p-10 bg-white border border-gray-200 rounded-md shadow-sm hover:border-tuggi-primary hover:shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-tuggi-primary focus:ring-offset-2">
+          <Link 
+            href="/enterprise/city-os" 
+            onClick={() => sendGAEvent({ event: 'click_enterprise_fork', value: 'b2g_city_os' })}
+            className="group flex flex-col p-10 bg-white border border-gray-200 rounded-md shadow-sm hover:border-tuggi-primary hover:shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-tuggi-primary focus:ring-offset-2"
+          >
             <div className="w-16 h-16 bg-tuggi-bg text-tuggi-primary flex items-center justify-center rounded-sm mb-8 group-hover:bg-tuggi-primary group-hover:text-white transition-colors duration-300">
               <Building2 className="w-8 h-8" />
             </div>
@@ -45,7 +56,11 @@ export function EnterpriseFork() {
           </Link>
 
           {/* Card 3: B2B Route */}
-          <Link href="/enterprise/fleets" className="group flex flex-col p-10 bg-white border border-gray-200 rounded-md shadow-sm hover:border-tuggi-primary hover:shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-tuggi-primary focus:ring-offset-2">
+          <Link 
+            href="/enterprise/fleets" 
+            onClick={() => sendGAEvent({ event: 'click_enterprise_fork', value: 'b2b_fleets' })}
+            className="group flex flex-col p-10 bg-white border border-gray-200 rounded-md shadow-sm hover:border-tuggi-primary hover:shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-tuggi-primary focus:ring-offset-2"
+          >
             <div className="w-16 h-16 bg-tuggi-bg text-tuggi-primary flex items-center justify-center rounded-sm mb-8 group-hover:bg-tuggi-primary group-hover:text-white transition-colors duration-300">
               <CarFront className="w-8 h-8" />
             </div>

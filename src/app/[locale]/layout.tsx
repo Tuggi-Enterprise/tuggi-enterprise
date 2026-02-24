@@ -1,3 +1,4 @@
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
@@ -66,6 +67,7 @@ export default async function RootLayout({
           </main>
           <FatFooter />
         </NextIntlClientProvider>
+        <GoogleAnalytics gaId="G-LFFNJDG7TJ" />
       </body>
     </html>
   );
