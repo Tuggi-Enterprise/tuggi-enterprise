@@ -1,6 +1,7 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
-import { BadgeCheck, Activity } from "lucide-react";
+import { BadgeCheck } from "lucide-react";
+import { CityOSHeroAnimator } from "./CityOSHeroAnimator";
 
 export function CityOSHero() {
   const t = useTranslations("CityOS.Hero");
@@ -39,42 +40,11 @@ export function CityOSHero() {
               <div className="w-3 h-3 rounded-full bg-red-500/50"></div>
               <div className="w-3 h-3 rounded-full bg-yellow-500/50"></div>
               <div className="w-3 h-3 rounded-full bg-green-500/50"></div>
-              <div className="ml-4 text-[10px] font-mono text-gray-500 tracking-widest">SMART_DESTINATION_OS</div>
+              <div className="ml-4 text-[10px] font-mono text-gray-500 tracking-widest">Tuggi - CITY OS</div>
             </div>
-            {/* Interface Body */}
-            <div className="p-8 flex flex-col gap-8 bg-[#0E1525]">
-              <div className="flex justify-between items-center border-b border-gray-800 pb-6">
-                <h3 className="text-white font-semibold flex items-center gap-2 text-lg">
-                  <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                  Territorial Governance Matrix
-                </h3>
-                <span className="text-xs font-mono text-tuggi-primary bg-[#0B1220] px-3 py-1 border border-gray-800 rounded-sm">
-                  DTI: ACTIVE
-                </span>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-[#0B1220] border border-gray-800 p-4 rounded-sm flex flex-col gap-2">
-                  <span className="text-gray-500 text-xs uppercase font-bold tracking-wider">Legal Compliance</span>
-                  <span className="text-green-500 font-mono text-sm flex items-center gap-2">
-                    <BadgeCheck className="w-4 h-4" /> 100% Hands-Free
-                  </span>
-                </div>
-                <div className="bg-[#0B1220] border border-gray-800 p-4 rounded-sm flex flex-col gap-2">
-                  <span className="text-gray-500 text-xs uppercase font-bold tracking-wider">Accessibility</span>
-                  <span className="text-tuggi-primary font-mono text-sm flex items-center gap-2">
-                    <Activity className="w-4 h-4" /> WCAG 2.1 AA
-                  </span>
-                </div>
-              </div>
-
-              <div className="h-24 w-full bg-gradient-to-r from-tuggi-primary/20 to-transparent border border-tuggi-primary/30 rounded-sm flex items-center px-4 relative overflow-hidden">
-                <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px)", backgroundSize: "10px 10px" }}></div>
-                <div className="z-10 text-white font-mono text-xs">
-                  <p className="text-tuggi-primary">&gt; DEPLOYING GEO-TRIGGERS...</p>
-                  <p className="text-gray-400 mt-1">STATUS: SYNCED TO MUNICIPAL GRID</p>
-                </div>
-              </div>
+            {/* Interface Body — CMS Animation */}
+            <div className="relative overflow-hidden h-64">
+              <CityOSHeroAnimator />
             </div>
           </div>
         </div>
