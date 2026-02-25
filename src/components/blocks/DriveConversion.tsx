@@ -30,20 +30,20 @@ export function DriveConversion() {
           {t("title")}
         </h2>
         
-        <div className="flex flex-col sm:flex-row justify-center items-center gap-6 sm:gap-8">
+        <div className="flex flex-row justify-center items-center gap-4 sm:gap-8">
           <a 
             href="https://apps.apple.com/app/tuggi-drive/id6744379818"
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => sendGAEvent({ event: 'click_download', value: 'app_store' })}
-            className="hover:opacity-90 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-white rounded-xl"
+            className="hover:opacity-90 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-white rounded-xl shrink-0"
           >
             <Image 
               src="/images/badges/app-store-badge.svg"
               alt="Download on the App Store"
-              width={162}
-              height={48}
-              className="h-12 w-auto"
+              width={140}
+              height={42}
+              className="h-10 w-auto"
             />
           </a>
           
@@ -52,14 +52,14 @@ export function DriveConversion() {
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => sendGAEvent({ event: 'click_download', value: 'google_play' })}
-            className="hover:opacity-90 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-white rounded-xl"
+            className="hover:opacity-90 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-white rounded-xl shrink-0"
           >
             <Image 
               src="/images/badges/google-play-badge.svg"
               alt="Get it on Google Play"
-              width={162}
-              height={48}
-              className="h-12 w-auto"
+              width={140}
+              height={42}
+              className="h-10 w-auto"
             />
           </a>
         </div>
