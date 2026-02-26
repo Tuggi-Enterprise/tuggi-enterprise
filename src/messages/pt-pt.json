@@ -360,7 +360,7 @@
       "title": "Protocolo de Eliminação de Dados",
       "intro": "Tem controlo absoluto sobre a sua telemetria e registos de conta. No TUGGI, garantimos que o seu direito ao esquecimento seja respeitado em toda a nossa infraestrutura.",
       "formTitle": "Solicitar Eliminação de Conta",
-      "formDesc": "Insira o e-mail da sua conta abaixo. Enviaremos um Magic Link seguro para eliminar permanentemente os seus dados através da nossa infraestrutura de autenticação. Uma vez executada, esta ação é irreversível e os seus dados serão expurgados de todos os servidores TUGGI.",
+      "formDesc": "Insira o e-mail da sua conta abaixo. A nossa equipa analisará o seu pedido e processará a eliminação em até 24-48 horas úteis. Receberá um e-mail de confirmação assim que o processo for concluído.",
       "s1Title": "O que acontece com os meus dados?",
       "s1Desc": "Quando executa um pedido de eliminação:",
       "s1Item1": "O seu perfil de conta e credenciais de login são permanentemente removidos do nosso fornecedor de Autenticação.",
@@ -371,7 +371,7 @@
       "Form": {
         "placeholder": "o-seu@email.com",
         "submit": "Solicitar Eliminação de Dados",
-        "success": "Link Enviado"
+        "success": "Recebido - Respondemos em 48h"
       }
     },
     "Security": {

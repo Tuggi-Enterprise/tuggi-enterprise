@@ -360,7 +360,7 @@
       "title": "Data Deletion Protocol",
       "intro": "You hold absolute control over your telemetry and account records. At TUGGI, we ensure that your right to be forgotten is respected across our entire infrastructure.",
       "formTitle": "Request Account Deletion",
-      "formDesc": "Enter your account email below. We will send a secure Magic Link to permanently delete your data via our auth infrastructure. Once executed, this action is immutable and your data will be purged from all TUGGI servers.",
+      "formDesc": "Enter your account email below. Our team will review your request and process the deletion within 24-48 business hours. You will receive a confirmation email once the process is complete.",
       "s1Title": "What happens to my data?",
       "s1Desc": "When you execute a deletion request:",
       "s1Item1": "Your account profile and login credentials are permanently removed from our Auth provider.",
@@ -371,7 +371,7 @@
       "Form": {
         "placeholder": "your@email.com",
         "submit": "Request Data Deletion",
-        "success": "Magic Link Sent"
+        "success": "Request Received - We'll contact you in 48h"
       }
     },
     "Security": {

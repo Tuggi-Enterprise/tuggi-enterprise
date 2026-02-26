@@ -9,23 +9,33 @@ export function DataDeletionForm() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
 
+  const locale = useState(() => {
+    if (typeof window !== "undefined") {
+      const parts = window.location.pathname.split("/");
+      return parts[1] || "en";
+    }
+    return "en";
+  })[0];
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
 
     setStatus("loading");
     try {
-      // PREPARED FOR SUPABASE MAGIC LINK API
-      // const { error } = await supabase.auth.signInWithOtp({
-      //   email,
-      //   options: { emailRedirectTo: `${window.location.origin}/auth/callback?type=deletion` },
-      // });
-      // if (error) throw error;
+      const response = await fetch("/api/data-deletion", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, locale }),
+      });
+
+      if (!response.ok) throw new Error("Failed to submit request");
       
-      await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate network request
       setStatus("success");
     } catch (error) {
-      console.error("Error requesting deletion link:", error);
+      console.error("Error requesting deletion:", error);
       setStatus("error");
     }
   };

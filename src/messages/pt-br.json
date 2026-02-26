@@ -360,7 +360,7 @@
       "title": "Protocolo de Exclusão de Dados",
       "intro": "Você possui controle absoluto sobre sua telemetria e registros de conta. No TUGGI, garantimos que o seu direito ao esquecimento seja respeitado em toda a nossa infraestrutura.",
       "formTitle": "Solicitar Exclusão de Conta",
-      "formDesc": "Insira o e-mail da sua conta abaixo. Enviaremos um Magic Link seguro para excluir permanentemente seus dados através da nossa infraestrutura de autenticação. Uma vez executada, esta ação é irreversível e seus dados serão expurgados de todos os servidores TUGGI.",
+      "formDesc": "Insira o e-mail da sua conta abaixo. Nossa equipe revisará sua solicitação e processará a exclusão em até 24-48 horas úteis. Você receberá um e-mail de confirmação assim que o processo for concluído.",
       "s1Title": "O que acontece com os meus dados?",
       "s1Desc": "Quando você executa uma solicitação de exclusão:",
       "s1Item1": "Seu perfil de conta e credenciais de login são permanentemente removidos do nosso provedor de Autenticação.",
@@ -371,7 +371,7 @@
       "Form": {
         "placeholder": "seu@email.com",
         "submit": "Solicitar Exclusão de Dados",
-        "success": "Link Enviado"
+        "success": "Recebido - Retornamos em 48h"
       }
     },
     "Security": {
