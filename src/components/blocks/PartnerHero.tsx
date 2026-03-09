@@ -4,7 +4,6 @@ import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Download, Apple, PlayCircle, ShieldCheck, ArrowRight, Loader2 } from "lucide-react";
-import { supabase } from "@/lib/supabase";
 
 interface PartnerHeroProps {
   partnerId?: string;
@@ -19,7 +18,6 @@ export function PartnerHero({ partnerId }: PartnerHeroProps) {
   const [countdown, setCountdown] = useState(REDIRECT_DELAY_SECONDS);
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [platform, setPlatform] = useState<"ios" | "android" | "other">("other");
-  const redirectTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     // Hide Global Header & Footer for this LP
@@ -53,25 +51,18 @@ export function PartnerHero({ partnerId }: PartnerHeroProps) {
 
   const captureFingerprint = async (pId: string) => {
     try {
-      const ipResponse = await fetch("https://api.ipify.org?format=json");
-      const { ip } = await ipResponse.json();
-
-      const userAgent = navigator.userAgent;
-      const language = navigator.language;
-      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-      const { error } = await supabase
-        .schema("drive")
-        .from("click_fingerprints")
-        .insert({
-          ip_address: ip,
-          user_agent: userAgent,
-          language: language,
-          timezone: timezone,
+      const response = await fetch("/api/attribution", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
           partner_id: pId,
-        });
+          user_agent: navigator.userAgent,
+          language: navigator.language,
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        }),
+      });
 
-      if (!error) {
+      if (response.ok) {
         setIsLogged(true);
       }
     } catch (err) {
