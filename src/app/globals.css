@@ -3,14 +3,22 @@
 
 @theme {
   --font-inter: "Inter", sans-serif;
-  --color-tuggi-primary: #00A8E8;
-  --color-tuggi-secondary: #FF6F00;
-  --color-tuggi-dark: #0B1220;
-  --color-tuggi-slate: #5B6472;
-  --color-tuggi-bg: #F7F9FC;
+  --color-tuggi-primary: #00a8e8;
+  --color-tuggi-secondary: #ff6f00;
+  --color-tuggi-dark: #0b1220;
+  --color-tuggi-slate: #5b6472;
+  --color-tuggi-bg: #f7f9fc;
 }
 
 body {
   background-color: var(--color-tuggi-bg);
   color: var(--color-tuggi-slate);
+}
+
+/* LP Specific: Hide Global UI */
+.no-layout header,
+.no-layout footer,
+.no-layout #global-header,
+.no-layout #fat-footer {
+  display: none !important;
 }
