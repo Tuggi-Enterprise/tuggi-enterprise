@@ -16,14 +16,15 @@ export async function POST(req: Request) {
         }
 
         const data = await req.json();
-        const { partner_id, user_agent, language, timezone } = data;
+        const { partner_id, user_agent, language, timezone, client_ip } = data;
 
-        // Optimized IP Detection for Vercel + Cloudflare
-        const ip_address = req.headers.get("x-real-ip") ||
-            req.headers.get("x-vercel-forwarded-for") ||
-            req.headers.get("cf-connecting-ip") ||
-            req.headers.get("x-forwarded-for")?.split(",")[0] ||
-            "127.0.0.1";
+        // Use client-provided IP (to match App behavior) or fallback to server headers
+        const forwardedFor = req.headers.get("x-forwarded-for");
+        const server_ip = forwardedFor
+            ? forwardedFor.split(",")[0]
+            : "127.0.0.1";
+
+        const ip_address = client_ip || server_ip;
 
         if (!partner_id) {
             return NextResponse.json({ error: "Missing required fields" }, {

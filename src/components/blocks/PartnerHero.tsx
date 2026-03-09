@@ -51,11 +51,16 @@ export function PartnerHero({ partnerId }: PartnerHeroProps) {
 
   const captureFingerprint = async (pId: string) => {
     try {
+      // Get public IP from the client side to match the app's behavior
+      const ipResponse = await fetch("https://api.ipify.org?format=json");
+      const { ip } = await ipResponse.json();
+
       const response = await fetch("/api/attribution", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           partner_id: pId,
+          client_ip: ip, // Send the discovered IP
           user_agent: navigator.userAgent,
           language: navigator.language,
           timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
