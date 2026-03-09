@@ -18,11 +18,12 @@ export async function POST(req: Request) {
         const data = await req.json();
         const { partner_id, user_agent, language, timezone } = data;
 
-        // Get IP from headers (Vercel/Next.js standard)
-        const forwarderedFor = req.headers.get("x-forwarded-for");
-        const ip_address = forwarderedFor
-            ? forwarderedFor.split(",")[0]
-            : "127.0.0.1";
+        // Optimized IP Detection for Vercel + Cloudflare
+        const ip_address = req.headers.get("x-real-ip") ||
+            req.headers.get("x-vercel-forwarded-for") ||
+            req.headers.get("cf-connecting-ip") ||
+            req.headers.get("x-forwarded-for")?.split(",")[0] ||
+            "127.0.0.1";
 
         if (!partner_id) {
             return NextResponse.json({ error: "Missing required fields" }, {
