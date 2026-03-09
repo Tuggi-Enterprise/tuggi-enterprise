@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.tuggidrive.app",
+      "sha256_cert_fingerprints": [
+        "AD:A1:E3:DA:4B:15:29:80:63:5A:BA:41:80:3C:D8:86:7B:E8:F6:9A:63:C8:D8:CD:88:F0:5C:B1:0F:C6:B9:A8"
+      ]
+    }
+  }
+]
