@@ -11,7 +11,10 @@ export function EnterpriseFork() {
   return (
     <section className="w-full py-24 bg-white px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto space-y-8 flex flex-col items-center">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-7xl">
+        <div 
+          className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-7xl"
+          style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}
+        >
           
           {/* Card 1: B2C Route */}
           <Link 

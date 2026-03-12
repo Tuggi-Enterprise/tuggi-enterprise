@@ -1,14 +1,28 @@
+"use client";
+
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { BadgeCheck } from "lucide-react";
 import { CityOSHeroAnimator } from "./CityOSHeroAnimator";
+import { useEffect, useState } from "react";
 
 export function CityOSHero() {
   const t = useTranslations("CityOS.Hero");
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    setIsDesktop(window.innerWidth >= 1024);
+    const handleResize = () => setIsDesktop(window.innerWidth >= 1024);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
     <section className="relative w-full pt-32 pb-24 lg:pt-40 lg:pb-32 flex flex-col items-center border-b border-gray-200 bg-white px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto w-full flex flex-col lg:flex-row items-center gap-16">
+      <div 
+        className="max-w-7xl mx-auto w-full flex flex-col lg:flex-row items-center gap-16"
+        style={isDesktop ? { display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '4rem' } : {}}
+      >
         
         {/* Copy */}
         <div className="flex-1 text-center lg:text-left flex flex-col items-center lg:items-start space-y-8">

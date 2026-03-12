@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { LineChart, Smartphone, CarFront } from "lucide-react";
 import { motion, useMotionValue, useTransform, animate } from "framer-motion";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 function Counter({ value, prefix = "", suffix = "", duration = 2 }: { value: number; prefix?: string; suffix?: string; duration?: number }) {
   const count = useMotionValue(0);
@@ -23,10 +23,21 @@ function Counter({ value, prefix = "", suffix = "", duration = 2 }: { value: num
 
 export function FleetsHero() {
   const t = useTranslations("Fleets.Hero");
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    setIsDesktop(window.innerWidth >= 1024);
+    const handleResize = () => setIsDesktop(window.innerWidth >= 1024);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
     <section className="relative w-full pt-32 pb-24 lg:pt-40 lg:pb-32 flex flex-col items-center border-b border-gray-200 bg-white px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto w-full flex flex-col lg:flex-row items-center gap-16">
+      <div 
+        className="max-w-7xl mx-auto w-full flex flex-col lg:flex-row items-center gap-16"
+        style={isDesktop ? { display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '4rem' } : {}}
+      >
         
         {/* Copy Focus */}
         <div className="flex-1 text-center lg:text-left flex flex-col items-center lg:items-start space-y-6">
