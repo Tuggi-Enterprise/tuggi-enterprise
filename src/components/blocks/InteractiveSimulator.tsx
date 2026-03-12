@@ -118,7 +118,7 @@ export function InteractiveSimulator() {
         </div>
 
         {/* Enhanced Map Simulator */}
-        <div className="w-full lg:flex-1 bg-gradient-to-br from-[#0B1220] to-[#1a2332] rounded-2xl shadow-2xl border border-gray-700/50 p-0 relative overflow-hidden h-[360px] sm:h-[440px] lg:h-[500px]">
+        <div className="w-full lg:flex-1 bg-tuggi-dark rounded-2xl shadow-2xl border border-gray-700/50 p-0 relative overflow-hidden h-[400px] md:h-[500px]">
 
           {/* Realistic Map Background SVG */}
           <svg
@@ -132,9 +132,9 @@ export function InteractiveSimulator() {
                 <rect x={shrinkX} y="0" width={Math.max(0, vehiclePos.x - shrinkX)} height="500" />
               </clipPath>
             </defs>
-
+ 
             {/* Base layer */}
-            <rect width="600" height="500" fill="#111827" />
+            <rect width="600" height="500" fill="#0B1220" />
 
             {/* City blocks — solid fills, no patterns for max compatibility */}
             <g stroke="#374151" strokeWidth="1">
@@ -158,7 +158,7 @@ export function InteractiveSimulator() {
             <rect x="370" y="30" width="90" height="70" rx="6" fill="#14532d" stroke="#16a34a" strokeWidth="2"/>
 
             {/* Main streets */}
-            <g stroke="#4b6a8a" fill="none">
+            <g stroke="#334155" fill="none">
               <line x1="0" y1="110" x2="600" y2="110" strokeWidth="7" />
               <line x1="0" y1="230" x2="600" y2="230" strokeWidth="7" />
               <line x1="0" y1="340" x2="600" y2="340" strokeWidth="6" />
@@ -168,14 +168,14 @@ export function InteractiveSimulator() {
             </g>
 
             {/* Street center dashes */}
-            <g stroke="#6b8faa" fill="none" strokeDasharray="10 10" strokeWidth="1.5">
+            <g stroke="#475569" fill="none" strokeDasharray="10 10" strokeWidth="1.5">
               <line x1="0" y1="110" x2="600" y2="110" />
               <line x1="0" y1="230" x2="600" y2="230" />
               <line x1="260" y1="0" x2="260" y2="500" />
             </g>
 
             {/* Street labels */}
-            <g fill="#94a3b8" fontSize="9" fontFamily="monospace" fontWeight="700">
+            <g fill="#64748b" fontSize="9" fontFamily="monospace" fontWeight="700">
               <text x="270" y="225">RUA PRINCIPAL</text>
               <text x="130" y="18">AV. HISTÓRICA</text>
               <text x="25" y="105">R. DO COMÉRCIO</text>
