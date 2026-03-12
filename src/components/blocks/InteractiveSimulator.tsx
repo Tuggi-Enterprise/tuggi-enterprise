@@ -39,8 +39,14 @@ export function InteractiveSimulator() {
   const [hasTriggered, setHasTriggered] = useState(false);
   const [isWaitingAtEnd, setIsWaitingAtEnd] = useState(false);
   const [shrinkX, setShrinkX] = useState(50); // left boundary of the route reveal (route starts at x=50)
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
     const interval = setInterval(() => {
       setProgress((prev) => {
         // If waiting at end, stay at 100
@@ -66,10 +72,11 @@ export function InteractiveSimulator() {
       });
     }, 40);
     return () => clearInterval(interval);
-  }, [hasTriggered, isWaitingAtEnd]);
+  }, [hasTriggered, isWaitingAtEnd, mounted]);
 
   // Shrink the blue route line from start→end as a 30s countdown, then reset
   useEffect(() => {
+    if (!mounted) return;
     if (isWaitingAtEnd) {
       setShrinkX(50);
       const increment = 500 / 750; // 500px over 750 steps × 40ms = 30s
@@ -80,10 +87,11 @@ export function InteractiveSimulator() {
     } else {
       setShrinkX(50);
     }
-  }, [isWaitingAtEnd]);
+  }, [isWaitingAtEnd, mounted]);
 
   // Reset animation when countdown (shrink) completes
   useEffect(() => {
+    if (!mounted) return;
     if (isWaitingAtEnd && shrinkX >= 550) {
       setProgress(0);
       setShowCC(false);
@@ -92,7 +100,7 @@ export function InteractiveSimulator() {
       setIsWaitingAtEnd(false);
       setShrinkX(50);
     }
-  }, [shrinkX, isWaitingAtEnd]);
+  }, [shrinkX, isWaitingAtEnd, mounted]);
 
   const toggleCC = () => {
     setShowCC(!showCC);
@@ -100,25 +108,37 @@ export function InteractiveSimulator() {
 
   const vehiclePos = generateRoutePath(progress);
 
+  // Return a shell/placeholder during SSR to maintain height and layout
+  if (!mounted) {
+    return (
+      <section className="w-full py-12 md:py-24 bg-gray-50 flex flex-col items-center border-b border-gray-200 px-4 sm:px-8">
+        <div className="max-w-7xl mx-auto w-full flex flex-col lg:flex-row gap-10 lg:gap-16 items-center">
+          <div className="flex-1 h-32" />
+          <div className="w-full lg:flex-1 bg-slate-900 rounded-2xl h-[400px] md:h-[500px]" />
+        </div>
+      </section>
+    );
+  }
+
   return (
-    <section className="w-full py-16 sm:py-24 bg-tuggi-bg flex flex-col items-center border-b border-gray-200 px-4 sm:px-6 lg:px-8">
+    <section className="w-full py-12 md:py-24 bg-gray-50 flex flex-col items-center border-b border-gray-200 px-4 sm:px-8">
       <div className="max-w-7xl mx-auto w-full flex flex-col lg:flex-row gap-10 lg:gap-16 items-center">
         {/* Copy */}
         <div className="flex-1 space-y-4 sm:space-y-6">
-          <div className="inline-flex items-center space-x-2 text-tuggi-primary font-semibold tracking-wider text-sm uppercase">
+          <div className="inline-flex items-center space-x-2 text-blue-500 font-semibold tracking-wider text-sm uppercase">
             <Radio className="w-5 h-5" />
             <span>{t("tag")}</span>
           </div>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-tuggi-dark">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-slate-900">
             {t("title")}
           </h2>
-          <p className="text-base sm:text-lg text-tuggi-slate leading-relaxed max-w-prose">
+          <p className="text-base sm:text-lg text-slate-600 leading-relaxed max-w-prose">
             {t("subtitle")}
           </p>
         </div>
 
         {/* Enhanced Map Simulator */}
-        <div className="w-full lg:flex-1 bg-tuggi-dark rounded-2xl shadow-2xl border border-gray-700/50 p-0 relative overflow-hidden h-[400px] md:h-[500px]">
+        <div className="w-full lg:flex-1 bg-slate-950 rounded-2xl shadow-2xl border border-gray-800 p-0 relative overflow-hidden h-[400px] md:h-[500px]">
 
           {/* Realistic Map Background SVG */}
           <svg
@@ -128,13 +148,13 @@ export function InteractiveSimulator() {
             preserveAspectRatio="xMidYMid slice"
           >
             <defs>
-              <clipPath id="route-reveal">
+              <clipPath id="tuggi-simulator-clip">
                 <rect x={shrinkX} y="0" width={Math.max(0, vehiclePos.x - shrinkX)} height="500" />
               </clipPath>
             </defs>
  
             {/* Base layer */}
-            <rect width="600" height="500" fill="#0B1220" />
+            <rect width="600" height="500" fill="#020617" />
 
             {/* City blocks — solid fills, no patterns for max compatibility */}
             <g stroke="#374151" strokeWidth="1">
@@ -246,7 +266,7 @@ export function InteractiveSimulator() {
               strokeWidth="5"
               fill="none"
               strokeLinecap="round"
-              clipPath="url(#route-reveal)"
+              clipPath="url(#tuggi-simulator-clip)"
             />
 
             {/* POI Marker on Main Street */}
