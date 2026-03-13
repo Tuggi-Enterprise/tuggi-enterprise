@@ -1,4 +1,20 @@
 {
+  "Download": {
+    "metaTitle": "Download Tuggi - Seu Copiloto Cultural",
+    "metaDesc": "Baixe o app Tuggi e descubra o mundo enquanto dirige.",
+    "partnerBadge": "CONVITE PARCEIRO TUGGI ATIVADO",
+    "heroTitle1": "Sua experiência",
+    "heroTitle2": "cultural",
+    "heroTitle3": "já começou.",
+    "heroSubtitle": "Estamos preparando tudo para você. Você será redirecionado para a loja oficial em instantes.",
+    "redirecting": "Redirecionando",
+    "openingStore": "Abrindo loja...",
+    "initializing": "Iniciando download para",
+    "cta": "IR PARA A LOJA AGORA",
+    "officialApp": "App Oficial",
+    "trustFooter": "Conexão Segura • Distribuição Oficial • Powered by Tuggi",
+    "loading": "Carregando..."
+  },
   "Header": {
     "navPlatform": "Plataforma",
     "navCityOs": "City OS",

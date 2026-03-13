@@ -1,4 +1,4 @@
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PartnerHeroWrapper } from "@/components/blocks/PartnerHeroWrapper";
 
 export async function generateMetadata({
@@ -7,11 +7,13 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "Download" });
+  
   return {
-    title: locale === "pt-br" ? "Baixar Tuggi - Seu Copiloto Cultural" : "Download Tuggi - Your Cultural Copilot",
-    description: "Baixe o app Tuggi e descubra o mundo enquanto dirige.",
+    title: t("metaTitle"),
+    description: t("metaDesc"),
     robots: {
-        index: false, // Don't index partner landing pages to avoid cluttering SEO
+        index: false,
         follow: true,
     }
   };

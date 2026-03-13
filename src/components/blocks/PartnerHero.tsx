@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
@@ -81,6 +82,8 @@ export function PartnerHero({ partnerId }: PartnerHeroProps) {
     window.location.href = targetUrl;
   };
 
+  const t = useTranslations("Download");
+
   return (
     <section className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-slate-950 text-white selection:bg-tuggi-secondary selection:text-white">
       {/* Background with animated gradients */}
@@ -97,7 +100,7 @@ export function PartnerHero({ partnerId }: PartnerHeroProps) {
           className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-semibold text-tuggi-secondary mb-8 backdrop-blur-xl"
         >
           <ShieldCheck size={16} className="animate-pulse" />
-          CONVITE PARCEIRO TUGGI ATIVADO
+          {t("partnerBadge")}
         </motion.div>
 
         {/* Main Content */}
@@ -109,19 +112,19 @@ export function PartnerHero({ partnerId }: PartnerHeroProps) {
             className="text-center lg:text-left order-2 lg:order-1"
           >
             <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 leading-tight">
-              Sua experiência <br />
-              <span className="text-tuggi-secondary italic">cultural</span> já começou.
+              {t("heroTitle1")} <br />
+              <span className="text-tuggi-secondary italic">{t("heroTitle2")}</span> {t("heroTitle3")}
             </h1>
             
             <p className="text-slate-400 text-lg mb-8 leading-relaxed max-w-lg mx-auto lg:mx-0">
-              Estamos preparando tudo para você. Você será redirecionado para a loja oficial em instantes.
+              {t("heroSubtitle")}
             </p>
 
             {/* Redirection Status Card */}
             <div className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-2xl shadow-2xl relative overflow-hidden group">
               <div className="relative z-10 flex flex-col gap-4">
                 <div className="flex items-center justify-between font-bold text-sm uppercase tracking-widest text-slate-500">
-                  <span>Redirecionando</span>
+                  <span>{t("redirecting")}</span>
                   <span className="text-tuggi-secondary">{countdown}s</span>
                 </div>
                 
@@ -142,7 +145,7 @@ export function PartnerHero({ partnerId }: PartnerHeroProps) {
                     <div className="w-2 h-2 rounded-full bg-tuggi-secondary animate-ping" />
                   )}
                   <span className="text-sm font-medium">
-                    {isRedirecting ? "Abrindo loja..." : `Iniciando download para ${platform === 'ios' ? 'iPhone' : 'Android'}...`}
+                    {isRedirecting ? t("openingStore") : `${t("initializing")} ${platform === 'ios' ? 'iPhone' : 'Android'}...`}
                   </span>
                 </div>
 
@@ -150,7 +153,7 @@ export function PartnerHero({ partnerId }: PartnerHeroProps) {
                   onClick={handleRedirect}
                   className="mt-2 flex items-center justify-center gap-2 w-full py-4 bg-white text-slate-950 font-black rounded-xl hover:scale-[1.02] active:scale-95 transition-all group"
                 >
-                  IR PARA A LOJA AGORA
+                  {t("cta")}
                   <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
                 </button>
               </div>
@@ -184,7 +187,7 @@ export function PartnerHero({ partnerId }: PartnerHeroProps) {
                   <Download size={18} className="text-white" />
                 </div>
                 <div className="text-left">
-                  <div className="text-[10px] font-bold uppercase opacity-50">App Oficial</div>
+                  <div className="text-[10px] font-bold uppercase opacity-50">{t("officialApp")}</div>
                   <div className="text-sm font-black">TUGGI DRIVE</div>
                 </div>
               </motion.div>
@@ -203,7 +206,7 @@ export function PartnerHero({ partnerId }: PartnerHeroProps) {
           transition={{ delay: 1 }}
           className="mt-16 text-slate-600 text-[10px] uppercase tracking-[0.2em] font-bold"
         >
-          Secure Connection &bull; Official App Distribution &bull; Powered by Tuggi
+          {t("trustFooter")}
         </motion.div>
       </div>
     </section>
