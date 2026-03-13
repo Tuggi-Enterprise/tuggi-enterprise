@@ -9,9 +9,22 @@ interface AudioCardProps {
   location: string;
   dirSrc: string;
   descSrc: string;
+  directionalLabel: string;
+  storyLabel: string;
+  playLabel: string;
+  pauseLabel: string;
 }
 
-function AudioCard({ title, location, dirSrc, descSrc }: AudioCardProps) {
+function AudioCard({ 
+  title, 
+  location, 
+  dirSrc, 
+  descSrc, 
+  directionalLabel, 
+  storyLabel,
+  playLabel,
+  pauseLabel
+}: AudioCardProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [activePart, setActivePart] = useState<1 | 2>(1); // 1 = Directional, 2 = Descriptive
   const dirAudioRef = useRef<HTMLAudioElement>(null);
@@ -51,7 +64,7 @@ function AudioCard({ title, location, dirSrc, descSrc }: AudioCardProps) {
         <button 
           onClick={handlePlayPause}
           className="w-12 h-12 rounded-full bg-tuggi-primary text-white flex items-center justify-center hover:bg-blue-500 transition-colors flex-shrink-0 shadow-[0_0_15px_rgba(0,168,232,0.3)] focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-tuggi-dark"
-          aria-label={isPlaying ? "Pause" : "Play"}
+          aria-label={isPlaying ? pauseLabel : playLabel}
         >
           {isPlaying ? <Pause className="w-5 h-5" aria-hidden="true" /> : <Play className="w-5 h-5 ml-1" aria-hidden="true" />}
         </button>
@@ -61,12 +74,12 @@ function AudioCard({ title, location, dirSrc, descSrc }: AudioCardProps) {
       <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-wider">
         <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-colors ${activePart === 1 ? 'bg-tuggi-primary/20 text-tuggi-primary' : 'bg-slate-800 text-slate-500'}`}>
           <Navigation className="w-3 h-3" aria-hidden="true" />
-          <span>Direcional</span>
+          <span>{directionalLabel}</span>
         </div>
         <div className="w-4 h-px bg-slate-700" aria-hidden="true"></div>
         <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-colors ${activePart === 2 ? 'bg-tuggi-secondary/20 text-tuggi-secondary' : 'bg-slate-800 text-slate-500'}`}>
           <Volume2 className="w-3 h-3" aria-hidden="true" />
-          <span>História</span>
+          <span>{storyLabel}</span>
         </div>
       </div>
 
@@ -102,18 +115,30 @@ export function DriveSamples() {
             location={t("sample1Loc")}
             dirSrc="/audio/sample1-dir.mp3"
             descSrc="/audio/sample1-desc.mp3"
+            directionalLabel={t("directional")}
+            storyLabel={t("story")}
+            playLabel={t("play")}
+            pauseLabel={t("pause")}
           />
           <AudioCard 
             title={t("sample2Title")}
             location={t("sample2Loc")}
             dirSrc="/audio/sample2-dir.mp3"
             descSrc="/audio/sample2-desc.mp3"
+            directionalLabel={t("directional")}
+            storyLabel={t("story")}
+            playLabel={t("play")}
+            pauseLabel={t("pause")}
           />
           <AudioCard 
             title={t("sample3Title")}
             location={t("sample3Loc")}
             dirSrc="/audio/sample3-dir.mp3"
             descSrc="/audio/sample3-desc.mp3"
+            directionalLabel={t("directional")}
+            storyLabel={t("story")}
+            playLabel={t("play")}
+            pauseLabel={t("pause")}
           />
         </div>
 

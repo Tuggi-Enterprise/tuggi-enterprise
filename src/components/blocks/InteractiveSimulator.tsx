@@ -150,8 +150,8 @@ export function InteractiveSimulator() {
             </g>
 
             <g fill="#475569" fontSize="8" fontFamily="sans-serif" fontWeight="bold">
-              <text x="270" y="225">RUA PRINCIPAL</text>
-              <text x="130" y="18">AV. HISTÓRICA</text>
+              <text x="270" y="225">{t("mainStreet")}</text>
+              <text x="130" y="18">{t("historicAve")}</text>
             </g>
 
             <g transform="translate(415, 65)">
@@ -253,7 +253,7 @@ export function InteractiveSimulator() {
                         </div>
                         <div className="min-w-0">
                           <p className="text-[10px] sm:text-xs text-slate-400 font-bold uppercase tracking-wider mb-0.5">
-                            Navegando
+                            {t("navigating")}
                           </p>
                           <p className="text-slate-200 font-semibold text-sm sm:text-base truncate">
                             {t("approaching")}
@@ -298,7 +298,7 @@ export function InteractiveSimulator() {
           <div className="absolute top-3 left-3 sm:top-6 sm:left-6 px-3 py-1.5 sm:px-4 sm:py-2 bg-black/50 backdrop-blur-md rounded-full border border-gray-700/50">
             <p className="text-[10px] sm:text-xs text-gray-400 font-semibold flex items-center space-x-2">
               <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-[#00A8E8] rounded-full animate-pulse"></span>
-              <span>DEMO AO VIVO</span>
+              <span>{t("liveDemo")}</span>
             </p>
           </div>
         </div>
