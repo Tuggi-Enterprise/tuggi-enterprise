@@ -10,6 +10,7 @@ import { GlobalHeader } from "@/components/global/GlobalHeader";
 import { FatFooter } from "@/components/global/FatFooter";
 import MicrosoftClarity from "@/components/global/MicrosoftClarity";
 import GoogleAnalyticsWrapper from "@/components/global/GoogleAnalyticsWrapper";
+import ApolloTracker from "@/components/global/ApolloTracker";
 import { CookieBanner } from "@/components/global/CookieBanner";
 import { JsonLd } from "@/components/global/JsonLd";
 import "@/app/globals.css";
@@ -100,6 +101,7 @@ export default async function RootLayout({
           <JsonLd locale={locale} />
         </NextIntlClientProvider>
         <GoogleAnalyticsWrapper gaId="G-LFFNJDG7TJ" />
+        <ApolloTracker appId="69a093d7a5444f000d2d36d6" />
         <MicrosoftClarity id="vmjex394bg" />
       </body>
     </html>
