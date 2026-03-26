@@ -101,18 +101,41 @@ export function PartnerHero({ partnerId, partnerData }: PartnerHeroProps) {
 
     const playOnInteraction = () => {
       const trackToPlay = currentTrack === "main" ? audio : callAudio;
-      if (!trackToPlay.paused) return; // already playing
-      trackToPlay.play().then(() => {
-        setIsAudioPlaying(true);
-        setAutoplayBlocked(false);
-        setAudioReady(true);
-      }).catch((e) => console.warn(e));
-      document.removeEventListener("click", playOnInteraction, true);
-      document.removeEventListener("touchstart", playOnInteraction, true);
+      if (!trackToPlay.paused) {
+        document.removeEventListener("click", playOnInteraction, true);
+        document.removeEventListener("touchstart", playOnInteraction, true);
+        return;
+      }
+      
+      const playPromise = trackToPlay.play();
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          setIsAudioPlaying(true);
+          setAutoplayBlocked(false);
+          setAudioReady(true);
+
+          // Prime the secondary track synchronously so iOS unlocks it
+          if (currentTrack === "main") {
+            callAudio.play().then(() => {
+              callAudio.pause();
+              callAudio.currentTime = 0;
+            }).catch(() => {});
+          }
+
+          // Dispara tag de auto-play engatado
+          trackEvent("download_page_audio_auto_played");
+
+          // Only remove listeners after successful playback
+          document.removeEventListener("click", playOnInteraction, true);
+          document.removeEventListener("touchstart", playOnInteraction, true);
+        }).catch((e) => {
+          console.warn("Autoplay still blocked on this interaction:", e);
+        });
+      }
     };
 
-    document.addEventListener("click", playOnInteraction, { once: true, capture: true });
-    document.addEventListener("touchstart", playOnInteraction, { once: true, capture: true });
+    document.addEventListener("click", playOnInteraction, { capture: true });
+    document.addEventListener("touchstart", playOnInteraction, { capture: true });
 
     audio.addEventListener("canplaythrough", () => {
       setAudioReady(true);
@@ -183,6 +206,7 @@ export function PartnerHero({ partnerId, partnerData }: PartnerHeroProps) {
     if (isAudioPlaying) {
       current.pause();
       setIsAudioPlaying(false);
+      trackEvent("download_page_play_button_click", { action: "pause" });
     } else {
       if (current === callAudio && callAudio.ended) {
         audio.currentTime = 0;
@@ -193,6 +217,7 @@ export function PartnerHero({ partnerId, partnerData }: PartnerHeroProps) {
       current.play().then(() => {
         setIsAudioPlaying(true);
         setAutoplayBlocked(false);
+        trackEvent("download_page_play_button_click", { action: "play" });
       }).catch((e) => {
         console.warn("Audio play failed:", e);
       });
@@ -220,6 +245,38 @@ export function PartnerHero({ partnerId, partnerData }: PartnerHeroProps) {
 
   // countdown state removed. The redirection is purely manual now to generate desire. 
   
+  // Helper de Tagueamento (GA4 Nativo / gtag.js)
+  const trackEvent = (eventName: string, details?: any) => {
+    // 1. Console log visível para auditoria local
+    console.log(`[Tagueamento] ${eventName}`, details || "");
+    
+    // 2. Disparo oficial pro Google Analytics (gtag)
+    if (typeof window !== "undefined") {
+      const payload = {
+        partner_id: partnerId,
+        platform: platform,
+        ...details
+      };
+
+      if (typeof (window as any).gtag === "function") {
+        (window as any).gtag("event", eventName, payload);
+      } else {
+        // Fallback genérico caso a gtag ainda não tenha carregado
+        const dataLayer = (window as any).dataLayer || [];
+        dataLayer.push({ event: eventName, ...payload });
+        (window as any).dataLayer = dataLayer;
+      }
+    }
+  };
+
+  // Dispara um page_view dedicado desta tela para contabilizar os IDs unicamente
+  useEffect(() => {
+    if (partnerId) {
+      trackEvent("partner_download_page_view");
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [partnerId]);
+
   const captureFingerprint = async (pId: string) => {
     try {
       const ipResponse = await fetch("https://api.ipify.org?format=json");
@@ -247,6 +304,7 @@ export function PartnerHero({ partnerId, partnerData }: PartnerHeroProps) {
 
   const handleRedirect = () => {
     setIsRedirecting(true);
+    trackEvent("download_page_cta_click", { target_store: platform === "ios" ? "app_store" : "play_store" });
     const targetUrl = platform === "ios" ? APP_STORE_URL : PLAY_STORE_URL;
     window.location.href = targetUrl;
   };
@@ -255,8 +313,14 @@ export function PartnerHero({ partnerId, partnerData }: PartnerHeroProps) {
 
   const [isDescExpanded, setIsDescExpanded] = useState(false);
   const descriptionText = partnerData?.description || t("heroSubtitle");
-  const maxDescLength = 120;
+  const maxDescLength = 220;
   const isLongDesc = descriptionText.length > maxDescLength;
+
+  // Inline translation pro MORE/LESS local
+  const isPt = locale.includes("pt");
+  const isEs = locale.includes("es");
+  const tMore = isPt ? "MAIS" : isEs ? "MÁS" : "MORE";
+  const tLess = isPt ? "MENOS" : isEs ? "MENOS" : "LESS";
 
   return (
     <section className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-tuggi-bg text-tuggi-dark">
@@ -274,7 +338,7 @@ export function PartnerHero({ partnerId, partnerData }: PartnerHeroProps) {
         />
       </div>
 
-      <div className="container relative z-10 mx-auto px-5 flex flex-col items-center justify-center min-h-screen pt-10 pb-8">
+      <div className="container relative z-10 mx-auto px-5 flex flex-col items-center min-h-screen pt-[12vh] pb-8">
         {/* Main Content */}
         <div className="max-w-md w-full flex flex-col items-center pb-28">
           
@@ -311,7 +375,7 @@ export function PartnerHero({ partnerId, partnerData }: PartnerHeroProps) {
                     {partnerData.name}
                   </span>
                   <span className="block text-lg md:text-xl font-medium text-tuggi-slate mt-3">
-                    Your <span className="text-tuggi-secondary italic font-bold">Experiences</span> start now!
+                    {t("heroTitle1")} <span className="text-tuggi-secondary italic font-bold">{t("heroTitle2")}</span> {t("heroTitle3")}
                   </span>
                 </>
               ) : (
@@ -331,10 +395,14 @@ export function PartnerHero({ partnerId, partnerData }: PartnerHeroProps) {
               {isDescExpanded || !isLongDesc ? descriptionText : `${descriptionText.substring(0, maxDescLength)}...`}
               {isLongDesc && (
                 <button 
-                  onClick={() => setIsDescExpanded(!isDescExpanded)}
+                  onClick={() => {
+                    const newState = !isDescExpanded;
+                    setIsDescExpanded(newState);
+                    trackEvent("download_page_description_toggle", { action: newState ? "expand" : "collapse" });
+                  }}
                   className="ml-1.5 text-tuggi-primary font-semibold text-xs focus:outline-none uppercase tracking-wider hover:underline"
                 >
-                  {isDescExpanded ? 'LESS' : 'MORE'}
+                  {isDescExpanded ? tLess : tMore}
                 </button>
               )}
             </p>
@@ -347,51 +415,60 @@ export function PartnerHero({ partnerId, partnerData }: PartnerHeroProps) {
                 transition={{ delay: 0.3 }}
                 className="w-full max-w-sm mx-auto"
               >
-                <div className="p-[1.5px] rounded-2xl bg-gradient-to-r from-tuggi-primary via-tuggi-secondary to-tuggi-primary">
-                  <div className="bg-tuggi-dark rounded-2xl overflow-hidden">
+                <div className="relative bg-white rounded-2xl p-4 shadow-[0_8px_32px_rgba(8,17,33,0.06)] border border-slate-100/60 flex flex-col gap-3">
+                  <div className="flex items-center gap-3">
+                    {/* AVATAR / SOUNDWAVE */}
+                    <div className="relative w-12 h-12 rounded-full bg-tuggi-bg flex items-center justify-center shrink-0">
+                      {isAudioPlaying ? (
+                        <>
+                          <SoundWave isPlaying={true} dark={false} />
+                          <span className="absolute inset-0 rounded-full border border-tuggi-primary animate-ping opacity-20"></span>
+                        </>
+                      ) : autoplayBlocked ? (
+                        <Play size={20} className="text-tuggi-primary ml-1" />
+                      ) : (
+                        <SoundWave isPlaying={false} dark={false} />
+                      )}
+                    </div>
+
+                    {/* TEXT INFO */}
+                    <div className="flex-1 text-left min-w-0">
+                      <p className="font-bold text-tuggi-dark truncate text-sm">
+                        {partnerData.name || 'TUGGI'}
+                      </p>
+                      <p className="text-[11px] text-tuggi-slate flex items-center gap-1.5 mt-0.5 font-medium">
+                        {isAudioPlaying ? (
+                          <span className="text-tuggi-primary flex items-center gap-1.5">
+                            <span className="relative flex h-1.5 w-1.5">
+                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-tuggi-primary opacity-75"></span>
+                              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-tuggi-primary"></span>
+                            </span>
+                            Playing 
+                          </span>
+                        ) : autoplayBlocked ? (
+                          'Tap the play button'
+                        ) : (
+                          'Paused'
+                        )}
+                      </p>
+                    </div>
+
+                    {/* BIG PLAY BUTTON */}
                     <button
                       onClick={toggleAudio}
-                      className="w-full px-4 py-3 flex items-center gap-3 text-left focus:outline-none active:bg-white/5 transition-colors"
+                      className="w-10 h-10 rounded-full bg-tuggi-dark text-white shadow-md flex items-center justify-center focus:outline-none hover:scale-105 active:scale-95 transition-all"
                     >
-                      {/* Sound Wave / Play Icon */}
-                      <div className="w-10 h-10 rounded-full bg-tuggi-primary/20 flex items-center justify-center flex-shrink-0">
-                        {isAudioPlaying ? (
-                          <SoundWave isPlaying={true} dark={true} />
-                        ) : autoplayBlocked ? (
-                          <Play size={16} className="text-tuggi-primary ml-0.5" />
-                        ) : (
-                          <SoundWave isPlaying={false} dark={true} />
-                        )}
-                      </div>
-
-                      {/* Info */}
-                      <div className="flex-1 min-w-0">
-                        <p className="font-bold text-sm text-white truncate leading-tight">
-                          {partnerData.name || 'TUGGI'}
-                        </p>
-                        <p className="text-[11px] text-slate-400 leading-tight mt-0.5">
-                          {isAudioPlaying ? 'Playing...' : autoplayBlocked ? 'Tap to listen' : 'Paused'}
-                        </p>
-                      </div>
-
-                      {/* Play/Pause */}
-                      <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
-                        {isAudioPlaying ? (
-                          <Pause size={14} className="text-white" />
-                        ) : (
-                          <Play size={14} className="text-white ml-0.5" />
-                        )}
-                      </div>
+                      {isAudioPlaying ? <Pause size={14} /> : <Play size={14} className="ml-0.5" />}
                     </button>
+                  </div>
 
-                    {/* Progress Bar */}
-                    <div className="w-full h-[3px] bg-white/5">
-                      <motion.div
-                        className="h-full bg-gradient-to-r from-tuggi-secondary to-tuggi-primary"
-                        style={{ width: `${audioProgress}%` }}
-                        transition={{ duration: 0.1 }}
-                      />
-                    </div>
+                  {/* PROGRESS BAR */}
+                  <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden mt-1">
+                    <motion.div
+                      className="h-full bg-gradient-to-r from-tuggi-secondary to-tuggi-primary"
+                      style={{ width: `${audioProgress}%` }}
+                      transition={{ duration: 0.1 }}
+                    />
                   </div>
                 </div>
               </motion.div>
