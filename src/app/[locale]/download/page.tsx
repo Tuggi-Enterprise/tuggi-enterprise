@@ -48,6 +48,8 @@ export default async function DownloadPage({
   let partnerData: any = null;
 
   if (partnerId) {
+    const isTuggi = partnerId === "8be94d35-282d-46bf-bc12-6fcd2f83a432";
+
     try {
       const supabase = getSupabaseServer();
       
@@ -91,16 +93,23 @@ export default async function DownloadPage({
 
           if (description) {
             partnerData = {
-              name: client.company_name,
+              name: isTuggi ? null : client.company_name,
               audioUrl: description.audio_url,
               description: description.description,
+              isTuggi: isTuggi,
             };
           } else {
             // Fallback to just the company name
-            partnerData = { name: client.company_name };
+            partnerData = { 
+              name: isTuggi ? null : client.company_name,
+              isTuggi: isTuggi,
+            };
           }
         } else {
-          partnerData = { name: client.company_name };
+          partnerData = { 
+            name: isTuggi ? null : client.company_name,
+            isTuggi: isTuggi,
+          };
         }
       }
     } catch (err) {

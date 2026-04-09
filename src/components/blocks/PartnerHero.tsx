@@ -9,9 +9,10 @@ import { ArrowRight, Loader2, Pause, Play } from "lucide-react";
 interface PartnerHeroProps {
   partnerId?: string;
   partnerData?: {
-    name: string;
+    name: string | null;
     description?: string;
     audioUrl?: string;
+    isTuggi?: boolean;
   } | null;
 }
 
@@ -65,7 +66,8 @@ export function PartnerHero({ partnerId, partnerData }: PartnerHeroProps) {
   const [audioReady, setAudioReady] = useState(false);
   const [autoplayBlocked, setAutoplayBlocked] = useState(false);
 
-  const MAIN_AUDIO_MAX_DURATION = 12;
+  const isTuggi = partnerData?.isTuggi;
+  const MAIN_AUDIO_MAX_DURATION = isTuggi ? 9999 : 12;
 
   // Initialize audio element
   useEffect(() => {
@@ -142,11 +144,19 @@ export function PartnerHero({ partnerId, partnerData }: PartnerHeroProps) {
       if (currentTrack === "main") tryPlay();
     });
 
+    audio.addEventListener("ended", () => {
+      if (isTuggi) {
+        setIsAudioPlaying(false);
+        setAudioProgress(100);
+        currentTrack = "ended";
+      }
+    });
+
     audio.addEventListener("timeupdate", () => {
       // 1. Progress Bar Update (only if main track is active)
       if (currentTrack === "main") {
-        const duration = 18; // approx total duration
-        const progress = (audio.currentTime / duration) * 100;
+        const totalDur = isTuggi ? (audio.duration || 0) : 18;
+        const progress = totalDur > 0 ? (audio.currentTime / totalDur) * 100 : 0;
         setAudioProgress(Math.min(progress, 100));
       }
 
@@ -366,7 +376,19 @@ export function PartnerHero({ partnerId, partnerData }: PartnerHeroProps) {
           >
             {/* Typography Hierarchy */}
             <h1 className="mb-5">
-              {partnerData?.name ? (
+              {isTuggi ? (
+                <>
+                  <span className="block text-3xl md:text-4xl font-extrabold text-tuggi-dark leading-tight">
+                    {locale.includes("pt") ? "Bem-vindo à" : locale.includes("es") ? "Bienvenido a la" : "Welcome to the"}
+                  </span>
+                  <span className="block text-3xl md:text-5xl font-black text-tuggi-primary mt-1 uppercase tracking-tight">
+                    Experiência Tuggi
+                  </span>
+                  <span className="block text-lg md:text-xl font-medium text-tuggi-slate mt-3">
+                    {t("heroTitle1")} <span className="text-tuggi-secondary italic font-bold">{t("heroTitle2")}</span> {t("heroTitle3")}
+                  </span>
+                </>
+              ) : partnerData?.name ? (
                 <>
                   <span className="block text-2xl md:text-3xl font-bold text-tuggi-primary">
                     &amp;
@@ -434,7 +456,7 @@ export function PartnerHero({ partnerId, partnerData }: PartnerHeroProps) {
                     {/* TEXT INFO */}
                     <div className="flex-1 text-left min-w-0">
                       <p className="font-bold text-tuggi-dark truncate text-sm">
-                        {partnerData.name || 'TUGGI'}
+                        {isTuggi ? 'TUGGI' : (partnerData.name || 'TUGGI')}
                       </p>
                       <p className="text-[11px] text-tuggi-slate flex items-center gap-1.5 mt-0.5 font-medium">
                         {isAudioPlaying ? (
