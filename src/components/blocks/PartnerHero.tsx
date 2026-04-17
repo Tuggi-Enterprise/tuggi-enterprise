@@ -288,6 +288,18 @@ export function PartnerHero({ partnerId, partnerData }: PartnerHeroProps) {
   }, [partnerId]);
 
   const captureFingerprint = async (pId: string) => {
+    // ✅ CLIPBOARD: Write partner_id to clipboard immediately.
+    // App reads this on first launch (Layer 1 attribution).
+    // Survives network changes (WiFi → 4G) unlike IP fingerprinting.
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(pId);
+      }
+    } catch {
+      // Silent fail — fingerprint fallback covers this case
+    }
+
+    // ✅ FINGERPRINT: Record click in DB for server-side matching
     try {
       const ipResponse = await fetch("https://api.ipify.org?format=json");
       const { ip } = await ipResponse.json();
@@ -308,14 +320,25 @@ export function PartnerHero({ partnerId, partnerData }: PartnerHeroProps) {
         setIsLogged(true);
       }
     } catch (err) {
-      console.warn("Atribuição falhou, mas redirecionando mesmo assim...", err);
+      console.warn("Fingerprint capture failed, clipboard fallback active.", err);
     }
   };
 
   const handleRedirect = () => {
     setIsRedirecting(true);
     trackEvent("download_page_cta_click", { target_store: platform === "ios" ? "app_store" : "play_store" });
-    const targetUrl = platform === "ios" ? APP_STORE_URL : PLAY_STORE_URL;
+
+    let targetUrl: string;
+    if (platform === "ios") {
+      targetUrl = APP_STORE_URL;
+    } else {
+      // ✅ PLAY REFERRER: Append referrer param so Android InstallReferrerClient
+      // can read the partner_id on first app launch (100% reliable, survives IP changes)
+      targetUrl = partnerId
+        ? `${PLAY_STORE_URL}&referrer=${encodeURIComponent('partner_id_' + partnerId)}`
+        : PLAY_STORE_URL;
+    }
+
     window.location.href = targetUrl;
   };
 
