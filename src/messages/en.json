@@ -352,7 +352,14 @@
       "s6Item2": "<strong>App Stores:</strong> Purchases made via Apple App Store or Google Play are subject exclusively to the Terms of Service and Refund Policies of those respective platforms.",
       "s6Item3": "<strong>Local Legislation:</strong> We respect the 7-day Right of Withdrawal (Brazilian Consumer Defense Code - CDC), applicable only when the purchase is processed directly through our web systems, and strictly if the digital service has not been partially or fully consumed (use of audio triggers).",
       "s7Title": "7. Jurisdiction and Venue",
-      "s7Text": "These Terms of Use are governed by the laws of the Federative Republic of Brazil. The courts of the District of São Paulo, State of São Paulo, are chosen to resolve any controversies arising from the use of TUGGI, with express waiver of any other."
+      "s7Text": "These Terms of Use are governed by the laws of the Federative Republic of Brazil. The courts of the District of São Paulo, State of São Paulo, are chosen to resolve any controversies arising from the use of TUGGI, with express waiver of any other.",
+      "s8Title": "8. Apple App Store and Google Play Store (Mandatory Clauses)",
+      "s8Item1": "<strong>Maintenance and Support:</strong> You acknowledge that Apple and Google have no obligation whatsoever to furnish any maintenance and support services with respect to the Application.",
+      "s8Item2": "<strong>Warranty and Refunds:</strong> In the event of any failure of the Application to conform to any applicable warranty, any refund obligation is limited to the purchase price in the respective stores. Apple and Google will have no other warranty obligation whatsoever.",
+      "s8Item3": "<strong>Third Party Beneficiary:</strong> You acknowledge and agree that Apple and Google, and their subsidiaries, are third-party beneficiaries of these Terms, and have the right to enforce these Terms against you.",
+      "s8Item4": "<strong>Legal Compliance:</strong> You represent and warrant that (i) you are not located in a country that is subject to a U.S. Government embargo, or that has been designated by the U.S. Government as a “terrorist supporting” country; and (ii) you are not listed on any U.S. Government list of prohibited or restricted parties.",
+      "s9Title": "9. Developer Contact Information",
+      "s9Text": "TUGGI Technologies Ltda. São Paulo, SP, Brazil. Email: legal@tuggi.app"
     },
     "Privacy": {
       "title": "Privacy Policy",
@@ -382,7 +389,9 @@
       "s6Title": "6. Contacting the Data Protection Officer (DPO)",
       "s6P1": "If you have questions about this policy or the processing of your data, please contact our Data Protection Officer (DPO) through our ",
       "s6P2": "Contact",
-      "s6P3": " page, by selecting the Support option."
+      "s6P3": " page, by selecting the Support option.",
+      "s7Title": "7. Children's Privacy",
+      "s7Text": "TUGGI does not knowingly collect data from children under 13 without parental consent. If we discover we have collected such data, we will take steps to delete it immediately."
     },
     "DataDeletion": {
       "title": "Data Deletion Protocol",

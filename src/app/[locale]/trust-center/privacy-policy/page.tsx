@@ -84,6 +84,11 @@ export default async function PrivacyPolicyPage({ params }: { params: Promise<{ 
           {t("s6P3")}
         </p>
       </section>
+
+      <section>
+        <h2>{t("s7Title")}</h2>
+        <p>{t("s7Text")}</p>
+      </section>
     </article>
   );
 }

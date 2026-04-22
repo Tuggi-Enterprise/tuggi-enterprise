@@ -76,6 +76,21 @@ export default async function TermsOfUsePage({ params }: { params: Promise<{ loc
         <h2>{t("s7Title")}</h2>
         <p>{t("s7Text")}</p>
       </section>
+
+      <section>
+        <h2>{t("s8Title")}</h2>
+        <ul>
+          <li>{t.rich("s8Item1", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
+          <li>{t.rich("s8Item2", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
+          <li>{t.rich("s8Item3", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
+          <li>{t.rich("s8Item4", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>{t("s9Title")}</h2>
+        <p>{t("s9Text")}</p>
+      </section>
     </article>
   );
 }
