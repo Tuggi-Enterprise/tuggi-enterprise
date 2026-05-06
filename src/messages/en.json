@@ -539,5 +539,28 @@
     "title": "TUGGI | Our Purpose & The Audio Manifesto",
     "description": "Discover the thesis behind TUGGI. Why we believe audio is the most natural way to explore the world and how we are giving narrative sovereignty back to destinations.",
     "ogTitle": "TUGGI: The Audio Manifesto & Our Purpose"
+  },
+  "Coverage": {
+    "Hero": {
+      "tag": "Global Expansion",
+      "title": "Where Tuggi is active.",
+      "subtitle": "We are mapping the world so you never miss a story. Explore the regions where we already operate and those coming soon."
+    },
+    "Stats": {
+      "countries": "Countries",
+      "attractions": "Mapped Attractions",
+      "comingSoon": "Regions in Homologation"
+    },
+    "Map": {
+      "active": "Active",
+      "comingSoon": "Coming Soon",
+      "items": "items",
+      "viewCity": "View Details"
+    },
+    "CTA": {
+      "title": "Didn't find your destination?",
+      "description": "We are constantly expanding globally. Contact us to learn how to bring Tuggi to your region.",
+      "button": "GET IN TOUCH"
+    }
   }
 }

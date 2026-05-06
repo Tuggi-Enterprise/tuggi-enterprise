@@ -539,5 +539,28 @@
     "title": "TUGGI | Nuestro Propósito y el Manifiesto de Audio",
     "description": "Descubre la tesis detrás de TUGGI. Por qué creemos que el audio es la forma más natural de explorar el mundo y cómo estamos devolviendo la soberanía de la narrativa a las ciudades.",
     "ogTitle": "TUGGI: El Manifiesto de Audio y Nuestro Propósito"
+  },
+  "Coverage": {
+    "Hero": {
+      "tag": "Expansión Global",
+      "title": "Donde Tuggi está presente.",
+      "subtitle": "Estamos mapeando el mundo para que nunca te pierdas una historia. Explora las regiones donde ya operamos y as que llegarán pronto."
+    },
+    "Stats": {
+      "countries": "Países",
+      "attractions": "Atracciones Mapeadas",
+      "comingSoon": "Regiones en Homologación"
+    },
+    "Map": {
+      "active": "Activo",
+      "comingSoon": "Próximamente",
+      "items": "ítems",
+      "viewCity": "Ver Detalles"
+    },
+    "CTA": {
+      "title": "¿No encontraste tu destino?",
+      "description": "Estamos en constante expansión global. Contáctanos para saber cómo llevar Tuggi a tu región.",
+      "button": "CONTACTAR"
+    }
   }
 }
