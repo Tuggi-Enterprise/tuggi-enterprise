@@ -556,6 +556,11 @@
     "description": "Discover the thesis behind TUGGI. Why we believe audio is the most natural way to explore the world and how we are giving narrative sovereignty back to destinations.",
     "ogTitle": "TUGGI: The Audio Manifesto & Our Purpose"
   },
+  "SEO_COVERAGE": {
+    "title": "Global Coverage | Where TUGGI Audio Stories Play",
+    "description": "Explore {count}+ points of interest across Italy, Spain, Portugal, Brazil, Chile, the USA and more. TUGGI audio stories play automatically as you travel through covered regions.",
+    "ogTitle": "TUGGI Global Coverage: {count}+ Audio Stories in {countries} Countries"
+  },
   "Coverage": {
     "Hero": {
       "tag": "Live Coverage",

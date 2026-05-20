@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { StateCoverage } from "@/lib/coverage";
-import { getCountryDisplayName } from "./CoverageMap";
+import { getCountryDisplayName } from "@/lib/countryNames";
 
 interface CountryCard {
   country: string;

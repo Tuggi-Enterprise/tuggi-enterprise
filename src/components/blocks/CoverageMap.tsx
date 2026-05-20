@@ -5,16 +5,9 @@ import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from "react-simple-maps";
 import { StateCoverage } from "@/lib/coverage";
+import { getCountryDisplayName } from "@/lib/countryNames";
 
-// ── Country display name overrides ────────────────────────────────────────────
-export const COUNTRY_DISPLAY_NAMES: Record<string, string> = {
-  "United States of America": "United States",
-  "United Kingdom": "United Kingdom",
-};
-
-export function getCountryDisplayName(country: string): string {
-  return COUNTRY_DISPLAY_NAMES[country] ?? country;
-}
+export { getCountryDisplayName };
 
 // ── Normalise: lowercase + strip combining diacritics + trim ─────────────────
 const norm = (s: string) =>

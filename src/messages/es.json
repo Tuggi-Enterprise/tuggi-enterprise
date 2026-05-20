@@ -556,6 +556,11 @@
     "description": "Descubre la tesis detrás de TUGGI. Por qué creemos que el audio es la forma más natural de explorar el mundo y cómo estamos devolviendo la soberanía de la narrativa a las ciudades.",
     "ogTitle": "TUGGI: El Manifiesto de Audio y Nuestro Propósito"
   },
+  "SEO_COVERAGE": {
+    "title": "Cobertura Global | Dónde Suenan las Historias de TUGGI",
+    "description": "Explora más de {count} puntos de interés en Italia, España, Portugal, Brasil, Chile, EE.UU. y más. Las historias de audio de TUGGI suenan automáticamente mientras viajas.",
+    "ogTitle": "TUGGI: {count}+ Historias de Audio en {countries} Países"
+  },
   "Coverage": {
     "Hero": {
       "tag": "Cobertura Activa",
