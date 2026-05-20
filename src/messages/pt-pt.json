@@ -557,39 +557,39 @@
     "ogTitle": "TUGGI: O Manifesto do Áudio e O Nosso Propósito"
   },
   "SEO_COVERAGE": {
-    "title": "Cobertura Global | Onde as Histórias do TUGGI Tocam",
-    "description": "Explora mais de {count} pontos de interesse na Itália, Espanha, Portugal, Brasil, Chile, EUA e muito mais. As histórias de áudio do TUGGI tocam automaticamente enquanto viajas.",
-    "ogTitle": "TUGGI: {count}+ Histórias de Áudio em {countries} Países"
+    "title": "Destinos Ativos do TUGGI | Escolhe Onde Explorar",
+    "description": "O TUGGI está ativo em mais de {count} pontos de interesse em Itália, Espanha, Portugal, Brasil, Chile, EUA e mais. Histórias de áudio tocam automaticamente assim que começas a explorar.",
+    "ogTitle": "TUGGI Está Ativo em {countries} Países — {count}+ Histórias Prontas"
   },
   "Coverage": {
     "Hero": {
-      "tag": "Cobertura Ativa",
-      "title": "Encontra o Tuggi no teu destino.",
-      "subtitle": "Histórias de áudio tocam automaticamente enquanto conduz, caminha ou explora. Descobre se o teu próximo destino já está coberto."
+      "tag": "Destinos Ativos",
+      "title": "Escolhe o destino. As histórias já estão à tua espera.",
+      "subtitle": "O TUGGI está ativo em Itália, Espanha, Portugal, Brasil, Chile, EUA e mais. Seleciona um país abaixo — o áudio toca automaticamente assim que começas a explorar."
     },
     "Stats": {
-      "countries": "Países Ativos",
+      "countries": "Países com Cobertura",
       "attractions": "Histórias Prontas a Tocar",
       "regions": "Regiões Cobertas"
     },
     "Map": {
       "active": "Ativo",
-      "sectionTitle": "Cobertura Ativa",
-      "sectionSubtitle": "Passa o cursor sobre uma região destacada para ver quantas histórias estão prontas a tocar.",
-      "tooltipAttractions": "Histórias Prontas",
+      "sectionTitle": "Explora por Destino",
+      "sectionSubtitle": "Cada região destacada está ativa. Passa o cursor sobre um estado para ver o que está à tua espera.",
+      "tooltipAttractions": "Histórias à Espera",
       "filterAll": "Todos os Países",
       "noResults": "Sem resultados para este país.",
       "countryRegions": "regiões cobertas"
     },
     "CountryList": {
-      "sectionTitle": "Cobertura por País",
-      "sectionSubtitle": "Explora regiões ativas. Cada área destacada já tem histórias prontas a tocar enquanto viajas.",
+      "sectionTitle": "Escolhe o Teu Destino",
+      "sectionSubtitle": "Seleciona um país e vê exatamente onde vais explorar com o TUGGI. O áudio toca automaticamente enquanto viajas por cada região.",
       "statesLabel": "regiões",
       "attractionsLabel": "histórias"
     },
     "CTA": {
-      "title": "Não encontraste o teu destino?",
-      "description": "Estamos em constante expansão global. Entra em contacto connosco para saberes como levar o Tuggi para a tua região.",
+      "title": "Leva o TUGGI para a tua cidade.",
+      "description": "Estabelecemos parcerias com cidades, destinos e empresas de viagem em todo o mundo. Se a tua região ainda não está no mapa — vamos colocá-la.",
       "button": "ENTRAR EM CONTACTO"
     }
   }
