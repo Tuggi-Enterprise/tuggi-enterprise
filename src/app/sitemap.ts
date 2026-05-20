@@ -6,8 +6,8 @@ import { buildUrl, buildSitemapAlternates } from "@/lib/seo";
  * XML Sitemap
  *
  * URL strategy mirrors the canonical rules in src/lib/seo.ts:
- *   - "en" (defaultLocale) → no prefix  → https://tuggi.app/drive
- *   - other locales         → prefixed   → https://tuggi.app/es/drive
+ *   - "en" (defaultLocale) → no prefix  → https://www.tuggi.app/drive
+ *   - other locales         → prefixed   → https://www.tuggi.app/es/drive
  *
  * Each entry includes <xhtml:link rel="alternate" hreflang="..."> for all
  * 4 locales + x-default, so Google can map translations from any entry.

@@ -34,7 +34,7 @@ export async function generateMetadata({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "Metadata" });
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://tuggi.app";
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.tuggi.app";
   
   return {
     title: {

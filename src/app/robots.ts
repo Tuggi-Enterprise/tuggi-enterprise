@@ -19,6 +19,6 @@ export default function robots(): MetadataRoute.Robots {
         allow: '/',
       }
     ],
-    sitemap: 'https://tuggi.app/sitemap.xml',
+    sitemap: 'https://www.tuggi.app/sitemap.xml',
   };
 }

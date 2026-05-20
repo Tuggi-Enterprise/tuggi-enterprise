@@ -7,7 +7,7 @@
  */
 import { routing } from "@/i18n/routing";
 
-const BASE_URL = "https://tuggi.app";
+const BASE_URL = "https://www.tuggi.app";
 
 /**
  * Returns the canonical path for a given locale + page path.
@@ -111,11 +111,11 @@ export const defaultRobots = { index: true, follow: true } as const;
  * @example
  *   buildSitemapAlternates("drive")
  *   // {
- *   //   "en":        "https://tuggi.app/drive",
- *   //   "es":        "https://tuggi.app/es/drive",
- *   //   "pt-br":     "https://tuggi.app/pt-br/drive",
- *   //   "pt-pt":     "https://tuggi.app/pt-pt/drive",
- *   //   "x-default": "https://tuggi.app/drive",
+ *   //   "en":        "https://www.tuggi.app/drive",
+ *   //   "es":        "https://www.tuggi.app/es/drive",
+ *   //   "pt-br":     "https://www.tuggi.app/pt-br/drive",
+ *   //   "pt-pt":     "https://www.tuggi.app/pt-pt/drive",
+ *   //   "x-default": "https://www.tuggi.app/drive",
  *   // }
  */
 export function buildSitemapAlternates(pagePath = ""): Record<string, string> {

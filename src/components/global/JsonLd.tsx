@@ -4,7 +4,7 @@ export function JsonLd({ locale }: { locale: string }) {
   const t = useTranslations("Metadata");
   const homeT = useTranslations("Home.Hero");
 
-  const baseUrl = "https://tuggi.app";
+  const baseUrl = "https://www.tuggi.app";
   const localizedUrl = `${baseUrl}/${locale === "en" ? "" : locale}`;
 
   const organizationSchema = {

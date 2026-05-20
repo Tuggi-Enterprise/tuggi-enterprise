@@ -46,7 +46,7 @@ export function TechAPI() {
 <span className="text-slate-500">{`// HTTP/1.1 201 Created`}</span>
 {`{
   "`}<span className="text-green-400">status</span>{`": "success",
-  "`}<span className="text-green-400">magicLink</span>{`": "https://tuggi.app/r/RNT-89472"
+  "`}<span className="text-green-400">magicLink</span>{`": "https://www.tuggi.app/r/RNT-89472"
 }`}
                 </code>
               </pre>
