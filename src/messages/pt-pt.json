@@ -1,7 +1,7 @@
 {
   "Download": {
-    "metaTitle": "Descarregar Tuggi - O Teu Copiloto Cultural",
-    "metaDesc": "Descarrega a aplicação Tuggi e descobre o mundo enquanto conduzes.",
+    "metaTitle": "Descarregar TUGGI – Guia de Viagem em Áudio Autoguiado",
+    "metaDesc": "Descarregue o TUGGI: guias de viagem em áudio autoguiados, mãos-livres e offline. Ouça em mais de 8 idiomas com legendas. Grátis para começar.",
     "partnerBadge": "CONVITE PARCEIRO TUGGI ATIVADO",
     "heroTitle1": "A tua experiência",
     "heroTitle2": "cultural",
@@ -191,8 +191,8 @@
   },
   "Drive": {
     "Hero": {
-      "title": "O Guia Áudio que Conduz Consigo.",
-      "subtitle": "Sem fazer scroll. Sem pesquisar. Basta definir o seu idioma e deixar que o seu GPS ative histórias contextuais enquanto conduz. Mantenha o seu mapa no ecrã, controle o seu Spotify ou simplesmente guarde o telefone. O TUGGI funciona na perfeição em segundo plano.",
+      "title": "Guias de Viagem em Áudio Autoguiados, Mãos-Livres.",
+      "subtitle": "Sem fazer scroll. Sem pesquisar. Defina o seu idioma e o TUGGI toca guias de viagem em áudio autoguiados sobre cada lugar que passa — de carro, a pé ou de bicicleta. Mãos-livres, offline, olhos na paisagem.",
       "downloadApp": "Descarregar na App Store",
       "downloadPlay": "Disponível no Google Play",
       "animatorLabel": "A Reproduzir",
@@ -214,7 +214,7 @@
     "Samples": {
       "tag": "Curadoria Premium",
       "title": "Ouça o mundo ganhar vida.",
-      "subtitle": "Vá muito além da Wikipédia. Sem roteiros fixos, a liberdade de explorar é toda sua. As nossas histórias imersivas são acionadas exatamente no monumento em que estiver.",
+      "subtitle": "Cada viagem de carro, passeio a pé ou de bicicleta ganha vida com histórias que nunca encontraria sozinho. Sem roteiros fixos — o seu guia em áudio autoguiado toca automaticamente, exatamente em cada local.",
       "sample1Title": "Walt Disney World Resort",
       "sample1Loc": "Orlando, EUA",
       "sample2Title": "Avenida Paulista",
@@ -275,6 +275,25 @@
       "title": "Evolua a sua viagem de carro hoje.",
       "downloadApp": "Descarregar na App Store",
       "downloadPlay": "Disponível no Google Play"
+    },
+    "FAQ": {
+      "title": "Perguntas Frequentes",
+      "q1": "O TUGGI é gratuito?",
+      "a1": "Sim. Comece de graça com histórias diárias. Para ouvir sem limites, desbloqueie um Travel Pass (7 ou 30 dias, pagamento único) ou o plano anual.",
+      "q2": "O TUGGI funciona offline?",
+      "a2": "Sim. Descarregue a rota com antecedência e ouça sem sinal — sem cobranças de roaming.",
+      "q3": "Qual a diferença entre o TUGGI e o Google Maps ou um GPS?",
+      "a3": "O TUGGI não é uma app de navegação. Funciona a par do seu navegador e da sua música, e toca guias de viagem em áudio autoguiados sobre os lugares que passa — mãos-livres, sem olhar para o ecrã.",
+      "q4": "Que idiomas suporta o TUGGI?",
+      "a4": "Áudio em mais de 8 idiomas, com legendas sincronizadas para que viajantes com deficiência auditiva acompanhem cada história.",
+      "q5": "Posso usar o TUGGI a pé ou de bicicleta?",
+      "a5": "Sim — viagens de carro, passeios a pé, ciclismo e viagens em família, tudo funciona.",
+      "q6": "Tenho de olhar para o telemóvel?",
+      "a6": "Não. O áudio é ativado automaticamente pela localização, mãos-livres e com o ecrã desligado."
+    },
+    "Accessibility": {
+      "title": "Feito para Todos",
+      "body": "As legendas sincronizadas permitem que viajantes surdos ou com dificuldades auditivas acompanhem cada história. E como o TUGGI é áudio em primeiro lugar, apoia naturalmente viajantes com baixa visão — sem necessidade de leitura."
     }
   },
   "Contact": {
@@ -501,8 +520,8 @@
     "rootDescription": "Soluções Corporativas Tuggi",
     "homeTitle": "TUGGI | Guia de Viagem em Áudio Autoguiado",
     "homeDescription": "Guias de viagem em áudio que tocam sozinhos enquanto conduz. Histórias mãos-livres sobre os lugares à sua volta — de carro, a pé ou de bicicleta. Offline, em 8 idiomas.",
-    "driveTitle": "Tuggi: Guia de Áudio e App de Viagens",
-    "driveDescription": "Descarregue o Tuggi para navegar como um profissional.",
+    "driveTitle": "TUGGI | Guias de Viagem em Áudio Autoguiados, Offline",
+    "driveDescription": "Descarregue o TUGGI: guias de viagem em áudio que tocam sozinhos enquanto viaja — de carro, a pé ou de bicicleta. Mãos-livres, offline, legendas, em mais de 8 idiomas. Grátis para começar.",
     "cityOsTitle": "City OS: Governança Territorial e Áudio Hands-Free",
     "cityOsDescription": "Soluções B2G para Cidades Inteligentes",
     "fleetsTitle": "Tuggi Frotas | Receita Auxiliar para Rent-a-Car",

@@ -1,7 +1,7 @@
 {
   "Download": {
-    "metaTitle": "Download Tuggi - Your Cultural Copilot",
-    "metaDesc": "Download the Tuggi app and discover the world while you drive.",
+    "metaTitle": "Download TUGGI – Self-Guided Audio Travel Guide",
+    "metaDesc": "Get the TUGGI app: self-guided audio tours, hands-free and offline. Listen in 8+ languages with closed captions. Free to start.",
     "partnerBadge": "TUGGI PARTNER INVITATION ACTIVATED",
     "heroTitle1": "Your",
     "heroTitle2": "cultural",
@@ -191,8 +191,8 @@
   },
   "Drive": {
     "Hero": {
-      "title": "The Audio Guide That Drives With You.",
-      "subtitle": "No scrolling. No searching. Just set your language and let your GPS trigger contextual stories as you drive. Keep your map on the screen, control your Spotify, or just put your phone away. TUGGI runs seamlessly in the background.",
+      "title": "Self-Guided Audio Tours, Hands-Free.",
+      "subtitle": "No scrolling. No searching. Set your language and TUGGI plays self-guided audio stories about every place you pass — by car, on foot, or by bike. Hands-free, offline, eyes on the scenery.",
       "downloadApp": "Download on the App Store",
       "downloadPlay": "Get it on Google Play",
       "animatorLabel": "Now Playing",
@@ -214,7 +214,7 @@
     "Samples": {
       "tag": "Premium Curation",
       "title": "Hear the world come alive.",
-      "subtitle": "Go way beyond Wikipedia. With no fixed itineraries, the freedom to explore is yours. Our immersive stories are triggered exactly at the monument you are facing.",
+      "subtitle": "Every road trip, walking tour, or cycling route comes alive with stories you'd never find on your own. No fixed itineraries — your self-guided audio tour plays automatically, exactly at each landmark.",
       "sample1Title": "Walt Disney World Resort",
       "sample1Loc": "Orlando, USA",
       "sample2Title": "Paulista Avenue",
@@ -275,6 +275,25 @@
       "title": "Upgrade your road trip today.",
       "downloadApp": "Download on the App Store",
       "downloadPlay": "Get it on Google Play"
+    },
+    "FAQ": {
+      "title": "Frequently Asked Questions",
+      "q1": "Is TUGGI free?",
+      "a1": "Yes. Start free with daily stories. To listen without limits, unlock a Travel Pass (7-day or 30-day, one-time payment) or the annual plan.",
+      "q2": "Does TUGGI work offline?",
+      "a2": "Yes. Download a route in advance and listen with no signal — no roaming charges.",
+      "q3": "How is TUGGI different from Google Maps or a GPS?",
+      "a3": "TUGGI isn't a navigation app. It runs alongside your navigation and music and plays self-guided audio stories about the places you pass — hands-free, no screen.",
+      "q4": "What languages does TUGGI support?",
+      "a4": "Audio in 8+ languages, with synchronized closed captions so deaf and hard-of-hearing travelers can follow every story.",
+      "q5": "Can I use TUGGI walking or cycling?",
+      "a5": "Yes — road trips, walking tours, cycling, and family travel all work.",
+      "q6": "Do I have to look at my phone?",
+      "a6": "No. The audio triggers automatically by location, hands-free and screen-off."
+    },
+    "Accessibility": {
+      "title": "Built for Everyone",
+      "body": "Synchronized closed captions let deaf and hard-of-hearing travelers follow every story. And because TUGGI is audio-first, it naturally supports travelers with low vision — no reading required."
     }
   },
   "Contact": {
@@ -501,8 +520,8 @@
     "rootDescription": "Tuggi Enterprise Solutions",
     "homeTitle": "TUGGI | Self-Guided Audio Travel Guide",
     "homeDescription": "Self-guided audio tours that play automatically as you travel. Hands-free stories about the places around you — by car, on foot, or by bike. Offline, in 8 languages.",
-    "driveTitle": "Tuggi: Audio Guide & Travel App",
-    "driveDescription": "Download Tuggi to navigate like a pro.",
+    "driveTitle": "TUGGI | Self-Guided Audio Tours, Offline",
+    "driveDescription": "Download TUGGI: self-guided audio tours that play automatically as you travel — by car, on foot, or by bike. Hands-free, offline, closed captions, 8+ languages. Free to start.",
     "cityOsTitle": "City OS: Territorial Governance & Hands-Free Audio",
     "cityOsDescription": "B2G Solutions for Smart Cities",
     "fleetsTitle": "Tuggi Fleets | Ancillary Revenue for Car Rentals",
