@@ -101,3 +101,36 @@ export function buildTwitterCard({
 
 /** Standard robots for all indexable pages. */
 export const defaultRobots = { index: true, follow: true } as const;
+
+/**
+ * Builds absolute-URL alternates for the XML sitemap.
+ * Values are full URLs (unlike `buildAlternates` which uses relative paths for metadata).
+ *
+ * @param pagePath - Path WITHOUT locale prefix (e.g. "", "drive", "enterprise/city-os")
+ *
+ * @example
+ *   buildSitemapAlternates("drive")
+ *   // {
+ *   //   "en":        "https://tuggi.app/drive",
+ *   //   "es":        "https://tuggi.app/es/drive",
+ *   //   "pt-br":     "https://tuggi.app/pt-br/drive",
+ *   //   "pt-pt":     "https://tuggi.app/pt-pt/drive",
+ *   //   "x-default": "https://tuggi.app/drive",
+ *   // }
+ */
+export function buildSitemapAlternates(pagePath = ""): Record<string, string> {
+  const languages: Record<string, string> = {};
+  for (const loc of routing.locales) {
+    languages[loc] = `${BASE_URL}${localePath(loc, pagePath)}`;
+  }
+  languages["x-default"] = `${BASE_URL}${localePath(routing.defaultLocale, pagePath)}`;
+  return languages;
+}
+
+/**
+ * Returns the absolute URL for a given locale + page path.
+ * Useful for sitemap entries.
+ */
+export function buildUrl(locale: string, pagePath = ""): string {
+  return `${BASE_URL}${localePath(locale, pagePath)}`;
+}
