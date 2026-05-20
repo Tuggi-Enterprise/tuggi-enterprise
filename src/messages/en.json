@@ -45,8 +45,8 @@
   },
   "Home": {
     "Hero": {
-      "title": "The Cultural Copilot for Drivers",
-      "subtitle": "Turn every mile into a contextual discovery. Zero screens, 100% focus on the scenery.",
+      "title": "Your self-guided audio travel guide",
+      "subtitle": "The cultural copilot for the road. Audio stories trigger automatically as you travel — zero screens, eyes on the scenery.",
       "downloadApp": "Download App",
       "contactSales": "Contact Sales"
     },
@@ -499,8 +499,8 @@
   "Metadata": {
     "rootTitle": "Tuggi",
     "rootDescription": "Tuggi Enterprise Solutions",
-    "homeTitle": "TUGGI | The Cultural Copilot for Drivers",
-    "homeDescription": "Turn every mile into a contextual discovery. Zero screens, 100% focus on the scenery.",
+    "homeTitle": "TUGGI | Self-Guided Audio Travel Guide",
+    "homeDescription": "Self-guided audio tours that play automatically as you travel. Hands-free stories about the places around you — by car, on foot, or by bike. Offline, in 8 languages.",
     "driveTitle": "Tuggi: Audio Guide & Travel App",
     "driveDescription": "Download Tuggi to navigate like a pro.",
     "cityOsTitle": "City OS: Territorial Governance & Hands-Free Audio",
