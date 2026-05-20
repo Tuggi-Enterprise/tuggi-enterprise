@@ -1,8 +1,9 @@
 import { useTranslations } from "next-intl";
-import { WifiOff, AlertTriangle, Globe, Captions } from "lucide-react";
+import { WifiOff, AlertTriangle, Globe, Captions, HeartHandshake } from "lucide-react";
 
 export function DriveFeatures() {
   const t = useTranslations("Drive.Features");
+  const a = useTranslations("Drive.Accessibility");
 
   return (
     <section className="py-24 bg-tuggi-bg">
@@ -52,6 +53,17 @@ export function DriveFeatures() {
             <p className="text-slate-600 leading-relaxed">{t("feat4Desc")}</p>
           </div>
 
+        </div>
+
+        {/* Accessibility callout */}
+        <div className="mt-10 flex items-start gap-6 bg-emerald-50 border border-emerald-200 rounded-2xl p-8">
+          <div className="w-14 h-14 bg-emerald-100 rounded-xl flex items-center justify-center flex-shrink-0">
+            <HeartHandshake className="w-7 h-7 text-emerald-600" />
+          </div>
+          <div>
+            <h3 className="text-xl font-bold text-tuggi-dark mb-2">{a("title")}</h3>
+            <p className="text-slate-600 leading-relaxed">{a("body")}</p>
+          </div>
         </div>
 
       </div>
