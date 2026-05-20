@@ -2,6 +2,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getCoverageData } from "@/lib/coverage";
 import { CoverageHero } from "@/components/blocks/CoverageHero";
 import { CoverageMap } from "@/components/blocks/CoverageMap";
+import { CoverageCountryList } from "@/components/blocks/CoverageCountryList";
 
 export async function generateMetadata({
   params,
@@ -24,21 +25,22 @@ export default async function CoveragePage({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  // This call happens on the server at build time (or revalidate)
   const coverageData = await getCoverageData();
   const t = await getTranslations({ locale, namespace: "Coverage" });
 
   return (
     <article className="min-h-screen">
-      <CoverageHero 
-        totalCountries={coverageData.totalCountries}
-        totalAttractions={coverageData.totalActive}
-        totalComingSoon={coverageData.totalComingSoon}
+      <CoverageHero
+        totalCountries={coverageData.totalActiveCountries}
+        totalAttractions={coverageData.totalActiveRaw}
+        totalActiveRegions={coverageData.totalActiveRegions}
       />
-      
+
       <CoverageMap states={coverageData.states} />
-      
-      {/* Optional: Add a call to action at the bottom */}
+
+      <CoverageCountryList states={coverageData.states} />
+
+      {/* CTA */}
       <section className="py-24 bg-white border-t border-gray-100">
         <div className="container mx-auto px-6 text-center">
           <h2 className="text-3xl md:text-5xl font-black text-tuggi-dark mb-8">
@@ -47,7 +49,7 @@ export default async function CoveragePage({
           <p className="text-tuggi-slate text-xl mb-10 max-w-2xl mx-auto">
             {t("CTA.description")}
           </p>
-          <a 
+          <a
             href={`/${locale}/contact`}
             className="inline-block px-10 py-5 bg-tuggi-primary text-white font-black rounded-2xl shadow-xl shadow-tuggi-primary/20 hover:shadow-2xl hover:shadow-tuggi-primary/30 hover:-translate-y-1 transition-all"
           >

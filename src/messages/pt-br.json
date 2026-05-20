@@ -558,20 +558,29 @@
   },
   "Coverage": {
     "Hero": {
-      "tag": "Expansão Global",
-      "title": "Onde o Tuggi está presente.",
-      "subtitle": "Estamos mapeando o mundo para que você nunca perca uma história. Explore as regiões onde já operamos e as que estão chegando em breve."
+      "tag": "Cobertura Ativa",
+      "title": "Encontre o Tuggi no seu destino.",
+      "subtitle": "Histórias em áudio tocam automaticamente enquanto você dirige, caminha ou explora. Veja se o seu próximo destino já está coberto."
     },
     "Stats": {
-      "countries": "Países",
-      "attractions": "Atrações Mapeadas",
-      "comingSoon": "Regiões em Homologação"
+      "countries": "Países Ativos",
+      "attractions": "Histórias Prontas para Tocar",
+      "regions": "Regiões Cobertas"
     },
     "Map": {
       "active": "Ativo",
-      "comingSoon": "Em Breve",
-      "items": "itens",
-      "viewCity": "Ver Detalhes"
+      "sectionTitle": "Cobertura Ativa",
+      "sectionSubtitle": "Passe o cursor sobre uma região destacada para ver quantas histórias estão prontas para tocar.",
+      "tooltipAttractions": "Histórias Prontas",
+      "filterAll": "Todos os Países",
+      "noResults": "Nenhum resultado para este país.",
+      "countryRegions": "regiões cobertas"
+    },
+    "CountryList": {
+      "sectionTitle": "Cobertura por País",
+      "sectionSubtitle": "Explore regiões ativas. Cada área destacada já tem histórias prontas para tocar enquanto você viaja.",
+      "statesLabel": "regiões",
+      "attractionsLabel": "histórias"
     },
     "CTA": {
       "title": "Não encontrou seu destino?",
