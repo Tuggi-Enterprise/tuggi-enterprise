@@ -73,6 +73,12 @@ export default async function CoveragePage({
 
   const pageUrl = buildUrl(locale, "coverage");
 
+  // Shared interpolation values for SEO strings with {count}/{countries}
+  const countRounded = (
+    Math.floor(coverageData.totalActiveRaw / 1000) * 1000
+  ).toLocaleString(locale === "en" ? "en-US" : locale);
+  const seoVars = { count: countRounded, countries: coverageData.totalActiveCountries };
+
   // ── JSON-LD structured data ───────────────────────────────────────────────
   const jsonLd = {
     "@context": "https://schema.org",
@@ -83,7 +89,7 @@ export default async function CoveragePage({
         "@id": `${pageUrl}#webpage`,
         "url": pageUrl,
         "name": tSeo("title"),
-        "description": tSeo("description"),
+        "description": tSeo("description", seoVars),
         "inLanguage": locale,
         "isPartOf": {
           "@type": "WebSite",
