@@ -26,11 +26,6 @@ export function JsonLd({ locale }: { locale: string }) {
     "operatingSystem": "iOS, Android",
     "applicationCategory": "TravelApplication",
     "description": homeT("subtitle"),
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "4.8",
-      "ratingCount": "500"
-    },
     "offers": {
       "@type": "Offer",
       "price": "0.00",
