@@ -1,15 +1,25 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { Metadata } from "next";
+import { buildAlternates, buildOpenGraph, buildTwitterCard, defaultRobots } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ locale: string }>;
-}) {
+}): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "Metadata" });
+
+  const title = t("accessibilityTitle");
+  const description = t("accessibilityDescription");
+
   return {
-    title: t("accessibilityTitle"),
-    description: t("accessibilityDescription"),
+    title,
+    description,
+    alternates: buildAlternates(locale, "trust-center/accessibility"),
+    robots: defaultRobots,
+    openGraph: buildOpenGraph({ title, description, locale, pagePath: "trust-center/accessibility" }),
+    twitter: buildTwitterCard({ title, description }),
   };
 }
 

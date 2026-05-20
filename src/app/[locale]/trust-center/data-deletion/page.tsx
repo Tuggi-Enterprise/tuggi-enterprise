@@ -1,16 +1,26 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { Metadata } from "next";
 import { DataDeletionForm } from "@/components/forms/DataDeletionForm";
+import { buildAlternates, buildOpenGraph, buildTwitterCard, defaultRobots } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ locale: string }>;
-}) {
+}): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "Metadata" });
+
+  const title = t("deletionTitle");
+  const description = t("deletionDescription");
+
   return {
-    title: t("deletionTitle"),
-    description: t("deletionDescription"),
+    title,
+    description,
+    alternates: buildAlternates(locale, "trust-center/data-deletion"),
+    robots: defaultRobots,
+    openGraph: buildOpenGraph({ title, description, locale, pagePath: "trust-center/data-deletion" }),
+    twitter: buildTwitterCard({ title, description }),
   };
 }
 

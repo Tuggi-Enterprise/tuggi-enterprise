@@ -2,6 +2,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Metadata } from "next";
 import { ShieldCheck, Zap, Crosshair, Diamond, Globe, Accessibility } from "lucide-react";
 import { FreedomAnimation, SovereigntyAnimation } from "@/components/blocks/PurposeAnimations";
+import { buildAlternates, buildOpenGraph, buildTwitterCard, defaultRobots } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
@@ -15,47 +16,24 @@ export async function generateMetadata({
   const description = t("description");
   const ogTitle = t("ogTitle");
 
-  // Construct proper canonical URL
-  const baseUrlPath = locale === "en" ? "/purpose" : `/${locale}/purpose`;
-  const url = `https://tuggi.app${baseUrlPath}`;
-
   return {
     title,
     description,
-    alternates: {
-      canonical: url,
-      languages: {
-        "en": "https://tuggi.app/purpose",
-        "es": "https://tuggi.app/es/purpose",
-        "pt-BR": "https://tuggi.app/pt-br/purpose",
-        "pt-PT": "https://tuggi.app/pt-pt/purpose",
-      },
-    },
-    robots: {
-      index: true,
-      follow: true,
-    },
-    openGraph: {
+    alternates: buildAlternates(locale, "purpose"),
+    robots: defaultRobots,
+    openGraph: buildOpenGraph({
       title: ogTitle,
       description,
-      url,
-      siteName: "TUGGI",
-      type: "website",
-      images: [
-        {
-          url: "/images/og-image-purpose.jpg", // MUST BE 1200x630 - CLEAN & INSPIRATIONAL
-          width: 1200,
-          height: 630,
-          alt: "TUGGI - The Audio Manifesto",
-        },
-      ],
-    },
-    twitter: {
-      card: "summary_large_image",
+      locale,
+      pagePath: "purpose",
+      image: "/images/og-image-purpose.jpg",
+      imageAlt: "TUGGI - The Audio Manifesto",
+    }),
+    twitter: buildTwitterCard({
       title: ogTitle,
       description,
-      images: ["/images/og-image-purpose.jpg"],
-    },
+      image: "/images/og-image-purpose.jpg",
+    }),
   };
 }
 

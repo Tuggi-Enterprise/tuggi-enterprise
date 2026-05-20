@@ -13,6 +13,7 @@ import GoogleAnalyticsWrapper from "@/components/global/GoogleAnalyticsWrapper";
 import ApolloTracker from "@/components/global/ApolloTracker";
 import { CookieBanner } from "@/components/global/CookieBanner";
 import { JsonLd } from "@/components/global/JsonLd";
+import { buildAlternates } from "@/lib/seo";
 import "@/app/globals.css";
 
 const inter = Inter({ subsets: ["latin"], display: "swap" });
@@ -42,16 +43,7 @@ export async function generateMetadata({
     },
     description: t("rootDescription"),
     metadataBase: new URL(baseUrl),
-    alternates: {
-      canonical: `/${locale}`,
-      languages: {
-        "en": "/en",
-        "es": "/es",
-        "pt-br": "/pt-br",
-        "pt-pt": "/pt-pt",
-        "x-default": "/en",
-      },
-    },
+    alternates: buildAlternates(locale),
     icons: {
       icon: [
         { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },

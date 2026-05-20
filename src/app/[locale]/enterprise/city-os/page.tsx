@@ -7,6 +7,7 @@ import { CityOSMandate } from "@/components/blocks/CityOSMandate";
 
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Metadata } from "next";
+import { buildAlternates, buildOpenGraph, buildTwitterCard, defaultRobots } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
@@ -19,48 +20,26 @@ export async function generateMetadata({
   const title = t("title");
   const description = t("description");
   const ogTitle = t("ogTitle");
-  
-  // Construct proper canonical
-  const baseUrlPath = locale === "en" ? "/enterprise/city-os" : `/${locale}/enterprise/city-os`;
-  const url = `https://tuggi.app${baseUrlPath}`;
 
   return {
     title,
     description,
-    alternates: {
-      canonical: url,
-      languages: {
-        "en": "https://tuggi.app/enterprise/city-os",
-        "es": "https://tuggi.app/es/enterprise/city-os",
-        "pt-BR": "https://tuggi.app/pt-br/enterprise/city-os",
-        "pt-PT": "https://tuggi.app/pt-pt/enterprise/city-os",
-      },
-    },
-    robots: {
-      index: true,
-      follow: true,
-    },
-    openGraph: {
+    alternates: buildAlternates(locale, "enterprise/city-os"),
+    robots: defaultRobots,
+    openGraph: buildOpenGraph({
       title: ogTitle,
       description,
-      url,
+      locale,
+      pagePath: "enterprise/city-os",
       siteName: "TUGGI City OS",
-      type: "website",
-      images: [
-        {
-          url: "/images/og-image-city-os.jpg",
-          width: 1200,
-          height: 630,
-          alt: "TUGGI City OS - Infraestrutura para Destinos Turísticos Inteligentes",
-        },
-      ],
-    },
-    twitter: {
-      card: "summary_large_image",
+      image: "/images/og-image-city-os.jpg",
+      imageAlt: "TUGGI City OS - Smart Tourism Destination Infrastructure",
+    }),
+    twitter: buildTwitterCard({
       title: ogTitle,
       description,
-      images: ["/images/og-image-city-os.jpg"],
-    },
+      image: "/images/og-image-city-os.jpg",
+    }),
   };
 }
 

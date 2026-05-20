@@ -7,6 +7,7 @@ import { FleetsESG } from "@/components/blocks/FleetsESG";
 
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Metadata } from "next";
+import { buildAlternates, buildOpenGraph, buildTwitterCard, defaultRobots } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
@@ -20,47 +21,25 @@ export async function generateMetadata({
   const description = t("description");
   const ogTitle = t("ogTitle");
 
-  // Construct proper canonical URL
-  const baseUrlPath = locale === "en" ? "/enterprise/fleets" : `/${locale}/enterprise/fleets`;
-  const url = `https://tuggi.app${baseUrlPath}`;
-
   return {
     title,
     description,
-    alternates: {
-      canonical: url,
-      languages: {
-        "en": "https://tuggi.app/enterprise/fleets",
-        "es": "https://tuggi.app/es/enterprise/fleets",
-        "pt-BR": "https://tuggi.app/pt-br/enterprise/fleets",
-        "pt-PT": "https://tuggi.app/pt-pt/enterprise/fleets",
-      },
-    },
-    robots: {
-      index: true,
-      follow: true,
-    },
-    openGraph: {
+    alternates: buildAlternates(locale, "enterprise/fleets"),
+    robots: defaultRobots,
+    openGraph: buildOpenGraph({
       title: ogTitle,
       description,
-      url,
+      locale,
+      pagePath: "enterprise/fleets",
       siteName: "TUGGI Enterprise",
-      type: "website",
-      images: [
-        {
-          url: "/images/og-image-fleets.jpg",
-          width: 1200,
-          height: 630,
-          alt: "TUGGI Frotas - Aumente seu RevPA e NPS",
-        },
-      ],
-    },
-    twitter: {
-      card: "summary_large_image",
+      image: "/images/og-image-fleets.jpg",
+      imageAlt: "TUGGI Fleets - Ancillary Revenue for Car Rentals",
+    }),
+    twitter: buildTwitterCard({
       title: ogTitle,
       description,
-      images: ["/images/og-image-fleets.jpg"],
-    },
+      image: "/images/og-image-fleets.jpg",
+    }),
   };
 }
 
