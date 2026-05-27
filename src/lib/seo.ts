@@ -1,9 +1,10 @@
 /**
  * SEO helpers — single source of truth for hreflang, canonical and OpenGraph.
  *
- * Locale strategy (next-intl "as-needed" prefix):
- *   - "en" (defaultLocale) → served at root, no prefix → canonical "/"
- *   - every other locale   → served at "/{locale}"      → canonical "/{locale}"
+ * Locale strategy (next-intl localePrefix="always"):
+ *   - every locale, INCLUDING the default "en", is served under its prefix
+ *   - canonical for "en" is "/en", for "pt-br" is "/pt-br", etc.
+ *   - non-prefixed paths (e.g. "/drive") 404, so every emitted URL is prefixed
  */
 import { routing } from "@/i18n/routing";
 
@@ -12,19 +13,17 @@ const BASE_URL = "https://www.tuggi.app";
 /**
  * Returns the canonical path for a given locale + page path.
  *
+ * Every locale is prefixed (localePrefix="always"), including the default,
+ * because non-prefixed paths 404.
+ *
  * @example
- *   localePath("en",    "")               // "/"
+ *   localePath("en",    "")               // "/en"
  *   localePath("es",    "")               // "/es"
- *   localePath("en",    "drive")          // "/drive"
+ *   localePath("en",    "drive")          // "/en/drive"
  *   localePath("pt-br", "enterprise/city-os") // "/pt-br/enterprise/city-os"
  */
 function localePath(locale: string, pagePath: string): string {
   const clean = pagePath.replace(/^\//, "").replace(/\/$/, "");
-  const isDefault = locale === routing.defaultLocale;
-
-  if (isDefault) {
-    return clean ? `/${clean}` : "/";
-  }
   return clean ? `/${locale}/${clean}` : `/${locale}`;
 }
 
@@ -111,11 +110,11 @@ export const defaultRobots = { index: true, follow: true } as const;
  * @example
  *   buildSitemapAlternates("drive")
  *   // {
- *   //   "en":        "https://www.tuggi.app/drive",
+ *   //   "en":        "https://www.tuggi.app/en/drive",
  *   //   "es":        "https://www.tuggi.app/es/drive",
  *   //   "pt-br":     "https://www.tuggi.app/pt-br/drive",
  *   //   "pt-pt":     "https://www.tuggi.app/pt-pt/drive",
- *   //   "x-default": "https://www.tuggi.app/drive",
+ *   //   "x-default": "https://www.tuggi.app/en/drive",
  *   // }
  */
 export function buildSitemapAlternates(pagePath = ""): Record<string, string> {

@@ -5,7 +5,8 @@ export function JsonLd({ locale }: { locale: string }) {
   const homeT = useTranslations("Home.Hero");
 
   const baseUrl = "https://www.tuggi.app";
-  const localizedUrl = `${baseUrl}/${locale === "en" ? "" : locale}`;
+  // localePrefix="always": every locale is prefixed, incl. the default.
+  const localizedUrl = `${baseUrl}/${locale}`;
 
   const organizationSchema = {
     "@context": "https://schema.org",

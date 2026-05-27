@@ -7,12 +7,15 @@ import { TUGGI_PARTNER_ID } from "@/lib/partner";
 /**
  * XML Sitemap
  *
- * URL strategy mirrors the canonical rules in src/lib/seo.ts:
- *   - "en" (defaultLocale) → no prefix  → https://www.tuggi.app/drive
- *   - other locales         → prefixed   → https://www.tuggi.app/es/drive
+ * URL strategy mirrors the canonical rules in src/lib/seo.ts (localePrefix="always"):
+ *   - every locale is prefixed, incl. the default → https://www.tuggi.app/en/drive
+ *   - other locales                               → https://www.tuggi.app/es/drive
  *
  * Each entry includes <xhtml:link rel="alternate" hreflang="..."> for all
  * 4 locales + x-default, so Google can map translations from any entry.
+ *
+ * Exception: partner pages (/d/<slug>) are intentionally locale-agnostic
+ * (resolved via a middleware rewrite), so they get a single clean URL.
  */
 
 const routes = [
@@ -58,7 +61,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     for (const p of partners ?? []) {
       if (!p.slug) continue;
       entries.push({
-        url: buildUrl(routing.defaultLocale, `d/${p.slug}`),
+        // Clean, locale-agnostic URL (matches the page's self-canonical) —
+        // NOT buildUrl(), which would prefix it with a locale.
+        url: `https://www.tuggi.app/d/${p.slug}`,
         lastModified: p.updated_at ? new Date(p.updated_at) : new Date(),
         changeFrequency: "monthly",
         priority: 0.6,
