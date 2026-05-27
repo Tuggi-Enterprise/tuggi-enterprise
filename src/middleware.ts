@@ -7,26 +7,28 @@ const intlMiddleware = createMiddleware(routing);
 export default function middleware(req: NextRequest) {
   const { pathname, searchParams } = req.nextUrl;
 
-  // Handle /download separately to avoid visible locale prefix
-  if (pathname === "/download") {
+  // Handle the partner download pages (/download and the friendly /d/<slug>)
+  // separately so the shared URL stays locale-prefix-free — the QR code never
+  // needs to embed a locale; the right language is resolved here per request.
+  if (pathname === "/download" || pathname.startsWith("/d/")) {
     // 1. Check for explicit lang parameter
     const langParam = searchParams.get("lang");
     const languages = routing.locales;
-    
+
     let locale = languages.includes(langParam as any) ? langParam : null;
-    
+
     // 2. Fallback to cookie
     if (!locale) {
       locale = req.cookies.get('NEXT_LOCALE')?.value || null;
     }
-    
+
     // 3. Fallback to Accept-Language or IP detection
     if (!locale || !languages.includes(locale as any)) {
       const country = req.headers.get("x-vercel-ip-country") || "";
       if (country === "BR") locale = "pt-br";
       else if (country === "PT") locale = "pt-pt";
       else if (["ES", "MX", "AR", "CO", "CL", "PE"].includes(country)) locale = "es";
-      
+
       if (!locale) {
         const acceptLang = req.headers.get("accept-language") || "";
         if (acceptLang.includes("pt-BR") || acceptLang.includes("pt-br")) locale = "pt-br";
@@ -38,9 +40,9 @@ export default function middleware(req: NextRequest) {
     // Default fallback
     locale = locale || routing.defaultLocale;
 
-    // Internal rewrite to /[locale]/download
+    // Internal rewrite to /[locale]/download or /[locale]/d/<slug>
     const url = req.nextUrl.clone();
-    url.pathname = `/${locale}/download`;
+    url.pathname = `/${locale}${pathname}`;
     return NextResponse.rewrite(url);
   }
 
@@ -67,5 +69,5 @@ export default function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/(en|es|pt-br|pt-pt)/:path*", "/download"],
+  matcher: ["/", "/(en|es|pt-br|pt-pt)/:path*", "/download", "/d/:path*"],
 };

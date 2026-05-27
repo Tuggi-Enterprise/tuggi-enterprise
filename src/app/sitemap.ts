@@ -1,6 +1,8 @@
 import { MetadataRoute } from "next";
 import { routing } from "@/i18n/routing";
 import { buildUrl, buildSitemapAlternates } from "@/lib/seo";
+import { getSupabaseServer } from "@/lib/supabase-server";
+import { TUGGI_PARTNER_ID } from "@/lib/partner";
 
 /**
  * XML Sitemap
@@ -24,7 +26,7 @@ const routes = [
   "trust-center/accessibility",
 ];
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries: MetadataRoute.Sitemap = [];
 
   for (const route of routes) {
@@ -39,6 +41,31 @@ export default function sitemap(): MetadataRoute.Sitemap {
         alternates,
       });
     }
+  }
+
+  // Partner download pages: one clean, locale-agnostic URL per approved partner.
+  // Wrapped in try/catch so a DB hiccup never fails the sitemap (and the build).
+  try {
+    const supabase = getSupabaseServer();
+    const { data: partners } = await supabase
+      .schema("core")
+      .from("clients")
+      .select("slug, updated_at")
+      .eq("status", "approved")
+      .not("slug", "is", null)
+      .neq("id", TUGGI_PARTNER_ID);
+
+    for (const p of partners ?? []) {
+      if (!p.slug) continue;
+      entries.push({
+        url: buildUrl(routing.defaultLocale, `d/${p.slug}`),
+        lastModified: p.updated_at ? new Date(p.updated_at) : new Date(),
+        changeFrequency: "monthly",
+        priority: 0.6,
+      });
+    }
+  } catch (err) {
+    console.error("sitemap: failed to load partner slugs", err);
   }
 
   return entries;
