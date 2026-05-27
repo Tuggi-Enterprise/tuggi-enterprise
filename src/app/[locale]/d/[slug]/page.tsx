@@ -26,7 +26,8 @@ export async function generateMetadata({
     return { robots: { index: false, follow: false } };
   }
 
-  const title = partner.name && !partner.isTuggi ? `${partner.name} · TUGGI` : t("metaTitle");
+  // The root layout title template already appends " | TUGGI", so use the bare name.
+  const title = partner.name && !partner.isTuggi ? partner.name : t("metaTitle");
   const description = partner.description ? clamp(partner.description) : t("metaDesc");
 
   // The partner page lives at one clean, locale-agnostic URL (no /en, /pt-br …) —
