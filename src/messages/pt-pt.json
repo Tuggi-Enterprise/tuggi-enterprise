@@ -44,6 +44,21 @@
     "coverage": "Cobertura Global"
   },
   "Home": {
+    "FAQ": {
+      "title": "Perguntas frequentes",
+      "q1": "Qual é a melhor app de audioguias autoguiados?",
+      "a1": "A TUGGI é um audioguia de viagem autoguiado para iOS e Android. Reproduz histórias em áudio sobre os locais à sua volta automaticamente, ativadas por GPS — sem usar as mãos e com o ecrã desligado — enquanto conduz, caminha ou pedala. Funciona totalmente offline, tem mais de 8 idiomas com legendas e é grátis para começar.",
+      "q2": "Existe uma app de audioguia de viagem grátis?",
+      "a2": "Sim. A TUGGI é grátis para descarregar e começa logo com histórias diárias. Para ouvir sem limites, pode ativar um Travel Pass (7 ou 30 dias, pagamento único) ou o plano anual. Vê o preço local exato na App Store ou no Google Play.",
+      "q3": "Qual é uma boa app de viagem para uma road trip?",
+      "a3": "A TUGGI foi feita para road trips: funciona em conjunto com a sua navegação e música e narra automaticamente os locais, as vilas e a história por onde passa — sem ecrã, sem procurar nada. Descarregue a rota com antecedência e use totalmente offline, sem roaming.",
+      "q4": "Posso explorar uma cidade sem guia turístico?",
+      "a4": "Sim. A TUGGI funciona como um audioguia autoguiado para explorar ao seu ritmo, sem contratar um guia humano nem um tour fixo. As histórias tocam sozinhas ao chegar a cada ponto de interesse, a pé ou de carro.",
+      "q5": "A TUGGI funciona offline e no meu idioma?",
+      "a5": "Sim. Descarregue a rota com antecedência e ouça sem rede e sem custos de roaming. A TUGGI oferece áudio em mais de 8 idiomas, com legendas sincronizadas para viajantes surdos e com dificuldades auditivas.",
+      "q6": "Em que é que a TUGGI é diferente do Google Maps ou de um guia humano?",
+      "a6": "A TUGGI não é uma app de navegação e não substitui o seu GPS — funciona em conjunto com ele e acrescenta narração em áudio autoguiada sobre os locais por onde passa. Ao contrário de um guia humano, está disponível 24/7, em vários idiomas, sem usar as mãos e grátis para começar."
+    },
     "Hero": {
       "title": "O seu guia de viagem em áudio autoguiado",
       "subtitle": "O copiloto cultural da estrada. As histórias em áudio tocam sozinhas enquanto conduz — zero ecrãs, olhos na paisagem.",

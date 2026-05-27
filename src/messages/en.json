@@ -44,6 +44,21 @@
     "coverage": "Global Coverage"
   },
   "Home": {
+    "FAQ": {
+      "title": "Frequently Asked Questions",
+      "q1": "What is the best app for self-guided audio tours?",
+      "a1": "TUGGI is a self-guided audio travel guide for iOS and Android. It plays audio stories about the places around you automatically, triggered by GPS — hands-free and screen-off — while you drive, walk, or cycle. It works fully offline, supports 8+ languages with closed captions, and is free to start.",
+      "q2": "Is there a free audio travel guide app?",
+      "a2": "Yes. TUGGI is free to download and start listening with daily stories. To listen without limits you can unlock a Travel Pass (7-day or 30-day, one-time payment) or an annual plan. You'll see your exact local price in the App Store or Google Play.",
+      "q3": "What's a good travel app for a road trip?",
+      "a3": "TUGGI was built for road trips: it runs alongside your navigation and music and narrates the landmarks, towns, and history you pass automatically — no screen, no searching. Download your route in advance to use it fully offline with no roaming charges.",
+      "q4": "Can I explore a city without a tour guide?",
+      "a4": "Yes. TUGGI acts as a self-guided audio guide, so you can explore at your own pace without booking a human guide or a fixed tour. Stories play automatically as you reach each point of interest, on foot or by car.",
+      "q5": "Does TUGGI work offline and in my language?",
+      "a5": "Yes. Download a route in advance and listen with no signal and no roaming charges. TUGGI offers audio in 8+ languages with synchronized closed captions for deaf and hard-of-hearing travelers.",
+      "q6": "How is TUGGI different from Google Maps or a human guide?",
+      "a6": "TUGGI isn't a navigation app and doesn't replace your GPS — it runs alongside it and adds self-guided audio storytelling about the places you pass. Unlike a human guide, it's available 24/7, in multiple languages, hands-free, and free to start."
+    },
     "Hero": {
       "title": "Your self-guided audio travel guide",
       "subtitle": "The cultural copilot for the road. Audio stories trigger automatically as you travel — zero screens, eyes on the scenery.",

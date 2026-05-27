@@ -139,11 +139,6 @@ export default async function CoveragePage({
           "price": "0",
           "priceCurrency": "USD",
         },
-        "aggregateRating": {
-          "@type": "AggregateRating",
-          "ratingValue": "4.8",
-          "ratingCount": "1200",
-        },
         // Dynamic list derived from actual snapshot data — stays up to date
         "areaServed": uniqueCountries.map(name => ({
           "@type": "Country",

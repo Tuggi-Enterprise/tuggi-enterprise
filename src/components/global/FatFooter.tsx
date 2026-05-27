@@ -1,6 +1,7 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import Image from "next/image";
+import { APP_STORE_URL, PLAY_STORE_URL } from "@/lib/app-meta";
 
 export function FatFooter() {
   const t = useTranslations("Footer");
@@ -39,13 +40,13 @@ export function FatFooter() {
               {t("plans")}
             </Link>
             <div className="flex flex-col gap-3 mt-6">
-              <a 
-                href="https://apps.apple.com/app/tuggi-drive/id6744379818"
+              <a
+                href={APP_STORE_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:opacity-80 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-lg w-max"
               >
-                <Image 
+                <Image
                   src="/images/badges/app-store-badge.svg"
                   alt="Download on the App Store"
                   width={120}
@@ -53,8 +54,8 @@ export function FatFooter() {
                   className="h-9 w-auto"
                 />
               </a>
-              <a 
-                href="https://play.google.com/store/apps/details?id=com.tuggidrive.app"
+              <a
+                href={PLAY_STORE_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:opacity-80 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-lg w-max"
