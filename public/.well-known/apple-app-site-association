@@ -4,7 +4,7 @@
     "details": [
       {
         "appID": "YBU5U3UVMX.com.tuggidrive.app",
-        "paths": ["/download*", "/d/*"]
+        "paths": ["/download*", "/d/*", "/redeem*"]
       }
     ]
   },

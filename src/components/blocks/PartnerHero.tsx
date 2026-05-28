@@ -325,10 +325,12 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
       code: coupon.code,
       days: coupon.days,
     });
-    // Custom-scheme deep link. iOS surfaces "Open in Tuggi?" prompt when the
-    // app is installed; Android prompts the disambiguation chooser. Users
-    // without the app fall through to the existing store CTA below.
-    window.location.href = `tuggi://redeem?code=${encodeURIComponent(coupon.code)}`;
+    // Universal Link. tuggi.app/redeem is registered in both
+    // apple-app-site-association and the Android AndroidManifest intent
+    // filter, so installed users open the app directly with no system
+    // prompt. Users without the app stay on the LP and can fall through
+    // to the existing store CTA below.
+    window.location.href = `https://tuggi.app/redeem?code=${encodeURIComponent(coupon.code)}`;
   };
 
   const captureFingerprint = async (pId: string) => {
