@@ -6,7 +6,19 @@ import { PartnerHero } from "./PartnerHero";
 
 import { useTranslations } from "next-intl";
 
-function PartnerHeroContent({ partnerData, partnerId }: { partnerData: any; partnerId?: string }) {
+interface CouponPreview {
+  code: string;
+  days: number;
+}
+
+interface WrapperProps {
+  partnerData: any;
+  partnerId?: string;
+  /** When present, the page is rendering a coupon redemption variant. */
+  coupon?: CouponPreview | null;
+}
+
+function PartnerHeroContent({ partnerData, partnerId, coupon }: WrapperProps) {
   const searchParams = useSearchParams();
   // Prefer the explicitly resolved id (e.g. from /d/<slug>); fall back to the query string.
   const resolvedId =
@@ -16,14 +28,20 @@ function PartnerHeroContent({ partnerData, partnerId }: { partnerData: any; part
     searchParams.get("partner_id") ||
     undefined;
 
-  return <PartnerHero partnerId={resolvedId} partnerData={partnerData} />;
+  return (
+    <PartnerHero
+      partnerId={resolvedId}
+      partnerData={partnerData}
+      coupon={coupon ?? undefined}
+    />
+  );
 }
 
-export function PartnerHeroWrapper({ partnerData, partnerId }: { partnerData: any; partnerId?: string }) {
+export function PartnerHeroWrapper({ partnerData, partnerId, coupon }: WrapperProps) {
   const t = useTranslations("Download");
   return (
     <Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center text-white">{t("loading")}</div>}>
-      <PartnerHeroContent partnerData={partnerData} partnerId={partnerId} />
+      <PartnerHeroContent partnerData={partnerData} partnerId={partnerId} coupon={coupon} />
     </Suspense>
   );
 }

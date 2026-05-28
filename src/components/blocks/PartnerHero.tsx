@@ -4,7 +4,12 @@ import { useTranslations, useLocale } from "next-intl";
 import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { ArrowRight, Loader2, Pause, Play } from "lucide-react";
+import { ArrowRight, Check, Copy, Gift, Loader2, Pause, Play } from "lucide-react";
+
+interface CouponPreview {
+  code: string;
+  days: number;
+}
 
 interface PartnerHeroProps {
   partnerId?: string;
@@ -14,6 +19,8 @@ interface PartnerHeroProps {
     audioUrl?: string;
     isTuggi?: boolean;
   } | null;
+  /** When present, render the gift-card style redeem block. */
+  coupon?: CouponPreview;
 }
 
 const REDIRECT_DELAY_SECONDS = 5;
@@ -51,7 +58,7 @@ function SoundWave({ isPlaying, dark = false }: { isPlaying: boolean; dark?: boo
   );
 }
 
-export function PartnerHero({ partnerId, partnerData }: PartnerHeroProps) {
+export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps) {
   const [isLogged, setIsLogged] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [platform, setPlatform] = useState<"ios" | "android" | "other">("other");
@@ -287,6 +294,43 @@ export function PartnerHero({ partnerId, partnerData }: PartnerHeroProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [partnerId]);
 
+  // Coupon-mode page view (separate funnel attribution from partner QR flow).
+  useEffect(() => {
+    if (coupon?.code) {
+      trackEvent("redeem_landing_page_view", {
+        code: coupon.code,
+        days: coupon.days,
+      });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [coupon?.code]);
+
+  const [couponCopied, setCouponCopied] = useState(false);
+
+  const handleCopyCoupon = async () => {
+    if (!coupon?.code) return;
+    try {
+      await navigator.clipboard.writeText(coupon.code);
+      setCouponCopied(true);
+      trackEvent("redeem_code_copied", { code: coupon.code });
+      setTimeout(() => setCouponCopied(false), 2000);
+    } catch {
+      // Clipboard API unavailable — silent fail, the code is still visible.
+    }
+  };
+
+  const handleRedeemTap = () => {
+    if (!coupon?.code) return;
+    trackEvent("redeem_cta_clicked", {
+      code: coupon.code,
+      days: coupon.days,
+    });
+    // Custom-scheme deep link. iOS surfaces "Open in Tuggi?" prompt when the
+    // app is installed; Android prompts the disambiguation chooser. Users
+    // without the app fall through to the existing store CTA below.
+    window.location.href = `tuggi://redeem?code=${encodeURIComponent(coupon.code)}`;
+  };
+
   const captureFingerprint = async (pId: string) => {
     // ✅ CLIPBOARD: Write partner_id to clipboard immediately.
     // App reads this on first launch (Layer 1 attribution).
@@ -343,6 +387,7 @@ export function PartnerHero({ partnerId, partnerData }: PartnerHeroProps) {
   };
 
   const t = useTranslations("Download");
+  const tCoupon = useTranslations("Coupon");
 
   const [isDescExpanded, setIsDescExpanded] = useState(false);
   const descriptionText = partnerData?.description || t("heroSubtitle");
@@ -515,6 +560,63 @@ export function PartnerHero({ partnerId, partnerData }: PartnerHeroProps) {
                       transition={{ duration: 0.1 }}
                     />
                   </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Coupon redemption block — only renders when /d/<slug> resolves
+                to an active coupon code. The owner attribution lives in the
+                hero title above; this card is the explicit redeem CTA. */}
+            {coupon && (
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.35 }}
+                className="w-full max-w-sm mx-auto mt-6"
+              >
+                <div className="relative bg-white rounded-2xl p-5 shadow-[0_8px_32px_rgba(8,17,33,0.06)] border border-tuggi-secondary/20 flex flex-col items-center gap-3">
+                  <div className="flex items-center gap-2 text-tuggi-secondary text-xs font-bold uppercase tracking-[0.2em]">
+                    <Gift size={14} />
+                    {tCoupon("block_title")}
+                  </div>
+
+                  <p className="text-sm text-tuggi-slate text-center -mt-1">
+                    {tCoupon("block_subtitle", { days: coupon.days })}
+                  </p>
+
+                  <p className="text-[10px] uppercase tracking-[0.18em] text-tuggi-slate/70 font-semibold mt-1">
+                    {tCoupon("code_label")}
+                  </p>
+
+                  <button
+                    onClick={handleCopyCoupon}
+                    className="w-full flex items-center justify-between gap-3 bg-tuggi-bg border border-dashed border-tuggi-secondary/40 rounded-xl px-4 py-3 text-tuggi-dark font-extrabold text-xl tracking-[0.18em] hover:bg-tuggi-secondary/5 active:scale-[0.99] transition-all"
+                    aria-label={tCoupon("copy")}
+                  >
+                    <span>{coupon.code}</span>
+                    {couponCopied ? (
+                      <Check size={18} className="text-tuggi-secondary" />
+                    ) : (
+                      <Copy size={18} className="text-tuggi-slate" />
+                    )}
+                  </button>
+                  {couponCopied && (
+                    <p className="text-[11px] text-tuggi-secondary font-semibold -mt-1">
+                      {tCoupon("copied")}
+                    </p>
+                  )}
+
+                  <button
+                    onClick={handleRedeemTap}
+                    className="w-full mt-2 flex items-center justify-center gap-2 py-3.5 bg-tuggi-secondary text-white font-extrabold text-sm rounded-xl shadow-[0_6px_24px_rgba(255,111,0,0.28)] hover:shadow-[0_6px_28px_rgba(255,111,0,0.4)] hover:scale-[1.01] active:scale-95 transition-all"
+                  >
+                    {tCoupon("open_app")}
+                    <ArrowRight size={16} />
+                  </button>
+
+                  <p className="text-[10px] text-tuggi-slate/60 text-center mt-1 leading-relaxed px-2">
+                    {tCoupon("desktop_hint")}
+                  </p>
                 </div>
               </motion.div>
             )}

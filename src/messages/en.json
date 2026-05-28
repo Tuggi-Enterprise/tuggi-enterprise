@@ -607,5 +607,14 @@
       "description": "We partner with cities, destinations, and travel companies worldwide. If your region isn't on the map yet — let's change that.",
       "button": "GET IN TOUCH"
     }
+  },
+  "Coupon": {
+    "block_title": "Special gift",
+    "block_subtitle": "You get {days} days of Tuggi Premium free",
+    "code_label": "Your code",
+    "copy": "Copy code",
+    "copied": "Code copied!",
+    "open_app": "Redeem in app",
+    "desktop_hint": "Don't have the app yet? Use the buttons below to install and redeem."
   }
 }

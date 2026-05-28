@@ -607,5 +607,14 @@
       "description": "Estabelecemos parcerias com cidades, destinos e empresas de viagem em todo o mundo. Se a tua região ainda não está no mapa — vamos colocá-la.",
       "button": "ENTRAR EM CONTACTO"
     }
+  },
+  "Coupon": {
+    "block_title": "Presente especial",
+    "block_subtitle": "Recebes {days} dias de Tuggi Premium grátis",
+    "code_label": "O teu código",
+    "copy": "Copiar código",
+    "copied": "Código copiado!",
+    "open_app": "Resgatar na app",
+    "desktop_hint": "Sem a app? Usa os botões abaixo para a instalar e resgatar."
   }
 }
