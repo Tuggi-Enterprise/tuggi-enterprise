@@ -37,6 +37,12 @@ const COPY: Record<string, { okTitle: string; okBody: string; errTitle: string; 
     errTitle: "Enlace inválido",
     errBody: "No pudimos procesar tu solicitud. El enlace puede haber caducado.",
   },
+  it: {
+    okTitle: "Iscrizione annullata",
+    okBody: "Non riceverai più le nostre email. Ci mancherai!",
+    errTitle: "Link non valido",
+    errBody: "Non è stato possibile elaborare la richiesta. Il link potrebbe essere scaduto.",
+  },
   en: {
     okTitle: "Unsubscribed",
     okBody: "You will not receive our emails anymore. We will miss you!",
@@ -50,14 +56,17 @@ export default async function UnsubscribePage({
   searchParams,
 }: {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ e?: string; s?: string }>;
+  searchParams: Promise<{ e?: string; s?: string; lang?: string }>;
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const { e, s } = await searchParams;
+  const { e, s, lang: langParam } = await searchParams;
   const secret = process.env.NEWSLETTER_SECRET || "";
-  const lang = locale.startsWith("pt") ? "pt" : locale.startsWith("es") ? "es" : "en";
+  // Prefere o idioma do email (?lang=) sobre o locale da rota — o site não tem
+  // locale italiano, então emails em IT usam a rota /en mas exibem texto em IT.
+  const src = (langParam || locale).toLowerCase();
+  const lang = src.startsWith("pt") ? "pt" : src.startsWith("es") ? "es" : src.startsWith("it") ? "it" : "en";
   const copy = COPY[lang];
 
   let ok = false;
