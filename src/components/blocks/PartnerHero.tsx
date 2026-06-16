@@ -401,8 +401,11 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
   // Inline translation pro MORE/LESS local
   const isPt = locale.includes("pt");
   const isEs = locale.includes("es");
-  const tMore = isPt ? "MAIS" : isEs ? "MÁS" : "MORE";
-  const tLess = isPt ? "MENOS" : isEs ? "MENOS" : "LESS";
+  const isIt = locale === "it";
+  const tMore = isPt ? "MAIS" : isEs ? "MÁS" : isIt ? "DI PIÙ" : "MORE";
+  const tLess = isPt ? "MENOS" : isEs ? "MENOS" : isIt ? "MENO" : "LESS";
+  const tPlay = isPt ? "Tocar áudio" : isEs ? "Reproducir audio" : isIt ? "Riproduci audio" : "Play audio";
+  const tPause = isPt ? "Pausar áudio" : isEs ? "Pausar audio" : isIt ? "Metti in pausa" : "Pause audio";
 
   return (
     <section className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-tuggi-bg text-tuggi-dark">
@@ -549,10 +552,13 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
 
                     {/* BIG PLAY BUTTON */}
                     <button
+                      type="button"
                       onClick={toggleAudio}
+                      aria-label={isAudioPlaying ? tPause : tPlay}
+                      aria-pressed={isAudioPlaying}
                       className="w-10 h-10 rounded-full bg-tuggi-dark text-white shadow-md flex items-center justify-center focus:outline-none hover:scale-105 active:scale-95 transition-all"
                     >
-                      {isAudioPlaying ? <Pause size={14} /> : <Play size={14} className="ml-0.5" />}
+                      {isAudioPlaying ? <Pause size={14} aria-hidden="true" /> : <Play size={14} className="ml-0.5" aria-hidden="true" />}
                     </button>
                   </div>
 

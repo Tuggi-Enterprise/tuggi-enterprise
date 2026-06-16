@@ -266,14 +266,17 @@ export function InteractiveSimulator() {
                   {isTriggered && (
                     <div className="ml-2 sm:ml-4 flex flex-col items-center gap-1 flex-shrink-0">
                       <button
+                        type="button"
                         onClick={toggleCC}
+                        aria-label={t("ccLabel")}
+                        aria-pressed={showCC}
                         className={`p-2 sm:p-3 rounded-lg transition-all ${
                           showCC
                             ? "bg-[#00A8E8] text-white"
                             : "bg-white/10 text-white"
                         }`}
                       >
-                        <Subtitles className="w-4 h-4 sm:w-5 sm:h-5" />
+                        <Subtitles className="w-4 h-4 sm:w-5 sm:h-5" aria-hidden="true" />
                       </button>
                       <span className="text-[9px] text-white/60 font-medium">
                         {t("ccLabel")}
