@@ -12,6 +12,7 @@ const LANGUAGE_LABELS: Record<string, string> = {
   es: "Español",
   "pt-br": "Português (BR)",
   "pt-pt": "Português (PT)",
+  it: "Italiano",
 };
 
 export function languageLabelsFor(locales: string[]): string[] {

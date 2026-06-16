@@ -18,10 +18,11 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
     { code: "es", label: "ES" },
     { code: "pt-br", label: "PT-BR" },
     { code: "pt-pt", label: "PT-PT" },
+    { code: "it", label: "IT" },
   ];
 
   // Safeguard: Ensure pathname is completely stripped of any leftover locale prefix
-  const cleanPathname = pathname.replace(/^\/(?:en|es|pt-br|pt-pt)(?=\/|$)/, "") || "/";
+  const cleanPathname = pathname.replace(/^\/(?:en|es|pt-br|pt-pt|it)(?=\/|$)/, "") || "/";
 
   // Close menus on resize or route change
   useEffect(() => {
@@ -148,7 +149,7 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
                     <Link
                       key={loc.code}
                       href={cleanPathname}
-                      locale={loc.code as "en" | "es" | "pt-br" | "pt-pt"}
+                      locale={loc.code as "en" | "es" | "pt-br" | "pt-pt" | "it"}
                       onClick={() => {
                         document.cookie = `NEXT_LOCALE=${loc.code}; path=/; max-age=31536000`;
                         setIsLocaleOpen(false);

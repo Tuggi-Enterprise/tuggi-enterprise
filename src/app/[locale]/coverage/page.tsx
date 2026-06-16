@@ -116,6 +116,7 @@ export default async function CoveragePage({
             "position": 2,
             "name": locale === "en" ? "Global Coverage" :
                     locale === "es" ? "Cobertura Global" :
+                    locale === "it" ? "Copertura Globale" :
                     "Cobertura Global",
             "item": pageUrl,
           },

@@ -32,6 +32,7 @@ export function getDbLang(locale: string): string {
     case "es": return "es-es";
     case "pt-br": return "pt-br";
     case "pt-pt": return "pt-pt";
+    case "it": return "it-it";
     default: return "en-us";
   }
 }

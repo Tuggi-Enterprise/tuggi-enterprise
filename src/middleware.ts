@@ -27,12 +27,14 @@ export default function middleware(req: NextRequest) {
       const country = req.headers.get("x-vercel-ip-country") || "";
       if (country === "BR") locale = "pt-br";
       else if (country === "PT") locale = "pt-pt";
+      else if (country === "IT") locale = "it";
       else if (["ES", "MX", "AR", "CO", "CL", "PE"].includes(country)) locale = "es";
 
       if (!locale) {
         const acceptLang = req.headers.get("accept-language") || "";
         if (acceptLang.includes("pt-BR") || acceptLang.includes("pt-br")) locale = "pt-br";
         else if (acceptLang.includes("pt-PT") || acceptLang.includes("pt-pt")) locale = "pt-pt";
+        else if (acceptLang.includes("it")) locale = "it";
         else if (acceptLang.includes("es")) locale = "es";
       }
     }
@@ -58,6 +60,7 @@ export default function middleware(req: NextRequest) {
     let ipLocale = null;
     if (country === "BR") ipLocale = "pt-br";
     else if (country === "PT") ipLocale = "pt-pt";
+    else if (country === "IT") ipLocale = "it";
     else if (["ES", "MX", "AR", "CO", "CL", "PE"].includes(country)) ipLocale = "es";
     
     if (ipLocale) {
@@ -69,5 +72,5 @@ export default function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/(en|es|pt-br|pt-pt)/:path*", "/download", "/d/:path*"],
+  matcher: ["/", "/(en|es|pt-br|pt-pt|it)/:path*", "/download", "/d/:path*"],
 };

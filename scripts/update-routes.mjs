@@ -36,13 +36,14 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
 
 // ── Site locales (next-intl) and their DB language codes ───────────────────────
-const SITE_LOCALES = ["en", "es", "pt-br", "pt-pt"];
+const SITE_LOCALES = ["en", "es", "pt-br", "pt-pt", "it"];
 // next-intl locale → core.* `language` value
 const LOCALE_TO_DBLANG = {
   "en": "en-us",
   "es": "es-es",
   "pt-br": "pt-br",
   "pt-pt": "pt-pt",
+  "it": "it-it",
 };
 // DB language value → site locale (inverse of getDbLang in src/lib/partner.ts)
 const DBLANG_TO_LOCALE = {
@@ -50,6 +51,7 @@ const DBLANG_TO_LOCALE = {
   "es-es": "es", "es": "es",
   "pt-br": "pt-br",
   "pt-pt": "pt-pt", "pt": "pt-pt",
+  "it-it": "it", "it": "it",
 };
 
 // ── Load .env.local / .env (same loader as update-coverage.mjs) ────────────────
