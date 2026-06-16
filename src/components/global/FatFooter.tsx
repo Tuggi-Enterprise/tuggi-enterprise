@@ -129,12 +129,12 @@ export function FatFooter() {
 
         {/* Bottom Bar */}
         <div className="mt-16 pt-8 border-t border-slate-800 flex flex-col items-center sm:items-start space-y-4">
-          <p className="text-xs text-slate-500 text-center sm:text-left">
+          <p className="text-xs text-slate-400 text-center sm:text-left">
             © {new Date().getFullYear()} TUGGI Technologies. All rights reserved.
           </p>
-          <div className="flex flex-col sm:flex-row gap-2 sm:gap-6 text-xs text-slate-600 font-medium text-center sm:text-left">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-6 text-xs text-slate-400 font-medium text-center sm:text-left">
             <p>CNPJ: 64.539.859/0001-56</p>
-            <p className="hidden sm:block text-slate-700">•</p>
+            <p className="hidden sm:block text-slate-500" aria-hidden="true">•</p>
             <p>Rua PAIS LEME, 215 - CONJ 1713 - Pinheiros - São Paulo, BR</p>
           </div>
         </div>

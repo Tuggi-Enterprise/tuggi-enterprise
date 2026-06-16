@@ -51,7 +51,7 @@ export const CookieBanner = () => {
               </button>
               <button
                 onClick={handleAccept}
-                className="px-8 py-2.5 bg-tuggi-primary text-white rounded-full text-sm font-bold hover:bg-tuggi-primary/90 transition-all shadow-lg shadow-tuggi-primary/20"
+                className="px-8 py-2.5 bg-tuggi-primary text-tuggi-dark rounded-full text-sm font-bold hover:bg-tuggi-primary/90 transition-all shadow-lg shadow-tuggi-primary/20"
               >
                 {t("accept")}
               </button>

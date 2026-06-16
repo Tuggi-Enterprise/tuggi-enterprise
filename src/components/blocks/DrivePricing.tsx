@@ -125,7 +125,7 @@ export function DrivePricing() {
                 href={APP_STORE_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full text-center bg-tuggi-primary text-white font-bold py-4 rounded-xl hover:bg-blue-600 transition-colors shadow-lg shadow-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-tuggi-primary"
+                className="w-full text-center bg-tuggi-primary text-tuggi-dark font-bold py-4 rounded-xl hover:bg-blue-600 transition-colors shadow-lg shadow-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-tuggi-primary"
               >
                 {t("pass2Action")}
               </a>

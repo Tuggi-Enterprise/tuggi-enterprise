@@ -21,7 +21,7 @@ export function HeroSection() {
         >
           <Link
             href="/drive"
-            className="px-8 py-4 bg-[#FF6F00] text-white font-semibold rounded-md shadow-sm hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#FF6F00] focus:ring-offset-2 w-full sm:w-auto text-center"
+            className="px-8 py-4 bg-[#FF6F00] text-[#0B1220] font-semibold rounded-md shadow-sm hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#FF6F00] focus:ring-offset-2 w-full sm:w-auto text-center"
           >
             {t("downloadApp")}
           </Link>

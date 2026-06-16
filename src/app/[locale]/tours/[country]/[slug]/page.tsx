@@ -287,7 +287,7 @@ export default async function RouteDetailPage({
           <p className="text-tuggi-slate text-lg mb-8">{t("ctaSubtitle")}</p>
           <AppDownloadButton
             eventLabel="route_footer"
-            className="inline-block px-10 py-5 bg-tuggi-primary text-white font-black rounded-2xl shadow-xl shadow-tuggi-primary/20 hover:shadow-2xl hover:-translate-y-1 transition-all"
+            className="inline-block px-10 py-5 bg-tuggi-primary text-tuggi-dark font-black rounded-2xl shadow-xl shadow-tuggi-primary/20 hover:shadow-2xl hover:-translate-y-1 transition-all"
           >
             {t("ctaButton")}
           </AppDownloadButton>

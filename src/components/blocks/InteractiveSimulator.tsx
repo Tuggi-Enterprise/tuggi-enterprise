@@ -91,7 +91,7 @@ export function InteractiveSimulator() {
     <section className="w-full py-12 md:py-24 bg-[#F7F9FC] flex flex-col items-center border-b border-gray-200 px-4 sm:px-8">
       <div className="max-w-7xl mx-auto w-full flex flex-col lg:flex-row gap-10 lg:gap-16 items-center">
         <div className="flex-1 space-y-4 sm:space-y-6">
-          <div className="inline-flex items-center space-x-2 text-[#00A8E8] font-semibold tracking-wider text-sm uppercase">
+          <div className="inline-flex items-center space-x-2 text-[#007AA5] font-semibold tracking-wider text-sm uppercase">
             <Radio className="w-5 h-5" />
             <span>{t("tag")}</span>
           </div>

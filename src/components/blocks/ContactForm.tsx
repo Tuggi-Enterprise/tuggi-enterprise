@@ -38,7 +38,7 @@ export function ContactForm() {
       </div>
       <button 
         type="submit" 
-        className="p-3 bg-[#FF6F00] text-white rounded-md font-semibold hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#FF6F00] focus:ring-offset-2"
+        className="p-3 bg-[#FF6F00] text-[#0B1220] rounded-md font-semibold hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#FF6F00] focus:ring-offset-2"
       >
         Request Demo
       </button>

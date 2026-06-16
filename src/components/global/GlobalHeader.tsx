@@ -169,14 +169,14 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
 
             <Link 
               href="/drive" 
-              className="hidden sm:block bg-[#FF6F00] text-white font-bold rounded-xl px-7 py-3 hover:bg-[#E65F00] transition-all shadow-md hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6F00] focus:ring-offset-2 active:scale-95"
+              className="hidden sm:block bg-[#FF6F00] text-[#0B1220] font-bold rounded-xl px-7 py-3 hover:bg-[#E65F00] transition-all shadow-md hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6F00] focus:ring-offset-2 active:scale-95"
             >
               {t("downloadApp")}
             </Link>
             
             <Link 
               href="/drive" 
-              className="sm:hidden bg-[#FF6F00] text-white p-3 rounded-xl hover:bg-[#E65F00] transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6F00] active:scale-95"
+              className="sm:hidden bg-[#FF6F00] text-[#0B1220] p-3 rounded-xl hover:bg-[#E65F00] transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6F00] active:scale-95"
               aria-label={t("downloadApp")}
             >
               <Smartphone className="w-5 h-5" />
@@ -287,7 +287,7 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
           <Link 
             href="/drive" 
             onClick={() => setIsMobileMenuOpen(false)}
-            className="flex items-center justify-center gap-2 bg-[#FF6F00] text-white font-bold rounded-xl px-6 py-4 text-sm transition-all hover:bg-[#E65F00] shadow-lg shadow-orange-500/10 active:scale-[0.98]"
+            className="flex items-center justify-center gap-2 bg-[#FF6F00] text-[#0B1220] font-bold rounded-xl px-6 py-4 text-sm transition-all hover:bg-[#E65F00] shadow-lg shadow-orange-500/10 active:scale-[0.98]"
           >
             <Smartphone className="w-4 h-4" />
             {t("downloadApp")}

@@ -179,7 +179,7 @@ export default async function CoveragePage({
           </p>
           <a
             href={`/${locale}/contact`}
-            className="inline-block px-10 py-5 bg-tuggi-primary text-white font-black rounded-2xl shadow-xl shadow-tuggi-primary/20 hover:shadow-2xl hover:shadow-tuggi-primary/30 hover:-translate-y-1 transition-all"
+            className="inline-block px-10 py-5 bg-tuggi-primary text-tuggi-dark font-black rounded-2xl shadow-xl shadow-tuggi-primary/20 hover:shadow-2xl hover:shadow-tuggi-primary/30 hover:-translate-y-1 transition-all"
           >
             {t("CTA.button")}
           </a>

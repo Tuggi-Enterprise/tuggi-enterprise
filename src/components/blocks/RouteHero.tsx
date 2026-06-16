@@ -104,7 +104,7 @@ export function RouteHero({
         <div className="flex flex-wrap gap-3">
           <AppDownloadButton
             eventLabel="route_hero"
-            className="inline-flex items-center gap-2 px-7 py-4 bg-tuggi-primary text-white font-black rounded-2xl shadow-xl shadow-tuggi-primary/20 hover:shadow-2xl hover:-translate-y-0.5 transition-all"
+            className="inline-flex items-center gap-2 px-7 py-4 bg-tuggi-primary text-tuggi-dark font-black rounded-2xl shadow-xl shadow-tuggi-primary/20 hover:shadow-2xl hover:-translate-y-0.5 transition-all"
           >
             <Headphones className="w-5 h-5" />
             {t("heroCtaPrimary")}
