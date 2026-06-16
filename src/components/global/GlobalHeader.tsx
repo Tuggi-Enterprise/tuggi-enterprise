@@ -66,7 +66,7 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
               <Image
                 src="/images/logo_tuggi_full.png"
                 alt="TUGGI Logo"
-                width={140}
+                width={98}
                 height={32}
                 className="h-8 w-auto"
                 priority
@@ -205,7 +205,7 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
             <Image
               src="/images/logo_tuggi_full.png"
               alt="TUGGI Logo"
-              width={110}
+              width={86}
               height={28}
               className="h-7 w-auto"
               priority

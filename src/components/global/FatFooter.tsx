@@ -15,11 +15,11 @@ export function FatFooter() {
           {/* Logo & Manifesto column */}
           <div className="lg:col-span-4 flex flex-col space-y-6 lg:pr-8">
             <Link href="/" className="inline-block focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-sm w-max">
-              <Image 
-                src="/images/logo_tuggi_full_white.png" 
-                alt="TUGGI Logo White" 
-                width={150} 
-                height={32} 
+              <Image
+                src="/images/logo_tuggi_full_white.png"
+                alt="TUGGI Logo White"
+                width={98}
+                height={32}
                 className="h-8 w-auto"
               />
             </Link>
