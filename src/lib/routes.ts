@@ -162,19 +162,59 @@ export function pickLocaleContent(
 }
 
 /**
- * Stop content for a locale. Falls back ONLY within the same language family
- * (e.g. pt-pt ↔ pt-br) — never across languages, so an English page never
- * shows Portuguese audio/description. Returns null when the page locale's
- * language has no content (the stop then renders as name-only).
+ * Stop audio/text is keyed by DIALECT (en, es, pt-br, pt-pt, it). Map the unified
+ * site locale → audio dialect: for "pt" pick the route's country dialect
+ * (Portugal → pt-pt, else pt-br).
+ */
+export function siteLocaleToAudioLang(
+  locale: string,
+  countrySlug: string
+): string {
+  if (locale === "pt") return countrySlug === "portugal" ? "pt-pt" : "pt-br";
+  return locale;
+}
+
+/** Short labels for the audio-language chips in the multi-language player. */
+export const AUDIO_LANG_LABELS: Record<string, string> = {
+  en: "EN",
+  es: "ES",
+  "pt-br": "PT-BR",
+  "pt-pt": "PT-PT",
+  it: "IT",
+};
+const AUDIO_LANG_ORDER = ["en", "es", "pt-br", "pt-pt", "it"];
+
+export interface StopAudio {
+  lang: string;
+  label: string;
+  audioUrl: string;
+}
+
+/**
+ * Primary stop content for the page locale (its dialect), with same-family
+ * fallback (pt-pt ↔ pt-br) — never across languages, so an English page never
+ * shows Portuguese text. Returns null when there's no content → name-only stop.
  */
 export function pickStopContent(
   stop: RouteStop,
-  locale: string
+  locale: string,
+  countrySlug: string
 ): RouteStopLocaleContent | null {
-  if (stop.i18n[locale]) return stop.i18n[locale];
-  const base = locale.split("-")[0];
+  const audioLang = siteLocaleToAudioLang(locale, countrySlug);
+  if (stop.i18n[audioLang]) return stop.i18n[audioLang];
+  const base = audioLang.split("-")[0];
   const sameFamily = Object.keys(stop.i18n).find(
     (k) => k.split("-")[0] === base
   );
   return sameFamily ? stop.i18n[sameFamily] : null;
+}
+
+/** All available audio languages for a stop (for the multi-language player). */
+export function stopAudios(stop: RouteStop): StopAudio[] {
+  return AUDIO_LANG_ORDER.flatMap((lang) => {
+    const c = stop.i18n[lang];
+    return c?.audioUrl
+      ? [{ lang, label: AUDIO_LANG_LABELS[lang] ?? lang.toUpperCase(), audioUrl: c.audioUrl }]
+      : [];
+  });
 }

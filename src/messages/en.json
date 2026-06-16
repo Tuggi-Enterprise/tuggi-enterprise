@@ -698,6 +698,7 @@
     "hubTitle": "Self-Guided Audio Tours",
     "hubSubtitle": "Curated routes that play automatically as you explore — browse by country.",
     "hubEmpty": "New audio tours are coming soon in your language. Check back shortly.",
-    "viewAllInCountry": "View all {count}"
+    "viewAllInCountry": "View all {count}",
+    "audioLanguages": "Audio languages"
   }
 }

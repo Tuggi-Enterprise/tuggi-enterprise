@@ -35,24 +35,32 @@ import wkx from "wkx";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
 
-// ── Site locales (next-intl) and their DB language codes ───────────────────────
-const SITE_LOCALES = ["en", "es", "pt-br", "pt-pt", "it"];
-// next-intl locale → core.* `language` value
-const LOCALE_TO_DBLANG = {
+// ── Two layers (see plan): site locales (unified UI) vs audio dialects ─────────
+// SITE_LOCALES drive which page is published (route.locales) and the page's
+// primary text. For "pt" the dialect is chosen by the route's country.
+const SITE_LOCALES = ["en", "es", "pt", "it"];
+
+// AUDIO_LANGS are dialect-level and key stop/route audio in the snapshot — the
+// multi-language audio player shows all of these. pt-br and pt-pt stay SEPARATE.
+const AUDIO_LANGS = ["en", "es", "pt-br", "pt-pt", "it"];
+const AUDIO_LANG_TO_DBLANG = {
   "en": "en-us",
   "es": "es-es",
   "pt-br": "pt-br",
   "pt-pt": "pt-pt",
   "it": "it-it",
 };
-// DB language value → site locale (inverse of getDbLang in src/lib/partner.ts)
-const DBLANG_TO_LOCALE = {
-  "en-us": "en", "en": "en",
-  "es-es": "es", "es": "es",
-  "pt-br": "pt-br",
-  "pt-pt": "pt-pt", "pt": "pt-pt",
-  "it-it": "it", "it": "it",
-};
+
+/** Site locale → DB language for a route's PRIMARY text (pt → country dialect). */
+function siteLocaleToDbLang(locale, countrySlug) {
+  switch (locale) {
+    case "en": return "en-us";
+    case "es": return "es-es";
+    case "it": return "it-it";
+    case "pt": return countrySlug === "portugal" ? "pt-pt" : "pt-br";
+    default: return "en-us";
+  }
+}
 
 // ── Load .env.local / .env (same loader as update-coverage.mjs) ────────────────
 function loadEnvFile(p) {
@@ -245,20 +253,18 @@ async function fetchAttractionDescriptions(ids) {
 
 // ── Build per-locale i18n maps, applying the "genuine content only" rule ───────
 /**
- * Returns { locales: string[], i18n: {locale: {name, description, audioUrl}} }.
- * - A locale is included when a 'ready' route description exists for its dbLang.
- * - If NO ready descriptions exist, the route falls back to its base Portuguese
- *   name/description, published under the SINGLE PT variant that matches the
- *   base text's dialect (Portugal → pt-pt, otherwise pt-br — the base text is
- *   Brazilian-authored). Publishing one variant only avoids pt-pt/pt-br
- *   duplicate content. Routes with neither are skipped by the caller.
+ * Returns { locales: string[], i18n: {siteLocale: {name, description, audioUrl}} }.
+ * Keyed by SITE locale (en/es/pt/it). For "pt" the dialect text is chosen by the
+ * route's country (Portugal → pt-pt, else pt-br). A locale is included when a
+ * 'ready' route description exists for its dbLang; the Portuguese base text is
+ * always also published under "pt" (covers routes without ready translations).
  */
 function buildRouteI18n(route, readyByLang, countrySlug) {
   const i18n = {};
   const ready = readyByLang || {};
 
   for (const locale of SITE_LOCALES) {
-    const dbLang = LOCALE_TO_DBLANG[locale];
+    const dbLang = siteLocaleToDbLang(locale, countrySlug);
     const content = ready[dbLang] || ready[dbLang.split("-")[0]];
     if (content && (content.name || content.description)) {
       i18n[locale] = {
@@ -269,13 +275,10 @@ function buildRouteI18n(route, readyByLang, countrySlug) {
     }
   }
 
-  // Always also publish the Portuguese base content under the single PT variant
-  // matching its dialect (Portugal → pt-pt, else pt-br), unless a ready
-  // translation already covers that locale. This adds the genuine base text
-  // alongside any ready translations, without creating a pt-pt/pt-br duplicate.
-  const baseLocale = countrySlug === "portugal" ? "pt-pt" : "pt-br";
-  if (!i18n[baseLocale] && (route.name || route.description)) {
-    i18n[baseLocale] = {
+  // Always also publish the Portuguese base content under "pt" (the base text is
+  // already in the route's country dialect), unless a ready pt translation exists.
+  if (!i18n["pt"] && (route.name || route.description)) {
+    i18n["pt"] = {
       name: route.name || "",
       description: route.description || "",
       audioUrl: null,
@@ -285,15 +288,17 @@ function buildRouteI18n(route, readyByLang, countrySlug) {
   return { locales: Object.keys(i18n), i18n };
 }
 
-// ── Build the per-locale content map for a single stop/attraction ──────────────
+// ── Build the per-AUDIO-LANG content map for a stop (dialect-level, for the ─────
+// multi-language audio player). Keys: en, es, pt-br, pt-pt, it (pt-br/pt-pt
+// stay separate so the player can showcase both).
 function buildStopI18n(attractionDescByLang) {
   const i18n = {};
   const ready = attractionDescByLang || {};
-  for (const locale of SITE_LOCALES) {
-    const dbLang = LOCALE_TO_DBLANG[locale];
+  for (const lang of AUDIO_LANGS) {
+    const dbLang = AUDIO_LANG_TO_DBLANG[lang];
     const content = ready[dbLang] || ready[dbLang.split("-")[0]];
     if (content && (content.description || content.audioUrl)) {
-      i18n[locale] = {
+      i18n[lang] = {
         description: content.description || "",
         audioUrl: content.audioUrl || null,
       };

@@ -698,6 +698,7 @@
     "hubTitle": "Roteiros de Áudio Autoguiados",
     "hubSubtitle": "Rotas selecionadas que tocam automaticamente enquanto você explora — por país.",
     "hubEmpty": "Novos roteiros de áudio chegam em breve no seu idioma. Volte logo.",
-    "viewAllInCountry": "Ver todas as {count}"
+    "viewAllInCountry": "Ver todas as {count}",
+    "audioLanguages": "Idiomas do áudio"
   }
 }

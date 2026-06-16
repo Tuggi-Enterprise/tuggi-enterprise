@@ -9,6 +9,8 @@ import {
   pickLocaleContent,
   pickStopContent,
   relatedRoutes,
+  siteLocaleToAudioLang,
+  stopAudios,
 } from "@/lib/routes";
 import {
   buildAlternatesFor,
@@ -108,12 +110,13 @@ export default async function RouteDetailPage({
 
   // ── Stops view (localized description + audio, base name) ──────────────────
   const stops: RouteStopView[] = route.stops.map((stop, i) => {
-    const stopContent = pickStopContent(stop, locale);
+    const stopContent = pickStopContent(stop, locale, country);
     return {
       position: i + 1,
       name: stop.name,
       description: stopContent?.description ?? "",
-      audioUrl: stopContent?.audioUrl ?? null,
+      audios: stopAudios(stop),
+      defaultLang: siteLocaleToAudioLang(locale, country),
       isGeneric: stop.isGeneric,
     };
   });

@@ -1,14 +1,18 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { MapPin, Volume2 } from "lucide-react";
+import { MapPin } from "lucide-react";
+import { RouteStopAudio, type StopAudioOption } from "@/components/blocks/RouteStopAudio";
 
 export interface RouteStopView {
   /** 1-based position used for the #stop-N anchor and the marker number. */
   position: number;
   name: string;
   description: string;
-  audioUrl: string | null;
+  /** All available audio languages for this stop (multi-language player). */
+  audios: StopAudioOption[];
+  /** Audio language pre-selected for this page (the page locale's dialect). */
+  defaultLang: string;
   isGeneric: boolean;
 }
 
@@ -70,21 +74,12 @@ export function RouteStops({ stops }: RouteStopsProps) {
                   </p>
                 )}
 
-                {stop.audioUrl ? (
-                  <div className="mt-4">
-                    <div className="flex items-center gap-2 mb-2 text-xs font-bold uppercase tracking-wider text-tuggi-primary">
-                      <Volume2 className="w-4 h-4" />
-                      {t("audioPreview")}
-                    </div>
-                    <audio
-                      controls
-                      preload="none"
-                      className="w-full"
-                      aria-label={t("audioPreviewFor", { name: stop.name })}
-                    >
-                      <source src={stop.audioUrl} type="audio/mpeg" />
-                    </audio>
-                  </div>
+                {stop.audios.length > 0 ? (
+                  <RouteStopAudio
+                    audios={stop.audios}
+                    defaultLang={stop.defaultLang}
+                    stopName={stop.name}
+                  />
                 ) : null}
               </div>
             </li>

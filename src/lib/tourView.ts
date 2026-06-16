@@ -6,13 +6,18 @@ import type { RouteCardVM } from "@/components/blocks/RouteCard";
 import { pickLocaleContent, type RouteSnapshot } from "@/lib/routes";
 import { formatDistance, formatDuration } from "@/lib/tourFormat";
 
-/** Autonyms — language names shown in their own language. */
+/**
+ * Autonyms — language names shown in their own language.
+ * Includes both site locales (en/es/pt/it, used for route-card language chips)
+ * and audio dialects (pt-br/pt-pt, used by the multi-language audio player).
+ */
 const LANGUAGE_LABELS: Record<string, string> = {
   en: "English",
   es: "Español",
+  pt: "Português",
+  it: "Italiano",
   "pt-br": "Português (BR)",
   "pt-pt": "Português (PT)",
-  it: "Italiano",
 };
 
 export function languageLabelsFor(locales: string[]): string[] {

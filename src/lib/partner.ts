@@ -13,6 +13,8 @@ export interface PartnerData {
   audioUrl?: string;
   description?: string;
   isTuggi: boolean;
+  /** DB language used for the welcome audio/text (e.g. "pt-br", "pt-pt", "en-us"). Drives the call-audio file. */
+  audioLang: string;
 }
 
 type ClientRow = {
@@ -30,18 +32,21 @@ export function getDbLang(locale: string): string {
   switch (locale) {
     case "en": return "en-us";
     case "es": return "es-es";
-    case "pt-br": return "pt-br";
-    case "pt-pt": return "pt-pt";
+    case "pt": return "pt-br";
     case "it": return "it-it";
     default: return "en-us";
   }
 }
 
-/** Fetches the localized welcome audio + description for a POI, with en-us fallback. */
+/**
+ * Fetches the localized welcome audio + description for a POI, with en-us
+ * fallback. `dbLang` is the resolved DB language/dialect (e.g. "pt-pt") — the
+ * caller decides it (see src/lib/ptDialect.ts), decoupled from the UI locale.
+ */
 async function fetchLocalizedWelcome(
   supabase: SupabaseClient,
   poiId: string | null | undefined,
-  locale: string
+  dbLang: string
 ): Promise<{ audioUrl?: string; description?: string }> {
   if (!poiId) return {};
 
@@ -50,7 +55,7 @@ async function fetchLocalizedWelcome(
     .from("attraction_descriptions")
     .select("audio_url, description")
     .eq("attraction_id", poiId)
-    .eq("language", getDbLang(locale))
+    .eq("language", dbLang)
     .single();
 
   if (!description) {
@@ -73,16 +78,17 @@ async function fetchLocalizedWelcome(
 async function buildPartnerData(
   supabase: SupabaseClient,
   client: ClientRow,
-  locale: string
+  dbLang: string
 ): Promise<PartnerData> {
   const isTuggi = client.id === TUGGI_PARTNER_ID;
   const welcomePoiId = client.welcome_poi_id || client.metadata?.welcome_poi_id;
-  const welcome = await fetchLocalizedWelcome(supabase, welcomePoiId, locale);
+  const welcome = await fetchLocalizedWelcome(supabase, welcomePoiId, dbLang);
   return {
     id: client.id,
     slug: client.slug,
     name: isTuggi ? null : client.company_name,
     isTuggi,
+    audioLang: dbLang,
     ...welcome,
   };
 }
@@ -90,7 +96,7 @@ async function buildPartnerData(
 async function resolvePartner(
   column: "id" | "slug",
   value: string,
-  locale: string
+  dbLang: string
 ): Promise<PartnerData | null> {
   try {
     const supabase = getSupabaseServer();
@@ -102,7 +108,7 @@ async function resolvePartner(
       .single();
 
     if (error || !client) return null;
-    return await buildPartnerData(supabase, client as ClientRow, locale);
+    return await buildPartnerData(supabase, client as ClientRow, dbLang);
   } catch (err) {
     console.error(`Error fetching partner by ${column}:`, err);
     return null;
@@ -110,16 +116,17 @@ async function resolvePartner(
 }
 
 // Wrapped in React cache() so generateMetadata and the page component share a
-// single DB lookup per request (same args → one query).
+// single DB lookup per request (same args → one query). `dbLang` is the
+// resolved welcome dialect (see src/lib/ptDialect.ts), part of the cache key.
 
 /** Resolve a partner by client UUID (legacy /download?ID= flow). */
 export const getPartnerById = cache(
-  (id: string, locale: string): Promise<PartnerData | null> => resolvePartner("id", id, locale)
+  (id: string, dbLang: string): Promise<PartnerData | null> => resolvePartner("id", id, dbLang)
 );
 
 /** Resolve a partner by friendly slug (new /d/<slug> flow). */
 export const getPartnerBySlug = cache(
-  (slug: string, locale: string): Promise<PartnerData | null> => resolvePartner("slug", slug, locale)
+  (slug: string, dbLang: string): Promise<PartnerData | null> => resolvePartner("slug", slug, dbLang)
 );
 
 // ────────────────────────────────────────────────────────────────────────────
@@ -155,7 +162,7 @@ interface GetCouponPreviewRpcResult {
 
 async function resolveCoupon(
   rawCode: string,
-  locale: string
+  dbLang: string
 ): Promise<CouponContext | null> {
   try {
     const supabase = getSupabaseServer();
@@ -171,7 +178,7 @@ async function resolveCoupon(
     const result = data as GetCouponPreviewRpcResult | null;
     if (!result || !result.found || !result.code || !result.days) return null;
 
-    const welcome = await fetchLocalizedWelcome(supabase, result.owner_poi_id, locale);
+    const welcome = await fetchLocalizedWelcome(supabase, result.owner_poi_id, dbLang);
     const ownerClientId = result.owner_client_id ?? "";
     const isTuggi = !ownerClientId || ownerClientId === TUGGI_PARTNER_ID;
 
@@ -180,6 +187,7 @@ async function resolveCoupon(
       slug: result.owner_slug ?? null,
       name: isTuggi ? null : (result.owner_name ?? null),
       isTuggi,
+      audioLang: dbLang,
       ...welcome,
     };
 
@@ -195,6 +203,6 @@ async function resolveCoupon(
 
 /** Resolve an active redeemable coupon by raw code (case-insensitive). */
 export const getCouponBySlug = cache(
-  (code: string, locale: string): Promise<CouponContext | null> =>
-    resolveCoupon(code, locale)
+  (code: string, dbLang: string): Promise<CouponContext | null> =>
+    resolveCoupon(code, dbLang)
 );

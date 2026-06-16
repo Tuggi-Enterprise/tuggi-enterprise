@@ -4,42 +4,44 @@ import { routing } from "./i18n/routing";
 
 const intlMiddleware = createMiddleware(routing);
 
+/** Map a legacy Portuguese cookie/locale value to the unified "pt" site locale. */
+function normalizeLocale(value: string | null | undefined): string | null {
+  if (!value) return null;
+  if (value === "pt-br" || value === "pt-pt") return "pt";
+  return routing.locales.includes(value as never) ? value : null;
+}
+
 export default function middleware(req: NextRequest) {
   const { pathname, searchParams } = req.nextUrl;
 
   // Handle the partner download pages (/download and the friendly /d/<slug>)
   // separately so the shared URL stays locale-prefix-free — the QR code never
-  // needs to embed a locale; the right language is resolved here per request.
+  // needs to embed a locale; the right UI language is resolved here per request.
+  // NOTE: the welcome AUDIO/TEXT dialect (pt-br vs pt-pt) is resolved separately
+  // inside the page from geo/?lang (see src/lib/ptDialect.ts) — independent of
+  // this unified UI locale.
   if (pathname === "/download" || pathname.startsWith("/d/")) {
-    // 1. Check for explicit lang parameter
-    const langParam = searchParams.get("lang");
-    const languages = routing.locales;
+    // 1. Explicit ?lang (legacy pt-br/pt-pt normalised to pt)
+    let locale = normalizeLocale(searchParams.get("lang"));
 
-    let locale = languages.includes(langParam as any) ? langParam : null;
+    // 2. Fallback to cookie (legacy pt-br/pt-pt normalised to pt)
+    if (!locale) locale = normalizeLocale(req.cookies.get("NEXT_LOCALE")?.value);
 
-    // 2. Fallback to cookie
+    // 3. Fallback to IP / Accept-Language
     if (!locale) {
-      locale = req.cookies.get('NEXT_LOCALE')?.value || null;
-    }
-
-    // 3. Fallback to Accept-Language or IP detection
-    if (!locale || !languages.includes(locale as any)) {
       const country = req.headers.get("x-vercel-ip-country") || "";
-      if (country === "BR") locale = "pt-br";
-      else if (country === "PT") locale = "pt-pt";
+      if (country === "BR" || country === "PT") locale = "pt";
       else if (country === "IT") locale = "it";
       else if (["ES", "MX", "AR", "CO", "CL", "PE"].includes(country)) locale = "es";
 
       if (!locale) {
         const acceptLang = req.headers.get("accept-language") || "";
-        if (acceptLang.includes("pt-BR") || acceptLang.includes("pt-br")) locale = "pt-br";
-        else if (acceptLang.includes("pt-PT") || acceptLang.includes("pt-pt")) locale = "pt-pt";
+        if (acceptLang.toLowerCase().includes("pt")) locale = "pt";
         else if (acceptLang.includes("it")) locale = "it";
         else if (acceptLang.includes("es")) locale = "es";
       }
     }
 
-    // Default fallback
     locale = locale || routing.defaultLocale;
 
     // Internal rewrite to /[locale]/download or /[locale]/d/<slug>
@@ -48,29 +50,32 @@ export default function middleware(req: NextRequest) {
     return NextResponse.rewrite(url);
   }
 
-  // Step 1: Check for explicit locale in URL or cookies
+  // Step 1: explicit locale already in the URL?
   const hasLocale = routing.locales.some(
-    (loc) => req.nextUrl.pathname.startsWith(`/${loc}/`) || req.nextUrl.pathname === `/${loc}`
+    (loc) => pathname.startsWith(`/${loc}/`) || pathname === `/${loc}`
   );
-  
-  if (!hasLocale && !req.cookies.has('NEXT_LOCALE')) {
-    // Step 2: Implement user IP based detection 
+
+  // Treat a legacy pt-br/pt-pt cookie as "no valid cookie" so detection re-runs
+  // and resolves to the unified "pt".
+  const cookieLocale = req.cookies.get("NEXT_LOCALE")?.value;
+  const hasValidCookie =
+    !!cookieLocale && routing.locales.includes(cookieLocale as never);
+  const legacyPtCookie = cookieLocale === "pt-br" || cookieLocale === "pt-pt";
+
+  if (!hasLocale && (!hasValidCookie || legacyPtCookie)) {
     const country = req.headers.get("x-vercel-ip-country") || "";
-    
-    let ipLocale = null;
-    if (country === "BR") ipLocale = "pt-br";
-    else if (country === "PT") ipLocale = "pt-pt";
+
+    let ipLocale: string | null = null;
+    if (legacyPtCookie || country === "BR" || country === "PT") ipLocale = "pt";
     else if (country === "IT") ipLocale = "it";
     else if (["ES", "MX", "AR", "CO", "CL", "PE"].includes(country)) ipLocale = "es";
-    
-    if (ipLocale) {
-      req.headers.set('accept-language', ipLocale);
-    }
+
+    if (ipLocale) req.headers.set("accept-language", ipLocale);
   }
 
   return intlMiddleware(req);
 }
 
 export const config = {
-  matcher: ["/", "/(en|es|pt-br|pt-pt|it)/:path*", "/download", "/d/:path*"],
+  matcher: ["/", "/(en|es|pt|it)/:path*", "/download", "/d/:path*"],
 };

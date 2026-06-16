@@ -698,6 +698,7 @@
     "hubTitle": "Audioguide Autoguidate",
     "hubSubtitle": "Percorsi selezionati che partono automaticamente mentre esplori — sfoglia per paese.",
     "hubEmpty": "Presto nuove audioguide nella tua lingua. Torna a trovarci a breve.",
-    "viewAllInCountry": "Vedi tutti i {count}"
+    "viewAllInCountry": "Vedi tutti i {count}",
+    "audioLanguages": "Lingue dell'audio"
   }
 }

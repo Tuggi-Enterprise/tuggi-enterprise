@@ -16,13 +16,12 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
   const locales = [
     { code: "en", label: "EN" },
     { code: "es", label: "ES" },
-    { code: "pt-br", label: "PT-BR" },
-    { code: "pt-pt", label: "PT-PT" },
+    { code: "pt", label: "PT" },
     { code: "it", label: "IT" },
   ];
 
   // Safeguard: Ensure pathname is completely stripped of any leftover locale prefix
-  const cleanPathname = pathname.replace(/^\/(?:en|es|pt-br|pt-pt|it)(?=\/|$)/, "") || "/";
+  const cleanPathname = pathname.replace(/^\/(?:en|es|pt|it)(?=\/|$)/, "") || "/";
 
   // Close menus on resize or route change
   useEffect(() => {
@@ -140,7 +139,7 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
                 className="text-sm font-bold text-slate-500 hover:text-tuggi-primary uppercase flex items-center gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-lg px-2 py-1.5 transition-colors"
                 aria-expanded={isLocaleOpen}
               >
-                <span>{currentLocale === 'pt-br' ? 'PT-BR' : currentLocale.toUpperCase()}</span>
+                <span>{currentLocale.toUpperCase()}</span>
                 <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${isLocaleOpen ? 'rotate-180 text-tuggi-primary' : ''}`} />
               </button>
               <div className={`absolute right-0 mt-3 w-36 bg-white border border-gray-100 rounded-2xl shadow-2xl transition-all duration-200 z-50 overflow-hidden ${isLocaleOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible translate-y-1'}`}>
@@ -149,7 +148,7 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
                     <Link
                       key={loc.code}
                       href={cleanPathname}
-                      locale={loc.code as "en" | "es" | "pt-br" | "pt-pt" | "it"}
+                      locale={loc.code as "en" | "es" | "pt" | "it"}
                       onClick={() => {
                         document.cookie = `NEXT_LOCALE=${loc.code}; path=/; max-age=31536000`;
                         setIsLocaleOpen(false);

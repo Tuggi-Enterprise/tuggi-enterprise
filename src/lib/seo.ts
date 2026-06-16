@@ -3,7 +3,7 @@
  *
  * Locale strategy (next-intl localePrefix="always"):
  *   - every locale, INCLUDING the default "en", is served under its prefix
- *   - canonical for "en" is "/en", for "pt-br" is "/pt-br", etc.
+ *   - canonical for "en" is "/en", for "pt" is "/pt", etc.
  *   - non-prefixed paths (e.g. "/drive") 404, so every emitted URL is prefixed
  */
 import { routing } from "@/i18n/routing";
@@ -20,7 +20,7 @@ const BASE_URL = "https://www.tuggi.app";
  *   localePath("en",    "")               // "/en"
  *   localePath("es",    "")               // "/es"
  *   localePath("en",    "drive")          // "/en/drive"
- *   localePath("pt-br", "enterprise/city-os") // "/pt-br/enterprise/city-os"
+ *   localePath("pt", "enterprise/city-os") // "/pt/enterprise/city-os"
  */
 function localePath(locale: string, pagePath: string): string {
   const clean = pagePath.replace(/^\//, "").replace(/\/$/, "");
@@ -30,7 +30,7 @@ function localePath(locale: string, pagePath: string): string {
 /**
  * Builds the `alternates` object for Next.js Metadata.
  *
- * @param locale   - Current page locale (e.g. "en", "pt-br")
+ * @param locale   - Current page locale (e.g. "en", "pt")
  * @param pagePath - Path WITHOUT locale prefix (e.g. "", "drive", "trust-center/privacy-policy")
  */
 export function buildAlternates(locale: string, pagePath = "") {
@@ -164,8 +164,8 @@ export const defaultRobots = { index: true, follow: true } as const;
  *   // {
  *   //   "en":        "https://www.tuggi.app/en/drive",
  *   //   "es":        "https://www.tuggi.app/es/drive",
- *   //   "pt-br":     "https://www.tuggi.app/pt-br/drive",
- *   //   "pt-pt":     "https://www.tuggi.app/pt-pt/drive",
+ *   //   "pt":        "https://www.tuggi.app/pt/drive",
+ *   //   "it":        "https://www.tuggi.app/it/drive",
  *   //   "x-default": "https://www.tuggi.app/en/drive",
  *   // }
  */

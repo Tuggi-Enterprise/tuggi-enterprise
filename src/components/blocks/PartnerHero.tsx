@@ -18,6 +18,8 @@ interface PartnerHeroProps {
     description?: string;
     audioUrl?: string;
     isTuggi?: boolean;
+    /** Resolved welcome dialect (e.g. "pt-pt", "pt-br", "en-us") — drives the call audio. */
+    audioLang?: string;
   } | null;
   /** When present, render the gift-card style redeem block. */
   coupon?: CouponPreview;
@@ -84,14 +86,14 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
     audio.volume = 1;
     audioRef.current = audio;
 
-    let calFilePath = 'call_en-us-male.mp3';
-    const l = locale.toLowerCase();
-    if (l === 'pt-br' || l === 'pt') calFilePath = 'call_pt-br-male.mp3';
-    else if (l === 'pt-pt') calFilePath = 'call_pt-pt-male.mp3';
-    else if (l === 'es' || l === 'es-es') calFilePath = 'call_es-es-male.mp3';
-    else if (l === 'de') calFilePath = 'call_de-de-male.mp3';
-    else if (l === 'it') calFilePath = 'call_it-it-male.mp3';
-    else if (l === 'fr') calFilePath = 'call_fr-fr-male.mp3';
+    // The "call" audio matches the welcome dialect resolved server-side
+    // (audioLang, e.g. "pt-pt"/"pt-br"/"en-us") — decoupled from the unified
+    // "pt" UI locale, so a visitor in Portugal hears the pt-pt call.
+    const KNOWN_CALLS = ['en-us', 'es-es', 'pt-br', 'pt-pt', 'it-it', 'de-de', 'fr-fr'];
+    const audioLang = (partnerData?.audioLang || '').toLowerCase();
+    const calFilePath = KNOWN_CALLS.includes(audioLang)
+      ? `call_${audioLang}-male.mp3`
+      : 'call_en-us-male.mp3';
 
     const callAudio = new Audio(`/audio/${calFilePath}`);
     callAudio.volume = 1;
@@ -208,7 +210,7 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
       document.removeEventListener("click", playOnInteraction, true);
       document.removeEventListener("touchstart", playOnInteraction, true);
     };
-  }, [partnerData?.audioUrl, locale]);
+  }, [partnerData?.audioUrl, partnerData?.audioLang]);
 
   const toggleAudio = () => {
     const audio = audioRef.current;
