@@ -99,10 +99,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   for (const route of getAllRoutes()) {
     const pagePath = `tours/${route.countrySlug}/${route.slug}`;
     const alternates = { languages: buildSitemapAlternatesFor(pagePath, route.locales) };
+    const routeDate = route.updatedAt ? new Date(route.updatedAt) : snapshotDate;
+    const lastModified = isNaN(routeDate.getTime()) ? snapshotDate : routeDate;
     for (const locale of route.locales) {
       entries.push({
         url: buildUrl(locale, pagePath),
-        lastModified: snapshotDate,
+        lastModified,
         changeFrequency: "monthly",
         priority: 0.8,
         alternates,

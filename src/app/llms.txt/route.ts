@@ -20,6 +20,7 @@ Key facts:
 ## Main pages
 - [Home](${SITE_URL}/en): What TUGGI is and how it works
 - [Download / Drive](${SITE_URL}/en/drive): Features, pricing, FAQ, and app download
+- [Audio Tours](${SITE_URL}/en/tours): Self-guided audio tour routes by destination — each route page has a map, the ordered stops, real audio previews, duration, accessibility and languages
 - [Global Coverage](${SITE_URL}/en/coverage): Countries and number of attractions covered (live stats)
 - [Technology](${SITE_URL}/en/technology): How the location-triggered audio engine works
 - [Purpose](${SITE_URL}/en/purpose): Mission and accessibility

@@ -11,6 +11,7 @@ import {
   Sun,
   Headphones,
 } from "lucide-react";
+import { AppDownloadButton } from "@/components/blocks/AppDownloadButton";
 
 export interface RouteHeroProps {
   name: string;
@@ -27,8 +28,6 @@ export interface RouteHeroProps {
   bestTime: string[];
   /** human language labels already resolved (e.g. ["Português", "English"]) */
   languageLabels: string[];
-  /** deep link / store URL for the primary CTA */
-  appHref: string;
 }
 
 export function RouteHero({
@@ -42,7 +41,6 @@ export function RouteHero({
   accessibility,
   bestTime,
   languageLabels,
-  appHref,
 }: RouteHeroProps) {
   const t = useTranslations("Tours");
 
@@ -104,13 +102,13 @@ export function RouteHero({
         </div>
 
         <div className="flex flex-wrap gap-3">
-          <a
-            href={appHref}
+          <AppDownloadButton
+            eventLabel="route_hero"
             className="inline-flex items-center gap-2 px-7 py-4 bg-tuggi-primary text-white font-black rounded-2xl shadow-xl shadow-tuggi-primary/20 hover:shadow-2xl hover:-translate-y-0.5 transition-all"
           >
             <Headphones className="w-5 h-5" />
             {t("heroCtaPrimary")}
-          </a>
+          </AppDownloadButton>
           <a
             href="#route-map"
             className="inline-flex items-center gap-2 px-7 py-4 bg-tuggi-bg text-tuggi-dark font-bold rounded-2xl border border-gray-200 hover:bg-gray-50 transition-all"

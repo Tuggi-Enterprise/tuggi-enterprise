@@ -24,6 +24,7 @@ import { RouteMap } from "@/components/blocks/RouteMap";
 import { RouteStops, type RouteStopView } from "@/components/blocks/RouteStops";
 import { RouteFaq, type FaqItem } from "@/components/blocks/RouteFaq";
 import { RelatedRoutes } from "@/components/blocks/RelatedRoutes";
+import { AppDownloadButton } from "@/components/blocks/AppDownloadButton";
 
 export const dynamicParams = false;
 
@@ -59,7 +60,14 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: "Tours" });
   const content = pickLocaleContent(route, locale);
   const pagePath = `tours/${country}/${slug}`;
-  const title = t("metaTitle", { name: content.name });
+
+  // SERP-friendly <title>: route names are long marketing strings, so use the
+  // headline before the em-dash (usually the place) + the target keyword, so
+  // the title stays under ~60 chars and leads with high-intent terms.
+  const headline = content.name.split(/\s[—–-]\s/)[0].trim();
+  const titleBase =
+    headline.length >= 5 && headline.length <= 48 ? headline : clamp(content.name, 48);
+  const title = t("metaTitle", { name: titleBase });
   const description = content.description
     ? clamp(content.description)
     : t("metaDescFallback", { place: route.region || route.country });
@@ -69,8 +77,14 @@ export async function generateMetadata({
     description,
     alternates: buildAlternatesFor(locale, pagePath, route.locales),
     robots: defaultRobots,
-    openGraph: buildOpenGraph({ title, description, locale, pagePath }),
-    twitter: buildTwitterCard({ title, description }),
+    // Social cards can carry the full marketing name (no strict length limit).
+    openGraph: buildOpenGraph({
+      title: t("metaTitle", { name: content.name }),
+      description,
+      locale,
+      pagePath,
+    }),
+    twitter: buildTwitterCard({ title: content.name, description }),
   };
 }
 
@@ -154,6 +168,14 @@ export default async function RouteDetailPage({
         url: pageUrl,
         inLanguage: locale,
         touristType: "Self-guided audio tour",
+        provider: {
+          "@type": "Organization",
+          name: "TUGGI",
+          url: "https://www.tuggi.app",
+        },
+        ...(route.region || route.country
+          ? { containedInPlace: { "@type": "Place", name: route.region || route.country } }
+          : {}),
         itinerary: {
           "@type": "ItemList",
           numberOfItems: route.stops.length,
@@ -163,6 +185,9 @@ export default async function RouteDetailPage({
             item: {
               "@type": "TouristAttraction",
               name: s.name,
+              ...(route.region || route.country
+                ? { containedInPlace: { "@type": "Place", name: route.region || route.country } }
+                : {}),
               ...(s.lat != null && s.lng != null
                 ? { geo: { "@type": "GeoCoordinates", latitude: s.lat, longitude: s.lng } }
                 : {}),
@@ -191,8 +216,6 @@ export default async function RouteDetailPage({
       },
     ],
   };
-
-  const appHref = `/${locale}/drive`;
 
   return (
     <article>
@@ -227,7 +250,6 @@ export default async function RouteDetailPage({
         accessibility={route.accessibility}
         bestTime={route.bestTime}
         languageLabels={languageLabels}
-        appHref={appHref}
       />
 
       {/* Intro / description */}
@@ -263,12 +285,12 @@ export default async function RouteDetailPage({
             {t("ctaTitle")}
           </h2>
           <p className="text-tuggi-slate text-lg mb-8">{t("ctaSubtitle")}</p>
-          <a
-            href={appHref}
+          <AppDownloadButton
+            eventLabel="route_footer"
             className="inline-block px-10 py-5 bg-tuggi-primary text-white font-black rounded-2xl shadow-xl shadow-tuggi-primary/20 hover:shadow-2xl hover:-translate-y-1 transition-all"
           >
             {t("ctaButton")}
-          </a>
+          </AppDownloadButton>
         </div>
       </section>
     </article>

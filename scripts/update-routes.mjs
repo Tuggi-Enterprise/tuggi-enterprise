@@ -161,7 +161,7 @@ async function fetchRoutes() {
     .from("custom_routes")
     .select(
       "id, name, description, geometry, waypoints, metadata, country, region, stops_count, " +
-      "accessibility, drivability, scenic_profile, best_time, road_conditions, photogenic_rating, resources"
+      "accessibility, drivability, scenic_profile, best_time, road_conditions, photogenic_rating, resources, updated_at"
     )
     .eq("is_active", true)
     .eq("visibility", "public");
@@ -385,6 +385,7 @@ for (const { row, waypoints, metadata } of parsedRoutes) {
     country,
     countrySlug,
     region,
+    updatedAt: row.updated_at ?? null,
     distanceM: typeof metadata.distance === "number" ? metadata.distance : null,
     durationS: typeof metadata.duration === "number" ? metadata.duration : null,
     stopsCount: row.stops_count ?? stops.length,

@@ -46,6 +46,7 @@ export interface RouteSnapshot {
   country: string;
   countrySlug: string;
   region: string | null;
+  updatedAt: string | null;
   distanceM: number | null;
   durationS: number | null;
   stopsCount: number;

@@ -41,10 +41,19 @@ export function RouteMap({ line, stops, className }: RouteMapProps) {
       });
       mapRef.current = map;
 
-      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 19,
-        attribution: "&copy; OpenStreetMap contributors",
-      }).addTo(map);
+      // CARTO Voyager basemap — free, NO API key required (attribution only),
+      // and far cleaner cartography than raw OSM tiles. `detectRetina` serves
+      // crisp tiles on high-DPI screens.
+      L.tileLayer(
+        "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+        {
+          subdomains: "abcd",
+          maxZoom: 20,
+          detectRetina: true,
+          attribution:
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        }
+      ).addTo(map);
 
       const bounds: [number, number][] = [];
 
