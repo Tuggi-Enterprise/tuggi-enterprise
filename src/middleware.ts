@@ -77,5 +77,10 @@ export default function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/(en|es|pt|it)/:path*", "/download", "/d/:path*"],
+  // Broad next-intl matcher: run on every page path EXCEPT api, Next internals
+  // and files with an extension (sitemap.xml, robots.txt, llms.txt, images…).
+  // This lets next-intl redirect un-prefixed URLs (e.g. /drive → /en/drive)
+  // instead of 404'ing them — recovering old indexed links. /download and
+  // /d/<slug> still hit the partner handling above first.
+  matcher: ["/((?!api|_next|_vercel|.*\\..*).*)"],
 };
