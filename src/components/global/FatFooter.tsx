@@ -39,6 +39,9 @@ export function FatFooter() {
             <Link href="/drive" className="text-sm text-slate-400 hover:text-white transition-colors duration-200 block mb-3 focus-visible:ring-2 focus-visible:ring-tuggi-primary focus:outline-none rounded-sm w-max">
               {t("plans")}
             </Link>
+            <Link href="/tours" className="text-sm text-slate-400 hover:text-white transition-colors duration-200 block mb-3 focus-visible:ring-2 focus-visible:ring-tuggi-primary focus:outline-none rounded-sm w-max">
+              {t("audioTours")}
+            </Link>
             <div className="flex flex-col gap-3 mt-6">
               <a
                 href={APP_STORE_URL}

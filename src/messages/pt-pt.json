@@ -23,7 +23,8 @@
     "navPurpose": "O Nosso Propósito",
     "navB2c": "TUGGI",
     "navContact": "Contacto",
-    "downloadApp": "Descarregar App"
+    "downloadApp": "Descarregar App",
+    "navTours": "Percursos"
   },
   "Footer": {
     "driveB2c": "TUGGI (B2C)",
@@ -41,7 +42,8 @@
     "privacy": "Política de Privacidade",
     "accessibility": "Acessibilidade",
     "security": "Segurança B2G",
-    "coverage": "Cobertura Global"
+    "coverage": "Cobertura Global",
+    "audioTours": "Percursos de Áudio"
   },
   "Home": {
     "FAQ": {
@@ -616,5 +618,86 @@
     "copied": "Código copiado!",
     "open_app": "Resgatar na app",
     "desktop_hint": "Sem a app? Usa os botões abaixo para a instalar e resgatar."
+  },
+  "Tours": {
+    "heroTag": "Percurso de Áudio Autoguiado",
+    "heroSubtitle": "Percurso de áudio autoguiado · {place}",
+    "heroCtaPrimary": "Ouvir na app Tuggi",
+    "heroCtaSecondary": "Ver o mapa",
+    "facts": {
+      "duration": "Duração",
+      "distance": "Distância",
+      "stops": "Paragens",
+      "drivability": "Dificuldade",
+      "accessibility": "Acessibilidade",
+      "bestTime": "Melhor altura",
+      "languages": "Idiomas",
+      "varies": "Variável"
+    },
+    "drivability": {
+      "easy": "Fácil",
+      "moderate": "Moderada",
+      "demanding": "Exigente",
+      "unknown": "—"
+    },
+    "accessibility": {
+      "accessible": "Acessível",
+      "partial": "Parcialmente acessível",
+      "not_accessible": "Não acessível",
+      "unknown": "—"
+    },
+    "bestTime": {
+      "morning": "Manhã",
+      "afternoon": "Tarde",
+      "sunset": "Pôr do sol",
+      "evening": "Noite",
+      "night": "Noite",
+      "anytime": "Qualquer altura"
+    },
+    "itineraryTitle": "O que vai ver e ouvir",
+    "itinerarySubtitle": "As paragens deste percurso, por ordem — com pré-visualizações de áudio quando disponíveis.",
+    "audioPreview": "Pré-visualização de áudio",
+    "audioPreviewFor": "Pré-visualização de áudio de {name}",
+    "faqTitle": "Perguntas frequentes",
+    "faq": {
+      "duration": {
+        "q": "Quanto tempo demora este percurso?",
+        "a": "Cerca de {duration} de áudio em {stops} paragens, cobrindo aproximadamente {distance}. Ao seu ritmo — o áudio toca automaticamente à medida que se desloca."
+      },
+      "accessibility": {
+        "q": "Este percurso é acessível?",
+        "a": "Este percurso está classificado como: {level}. Consulte cada paragem para detalhes específicos de acesso."
+      },
+      "languages": {
+        "q": "Em que idiomas está disponível?",
+        "a": "Este percurso está disponível em: {languages}."
+      },
+      "offline": {
+        "q": "Preciso de ligação à Internet?",
+        "a": "Não. Descarregue o percurso na app Tuggi e ouça offline — o áudio é ativado pela sua localização, sem usar as mãos."
+      },
+      "mode": {
+        "q": "Posso fazê-lo a pé ou de carro?",
+        "a": "Este percurso foi pensado para um trajeto {level}. O áudio adapta-se ao seu ritmo."
+      }
+    },
+    "relatedTitle": "Mais percursos por perto",
+    "stopsCount": "{count, plural, one {# paragem} other {# paragens}}",
+    "breadcrumbTours": "Percursos de Áudio",
+    "metaTitle": "{name} — Percurso de Áudio Autoguiado",
+    "metaDescFallback": "Um percurso de áudio autoguiado em {place} com a Tuggi. Histórias que tocam automaticamente enquanto explora.",
+    "ctaTitle": "Ouça a história completa",
+    "ctaSubtitle": "Descarregue a app Tuggi e deixe cada paragem ganhar vida — sem usar as mãos, offline e no seu idioma.",
+    "ctaButton": "Descarregar a app Tuggi",
+    "countryMetaTitle": "Percursos de Áudio Autoguiados em {country}",
+    "countryMetaDesc": "Explore percursos de áudio autoguiados por {country} com a Tuggi — mapas, pré-visualizações de áudio reais e informação prática de cada percurso.",
+    "countryTitle": "Percursos de Áudio Autoguiados em {country}",
+    "countrySubtitle": "{count, plural, one {# percurso selecionado} other {# percursos selecionados}} em {country}, cada um com mapa, paragens e pré-visualizações de áudio reais.",
+    "hubMetaTitle": "Percursos de Áudio Autoguiados",
+    "hubMetaDesc": "Navegue pelos percursos de áudio autoguiados da Tuggi por país — percursos selecionados com mapas, paragens e pré-visualizações de áudio reais.",
+    "hubTitle": "Percursos de Áudio Autoguiados",
+    "hubSubtitle": "Percursos selecionados que tocam automaticamente enquanto explora — por país.",
+    "hubEmpty": "Novos percursos de áudio chegam em breve no seu idioma. Volte em breve.",
+    "viewAllInCountry": "Ver todos os {count}"
   }
 }

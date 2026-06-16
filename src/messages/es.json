@@ -23,7 +23,8 @@
     "navPurpose": "Nuestro Propósito",
     "navB2c": "TUGGI",
     "navContact": "Contacto",
-    "downloadApp": "Descargar App"
+    "downloadApp": "Descargar App",
+    "navTours": "Audioguías"
   },
   "Footer": {
     "driveB2c": "TUGGI (B2C)",
@@ -41,7 +42,8 @@
     "privacy": "Política de Privacidad",
     "accessibility": "Accesibilidad",
     "security": "Seguridad B2G",
-    "coverage": "Cobertura Global"
+    "coverage": "Cobertura Global",
+    "audioTours": "Audioguías"
   },
   "Home": {
     "FAQ": {
@@ -616,5 +618,86 @@
     "copied": "¡Código copiado!",
     "open_app": "Canjear en la app",
     "desktop_hint": "¿No tienes la app? Usa los botones de abajo para instalarla y canjear."
+  },
+  "Tours": {
+    "heroTag": "Audioguía Autoguiada",
+    "heroSubtitle": "Audioguía autoguiada · {place}",
+    "heroCtaPrimary": "Escuchar en la app Tuggi",
+    "heroCtaSecondary": "Ver el mapa",
+    "facts": {
+      "duration": "Duración",
+      "distance": "Distancia",
+      "stops": "Paradas",
+      "drivability": "Dificultad",
+      "accessibility": "Accesibilidad",
+      "bestTime": "Mejor momento",
+      "languages": "Idiomas",
+      "varies": "Variable"
+    },
+    "drivability": {
+      "easy": "Fácil",
+      "moderate": "Moderada",
+      "demanding": "Exigente",
+      "unknown": "—"
+    },
+    "accessibility": {
+      "accessible": "Accesible",
+      "partial": "Parcialmente accesible",
+      "not_accessible": "No accesible",
+      "unknown": "—"
+    },
+    "bestTime": {
+      "morning": "Mañana",
+      "afternoon": "Tarde",
+      "sunset": "Atardecer",
+      "evening": "Noche",
+      "night": "Noche",
+      "anytime": "Cualquier momento"
+    },
+    "itineraryTitle": "Lo que verás y escucharás",
+    "itinerarySubtitle": "Las paradas de esta ruta, en orden — con vistas previas de audio cuando están disponibles.",
+    "audioPreview": "Vista previa de audio",
+    "audioPreviewFor": "Vista previa de audio de {name}",
+    "faqTitle": "Preguntas frecuentes",
+    "faq": {
+      "duration": {
+        "q": "¿Cuánto dura este recorrido?",
+        "a": "Unos {duration} de audio en {stops} paradas, cubriendo aproximadamente {distance}. A tu propio ritmo — el audio se reproduce automáticamente mientras avanzas."
+      },
+      "accessibility": {
+        "q": "¿Es accesible este recorrido?",
+        "a": "Esta ruta está clasificada como: {level}. Consulta cada parada para más detalles de acceso."
+      },
+      "languages": {
+        "q": "¿En qué idiomas está disponible?",
+        "a": "Este recorrido está disponible en: {languages}."
+      },
+      "offline": {
+        "q": "¿Necesito conexión a internet?",
+        "a": "No. Descarga el recorrido en la app Tuggi y escúchalo sin conexión — el audio se activa según tu ubicación, sin usar las manos."
+      },
+      "mode": {
+        "q": "¿Puedo hacerlo caminando o en coche?",
+        "a": "Esta ruta está pensada para un trayecto {level}. El audio se adapta a tu ritmo."
+      }
+    },
+    "relatedTitle": "Más recorridos cerca",
+    "stopsCount": "{count, plural, one {# parada} other {# paradas}}",
+    "breadcrumbTours": "Audioguías",
+    "metaTitle": "{name} — Audioguía Autoguiada",
+    "metaDescFallback": "Una audioguía autoguiada en {place} con Tuggi. Historias que se reproducen automáticamente mientras exploras.",
+    "ctaTitle": "Escucha la historia completa",
+    "ctaSubtitle": "Descarga la app Tuggi y deja que cada parada cobre vida — sin manos, sin conexión y en tu idioma.",
+    "ctaButton": "Descargar la app Tuggi",
+    "countryMetaTitle": "Audioguías Autoguiadas en {country}",
+    "countryMetaDesc": "Explora audioguías autoguiadas por {country} con Tuggi — mapas, vistas previas de audio reales e información práctica de cada ruta.",
+    "countryTitle": "Audioguías Autoguiadas en {country}",
+    "countrySubtitle": "{count, plural, one {# ruta seleccionada} other {# rutas seleccionadas}} en {country}, cada una con mapa, paradas y vistas previas de audio reales.",
+    "hubMetaTitle": "Audioguías Autoguiadas",
+    "hubMetaDesc": "Explora las audioguías autoguiadas de Tuggi por país — rutas seleccionadas con mapas, paradas y vistas previas de audio reales.",
+    "hubTitle": "Audioguías Autoguiadas",
+    "hubSubtitle": "Rutas seleccionadas que se reproducen automáticamente mientras exploras — por país.",
+    "hubEmpty": "Pronto habrá nuevas audioguías en tu idioma. Vuelve en breve.",
+    "viewAllInCountry": "Ver las {count}"
   }
 }

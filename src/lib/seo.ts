@@ -49,6 +49,58 @@ export function buildAlternates(locale: string, pagePath = "") {
 }
 
 /**
+ * Like `buildAlternates`, but restricts the hreflang `languages` to the set of
+ * locales that actually exist for this page (e.g. a route only translated into
+ * some locales). Prevents emitting hreflang to URLs that would 404.
+ *
+ * - `canonical` is self-referential (the current locale's URL).
+ * - `languages` lists only `availableLocales` (+ x-default → defaultLocale if
+ *   present, otherwise the first available locale).
+ *
+ * @param locale           - Current page locale
+ * @param pagePath          - Path WITHOUT locale prefix (e.g. "tours/portugal/sintra-...")
+ * @param availableLocales - Locales for which this exact page is generated
+ */
+export function buildAlternatesFor(
+  locale: string,
+  pagePath: string,
+  availableLocales: string[]
+) {
+  const languages: Record<string, string> = {};
+  for (const loc of availableLocales) {
+    languages[loc] = localePath(loc, pagePath);
+  }
+  const xDefault = availableLocales.includes(routing.defaultLocale)
+    ? routing.defaultLocale
+    : availableLocales[0];
+  if (xDefault) languages["x-default"] = localePath(xDefault, pagePath);
+
+  return {
+    canonical: localePath(locale, pagePath),
+    languages,
+  };
+}
+
+/**
+ * Sitemap-flavoured variant of `buildAlternatesFor` — absolute URLs, limited to
+ * `availableLocales` (+ x-default).
+ */
+export function buildSitemapAlternatesFor(
+  pagePath: string,
+  availableLocales: string[]
+): Record<string, string> {
+  const languages: Record<string, string> = {};
+  for (const loc of availableLocales) {
+    languages[loc] = `${BASE_URL}${localePath(loc, pagePath)}`;
+  }
+  const xDefault = availableLocales.includes(routing.defaultLocale)
+    ? routing.defaultLocale
+    : availableLocales[0];
+  if (xDefault) languages["x-default"] = `${BASE_URL}${localePath(xDefault, pagePath)}`;
+  return languages;
+}
+
+/**
  * Builds a consistent `openGraph` metadata object.
  */
 export function buildOpenGraph({

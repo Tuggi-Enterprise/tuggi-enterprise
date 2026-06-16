@@ -23,7 +23,8 @@
     "navPurpose": "Our Purpose",
     "navB2c": "TUGGI",
     "navContact": "Contact",
-    "downloadApp": "Download App"
+    "downloadApp": "Download App",
+    "navTours": "Audio Tours"
   },
   "Footer": {
     "driveB2c": "TUGGI (B2C)",
@@ -41,7 +42,8 @@
     "privacy": "Privacy Policy",
     "accessibility": "Accessibility",
     "security": "B2G Security",
-    "coverage": "Global Coverage"
+    "coverage": "Global Coverage",
+    "audioTours": "Audio Tours"
   },
   "Home": {
     "FAQ": {
@@ -616,5 +618,86 @@
     "copied": "Code copied!",
     "open_app": "Redeem in app",
     "desktop_hint": "Don't have the app yet? Use the buttons below to install and redeem."
+  },
+  "Tours": {
+    "heroTag": "Self-Guided Audio Tour",
+    "heroSubtitle": "Self-guided audio tour · {place}",
+    "heroCtaPrimary": "Listen in the Tuggi app",
+    "heroCtaSecondary": "View the map",
+    "facts": {
+      "duration": "Duration",
+      "distance": "Distance",
+      "stops": "Stops",
+      "drivability": "Difficulty",
+      "accessibility": "Accessibility",
+      "bestTime": "Best time",
+      "languages": "Languages",
+      "varies": "Varies"
+    },
+    "drivability": {
+      "easy": "Easy",
+      "moderate": "Moderate",
+      "demanding": "Demanding",
+      "unknown": "—"
+    },
+    "accessibility": {
+      "accessible": "Accessible",
+      "partial": "Partially accessible",
+      "not_accessible": "Not accessible",
+      "unknown": "—"
+    },
+    "bestTime": {
+      "morning": "Morning",
+      "afternoon": "Afternoon",
+      "sunset": "Sunset",
+      "evening": "Evening",
+      "night": "Night",
+      "anytime": "Anytime"
+    },
+    "itineraryTitle": "What you'll see and hear",
+    "itinerarySubtitle": "The stops on this route, in order — with audio previews where available.",
+    "audioPreview": "Audio preview",
+    "audioPreviewFor": "Audio preview for {name}",
+    "faqTitle": "Frequently asked questions",
+    "faq": {
+      "duration": {
+        "q": "How long does this tour take?",
+        "a": "About {duration} of audio across {stops} stops, covering roughly {distance}. Go at your own pace — the audio plays automatically as you move."
+      },
+      "accessibility": {
+        "q": "Is this tour accessible?",
+        "a": "This route is rated: {level}. Check each stop for specific access details."
+      },
+      "languages": {
+        "q": "What languages is it available in?",
+        "a": "This tour is available in: {languages}."
+      },
+      "offline": {
+        "q": "Do I need an internet connection?",
+        "a": "No. Download the tour in the Tuggi app and listen offline — the audio is triggered by your location, hands-free."
+      },
+      "mode": {
+        "q": "Can I do it walking or driving?",
+        "a": "This route is designed for {level} travel. The audio adapts to your pace."
+      }
+    },
+    "relatedTitle": "More tours nearby",
+    "stopsCount": "{count, plural, one {# stop} other {# stops}}",
+    "breadcrumbTours": "Audio Tours",
+    "metaTitle": "{name} — Self-Guided Audio Tour",
+    "metaDescFallback": "A self-guided audio tour in {place} with Tuggi. Stories that play automatically as you explore.",
+    "ctaTitle": "Hear the whole story",
+    "ctaSubtitle": "Get the Tuggi app and let every stop come to life — hands-free, offline, in your language.",
+    "ctaButton": "Get the Tuggi app",
+    "countryMetaTitle": "Self-Guided Audio Tours in {country}",
+    "countryMetaDesc": "Explore self-guided audio tours across {country} with Tuggi — maps, real audio previews and practical info for each route.",
+    "countryTitle": "Self-Guided Audio Tours in {country}",
+    "countrySubtitle": "{count, plural, one {# curated route} other {# curated routes}} in {country}, each with a map, stops and real audio previews.",
+    "hubMetaTitle": "Self-Guided Audio Tours",
+    "hubMetaDesc": "Browse Tuggi's self-guided audio tours by country — curated routes with maps, stops and real audio previews.",
+    "hubTitle": "Self-Guided Audio Tours",
+    "hubSubtitle": "Curated routes that play automatically as you explore — browse by country.",
+    "hubEmpty": "New audio tours are coming soon in your language. Check back shortly.",
+    "viewAllInCountry": "View all {count}"
   }
 }

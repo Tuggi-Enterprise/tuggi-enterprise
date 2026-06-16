@@ -120,6 +120,11 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
               {t("navB2c")}
             </Link>
 
+            <Link href="/tours" className="text-sm font-semibold text-slate-600 hover:text-tuggi-primary transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-sm py-2 flex items-center gap-1.5">
+              <Compass className="w-4 h-4 text-tuggi-primary" />
+              {t("navTours")}
+            </Link>
+
             <Link href="/purpose" className="text-sm font-semibold text-slate-600 hover:text-tuggi-primary transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-sm py-2">
               {t("navPurpose")}
             </Link>
@@ -242,16 +247,24 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
               <span>{t("navTech")}</span>
               <ChevronDown className="w-4 h-4 text-slate-300 -rotate-90" />
             </Link>
-            <Link 
-              href="/drive" 
+            <Link
+              href="/drive"
               onClick={() => setIsMobileMenuOpen(false)}
               className="flex items-center justify-between px-6 py-5 text-[15px] font-semibold text-slate-700 hover:bg-slate-50 border-b border-slate-50 transition-colors"
             >
               <span>{t("navB2c")}</span>
               <ChevronDown className="w-4 h-4 text-slate-300 -rotate-90" />
             </Link>
-            <Link 
-              href="/purpose" 
+            <Link
+              href="/tours"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="flex items-center justify-between px-6 py-5 text-[15px] font-semibold text-slate-700 hover:bg-slate-50 border-b border-slate-50 transition-colors"
+            >
+              <span className="flex items-center gap-2"><Compass className="w-4 h-4 text-tuggi-primary" />{t("navTours")}</span>
+              <ChevronDown className="w-4 h-4 text-slate-300 -rotate-90" />
+            </Link>
+            <Link
+              href="/purpose"
               onClick={() => setIsMobileMenuOpen(false)}
               className="flex items-center justify-between px-6 py-5 text-[15px] font-semibold text-slate-700 hover:bg-slate-50 border-b border-slate-50 transition-colors"
             >

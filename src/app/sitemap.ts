@@ -1,8 +1,14 @@
 import { MetadataRoute } from "next";
 import { routing } from "@/i18n/routing";
-import { buildUrl, buildSitemapAlternates } from "@/lib/seo";
+import { buildUrl, buildSitemapAlternates, buildSitemapAlternatesFor } from "@/lib/seo";
 import { getSupabaseServer } from "@/lib/supabase-server";
 import { TUGGI_PARTNER_ID } from "@/lib/partner";
+import {
+  getAllRoutes,
+  getCountriesForLocale,
+  getGeneratedAt,
+  getRoutesByCountry,
+} from "@/lib/routes";
 
 /**
  * XML Sitemap
@@ -41,6 +47,64 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified: new Date(),
         changeFrequency: "weekly",
         priority: route === "" ? 1 : 0.8,
+        alternates,
+      });
+    }
+  }
+
+  // ── Self-guided audio tour pages (from the static snapshot, no DB) ─────────
+  const snapshotDate = (() => {
+    const d = new Date(getGeneratedAt());
+    return isNaN(d.getTime()) ? new Date() : d;
+  })();
+
+  // Global hub — emitted only for locales that actually have routes; hreflang
+  // limited to those locales (so we never point to an empty/noindex hub).
+  const hubLocales = routing.locales.filter(
+    (loc) => getCountriesForLocale(loc).length > 0
+  );
+  const hubAlternates = { languages: buildSitemapAlternatesFor("tours", hubLocales) };
+  for (const locale of hubLocales) {
+    entries.push({
+      url: buildUrl(locale, "tours"),
+      lastModified: snapshotDate,
+      changeFrequency: "weekly",
+      priority: 0.7,
+      alternates: hubAlternates,
+    });
+  }
+
+  // Country hubs — one per (country × locale-with-routes), hreflang limited.
+  const countrySlugs = new Set(getAllRoutes().map((r) => r.countrySlug));
+  for (const countrySlug of countrySlugs) {
+    const localesForCountry = routing.locales.filter(
+      (loc) => getRoutesByCountry(countrySlug, loc).length > 0
+    );
+    const alternates = {
+      languages: buildSitemapAlternatesFor(`tours/${countrySlug}`, localesForCountry),
+    };
+    for (const locale of localesForCountry) {
+      entries.push({
+        url: buildUrl(locale, `tours/${countrySlug}`),
+        lastModified: snapshotDate,
+        changeFrequency: "weekly",
+        priority: 0.7,
+        alternates,
+      });
+    }
+  }
+
+  // Route detail pages — one per (route × eligible locale), hreflang limited to
+  // the route's available locales.
+  for (const route of getAllRoutes()) {
+    const pagePath = `tours/${route.countrySlug}/${route.slug}`;
+    const alternates = { languages: buildSitemapAlternatesFor(pagePath, route.locales) };
+    for (const locale of route.locales) {
+      entries.push({
+        url: buildUrl(locale, pagePath),
+        lastModified: snapshotDate,
+        changeFrequency: "monthly",
+        priority: 0.8,
         alternates,
       });
     }
