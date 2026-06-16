@@ -3,727 +3,769 @@
     {
       "state": "California",
       "country": "United States of America",
-      "activeCount": 44551,
+      "activeCount": 44609,
       "comingSoonCount": 0
     },
     {
       "state": "Texas",
       "country": "United States of America",
-      "activeCount": 35831,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Michigan",
-      "country": "United States of America",
-      "activeCount": 22913,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "New York",
-      "country": "United States of America",
-      "activeCount": 22028,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Illinois",
-      "country": "United States of America",
-      "activeCount": 21707,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Massachusetts",
-      "country": "United States of America",
-      "activeCount": 21571,
+      "activeCount": 32006,
       "comingSoonCount": 0
     },
     {
       "state": "Florida",
       "country": "United States of America",
-      "activeCount": 20803,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "North Carolina",
-      "country": "United States of America",
-      "activeCount": 19725,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Colorado",
-      "country": "United States of America",
-      "activeCount": 19336,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Washington",
-      "country": "United States of America",
-      "activeCount": 19233,
+      "activeCount": 23723,
       "comingSoonCount": 0
     },
     {
       "state": "São Paulo",
       "country": "Brazil",
-      "activeCount": 18446,
+      "activeCount": 23237,
       "comingSoonCount": 0
     },
     {
-      "state": "Virginia",
+      "state": "New York",
       "country": "United States of America",
-      "activeCount": 18200,
+      "activeCount": 22929,
       "comingSoonCount": 0
     },
     {
-      "state": "Wisconsin",
+      "state": "Michigan",
       "country": "United States of America",
-      "activeCount": 17908,
+      "activeCount": 22675,
       "comingSoonCount": 0
     },
     {
-      "state": "Ohio",
+      "state": "Illinois",
       "country": "United States of America",
-      "activeCount": 17669,
+      "activeCount": 21007,
       "comingSoonCount": 0
     },
     {
-      "state": "Minas Gerais",
-      "country": "Brazil",
-      "activeCount": 17489,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Georgia",
+      "state": "Massachusetts",
       "country": "United States of America",
-      "activeCount": 17486,
+      "activeCount": 20323,
       "comingSoonCount": 0
     },
     {
       "state": "Minnesota",
       "country": "United States of America",
-      "activeCount": 17103,
+      "activeCount": 20216,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Wisconsin",
+      "country": "United States of America",
+      "activeCount": 19351,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Washington",
+      "country": "United States of America",
+      "activeCount": 19018,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Minas Gerais",
+      "country": "Brazil",
+      "activeCount": 18300,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Ohio",
+      "country": "United States of America",
+      "activeCount": 17854,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Georgia",
+      "country": "United States of America",
+      "activeCount": 17844,
       "comingSoonCount": 0
     },
     {
       "state": "Pennsylvania",
       "country": "United States of America",
-      "activeCount": 17045,
+      "activeCount": 17749,
       "comingSoonCount": 0
     },
     {
-      "state": "Maryland",
+      "state": "North Carolina",
       "country": "United States of America",
-      "activeCount": 16909,
+      "activeCount": 17507,
       "comingSoonCount": 0
     },
     {
       "state": "Maine",
       "country": "United States of America",
-      "activeCount": 16303,
+      "activeCount": 17207,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Virginia",
+      "country": "United States of America",
+      "activeCount": 17190,
       "comingSoonCount": 0
     },
     {
       "state": "Arizona",
       "country": "United States of America",
-      "activeCount": 14294,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Oregon",
-      "country": "United States of America",
-      "activeCount": 14214,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Lombardia",
-      "country": "Italy",
-      "activeCount": 12674,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Rio Grande do Sul",
-      "country": "Brazil",
-      "activeCount": 11952,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Iowa",
-      "country": "United States of America",
-      "activeCount": 11910,
+      "activeCount": 15320,
       "comingSoonCount": 0
     },
     {
       "state": "Connecticut",
       "country": "United States of America",
-      "activeCount": 10985,
+      "activeCount": 14746,
       "comingSoonCount": 0
     },
     {
-      "state": "Indiana",
-      "country": "United States of America",
-      "activeCount": 10337,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "South Carolina",
-      "country": "United States of America",
-      "activeCount": 10251,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Montana",
-      "country": "United States of America",
-      "activeCount": 10153,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Tennessee",
-      "country": "United States of America",
-      "activeCount": 9649,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "New Hampshire",
-      "country": "United States of America",
-      "activeCount": 9589,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Nebraska",
-      "country": "United States of America",
-      "activeCount": 9424,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Utah",
-      "country": "United States of America",
-      "activeCount": 9214,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "New Mexico",
-      "country": "United States of America",
-      "activeCount": 8797,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Santa Catarina",
-      "country": "Brazil",
-      "activeCount": 8366,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "New Jersey",
-      "country": "United States of America",
-      "activeCount": 8096,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Missouri",
-      "country": "United States of America",
-      "activeCount": 7748,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Bahia",
-      "country": "Brazil",
-      "activeCount": 7715,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Veneto",
+      "state": "Lombardia",
       "country": "Italy",
-      "activeCount": 7661,
+      "activeCount": 14714,
       "comingSoonCount": 0
     },
     {
-      "state": "Rio de Janeiro",
-      "country": "Brazil",
-      "activeCount": 7421,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Alabama",
+      "state": "Oregon",
       "country": "United States of America",
-      "activeCount": 7315,
+      "activeCount": 12885,
       "comingSoonCount": 0
     },
     {
-      "state": "Paraná",
-      "country": "Brazil",
-      "activeCount": 7274,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Oklahoma",
+      "state": "Maryland",
       "country": "United States of America",
-      "activeCount": 7063,
+      "activeCount": 12611,
       "comingSoonCount": 0
     },
     {
-      "state": "Idaho",
+      "state": "Colorado",
       "country": "United States of America",
-      "activeCount": 6694,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Louisiana",
-      "country": "United States of America",
-      "activeCount": 5995,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Trentino-Alto Adige/Südtirol",
-      "country": "Italy",
-      "activeCount": 5980,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Illes Balears",
-      "country": "Spain",
-      "activeCount": 5566,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Arkansas",
-      "country": "United States of America",
-      "activeCount": 5501,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Nevada",
-      "country": "United States of America",
-      "activeCount": 5243,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Kansas",
-      "country": "United States of America",
-      "activeCount": 5142,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Catalunya",
-      "country": "Spain",
-      "activeCount": 5090,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Wyoming",
-      "country": "United States of America",
-      "activeCount": 5055,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Ceará",
-      "country": "Brazil",
-      "activeCount": 4785,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Emilia-Romagna",
-      "country": "Italy",
-      "activeCount": 4582,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "West Virginia",
-      "country": "United States of America",
-      "activeCount": 4557,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Kentucky",
-      "country": "United States of America",
-      "activeCount": 4541,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Mississippi",
-      "country": "United States of America",
-      "activeCount": 4387,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Vermont",
-      "country": "United States of America",
-      "activeCount": 4367,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Pernambuco",
-      "country": "Brazil",
-      "activeCount": 4206,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Hawaii",
-      "country": "United States of America",
-      "activeCount": 4146,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Lisboa",
-      "country": "Portugal",
-      "activeCount": 3893,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Occitanie",
-      "country": "France",
-      "activeCount": 3865,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Goiás",
-      "country": "Brazil",
-      "activeCount": 3805,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Espírito Santo",
-      "country": "Brazil",
-      "activeCount": 3718,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Paraíba",
-      "country": "Brazil",
-      "activeCount": 3571,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Pará",
-      "country": "Brazil",
-      "activeCount": 3486,
+      "activeCount": 12186,
       "comingSoonCount": 0
     },
     {
       "state": "Alaska",
       "country": "United States of America",
-      "activeCount": 3180,
+      "activeCount": 11220,
       "comingSoonCount": 0
     },
     {
-      "state": "Porto",
+      "state": "South Carolina",
+      "country": "United States of America",
+      "activeCount": 11181,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Missouri",
+      "country": "United States of America",
+      "activeCount": 10968,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Tennessee",
+      "country": "United States of America",
+      "activeCount": 10684,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Rio Grande do Sul",
+      "country": "Brazil",
+      "activeCount": 10511,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "New Mexico",
+      "country": "United States of America",
+      "activeCount": 10452,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Iowa",
+      "country": "United States of America",
+      "activeCount": 10035,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "New Hampshire",
+      "country": "United States of America",
+      "activeCount": 9529,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Veneto",
+      "country": "Italy",
+      "activeCount": 9499,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Bahia",
+      "country": "Brazil",
+      "activeCount": 8201,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "New Jersey",
+      "country": "United States of America",
+      "activeCount": 8088,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Oklahoma",
+      "country": "United States of America",
+      "activeCount": 7784,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Santa Catarina",
+      "country": "Brazil",
+      "activeCount": 7783,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Indiana",
+      "country": "United States of America",
+      "activeCount": 7777,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Montana",
+      "country": "United States of America",
+      "activeCount": 7768,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Utah",
+      "country": "United States of America",
+      "activeCount": 7722,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Rio de Janeiro",
+      "country": "Brazil",
+      "activeCount": 7646,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Nevada",
+      "country": "United States of America",
+      "activeCount": 7317,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Alabama",
+      "country": "United States of America",
+      "activeCount": 7101,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Paraná",
+      "country": "Brazil",
+      "activeCount": 7056,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Idaho",
+      "country": "United States of America",
+      "activeCount": 6759,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Trentino-Alto Adige/Südtirol",
+      "country": "Italy",
+      "activeCount": 6693,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Arkansas",
+      "country": "United States of America",
+      "activeCount": 6682,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Nebraska",
+      "country": "United States of America",
+      "activeCount": 6481,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Illes Balears",
+      "country": "Spain",
+      "activeCount": 5865,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Emilia-Romagna",
+      "country": "Italy",
+      "activeCount": 5678,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Ceará",
+      "country": "Brazil",
+      "activeCount": 5322,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Kansas",
+      "country": "United States of America",
+      "activeCount": 5248,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Catalunya",
+      "country": "Spain",
+      "activeCount": 5200,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Kentucky",
+      "country": "United States of America",
+      "activeCount": 5054,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Louisiana",
+      "country": "United States of America",
+      "activeCount": 5031,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Pernambuco",
+      "country": "Brazil",
+      "activeCount": 4727,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Wyoming",
+      "country": "United States of America",
+      "activeCount": 4532,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Hawaii",
+      "country": "United States of America",
+      "activeCount": 4253,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "West Virginia",
+      "country": "United States of America",
+      "activeCount": 4205,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Espírito Santo",
+      "country": "Brazil",
+      "activeCount": 4164,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Vermont",
+      "country": "United States of America",
+      "activeCount": 4138,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Goiás",
+      "country": "Brazil",
+      "activeCount": 4093,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Occitanie",
+      "country": "France",
+      "activeCount": 3857,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Pará",
+      "country": "Brazil",
+      "activeCount": 3750,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Paraíba",
+      "country": "Brazil",
+      "activeCount": 3653,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Lisboa",
       "country": "Portugal",
-      "activeCount": 3085,
+      "activeCount": 3620,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Mississippi",
+      "country": "United States of America",
+      "activeCount": 3220,
       "comingSoonCount": 0
     },
     {
       "state": "Piauí",
       "country": "Brazil",
-      "activeCount": 3058,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Rhode Island",
-      "country": "United States of America",
-      "activeCount": 2970,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Delaware",
-      "country": "United States of America",
-      "activeCount": 2805,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Mato Grosso",
-      "country": "Brazil",
-      "activeCount": 2785,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Región Metropolitana de Santiago",
-      "country": "Chile",
-      "activeCount": 2748,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "South Dakota",
-      "country": "United States of America",
-      "activeCount": 2686,
+      "activeCount": 3205,
       "comingSoonCount": 0
     },
     {
       "state": "Friuli-Venezia Giulia",
       "country": "Italy",
-      "activeCount": 2663,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Vila Real",
-      "country": "Portugal",
-      "activeCount": 2660,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Braga",
-      "country": "Portugal",
-      "activeCount": 2561,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Quebec",
-      "country": "Canada",
-      "activeCount": 2538,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "North Dakota",
-      "country": "United States of America",
-      "activeCount": 2497,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Mato Grosso do Sul",
-      "country": "Brazil",
-      "activeCount": 2186,
+      "activeCount": 3024,
       "comingSoonCount": 0
     },
     {
       "state": "Maranhão",
       "country": "Brazil",
-      "activeCount": 2120,
+      "activeCount": 3011,
       "comingSoonCount": 0
     },
     {
-      "state": "Aragón",
-      "country": "Spain",
-      "activeCount": 2105,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "La Paz",
-      "country": "Bolivia",
-      "activeCount": 2054,
+      "state": "Región Metropolitana de Santiago",
+      "country": "Chile",
+      "activeCount": 2958,
       "comingSoonCount": 0
     },
     {
       "state": "Rio Grande do Norte",
       "country": "Brazil",
-      "activeCount": 1976,
+      "activeCount": 2839,
       "comingSoonCount": 0
     },
     {
-      "state": "Aveiro",
-      "country": "Portugal",
-      "activeCount": 1930,
+      "state": "Mato Grosso",
+      "country": "Brazil",
+      "activeCount": 2676,
       "comingSoonCount": 0
     },
     {
-      "state": "Cochabamba",
-      "country": "Bolivia",
-      "activeCount": 1873,
+      "state": "South Dakota",
+      "country": "United States of America",
+      "activeCount": 2643,
       "comingSoonCount": 0
     },
     {
-      "state": "Comunitat Valenciana",
-      "country": "Spain",
-      "activeCount": 1814,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Valparaíso",
-      "country": "Chile",
-      "activeCount": 1778,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Magallanes y Antártica Chilena",
-      "country": "Chile",
-      "activeCount": 1769,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Ontario",
+      "state": "Quebec",
       "country": "Canada",
-      "activeCount": 1694,
+      "activeCount": 2572,
       "comingSoonCount": 0
     },
     {
-      "state": "Viseu",
+      "state": "Rhode Island",
+      "country": "United States of America",
+      "activeCount": 2568,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Porto",
       "country": "Portugal",
-      "activeCount": 1690,
+      "activeCount": 2554,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "North Dakota",
+      "country": "United States of America",
+      "activeCount": 2523,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Piedmont",
+      "country": "Italy",
+      "activeCount": 2396,
       "comingSoonCount": 0
     },
     {
       "state": "Liguria",
       "country": "Italy",
-      "activeCount": 1530,
+      "activeCount": 2389,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Mato Grosso do Sul",
+      "country": "Brazil",
+      "activeCount": 2157,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Vila Real",
+      "country": "Portugal",
+      "activeCount": 2110,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Braga",
+      "country": "Portugal",
+      "activeCount": 2090,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "La Paz",
+      "country": "Bolivia",
+      "activeCount": 2074,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Aveiro",
+      "country": "Portugal",
+      "activeCount": 1994,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Aragón",
+      "country": "Spain",
+      "activeCount": 1957,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Magallanes y Antártica Chilena",
+      "country": "Chile",
+      "activeCount": 1927,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Cochabamba",
+      "country": "Bolivia",
+      "activeCount": 1913,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Valparaíso",
+      "country": "Chile",
+      "activeCount": 1890,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Ontario",
+      "country": "Canada",
+      "activeCount": 1807,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Tuscany",
+      "country": "Italy",
+      "activeCount": 1728,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Lombardy",
+      "country": "Italy",
+      "activeCount": 1723,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Viseu",
+      "country": "Portugal",
+      "activeCount": 1640,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Comunitat Valenciana",
+      "country": "Spain",
+      "activeCount": 1620,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Delaware",
+      "country": "United States of America",
+      "activeCount": 1507,
       "comingSoonCount": 0
     },
     {
       "state": "Antofagasta",
       "country": "Chile",
-      "activeCount": 1507,
+      "activeCount": 1427,
       "comingSoonCount": 0
     },
     {
       "state": "Santarém",
       "country": "Portugal",
-      "activeCount": 1442,
+      "activeCount": 1362,
       "comingSoonCount": 0
     },
     {
       "state": "Leiria",
       "country": "Portugal",
-      "activeCount": 1441,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Bragança",
-      "country": "Portugal",
-      "activeCount": 1340,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Évora",
-      "country": "Portugal",
-      "activeCount": 1340,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Setúbal",
-      "country": "Portugal",
-      "activeCount": 1339,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Coimbra",
-      "country": "Portugal",
-      "activeCount": 1332,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Sergipe",
-      "country": "Brazil",
-      "activeCount": 1231,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Faro",
-      "country": "Portugal",
-      "activeCount": 1147,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Andalucía",
-      "country": "Spain",
-      "activeCount": 1145,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Viana do Castelo",
-      "country": "Portugal",
-      "activeCount": 1133,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Azores",
-      "country": "Portugal",
-      "activeCount": 1130,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Potosí",
-      "country": "Bolivia",
-      "activeCount": 1125,
+      "activeCount": 1318,
       "comingSoonCount": 0
     },
     {
       "state": "Los Lagos",
       "country": "Chile",
-      "activeCount": 1086,
+      "activeCount": 1316,
       "comingSoonCount": 0
     },
     {
-      "state": "Libertador General Bernardo O'Higgins",
-      "country": "Chile",
-      "activeCount": 1079,
+      "state": "Coimbra",
+      "country": "Portugal",
+      "activeCount": 1287,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Setúbal",
+      "country": "Portugal",
+      "activeCount": 1280,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Évora",
+      "country": "Portugal",
+      "activeCount": 1228,
       "comingSoonCount": 0
     },
     {
       "state": "Bío-Bío",
       "country": "Chile",
-      "activeCount": 1067,
+      "activeCount": 1222,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Bragança",
+      "country": "Portugal",
+      "activeCount": 1221,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Libertador General Bernardo O'Higgins",
+      "country": "Chile",
+      "activeCount": 1196,
       "comingSoonCount": 0
     },
     {
       "state": "District of Columbia",
       "country": "United States of America",
-      "activeCount": 1039,
+      "activeCount": 1151,
       "comingSoonCount": 0
     },
     {
-      "state": "Guarda",
+      "state": "Faro",
       "country": "Portugal",
-      "activeCount": 1029,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Portalegre",
-      "country": "Portugal",
-      "activeCount": 1014,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Castelo Branco",
-      "country": "Portugal",
-      "activeCount": 1013,
+      "activeCount": 1132,
       "comingSoonCount": 0
     },
     {
       "state": "Amazonas",
       "country": "Brazil",
-      "activeCount": 1007,
+      "activeCount": 1120,
       "comingSoonCount": 0
     },
     {
-      "state": "Beja",
-      "country": "Portugal",
-      "activeCount": 991,
+      "state": "Sicily",
+      "country": "Italy",
+      "activeCount": 1120,
       "comingSoonCount": 0
     },
     {
-      "state": "Mississipi",
-      "country": "United States of America",
-      "activeCount": 959,
+      "state": "Sergipe",
+      "country": "Brazil",
+      "activeCount": 1094,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Potosí",
+      "country": "Bolivia",
+      "activeCount": 1071,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Lazio",
+      "country": "Italy",
+      "activeCount": 1048,
       "comingSoonCount": 0
     },
     {
       "state": "Buenos Aires",
       "country": "Argentina",
-      "activeCount": 958,
+      "activeCount": 1032,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Guarda",
+      "country": "Portugal",
+      "activeCount": 1011,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Beja",
+      "country": "Portugal",
+      "activeCount": 987,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Andalucía",
+      "country": "Spain",
+      "activeCount": 964,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Castelo Branco",
+      "country": "Portugal",
+      "activeCount": 927,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Viana do Castelo",
+      "country": "Portugal",
+      "activeCount": 923,
       "comingSoonCount": 0
     },
     {
       "state": "Santa Cruz",
       "country": "Bolivia",
-      "activeCount": 874,
+      "activeCount": 921,
       "comingSoonCount": 0
     },
     {
       "state": "Rondônia",
       "country": "Brazil",
-      "activeCount": 852,
+      "activeCount": 910,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Azores",
+      "country": "Portugal",
+      "activeCount": 902,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Portalegre",
+      "country": "Portugal",
+      "activeCount": 891,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "La Araucanía",
+      "country": "Chile",
+      "activeCount": 883,
       "comingSoonCount": 0
     },
     {
       "state": "Aisén del General Carlos Ibáñez del Campo",
       "country": "Chile",
-      "activeCount": 826,
+      "activeCount": 882,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Campania",
+      "country": "Italy",
+      "activeCount": 873,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Sardinia",
+      "country": "Italy",
+      "activeCount": 867,
       "comingSoonCount": 0
     },
     {
       "state": "British Columbia",
       "country": "Canada",
-      "activeCount": 820,
+      "activeCount": 848,
       "comingSoonCount": 0
     },
     {
-      "state": "Navarra",
-      "country": "Spain",
-      "activeCount": 810,
+      "state": "Roraima",
+      "country": "Brazil",
+      "activeCount": 848,
       "comingSoonCount": 0
     },
     {
@@ -733,263 +775,329 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Galicia",
-      "country": "Spain",
-      "activeCount": 805,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Madeira",
-      "country": "Portugal",
-      "activeCount": 797,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "La Araucanía",
-      "country": "Chile",
-      "activeCount": 784,
-      "comingSoonCount": 0
-    },
-    {
       "state": "Tocantins",
       "country": "Brazil",
-      "activeCount": 730,
+      "activeCount": 768,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Galicia",
+      "country": "Spain",
+      "activeCount": 754,
       "comingSoonCount": 0
     },
     {
       "state": "Coquimbo",
       "country": "Chile",
-      "activeCount": 689,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Acre",
-      "country": "Brazil",
-      "activeCount": 672,
+      "activeCount": 730,
       "comingSoonCount": 0
     },
     {
       "state": "Oruro",
       "country": "Bolivia",
-      "activeCount": 665,
+      "activeCount": 664,
       "comingSoonCount": 0
     },
     {
-      "state": "Roraima",
-      "country": "Brazil",
-      "activeCount": 579,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Piemonte",
-      "country": "Italy",
-      "activeCount": 570,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Amapá",
-      "country": "Brazil",
-      "activeCount": 560,
+      "state": "Madeira",
+      "country": "Portugal",
+      "activeCount": 663,
       "comingSoonCount": 0
     },
     {
       "state": "Maule",
       "country": "Chile",
-      "activeCount": 556,
+      "activeCount": 641,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Apulia",
+      "country": "Italy",
+      "activeCount": 635,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Piemonte",
+      "country": "Italy",
+      "activeCount": 634,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Trentino-Alto Adige",
+      "country": "Italy",
+      "activeCount": 629,
       "comingSoonCount": 0
     },
     {
       "state": "Los Ríos",
       "country": "Chile",
-      "activeCount": 502,
+      "activeCount": 603,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Navarra",
+      "country": "Spain",
+      "activeCount": 541,
       "comingSoonCount": 0
     },
     {
       "state": "Atacama",
       "country": "Chile",
+      "activeCount": 503,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "The Marches",
+      "country": "Italy",
+      "activeCount": 503,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Mississipi",
+      "country": "United States of America",
       "activeCount": 501,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Friuli Venezia Giulia",
+      "country": "Italy",
+      "activeCount": 497,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Amapá",
+      "country": "Brazil",
+      "activeCount": 472,
       "comingSoonCount": 0
     },
     {
       "state": "Córdoba",
       "country": "Argentina",
-      "activeCount": 454,
+      "activeCount": 469,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Abruzzo",
+      "country": "Italy",
+      "activeCount": 464,
       "comingSoonCount": 0
     },
     {
       "state": "Misiones",
       "country": "Argentina",
-      "activeCount": 427,
+      "activeCount": 458,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Acre",
+      "country": "Brazil",
+      "activeCount": 418,
       "comingSoonCount": 0
     },
     {
       "state": "Ñuble",
       "country": "Chile",
-      "activeCount": 391,
+      "activeCount": 397,
       "comingSoonCount": 0
     },
     {
-      "state": "Mendoza",
-      "country": "Argentina",
-      "activeCount": 379,
+      "state": "Calabria",
+      "country": "Italy",
+      "activeCount": 388,
       "comingSoonCount": 0
     },
     {
       "state": "Ciudad Autónoma de Buenos Aires",
       "country": "Argentina",
-      "activeCount": 367,
+      "activeCount": 370,
       "comingSoonCount": 0
     },
     {
-      "state": "Región de Murcia",
-      "country": "Spain",
-      "activeCount": 365,
+      "state": "Mendoza",
+      "country": "Argentina",
+      "activeCount": 361,
       "comingSoonCount": 0
     },
     {
       "state": "Chuquisaca",
       "country": "Bolivia",
-      "activeCount": 309,
+      "activeCount": 350,
       "comingSoonCount": 0
     },
     {
       "state": "Tarapacá",
       "country": "Chile",
-      "activeCount": 301,
+      "activeCount": 341,
       "comingSoonCount": 0
     },
     {
       "state": "Arica y Parinacota",
       "country": "Chile",
-      "activeCount": 297,
+      "activeCount": 319,
       "comingSoonCount": 0
     },
     {
-      "state": "Jujuy",
-      "country": "Argentina",
-      "activeCount": 281,
+      "state": "Umbria",
+      "country": "Italy",
+      "activeCount": 298,
       "comingSoonCount": 0
     },
     {
       "state": "Salta",
       "country": "Argentina",
-      "activeCount": 257,
+      "activeCount": 281,
       "comingSoonCount": 0
     },
     {
-      "state": "Beni",
-      "country": "Bolivia",
-      "activeCount": 256,
+      "state": "Jujuy",
+      "country": "Argentina",
+      "activeCount": 280,
       "comingSoonCount": 0
     },
     {
       "state": "Chaco",
       "country": "Argentina",
-      "activeCount": 248,
+      "activeCount": 274,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Beni",
+      "country": "Bolivia",
+      "activeCount": 272,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Región de Murcia",
+      "country": "Spain",
+      "activeCount": 268,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Aosta Valley",
+      "country": "Italy",
+      "activeCount": 259,
       "comingSoonCount": 0
     },
     {
       "state": "DC",
       "country": "United States of America",
-      "activeCount": 244,
+      "activeCount": 254,
       "comingSoonCount": 0
     },
     {
       "state": "Tarija",
       "country": "Bolivia",
-      "activeCount": 209,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Catamarca",
-      "country": "Argentina",
-      "activeCount": 208,
+      "activeCount": 248,
       "comingSoonCount": 0
     },
     {
       "state": "New Brunswick",
       "country": "Canada",
-      "activeCount": 205,
+      "activeCount": 247,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Catamarca",
+      "country": "Argentina",
+      "activeCount": 239,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Basilicate",
+      "country": "Italy",
+      "activeCount": 217,
       "comingSoonCount": 0
     },
     {
       "state": "Río Negro",
       "country": "Argentina",
-      "activeCount": 198,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Chihuahua",
-      "country": "Mexico",
-      "activeCount": 182,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Euskadi",
-      "country": "Spain",
-      "activeCount": 150,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Castilla y León",
-      "country": "Spain",
-      "activeCount": 147,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Santa Fe",
-      "country": "Argentina",
-      "activeCount": 146,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Alberta",
-      "country": "Canada",
-      "activeCount": 145,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Neuquén",
-      "country": "Argentina",
-      "activeCount": 139,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Chubut",
-      "country": "Argentina",
-      "activeCount": 133,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Santa Cruz",
-      "country": "Argentina",
-      "activeCount": 111,
+      "activeCount": 202,
       "comingSoonCount": 0
     },
     {
       "state": "Corrientes",
       "country": "Argentina",
-      "activeCount": 108,
+      "activeCount": 164,
       "comingSoonCount": 0
     },
     {
-      "state": "Nouvelle-Aquitaine",
-      "country": "France",
-      "activeCount": 105,
+      "state": "Santa Fe",
+      "country": "Argentina",
+      "activeCount": 163,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Chihuahua",
+      "country": "Mexico",
+      "activeCount": 158,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Neuquén",
+      "country": "Argentina",
+      "activeCount": 148,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Chubut",
+      "country": "Argentina",
+      "activeCount": 147,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Euskadi",
+      "country": "Spain",
+      "activeCount": 127,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Santa Cruz",
+      "country": "Argentina",
+      "activeCount": 125,
       "comingSoonCount": 0
     },
     {
       "state": "Manitoba",
       "country": "Canada",
+      "activeCount": 116,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Castilla y León",
+      "country": "Spain",
+      "activeCount": 116,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Molise",
+      "country": "Italy",
+      "activeCount": 109,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Toscana",
+      "country": "Italy",
+      "activeCount": 106,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Québec",
+      "country": "Canada",
+      "activeCount": 106,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Alberta",
+      "country": "Canada",
       "activeCount": 101,
       "comingSoonCount": 0
     }
   ],
-  "totalActiveRaw": 871507,
-  "totalActive": 861442,
+  "totalActiveRaw": 893853,
+  "totalActive": 884414,
   "totalComingSoon": 0,
   "totalCountries": 11,
   "totalActiveCountries": 11,
-  "totalActiveRegions": 164,
-  "generatedAt": "2026-06-15T19:57:23.894Z"
+  "totalActiveRegions": 182,
+  "generatedAt": "2026-06-16T23:13:57.861Z"
 }
