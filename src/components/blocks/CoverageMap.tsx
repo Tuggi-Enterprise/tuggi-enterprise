@@ -55,24 +55,41 @@ const REGION_MAPPINGS: Record<string, string> = {
   "toledo":"Castilla-La Mancha","ciudad real":"Castilla-La Mancha","albacete":"Castilla-La Mancha",
   "cuenca":"Castilla-La Mancha","guadalajara":"Castilla-La Mancha",
 
-  // Italy — provinces → regions
+  // Italy — provinces → English canonical region names (as used by Natural Earth TopoJSON)
   "bologna":"Emilia-Romagna","modena":"Emilia-Romagna","parma":"Emilia-Romagna",
   "reggio nell'emilia":"Emilia-Romagna","ravenna":"Emilia-Romagna","rimini":"Emilia-Romagna",
   "ferrara":"Emilia-Romagna","forli-cesena":"Emilia-Romagna","piacenza":"Emilia-Romagna",
   "genova":"Liguria","la spezia":"Liguria","savona":"Liguria","imperia":"Liguria",
   "trento":"Trentino-Alto Adige/Südtirol","bozen":"Trentino-Alto Adige/Südtirol",
-  "milano":"Lombardia","bergamo":"Lombardia","brescia":"Lombardia","como":"Lombardia",
-  "lecco":"Lombardia","lodi":"Lombardia","mantova":"Lombardia","monza e brianza":"Lombardia",
-  "pavia":"Lombardia","sondrio":"Lombardia","varese":"Lombardia",
+  "bolzano":"Trentino-Alto Adige/Südtirol",
+  "milano":"Lombardy","bergamo":"Lombardy","brescia":"Lombardy","como":"Lombardy",
+  "lecco":"Lombardy","lodi":"Lombardy","mantova":"Lombardy","monza e brianza":"Lombardy",
+  "pavia":"Lombardy","sondrio":"Lombardy","varese":"Lombardy",
   "venezia":"Veneto","verona":"Veneto","padova":"Veneto","vicenza":"Veneto",
   "treviso":"Veneto","rovigo":"Veneto","belluno":"Veneto",
-  "torino":"Piemonte","alessandria":"Piemonte","asti":"Piemonte","biella":"Piemonte",
-  "cuneo":"Piemonte","novara":"Piemonte","verbano-cusio-ossola":"Piemonte","vercelli":"Piemonte",
-  "trieste":"Friuli-Venezia Giulia","udine":"Friuli-Venezia Giulia",
-  "pordenone":"Friuli-Venezia Giulia","gorizia":"Friuli-Venezia Giulia",
-  "firenze":"Toscana","pisa":"Toscana","siena":"Toscana","arezzo":"Toscana",
-  "grosseto":"Toscana","livorno":"Toscana","lucca":"Toscana","massa-carrara":"Toscana",
-  "pistoia":"Toscana","prato":"Toscana",
+  "torino":"Piedmont","alessandria":"Piedmont","asti":"Piedmont","biella":"Piedmont",
+  "cuneo":"Piedmont","novara":"Piedmont","verbano-cusio-ossola":"Piedmont","vercelli":"Piedmont",
+  "trieste":"Friuli Venezia Giulia","udine":"Friuli Venezia Giulia",
+  "pordenone":"Friuli Venezia Giulia","gorizia":"Friuli Venezia Giulia",
+  "firenze":"Tuscany","pisa":"Tuscany","siena":"Tuscany","arezzo":"Tuscany",
+  "grosseto":"Tuscany","livorno":"Tuscany","lucca":"Tuscany","massa-carrara":"Tuscany",
+  "pistoia":"Tuscany","prato":"Tuscany",
+  "roma":"Lazio","viterbo":"Lazio","frosinone":"Lazio","latina":"Lazio","rieti":"Lazio",
+  "napoli":"Campania","salerno":"Campania","caserta":"Campania","avellino":"Campania","benevento":"Campania",
+  "palermo":"Sicily","catania":"Sicily","messina":"Sicily","siracusa":"Sicily",
+  "agrigento":"Sicily","trapani":"Sicily","ragusa":"Sicily","caltanissetta":"Sicily","enna":"Sicily",
+  "cagliari":"Sardinia","sassari":"Sardinia","nuoro":"Sardinia","oristano":"Sardinia",
+  "sud sardegna":"Sardinia",
+  "bari":"Apulia","lecce":"Apulia","taranto":"Apulia","foggia":"Apulia","brindisi":"Apulia","bat":"Apulia",
+  "ancona":"The Marches","macerata":"The Marches","pesaro e urbino":"The Marches",
+  "fermo":"The Marches","ascoli piceno":"The Marches",
+  "aosta":"Aosta Valley",
+  "potenza":"Basilicata","matera":"Basilicata",
+  "catanzaro":"Calabria","cosenza":"Calabria","reggio di calabria":"Calabria",
+  "vibo valentia":"Calabria","crotone":"Calabria",
+  "l'aquila":"Abruzzo","chieti":"Abruzzo","pescara":"Abruzzo","teramo":"Abruzzo",
+  "perugia":"Umbria","terni":"Umbria",
+  "campobasso":"Molise","isernia":"Molise",
 
   // France — departments → modern regions (post-2016 boundaries in DB)
   "ariege":"Occitanie","aude":"Occitanie","aveyron":"Occitanie","gard":"Occitanie",
@@ -84,6 +101,49 @@ const REGION_MAPPINGS: Record<string, string> = {
   "alpes-maritimes":"Provence-Alpes-Côte d'Azur",
   "bouches-du-rhone":"Provence-Alpes-Côte d'Azur",
   "var":"Provence-Alpes-Côte d'Azur","vaucluse":"Provence-Alpes-Côte d'Azur",
+  // France — Île-de-France
+  "paris":"Île-de-France","seine-et-marne":"Île-de-France","yvelines":"Île-de-France",
+  "essonne":"Île-de-France","hauts-de-seine":"Île-de-France","seine-saint-denis":"Île-de-France",
+  "val-de-marne":"Île-de-France","val-d'oise":"Île-de-France",
+  // France — Auvergne-Rhône-Alpes
+  "ain":"Auvergne-Rhône-Alpes","allier":"Auvergne-Rhône-Alpes","ardeche":"Auvergne-Rhône-Alpes",
+  "cantal":"Auvergne-Rhône-Alpes","drome":"Auvergne-Rhône-Alpes","isere":"Auvergne-Rhône-Alpes",
+  "loire":"Auvergne-Rhône-Alpes","haute-loire":"Auvergne-Rhône-Alpes",
+  "puy-de-dome":"Auvergne-Rhône-Alpes","rhone":"Auvergne-Rhône-Alpes",
+  "savoie":"Auvergne-Rhône-Alpes","haute-savoie":"Auvergne-Rhône-Alpes",
+  // France — Nouvelle-Aquitaine
+  "correze":"Nouvelle-Aquitaine","creuse":"Nouvelle-Aquitaine","dordogne":"Nouvelle-Aquitaine",
+  "gironde":"Nouvelle-Aquitaine","landes":"Nouvelle-Aquitaine","lot-et-garonne":"Nouvelle-Aquitaine",
+  "pyrenees-atlantiques":"Nouvelle-Aquitaine","deux-sevres":"Nouvelle-Aquitaine",
+  "vienne":"Nouvelle-Aquitaine","haute-vienne":"Nouvelle-Aquitaine",
+  "charente":"Nouvelle-Aquitaine","charente-maritime":"Nouvelle-Aquitaine",
+  // France — Grand Est
+  "bas-rhin":"Grand Est","haut-rhin":"Grand Est","moselle":"Grand Est","meurthe-et-moselle":"Grand Est",
+  "meuse":"Grand Est","vosges":"Grand Est","ardennes":"Grand Est","aube":"Grand Est",
+  "marne":"Grand Est","haute-marne":"Grand Est",
+  // France — Hauts-de-France
+  "nord":"Hauts-de-France","pas-de-calais":"Hauts-de-France","somme":"Hauts-de-France",
+  "aisne":"Hauts-de-France","oise":"Hauts-de-France",
+  // France — Normandie
+  "calvados":"Normandie","eure":"Normandie","manche":"Normandie","orne":"Normandie",
+  "seine-maritime":"Normandie",
+  // France — Bretagne
+  "cotes-d'armor":"Bretagne","finistere":"Bretagne","ille-et-vilaine":"Bretagne",
+  "morbihan":"Bretagne",
+  // France — Pays de la Loire
+  "loire-atlantique":"Pays de la Loire","maine-et-loire":"Pays de la Loire",
+  "mayenne":"Pays de la Loire","sarthe":"Pays de la Loire","vendee":"Pays de la Loire",
+  // France — Centre-Val de Loire
+  "cher":"Centre-Val de Loire","eure-et-loir":"Centre-Val de Loire",
+  "indre":"Centre-Val de Loire","indre-et-loire":"Centre-Val de Loire",
+  "loir-et-cher":"Centre-Val de Loire","loiret":"Centre-Val de Loire",
+  // France — Bourgogne-Franche-Comté
+  "cote-d'or":"Bourgogne-Franche-Comté","doubs":"Bourgogne-Franche-Comté",
+  "jura":"Bourgogne-Franche-Comté","nievre":"Bourgogne-Franche-Comté",
+  "haute-saone":"Bourgogne-Franche-Comté","saone-et-loire":"Bourgogne-Franche-Comté",
+  "yonne":"Bourgogne-Franche-Comté","territoire de belfort":"Bourgogne-Franche-Comté",
+  // France — Corse
+  "haute-corse":"Corse","corse-du-sud":"Corse",
 };
 
 export function CoverageMap({ states }: { states: StateCoverage[] }) {

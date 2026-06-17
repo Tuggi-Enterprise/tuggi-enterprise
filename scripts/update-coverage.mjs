@@ -80,22 +80,78 @@ const US_STATE_ABBREV = {
 // ── Country normalisation ─────────────────────────────────────────────────────
 function normaliseCountry(raw) {
   const lc = slug(raw);
-  if (["usa","us","united states","estados unidos"].includes(lc)) return "United States of America";
+  if (["usa","us","united states","estados unidos","us "].includes(lc)) return "United States of America";
+  if (lc === "ar")                                                  return "Argentina";
   if (lc === "brasil")                                             return "Brazil";
   if (lc === "uk" || lc === "reino unido")                        return "United Kingdom";
   if (["italia","italia","it"].includes(lc))                      return "Italy";
-  if (["espana","espanha"].includes(lc))                          return "Spain";
+  if (["espana","espanha","spain"].includes(lc))                  return "Spain";
   if (["franca","france"].includes(lc))                           return "France";
   if (["irlanda","ireland"].includes(lc))                         return "Ireland";
-  if (["mexico"].includes(lc))                                    return "Mexico";
+  if (["mexico","méxico"].includes(lc))                           return "Mexico";
   if (["paraguay / paraguai","paraguay"].includes(lc))            return "Paraguay";
   if (["osterreich","austria"].includes(lc))                      return "Austria";
   if (lc.startsWith("schweiz") || lc === "switzerland")           return "Switzerland";
-  if (["peru"].includes(lc))                                      return "Peru";
-  if (["thailand"].includes(lc))                                  return "Thailand";
-  if (["malaysia","malasia"].includes(lc))                        return "Malaysia";
+  if (["peru","perú"].includes(lc))                               return "Peru";
+  if (["tailandia","thailand","ประเทศไทย"].includes(lc))          return "Thailand";
+  if (["malaysia","malasia","malásia"].includes(lc))              return "Malaysia";
+  if (["colombia","kolumbien"].includes(lc))                      return "Colombia";
+  if (["alemanha","germany","deutschland"].includes(lc))          return "Germany";
+  if (["japon","japan","japón","日本"].includes(lc))               return "Japan";
+  if (["grecia","greece","grèce"].includes(lc))                   return "Greece";
+  if (["turquia","turkey","türkiye"].includes(lc))                return "Turkey";
+  if (["croacia","croatia","hrvatska"].includes(lc))              return "Croatia";
+  if (["chequia","czech republic","czechia","tschechien"].includes(lc)) return "Czechia";
+  if (["hungria","hungary","magyarország"].includes(lc))          return "Hungary";
+  if (["polonia","poland","polska"].includes(lc))                 return "Poland";
+  if (["rumania","romania","românia"].includes(lc))               return "Romania";
+  if (["suecia","sweden","sverige"].includes(lc))                 return "Sweden";
+  if (["noruega","norway","norge"].includes(lc))                  return "Norway";
+  if (["dinamarca","denmark","danmark"].includes(lc))             return "Denmark";
+  if (["finlandia","finland","suomi"].includes(lc))               return "Finland";
+  if (["belgica","belgium","belgique","belgië"].includes(lc))     return "Belgium";
+  if (["holanda","netherlands","nederland","países bajos"].includes(lc)) return "Netherlands";
+  if (["uruguay"].includes(lc))                                   return "Uruguay";
+  if (["venezuela"].includes(lc))                                 return "Venezuela";
+  if (["ecuador"].includes(lc))                                   return "Ecuador";
+  if (["india","índia"].includes(lc))                             return "India";
+  if (["china","república popular da china"].includes(lc))        return "China";
+  if (["australia","austrália"].includes(lc))                     return "Australia";
+  if (["africa do sul","south africa","afrique du sud"].includes(lc)) return "South Africa";
+  if (["marrocos","morocco","maroc"].includes(lc))                return "Morocco";
+  if (["egipto","egypt","egypte","مصر"].includes(lc))             return "Egypt";
   return (raw || "").trim();
 }
+
+// ── Italy: DB region names → TopoJSON English canonical names ─────────────────
+// Natural Earth 10m admin-1 uses English names for Italian regions.
+const ITALY_NORMALIZE = {
+  "lombardia":              "Lombardy",
+  "piemonte":               "Piedmont",
+  "toscana":                "Tuscany",
+  "sicilia":                "Sicily",
+  "sardegna":               "Sardinia",
+  "puglia":                 "Apulia",
+  "marche":                 "The Marches",
+  "valle d'aosta":          "Aosta Valley",
+  "vallee d'aoste":         "Aosta Valley",
+  "trentino-alto adige":    "Trentino-Alto Adige/Südtirol",
+  "alto adige":             "Trentino-Alto Adige/Südtirol",
+  "trentino":               "Trentino-Alto Adige/Südtirol",
+  "sudtirol":               "Trentino-Alto Adige/Südtirol",
+  "friuli-venezia giulia":  "Friuli Venezia Giulia",
+  "basilicate":             "Basilicata",
+  // Already-English variants from international data sources
+  "apulia":                 "Apulia",
+  "the marches":            "The Marches",
+  "aosta valley":           "Aosta Valley",
+  "sardinia":               "Sardinia",
+  "sicily":                 "Sicily",
+  "piedmont":               "Piedmont",
+  "tuscany":                "Tuscany",
+  "lombardy":               "Lombardy",
+  "friuli venezia giulia":  "Friuli Venezia Giulia",
+};
 
 // ── Chile: DB region names → exact TopoJSON canonical names ──────────────────
 // TopoJSON (Natural Earth 10m) uses these exact names:
@@ -389,6 +445,10 @@ function normaliseState(rawState, country) {
   // Drop entries where state = country (clearly bad data, e.g. state="Spain" under Spain)
   if (s === slug(country)) return null;
 
+  if (country === "Italy") {
+    return ITALY_NORMALIZE[s] ?? state;
+  }
+
   if (country === "Chile") {
     return normaliseChileState(state);
   }
@@ -416,32 +476,135 @@ function normaliseState(rawState, country) {
   }
 
   if (country === "United States of America") {
-    // Expand abbreviations
+    // Expand abbreviations (e.g. "NY" → "New York")
     if (US_STATE_ABBREV[rawState.trim()]) return US_STATE_ABBREV[rawState.trim()];
+    // Fix common typos and shorthands
+    const US_FIXES = {
+      "mississipi": "Mississippi",
+      "missisipi":  "Mississippi",
+      "dc":         "District of Columbia",
+      "washington dc": "District of Columbia",
+      "washington d.c.": "District of Columbia",
+    };
+    if (US_FIXES[s]) return US_FIXES[s];
+  }
+
+  if (country === "Canada") {
+    if (s === "quebec") return "Québec";
+    if (s === "newfoundland" || s === "newfoundland and labrador") return "Newfoundland and Labrador";
+    if (s === "prince edward island" || s === "pei") return "Prince Edward Island";
+    if (s === "nova scotia") return "Nova Scotia";
+    if (s === "new brunswick") return "New Brunswick";
+    if (s === "british columbia" || s === "bc") return "British Columbia";
+    if (s === "northwest territories") return "Northwest Territories";
+  }
+
+  if (country === "Argentina") {
+    // CABA: multiple DB spellings all map to "Ciudad de Buenos Aires" (TopoJSON canonical)
+    if ([
+      "ciudad autonoma de buenos aires",
+      "caba",
+      "buenos aires f.d.",
+      "buenos aires fd",
+      "ciudad de buenos aires",
+    ].includes(s)) return "Ciudad de Buenos Aires";
+    // Normalize accent variants
+    if (s === "cordoba") return "Córdoba";
+    if (s === "tucuman") return "Tucumán";
+    if (s === "neuquen") return "Neuquén";
+    if (s === "rio negro") return "Río Negro";
+    if (s === "entre rios") return "Entre Ríos";
+    if (s === "la rioja") return "La Rioja";
+    if (s === "san juan") return "San Juan";
+    if (s === "san luis") return "San Luis";
+    if (s === "santa fe") return "Santa Fe";
+    if (s === "santa cruz") return "Santa Cruz";
+    if (s === "tierra del fuego") return "Tierra del Fuego";
+    if (s === "la pampa") return "La Pampa";
+    if (s === "buenos aires f.d" || s === "buenos aires f. d.") return "Ciudad de Buenos Aires";
+  }
+
+  if (country === "Spain") {
+    // Map shortened/variant region names to TopoJSON canonical forms
+    const SPAIN_NORMALIZE = {
+      "madrid":                 "Comunidad de Madrid",
+      "comunidad de madrid":    "Comunidad de Madrid",
+      "comunitat valenciana":   "Comunitat Valenciana",
+      "valencia":               "Comunitat Valenciana",
+      "c. valenciana":          "Comunitat Valenciana",
+      "illes balears":          "Illes Balears",
+      "islas baleares":         "Illes Balears",
+      "baleares":               "Illes Balears",
+      "cataluna":               "Catalunya",
+      "cataluña":               "Catalunya",
+      "pais vasco":             "Euskadi",
+      "país vasco":             "Euskadi",
+      "euskadi":                "Euskadi",
+      "aragon":                 "Aragón",
+      "asturias":               "Asturias / Asturies",
+      "principado de asturias": "Asturias / Asturies",
+      "canarias":               "Canarias",
+      "islas canarias":         "Canarias",
+      "region de murcia":       "Región de Murcia",
+      "murcia":                 "Región de Murcia",
+      "la rioja":               "La Rioja",
+      "rioja":                  "La Rioja",
+      "castilla-la mancha":     "Castilla-La Mancha",
+      "castilla la mancha":     "Castilla-La Mancha",
+      "castilla y leon":        "Castilla y León",
+      "castilla leon":          "Castilla y León",
+      "extremadura":            "Extremadura",
+      "cantabria":              "Cantabria",
+      "navarra":                "Navarra",
+      "comunidad foral de navarra": "Navarra",
+      "galicia":                "Galicia",
+      "andalucia":              "Andalucía",
+    };
+    if (SPAIN_NORMALIZE[s]) return SPAIN_NORMALIZE[s];
   }
 
   return state;
 }
 
-// ── Fetch all active attractions (paginated) ──────────────────────────────────
+// ── Fetch all active attractions (parallel paginated) ────────────────────────
+const FETCH_CONCURRENCY = 10; // 10 parallel pages per batch
+
 async function fetchAllActive() {
-  let page = 0;
+  // Step 1: get exact count (1 fast request — no data transfer)
+  const { count, error: countErr } = await sb
+    .from("attractions")
+    .select("*", { count: "exact", head: true })
+    .eq("is_active", true);
+  if (countErr) throw new Error("Supabase count error: " + countErr.message);
+
+  const totalPages = Math.ceil(count / PAGE_SIZE);
+  console.log(`   Total: ${count.toLocaleString()} rows → ${totalPages} pages (${FETCH_CONCURRENCY} concurrent)`);
+
+  // Step 2: fetch all pages in parallel batches
   const rows = [];
-  process.stdout.write("   Fetching core.attractions (is_active=true)...");
-  while (true) {
-    const { data, error } = await sb
-      .from("attractions")
-      .select("country, state, city")
-      .eq("is_active", true)
-      .range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1);
-    if (error) throw new Error("Supabase fetch error: " + error.message);
-    if (!data?.length) break;
-    rows.push(...data);
-    if (data.length < PAGE_SIZE) break;
-    page++;
-    if (page % 50 === 0) process.stdout.write(`\n   ...${rows.length.toLocaleString()} fetched`);
+  for (let batchStart = 0; batchStart < totalPages; batchStart += FETCH_CONCURRENCY) {
+    const batchEnd   = Math.min(batchStart + FETCH_CONCURRENCY, totalPages);
+    const pageNums   = Array.from({ length: batchEnd - batchStart }, (_, i) => batchStart + i);
+
+    const results = await Promise.all(
+      pageNums.map(p =>
+        sb.from("attractions")
+          .select("country, state, city")
+          .eq("is_active", true)
+          .range(p * PAGE_SIZE, (p + 1) * PAGE_SIZE - 1)
+      )
+    );
+
+    for (const { data, error } of results) {
+      if (error) throw new Error("Supabase fetch error: " + error.message);
+      rows.push(...data);
+    }
+
+    const pct = Math.round((rows.length / count) * 100);
+    process.stdout.write(`\r   Fetching... ${rows.length.toLocaleString()} / ${count.toLocaleString()} (${pct}%)`);
   }
-  process.stdout.write(` done → ${rows.length.toLocaleString()} rows\n`);
+
+  process.stdout.write(`\r   Fetched ${rows.length.toLocaleString()} rows                          \n`);
   return rows;
 }
 
