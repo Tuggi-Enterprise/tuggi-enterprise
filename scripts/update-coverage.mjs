@@ -524,6 +524,36 @@ function normaliseState(rawState, country) {
     if (s === "buenos aires f.d" || s === "buenos aires f. d.") return "Ciudad de Buenos Aires";
   }
 
+  if (country === "Uruguay") {
+    // DB stores department names with " Department" suffix (e.g. "Montevideo Department").
+    // TopoJSON (Natural Earth) uses bare names without suffix.
+    const bare = state.replace(/\s+Department$/i, "").trim();
+    const bs   = slug(bare);
+    // Map to TopoJSON canonical names (with correct accents)
+    const URUGUAY_TOPO = {
+      "montevideo":        "Montevideo",
+      "canelones":         "Canelones",
+      "maldonado":         "Maldonado",
+      "lavalleja":         "Lavalleja",
+      "colonia":           "Colonia",
+      "cerro largo":       "Cerro Largo",
+      "rocha":             "Rocha",
+      "paysandu":          "Paysandú",
+      "salto":             "Salto",
+      "tacuarembo":        "Tacuarembó",
+      "treinta y tres":    "Treinta y Tres",
+      "artigas":           "Artigas",
+      "rivera":            "Rivera",
+      "rio negro":         "Río Negro",
+      "durazno":           "Durazno",
+      "flores":            "Flores",
+      "florida":           "Florida",
+      "san jose":          "San José",
+      "soriano":           "Soriano",
+    };
+    return URUGUAY_TOPO[bs] ?? bare;
+  }
+
   if (country === "Spain") {
     // Map shortened/variant region names to TopoJSON canonical forms
     const SPAIN_NORMALIZE = {
@@ -570,19 +600,22 @@ function normaliseState(rawState, country) {
 const FETCH_CONCURRENCY = 10; // 10 parallel pages per batch
 
 async function fetchAllActive() {
-  // Step 1: get exact count (1 fast request — no data transfer)
-  const { count, error: countErr } = await sb
+  // Step 1: get planned (planner-estimated) count — instant, no sequential scan
+  const { count: plannedCount, error: countErr } = await sb
     .from("attractions")
-    .select("*", { count: "exact", head: true })
+    .select("*", { count: "planned", head: true })
     .eq("is_active", true);
-  if (countErr) throw new Error("Supabase count error: " + countErr.message);
+  if (countErr) throw new Error("Supabase count error: " + (countErr.message || countErr.details || countErr.hint || JSON.stringify(countErr)));
 
-  const totalPages = Math.ceil(count / PAGE_SIZE);
-  console.log(`   Total: ${count.toLocaleString()} rows → ${totalPages} pages (${FETCH_CONCURRENCY} concurrent)`);
+  // Pad by 10% so we don't stop short of real data if the estimate is low
+  const estTotal = Math.ceil((plannedCount || 1_200_000) * 1.1);
+  const totalPages = Math.ceil(estTotal / PAGE_SIZE);
+  console.log(`   Estimated: ~${(plannedCount || 0).toLocaleString()} rows → fetching up to ${totalPages} pages (${FETCH_CONCURRENCY} concurrent)`);
 
-  // Step 2: fetch all pages in parallel batches
+  // Step 2: fetch all pages in parallel batches, stop when a page returns no rows
   const rows = [];
-  for (let batchStart = 0; batchStart < totalPages; batchStart += FETCH_CONCURRENCY) {
+  let done = false;
+  for (let batchStart = 0; batchStart < totalPages && !done; batchStart += FETCH_CONCURRENCY) {
     const batchEnd   = Math.min(batchStart + FETCH_CONCURRENCY, totalPages);
     const pageNums   = Array.from({ length: batchEnd - batchStart }, (_, i) => batchStart + i);
 
@@ -596,12 +629,19 @@ async function fetchAllActive() {
     );
 
     for (const { data, error } of results) {
-      if (error) throw new Error("Supabase fetch error: " + error.message);
+      if (error) {
+        // Timeout or empty result on a deep page → assume we've reached the end
+        const msg = error.message || error.details || error.hint || "";
+        if (msg.includes("timeout") || msg.includes("canceling") || msg === "") {
+          done = true; break;
+        }
+        throw new Error("Supabase fetch error: " + (msg || JSON.stringify(error)));
+      }
+      if (!data || data.length === 0) { done = true; break; }
       rows.push(...data);
     }
 
-    const pct = Math.round((rows.length / count) * 100);
-    process.stdout.write(`\r   Fetching... ${rows.length.toLocaleString()} / ${count.toLocaleString()} (${pct}%)`);
+    process.stdout.write(`\r   Fetching... ${rows.length.toLocaleString()} rows`);
   }
 
   process.stdout.write(`\r   Fetched ${rows.length.toLocaleString()} rows                          \n`);
