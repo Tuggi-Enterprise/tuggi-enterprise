@@ -467,6 +467,8 @@ function normaliseState(rawState, country) {
   }
 
   if (country === "Brazil") {
+    // DF abbreviation / "Brasília" stored as state → Distrito Federal
+    if (s === "df" || s === "brasilia" || s === "brasilia df" || s === "federal district") return "Distrito Federal";
     // Already a real state name → keep
     if (BRAZIL_STATE_SLUGS.has(s)) return BRAZIL_STATE_SLUGS.get(s);
     // City → state mapping
@@ -522,6 +524,96 @@ function normaliseState(rawState, country) {
     if (s === "tierra del fuego") return "Tierra del Fuego";
     if (s === "la pampa") return "La Pampa";
     if (s === "buenos aires f.d" || s === "buenos aires f. d.") return "Ciudad de Buenos Aires";
+  }
+
+  if (country === "Bolivia") {
+    if (s === "beni" || s === "el beni") return "El Beni";
+  }
+
+  if (country === "Peru") {
+    // "Lima Province" must be checked BEFORE stripping suffix (stripping turns it into "Lima")
+    if (s === "lima province") return "Lima Province";
+    if (s === "callao") return "Callao";
+    const bare = state.replace(/\s+(Department|Departamento|Región|Region|Province|Provincia)$/i, "").trim();
+    const bs   = slug(bare);
+    const PERU_TOPO = {
+      "lima":             "Lima",
+      "lima region":      "Lima",
+      "cusco":            "Cusco",
+      "cuzco":            "Cusco",
+      "ancash":           "Áncash",
+      "apurimac":         "Apurímac",
+      "junin":            "Junín",
+      "cajamarca":        "Cajamarca",
+      "san martin":       "San Martín",
+      "huanuco":          "Huánuco",
+      "moquegua":         "Moquegua",
+      "tacna":            "Tacna",
+      "madre de dios":    "Madre de Dios",
+      "loreto":           "Loreto",
+      "amazonas":         "Amazonas",
+      "tumbes":           "Tumbes",
+      "piura":            "Piura",
+      "ucayali":          "Ucayali",
+      "puno":             "Puno",
+      "arequipa":         "Arequipa",
+      "ica":              "Ica",
+      "la libertad":      "La Libertad",
+      "lambayeque":       "Lambayeque",
+      "ayacucho":         "Ayacucho",
+      "huancavelica":     "Huancavelica",
+      "pasco":            "Pasco",
+    };
+    return PERU_TOPO[bs] ?? bare;
+  }
+
+  if (country === "Ecuador") {
+    const bare = state
+      .replace(/\s+Province$/i, "")
+      .replace(/\s*-\s*/g, " ")
+      .trim();
+    const bs = slug(bare);
+    const ECUADOR_TOPO = {
+      "chimborazo":               "Chimborazo",
+      "tungurahua":               "Tungurahua",
+      "morona santiago":          "Morona Santiago",
+      "pastaza":                  "Pastaza",
+      "orellana":                 "Orellana",
+      "zamora chinchipe":         "Zamora Chinchipe",
+      "santo domingo de los tsachilas": "Santo Domingo de los Tsáchilas",
+    };
+    return ECUADOR_TOPO[bs] ?? bare;
+  }
+
+  if (country === "Paraguay") {
+    const bare = state.replace(/\s+Department$/i, "").trim();
+    const bs   = slug(bare);
+    const PARAGUAY_TOPO = {
+      "central":          "Central",
+      "boqueron":         "Boquerón",
+      "presidente hayes": "Presidente Hayes",
+      "asuncion":         "Asunción",
+      "alto parana":      "Alto Paraná",
+      "itapua":           "Itapúa",
+      "neembucu":         "Ñeembucú",
+      "misiones":         "Misiones",
+      "alto paraguay":    "Alto Paraguay",
+      "concepcion":       "Concepción",
+      "amambay":          "Amambay",
+      "canindeyu":        "Canindeyú",
+      "san pedro":        "San Pedro",
+      "caaguazu":         "Caaguazú",
+      "cordillera":       "Cordillera",
+      "caazapa":          "Caazapá",
+      "paraguari":        "Paraguarí",
+      "guaira":           "Guairá",
+    };
+    return PARAGUAY_TOPO[bs] ?? bare;
+  }
+
+  if (country === "Suriname") {
+    const bare = state.replace(/\s+District$/i, "").trim();
+    return bare;
   }
 
   if (country === "Uruguay") {
@@ -596,52 +688,42 @@ function normaliseState(rawState, country) {
   return state;
 }
 
-// ── Fetch all active attractions (parallel paginated) ────────────────────────
-const FETCH_CONCURRENCY = 10; // 10 parallel pages per batch
+// ── Fetch all active attractions (cursor-based — no OFFSET, no timeout) ──────
+// Uses WHERE id > last_id ORDER BY id so each page is O(log n) via index scan.
+// Server caps at 2000 rows/page; sequential is fast enough (~500 requests × 50ms).
+const PAGE_SIZE_CURSOR = 2000;
 
 async function fetchAllActive() {
-  // Step 1: get planned (planner-estimated) count — instant, no sequential scan
-  const { count: plannedCount, error: countErr } = await sb
+  const { count: plannedCount } = await sb
     .from("attractions")
     .select("*", { count: "planned", head: true })
     .eq("is_active", true);
-  if (countErr) throw new Error("Supabase count error: " + (countErr.message || countErr.details || countErr.hint || JSON.stringify(countErr)));
+  console.log(`   Estimated: ~${(plannedCount || 0).toLocaleString()} rows (cursor-based pagination)`);
 
-  // Pad by 10% so we don't stop short of real data if the estimate is low
-  const estTotal = Math.ceil((plannedCount || 1_200_000) * 1.1);
-  const totalPages = Math.ceil(estTotal / PAGE_SIZE);
-  console.log(`   Estimated: ~${(plannedCount || 0).toLocaleString()} rows → fetching up to ${totalPages} pages (${FETCH_CONCURRENCY} concurrent)`);
-
-  // Step 2: fetch all pages in parallel batches, stop when a page returns no rows
   const rows = [];
-  let done = false;
-  for (let batchStart = 0; batchStart < totalPages && !done; batchStart += FETCH_CONCURRENCY) {
-    const batchEnd   = Math.min(batchStart + FETCH_CONCURRENCY, totalPages);
-    const pageNums   = Array.from({ length: batchEnd - batchStart }, (_, i) => batchStart + i);
+  let lastId = "00000000-0000-0000-0000-000000000000";
 
-    const results = await Promise.all(
-      pageNums.map(p =>
-        sb.from("attractions")
-          .select("country, state, city")
-          .eq("is_active", true)
-          .range(p * PAGE_SIZE, (p + 1) * PAGE_SIZE - 1)
-      )
-    );
+  while (true) {
+    const { data, error } = await sb
+      .from("attractions")
+      .select("id, country, state, city")
+      .eq("is_active", true)
+      .gt("id", lastId)
+      .order("id")
+      .limit(PAGE_SIZE_CURSOR);
 
-    for (const { data, error } of results) {
-      if (error) {
-        // Timeout or empty result on a deep page → assume we've reached the end
-        const msg = error.message || error.details || error.hint || "";
-        if (msg.includes("timeout") || msg.includes("canceling") || msg === "") {
-          done = true; break;
-        }
-        throw new Error("Supabase fetch error: " + (msg || JSON.stringify(error)));
-      }
-      if (!data || data.length === 0) { done = true; break; }
-      rows.push(...data);
+    if (error) {
+      const msg = error.message || error.details || error.hint || "";
+      throw new Error("Supabase fetch error: " + (msg || JSON.stringify(error)));
     }
+    if (!data || data.length === 0) break;
 
-    process.stdout.write(`\r   Fetching... ${rows.length.toLocaleString()} rows`);
+    rows.push(...data);
+    lastId = data[data.length - 1].id;
+
+    if (rows.length % 20_000 === 0) {
+      process.stdout.write(`\r   Fetching... ${rows.length.toLocaleString()} rows`);
+    }
   }
 
   process.stdout.write(`\r   Fetched ${rows.length.toLocaleString()} rows                          \n`);
