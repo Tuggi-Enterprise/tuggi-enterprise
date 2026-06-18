@@ -156,6 +156,7 @@ const ITALY_NORMALIZE = {
 // ── Chile: DB region names → exact TopoJSON canonical names ──────────────────
 // TopoJSON (Natural Earth 10m) uses these exact names:
 const CHILE_SLUG_TO_TOPO = {
+  // "Región de..." full prefix forms
   "region de antofagasta":                                    "Antofagasta",
   "region de arica y parinacota":                             "Arica y Parinacota",
   "region de atacama":                                        "Atacama",
@@ -172,9 +173,32 @@ const CHILE_SLUG_TO_TOPO = {
   "region del maule":                                         "Maule",
   "region metropolitana de santiago":                         "Región Metropolitana de Santiago",
   "region aysen del general carlos ibanez del campo":         "Aisén del General Carlos Ibáñez del Campo",
-  // Also catch variant spellings
-  "region del biobio":                                        "Bío-Bío",
+  // English-style variants (e.g. from OSM / international APIs)
+  "santiago metropolitan":                                    "Región Metropolitana de Santiago",
+  "metropolitan region":                                      "Región Metropolitana de Santiago",
+  "metropolitana":                                            "Región Metropolitana de Santiago",
+  "o'higgins region":                                         "Libertador General Bernardo O'Higgins",
+  "o'higgins":                                                "Libertador General Bernardo O'Higgins",
+  "libertador general bernardo o'higgins":                    "Libertador General Bernardo O'Higgins",
+  "maule region":                                             "Maule",
+  "los lagos region":                                         "Los Lagos",
+  "araucania":                                                "La Araucanía",
+  "la araucania":                                             "La Araucanía",
+  "araucanía":                                                "La Araucanía",
+  "coquimbo region":                                          "Coquimbo",
+  "aysen":                                                    "Aisén del General Carlos Ibáñez del Campo",
+  "aisen":                                                    "Aisén del General Carlos Ibáñez del Campo",
+  "aisen del general carlos ibanez del campo":                "Aisén del General Carlos Ibáñez del Campo",
+  "magallanes":                                               "Magallanes y Antártica Chilena",
+  "magallanes y antartica chilena":                           "Magallanes y Antártica Chilena",
+  "region of magallanes":                                     "Magallanes y Antártica Chilena",
+  "region of magallanes and chilean antarctica":              "Magallanes y Antártica Chilena",
   "biobio":                                                   "Bío-Bío",
+  "bio-bio":                                                  "Bío-Bío",
+  "nuble":                                                    "Ñuble",
+  "los rios":                                                 "Los Ríos",
+  "tarapaca":                                                 "Tarapacá",
+  "valparaiso":                                               "Valparaíso",
 };
 
 // Known Chilean cities → their parent TopoJSON region (for city-level entries)
@@ -528,6 +552,70 @@ function normaliseState(rawState, country) {
 
   if (country === "Bolivia") {
     if (s === "beni" || s === "el beni") return "El Beni";
+  }
+
+  if (country === "Venezuela") {
+    // "Distrito Federal" is the old name — TopoJSON uses "Distrito Capital"
+    if (s === "distrito federal" || s === "distrito capital") return "Distrito Capital";
+    // Strip "Estado de/del" prefix if stored with full official name
+    const bare = state.replace(/^Estado (del |de la |de los |de )?/i, "").trim();
+    if (bare !== state) return bare;
+  }
+
+  if (country === "Colombia") {
+    // Strip " Department"/" Departamento" suffix
+    const bare = state.replace(/\s+(Department|Departamento)$/i, "").trim();
+    return bare;
+  }
+
+  if (country === "France") {
+    // Old pre-2016 region names → current regions (post-2016 merger names used in TopoJSON REGION_MAPPINGS)
+    const FRANCE_OLD_TO_NEW = {
+      "rhone-alpes":               "Auvergne-Rhône-Alpes",
+      "auvergne":                  "Auvergne-Rhône-Alpes",
+      "midi-pyrenees":             "Occitanie",
+      "languedoc-roussillon":      "Occitanie",
+      "nord-pas-de-calais":        "Hauts-de-France",
+      "picardie":                  "Hauts-de-France",
+      "haute-normandie":           "Normandie",
+      "basse-normandie":           "Normandie",
+      "champagne-ardenne":         "Grand Est",
+      "alsace":                    "Grand Est",
+      "lorraine":                  "Grand Est",
+      "poitou-charentes":          "Nouvelle-Aquitaine",
+      "limousin":                  "Nouvelle-Aquitaine",
+      "aquitaine":                 "Nouvelle-Aquitaine",
+      "bourgogne":                 "Bourgogne-Franche-Comté",
+      "franche-comte":             "Bourgogne-Franche-Comté",
+      "franche-comté":             "Bourgogne-Franche-Comté",
+      "ile-de-france":             "Île-de-France",
+      "centre":                    "Centre-Val de Loire",
+      "centre-val de loire":       "Centre-Val de Loire",
+    };
+    if (FRANCE_OLD_TO_NEW[s]) return FRANCE_OLD_TO_NEW[s];
+    // "Guyane" / "French Guiana" → drop (it's a separate territory, not in European France TopoJSON)
+    if (s === "guyane" || s === "french guiana" || s === "guyane francaise") return null;
+  }
+
+  if (country === "Switzerland") {
+    const CH_NORMALIZE = {
+      "grisons":           "Graubünden",  // French name → German (TopoJSON uses German)
+      "grigioni":          "Graubünden",  // Italian name
+      "graubuenden":       "Graubünden",
+      "ticino":            "Ticino",
+      "valais":            "Valais",
+      "geneve":            "Genève",
+      "vaud":              "Vaud",
+      "bern":              "Bern",
+      "zurich":            "Zürich",
+      "basel":             "Basel-Stadt",
+    };
+    if (CH_NORMALIZE[s]) return CH_NORMALIZE[s];
+  }
+
+  if (country === "Vatican") {
+    // TopoJSON uses "Vatican" (not "Vatican City")
+    if (s === "vatican city" || s === "cidade do vaticano") return "Vatican";
   }
 
   if (country === "Peru") {
