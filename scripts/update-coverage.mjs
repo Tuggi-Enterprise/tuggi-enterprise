@@ -114,6 +114,7 @@ function normaliseCountry(raw) {
   if (["uruguay"].includes(lc))                                   return "Uruguay";
   if (["venezuela"].includes(lc))                                 return "Venezuela";
   if (["ecuador"].includes(lc))                                   return "Ecuador";
+  if (["bahamas","the bahamas","bahamas islands"].includes(lc))   return "The Bahamas";
   if (["india","índia"].includes(lc))                             return "India";
   if (["china","república popular da china"].includes(lc))        return "China";
   if (["australia","austrália"].includes(lc))                     return "Australia";
@@ -771,6 +772,230 @@ function normaliseState(rawState, country) {
       "andalucia":              "Andalucía",
     };
     if (SPAIN_NORMALIZE[s]) return SPAIN_NORMALIZE[s];
+  }
+
+  // ── Central America ───────────────────────────────────────────────────────────
+  if (country === "Nicaragua") {
+    // Caribbean autonomous regions have distinct English-named variants in the DB
+    if (s === "north caribbean coast" || s === "atlantico norte" || s === "region autonoma del atlantico norte" || s === "raan") return "Atlántico Norte";
+    if (s === "south caribbean coast" || s === "atlantico sur"  || s === "region autonoma del atlantico sur"  || s === "raas") return "Atlántico Sur";
+    if (s === "rio san juan" || s === "río san juan") return "Rio San Juan";
+    const bare = state.replace(/\s+Department$/i, "").trim();
+    const NICA_TOPO = {
+      "leon": "León", "esteli": "Estelí", "carazo": "Carazo",
+      "managua": "Managua", "granada": "Granada", "masaya": "Masaya",
+      "chinandega": "Chinandega", "rivas": "Rivas", "boaco": "Boaco",
+      "chontales": "Chontales", "jinotega": "Jinotega", "matagalpa": "Matagalpa",
+      "nueva segovia": "Nueva Segovia", "madriz": "Madriz",
+    };
+    const bb = slug(bare);
+    return NICA_TOPO[bb] ?? bare;
+  }
+
+  if (country === "Honduras") {
+    if (s === "bay islands" || s === "islas de la bahia" || s === "islas de la bahía") return "Islas de la Bahía";
+    const bare = state.replace(/\s+Department$/i, "").trim();
+    const HND_TOPO = {
+      "francisco morazan": "Francisco Morazán", "cortes": "Cortés",
+      "atlantida": "Atlántida", "comayagua": "Comayagua",
+      "santa barbara": "Santa Bárbara", "copan": "Copán",
+      "olancho": "Olancho", "yoro": "Yoro", "choluteca": "Choluteca",
+      "el paraiso": "El Paraíso", "intibuca": "Intibucá",
+      "colon": "Colón", "gracias a dios": "Gracias a Dios",
+      "la paz": "La Paz", "lempira": "Lempira", "valle": "Valle",
+      "ocotepeque": "Ocotepeque",
+    };
+    const bb = slug(bare);
+    return HND_TOPO[bb] ?? bare;
+  }
+
+  if (country === "El Salvador") {
+    const bare = state.replace(/\s+Department$/i, "").trim();
+    const SLV_TOPO = {
+      "san salvador": "San Salvador", "santa ana": "Santa Ana",
+      "sonsonate": "Sonsonate", "la libertad": "La Libertad",
+      "san miguel": "San Miguel", "la paz": "La Paz",
+      "usulutan": "Usulután", "chalatenango": "Chalatenango",
+      "san vicente": "San Vicente", "cabanas": "Cabañas",
+      "morazan": "Morazán", "la union": "La Unión",
+      "ahuachapan": "Ahuachapán", "cuscatlan": "Cuscatlán",
+    };
+    const bb = slug(bare);
+    return SLV_TOPO[bb] ?? bare;
+  }
+
+  if (country === "Guatemala") {
+    if (s === "quetzaltenango") return "Quezaltenango"; // TopoJSON uses Quez- not Quetz-
+    const bare = state.replace(/\s+Department$/i, "").trim();
+    const GTM_TOPO = {
+      "quezaltenango": "Quezaltenango", "izabal": "Izabal",
+      "santa rosa": "Santa Rosa", "jutiapa": "Jutiapa",
+      "chiquimula": "Chiquimula", "peten": "Petén",
+      "san marcos": "San Marcos", "huehuetenango": "Huehuetenango",
+      "quiche": "Quiché", "alta verapaz": "Alta Verapaz",
+      "baja verapaz": "Baja Verapaz", "zacapa": "Zacapa",
+      "retalhuleu": "Retalhuleu", "suchitepequez": "Suchitepéquez", "suchitepeque": "Suchitepéquez",
+      "escuintla": "Escuintla", "guatemala": "Guatemala",
+      "jalapa": "Jalapa", "el progreso": "El Progreso",
+      "solola": "Sololá", "totonicapan": "Totonicapán",
+      "chimaltenango": "Chimaltenango", "sacatepequez": "Sacatepéquez",
+    };
+    const bb = slug(bare);
+    return GTM_TOPO[bb] ?? bare;
+  }
+
+  if (country === "Panama") {
+    if (s === "ngobe-bugle comarca" || s === "ngöbe-buglé comarca" || s === "ngobe bugle") return "Ngöbe Buglé";
+    if (s === "kuna yala" || s === "comarca kuna yala" || s === "san blas") return "Kuna Yala";
+    if (s === "embera" || s === "comarca embera" || s === "emberá") return "Emberá";
+    if (s === "darien" || s === "darién") return "Darién";
+    // "Panamá Oeste" is a 2014 province not yet in Natural Earth — merge into "Panama"
+    if (s === "panama oeste province" || s === "panama oeste" || s === "panamá oeste") return "Panama";
+    const bare = state.replace(/\s+(Province|Provincia|Comarca)$/i, "").trim();
+    const PAN_TOPO = {
+      "panama": "Panama", "chiriqui": "Chiriquí", "veraguas": "Veraguas",
+      "colon": "Colón", "herrera": "Herrera", "los santos": "Los Santos",
+      "cocle": "Coclé", "bocas del toro": "Bocas del Toro",
+    };
+    const bb = slug(bare);
+    return PAN_TOPO[bb] ?? bare;
+  }
+
+  if (country === "Costa Rica") {
+    const bare = state.replace(/\s+Province$/i, "").trim();
+    const CRI_TOPO = {
+      "san jose":    "San José", "alajuela": "Alajuela",
+      "cartago":     "Cartago",  "heredia": "Heredia",
+      "guanacaste":  "Guanacaste", "puntarenas": "Puntarenas",
+      "limon":       "Limón",
+    };
+    const bb = slug(bare);
+    return CRI_TOPO[bb] ?? bare;
+  }
+
+  // ── Caribbean ─────────────────────────────────────────────────────────────────
+  if (country === "Cuba") {
+    if (s === "havana" || s === "la habana" || s === "ciudad de la habana") return "Ciudad de la Habana";
+    const bare = state.replace(/\s+Province$/i, "").trim();
+    const CUB_TOPO = {
+      "ciudad de la habana": "Ciudad de la Habana",
+      "pinar del rio": "Pinar del Río", "artemisa": "Artemisa",
+      "mayabeque": "Mayabeque", "matanzas": "Matanzas",
+      "villa clara": "Villa Clara", "cienfuegos": "Cienfuegos",
+      "sancti spiritus": "Sancti Spíritus", "ciego de avila": "Ciego de Ávila",
+      "camaguey": "Camagüey", "las tunas": "Las Tunas",
+      "holguin": "Holguín", "granma": "Granma",
+      "santiago de cuba": "Santiago de Cuba",
+      "guantanamo": "Guantánamo",
+      "isla de la juventud": "Isla de la Juventud",
+    };
+    const bb = slug(bare);
+    return CUB_TOPO[bb] ?? bare;
+  }
+
+  if (country === "Dominican Republic") {
+    if (s === "nacional" || s === "distrito nacional") return "Distrito Nacional";
+    const bare = state.replace(/\s+Province$/i, "").trim();
+    const DOM_TOPO = {
+      "santo domingo":         "Santo Domingo",
+      "santiago":              "Santiago",
+      "la altagracia":         "La Altagracia",
+      "duarte":                "Duarte",
+      "barahona":              "Barahona",
+      "azua":                  "Azua",
+      "pedernales":            "Pedernales",
+      "san cristobal":         "San Cristóbal",
+      "peravia":               "Peravia",
+      "la romana":             "La Romana",
+      "san pedro de macoris":  "San Pedro de Macorís",
+      "la vega":               "La Vega",
+      "puerto plata":          "Puerto Plata",
+      "espaillat":             "Espaillat",
+      "maria trinidad sanchez":"María Trinidad Sánchez",
+      "samana":                "Samaná",
+      "hato mayor":            "Hato Mayor",
+      "el seybo":              "El Seybo",
+      "independencia":         "Independencia",
+      "la estrelleta":         "La Estrelleta",
+      "dajabon":               "Dajabón",
+      "monte cristi":          "Monte Cristi",
+      "valverde":              "Valverde",
+      "santiago rodriguez":    "Santiago Rodríguez",
+      "bahoruco":              "Bahoruco",
+      "san juan":              "San Juan",
+      "monsenor nouel":        "Monseñor Nouel",
+      "sanchez ramirez":       "Sánchez Ramírez",
+      "san jose de ocoa":      "San José de Ocoa",
+      "monte plata":           "Monte Plata",
+    };
+    const bb = slug(bare);
+    return DOM_TOPO[bb] ?? bare;
+  }
+
+  if (country === "Haiti") {
+    const HAITI_TOPO = {
+      "artibonite":  "L'Artibonite", "l'artibonite": "L'Artibonite",
+      "ouest":       "Ouest",         "nord":         "Nord",
+      "nord-est":    "Nord-Est",      "nord-ouest":   "Nord-Ouest",
+      "sud":         "Sud",           "sud-est":      "Sud-Est",
+      "grand'anse":  "Grand'Anse",    "nippes":       "Nippes",
+      "centre":      "Centre",
+    };
+    return HAITI_TOPO[s] ?? state;
+  }
+
+  if (country === "Jamaica") {
+    const bare = state.replace(/\s+Parish$/i, "").trim().replace(/^St\.\s+/i, "Saint ");
+    const JAM_TOPO = {
+      "saint andrew": "Saint Andrew", "saint catherine": "Saint Catherine",
+      "saint ann": "Saint Ann",      "saint james": "Saint James",
+      "portland": "Portland",         "saint thomas": "Saint Thomas",
+      "saint elizabeth": "Saint Elizabeth", "manchester": "Manchester",
+      "clarendon": "Clarendon",       "westmoreland": "Westmoreland",
+      "hanover": "Hanover",           "trelawny": "Trelawny",
+      "saint mary": "Saint Mary",     "kingston": "Kingston",
+    };
+    const bb = slug(bare);
+    return JAM_TOPO[bb] ?? bare;
+  }
+
+  if (country === "Belize") {
+    if (s === "southern district") return "Stann Creek"; // historical name used in TopoJSON
+    const bare = state.replace(/\s+District$/i, "").trim();
+    const BLZ_TOPO = {
+      "belize": "Belize", "cayo": "Cayo", "orange walk": "Orange Walk",
+      "corozal": "Corozal", "toledo": "Toledo", "stann creek": "Stann Creek",
+    };
+    const bb = slug(bare);
+    return BLZ_TOPO[bb] ?? bare;
+  }
+
+  if (country === "Bahamas") {
+    // TopoJSON admin is "The Bahamas" — snapshot stores "Bahamas"; country match handled separately
+    return state;
+  }
+
+  // ── Austria ───────────────────────────────────────────────────────────────────
+  if (country === "Austria") {
+    const AT_TOPO = {
+      "tyrol": "Tirol", "tirol": "Tirol",
+      "vienna": "Wien", "wien": "Wien",
+      "salzburg": "Salzburg",
+      "styria": "Steiermark", "steiermark": "Steiermark",
+      "carinthia": "Kärnten", "karnten": "Kärnten", "kärnten": "Kärnten",
+      "upper austria": "Oberösterreich", "oberosterreich": "Oberösterreich",
+      "lower austria": "Niederösterreich", "niederosterreich": "Niederösterreich",
+      "burgenland": "Burgenland", "vorarlberg": "Vorarlberg",
+    };
+    return AT_TOPO[s] ?? state;
+  }
+
+  // ── Global suffix strip (catch-all for countries not handled above) ───────────
+  // Strips common geographic admin suffixes appended by international data sources.
+  // "Lima Province" (Peru) is excluded — it IS a distinct TopoJSON feature.
+  const SUFFIX_RE = /\s+(Department|Departamento|Province|Provincia|Parish|District|Distrito|Region|Región|Oblast|Prefecture|Territorio|Territory|Governorate|Komitat|County)$/i;
+  if (SUFFIX_RE.test(state) && state !== "Lima Province") {
+    return state.replace(SUFFIX_RE, "").trim();
   }
 
   return state;
