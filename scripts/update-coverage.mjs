@@ -28,7 +28,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
 
 // ── Config ────────────────────────────────────────────────────────────────────
-const STATE_MIN_COUNT = 100;
+const STATE_MIN_COUNT = 50;
 const PAGE_SIZE       = 1000;
 
 // ── Load .env.local ───────────────────────────────────────────────────────────
@@ -468,7 +468,9 @@ function normaliseState(rawState, country) {
   if (knownErrors.includes(s)) return null;
 
   // Drop entries where state = country (clearly bad data, e.g. state="Spain" under Spain)
-  if (s === slug(country)) return null;
+  // Exception: countries where the main province/state legitimately shares the country name
+  const STATE_EQUALS_COUNTRY_OK = new Set(["panama","mexico","luxembourg","kuwait","singapore"]);
+  if (s === slug(country) && !STATE_EQUALS_COUNTRY_OK.has(s)) return null;
 
   if (country === "Italy") {
     return ITALY_NORMALIZE[s] ?? state;

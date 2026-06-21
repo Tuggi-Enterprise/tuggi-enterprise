@@ -15,7 +15,7 @@
     {
       "state": "Texas",
       "country": "United States of America",
-      "activeCount": 33790,
+      "activeCount": 33796,
       "comingSoonCount": 0
     },
     {
@@ -141,7 +141,7 @@
     {
       "state": "Arizona",
       "country": "United States of America",
-      "activeCount": 15109,
+      "activeCount": 15110,
       "comingSoonCount": 0
     },
     {
@@ -529,6 +529,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Sinaloa",
+      "country": "Mexico",
+      "activeCount": 3203,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Umbria",
       "country": "Italy",
       "activeCount": 3072,
@@ -550,12 +556,6 @@
       "state": "Porto",
       "country": "Portugal",
       "activeCount": 2974,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Sinaloa",
-      "country": "Mexico",
-      "activeCount": 2956,
       "comingSoonCount": 0
     },
     {
@@ -703,6 +703,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "México",
+      "country": "Mexico",
+      "activeCount": 2221,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Maule",
       "country": "Chile",
       "activeCount": 2217,
@@ -835,9 +841,21 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Mexico City",
+      "country": "Mexico",
+      "activeCount": 1772,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Pichincha",
       "country": "Ecuador",
       "activeCount": 1739,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Jalisco",
+      "country": "Mexico",
+      "activeCount": 1736,
       "comingSoonCount": 0
     },
     {
@@ -874,18 +892,6 @@
       "state": "Coquimbo",
       "country": "Chile",
       "activeCount": 1616,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Mexico City",
-      "country": "Mexico",
-      "activeCount": 1600,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Jalisco",
-      "country": "Mexico",
-      "activeCount": 1596,
       "comingSoonCount": 0
     },
     {
@@ -937,6 +943,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Chihuahua",
+      "country": "Mexico",
+      "activeCount": 1451,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Puno",
       "country": "Peru",
       "activeCount": 1431,
@@ -967,12 +979,6 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Chihuahua",
-      "country": "Mexico",
-      "activeCount": 1339,
-      "comingSoonCount": 0
-    },
-    {
       "state": "San Salvador",
       "country": "El Salvador",
       "activeCount": 1325,
@@ -988,6 +994,12 @@
       "state": "Coimbra",
       "country": "Portugal",
       "activeCount": 1320,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Veracruz",
+      "country": "Mexico",
+      "activeCount": 1308,
       "comingSoonCount": 0
     },
     {
@@ -1021,12 +1033,6 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Veracruz",
-      "country": "Mexico",
-      "activeCount": 1205,
-      "comingSoonCount": 0
-    },
-    {
       "state": "La Libertad",
       "country": "Peru",
       "activeCount": 1201,
@@ -1054,6 +1060,12 @@
       "state": "Los Ríos",
       "country": "Chile",
       "activeCount": 1169,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Panama",
+      "country": "Panama",
+      "activeCount": 1157,
       "comingSoonCount": 0
     },
     {
@@ -1123,6 +1135,18 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Yucatán",
+      "country": "Mexico",
+      "activeCount": 1065,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Sonora",
+      "country": "Mexico",
+      "activeCount": 1043,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Limón",
       "country": "Costa Rica",
       "activeCount": 1042,
@@ -1165,6 +1189,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Chiapas",
+      "country": "Mexico",
+      "activeCount": 992,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Cartago",
       "country": "Costa Rica",
       "activeCount": 990,
@@ -1174,12 +1204,6 @@
       "state": "Chinandega",
       "country": "Nicaragua",
       "activeCount": 986,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Yucatán",
-      "country": "Mexico",
-      "activeCount": 978,
       "comingSoonCount": 0
     },
     {
@@ -1225,12 +1249,6 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Sonora",
-      "country": "Mexico",
-      "activeCount": 957,
-      "comingSoonCount": 0
-    },
-    {
       "state": "Mérida",
       "country": "Venezuela",
       "activeCount": 949,
@@ -1255,12 +1273,6 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Chiapas",
-      "country": "Mexico",
-      "activeCount": 926,
-      "comingSoonCount": 0
-    },
-    {
       "state": "Lambayeque",
       "country": "Peru",
       "activeCount": 925,
@@ -1270,6 +1282,12 @@
       "state": "León",
       "country": "Nicaragua",
       "activeCount": 920,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Nuevo León",
+      "country": "Mexico",
+      "activeCount": 917,
       "comingSoonCount": 0
     },
     {
@@ -1363,12 +1381,6 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Nuevo León",
-      "country": "Mexico",
-      "activeCount": 839,
-      "comingSoonCount": 0
-    },
-    {
       "state": "Tocantins",
       "country": "Brazil",
       "activeCount": 823,
@@ -1384,6 +1396,12 @@
       "state": "El Oro",
       "country": "Ecuador",
       "activeCount": 814,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Puebla",
+      "country": "Mexico",
+      "activeCount": 811,
       "comingSoonCount": 0
     },
     {
@@ -1453,15 +1471,21 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Puebla",
+      "state": "Tamaulipas",
       "country": "Mexico",
-      "activeCount": 742,
+      "activeCount": 740,
       "comingSoonCount": 0
     },
     {
       "state": "Aisén del General Carlos Ibáñez del Campo",
       "country": "Chile",
       "activeCount": 738,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Baja California",
+      "country": "Mexico",
+      "activeCount": 733,
       "comingSoonCount": 0
     },
     {
@@ -1489,21 +1513,33 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Querétaro",
+      "country": "Mexico",
+      "activeCount": 715,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "San Luis Potosí",
+      "country": "Mexico",
+      "activeCount": 714,
+      "comingSoonCount": 0
+    },
+    {
       "state": "La Libertad",
       "country": "El Salvador",
       "activeCount": 707,
       "comingSoonCount": 0
     },
     {
-      "state": "Huila",
-      "country": "Colombia",
-      "activeCount": 696,
+      "state": "Oaxaca",
+      "country": "Mexico",
+      "activeCount": 704,
       "comingSoonCount": 0
     },
     {
-      "state": "Tamaulipas",
-      "country": "Mexico",
-      "activeCount": 695,
+      "state": "Huila",
+      "country": "Colombia",
+      "activeCount": 696,
       "comingSoonCount": 0
     },
     {
@@ -1537,12 +1573,6 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Baja California",
-      "country": "Mexico",
-      "activeCount": 675,
-      "comingSoonCount": 0
-    },
-    {
       "state": "Holguín",
       "country": "Cuba",
       "activeCount": 672,
@@ -1567,6 +1597,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Quintana Roo",
+      "country": "Mexico",
+      "activeCount": 664,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Oruro",
       "country": "Bolivia",
       "activeCount": 663,
@@ -1576,18 +1612,6 @@
       "state": "of Magallanes",
       "country": "Chile",
       "activeCount": 662,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Querétaro",
-      "country": "Mexico",
-      "activeCount": 661,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "San Luis Potosí",
-      "country": "Mexico",
-      "activeCount": 657,
       "comingSoonCount": 0
     },
     {
@@ -1609,9 +1633,15 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Oaxaca",
+      "state": "Durango",
       "country": "Mexico",
-      "activeCount": 647,
+      "activeCount": 646,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Michoacán",
+      "country": "Mexico",
+      "activeCount": 642,
       "comingSoonCount": 0
     },
     {
@@ -1639,33 +1669,21 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Guanajuato",
+      "country": "Mexico",
+      "activeCount": 610,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Veraguas",
       "country": "Panama",
       "activeCount": 608,
       "comingSoonCount": 0
     },
     {
-      "state": "Quintana Roo",
-      "country": "Mexico",
-      "activeCount": 606,
-      "comingSoonCount": 0
-    },
-    {
       "state": "Magdalena",
       "country": "Colombia",
       "activeCount": 596,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Durango",
-      "country": "Mexico",
-      "activeCount": 588,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Michoacán",
-      "country": "Mexico",
-      "activeCount": 586,
       "comingSoonCount": 0
     },
     {
@@ -1681,6 +1699,18 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Hidalgo",
+      "country": "Mexico",
+      "activeCount": 558,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Coahuila",
+      "country": "Mexico",
+      "activeCount": 556,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Zulia",
       "country": "Venezuela",
       "activeCount": 550,
@@ -1690,12 +1720,6 @@
       "state": "Rio San Juan",
       "country": "Nicaragua",
       "activeCount": 550,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Guanajuato",
-      "country": "Mexico",
-      "activeCount": 548,
       "comingSoonCount": 0
     },
     {
@@ -1741,6 +1765,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Zacatecas",
+      "country": "Mexico",
+      "activeCount": 531,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Chimborazo",
       "country": "Ecuador",
       "activeCount": 528,
@@ -1765,20 +1795,14 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Coahuila",
+      "state": "Guerrero",
       "country": "Mexico",
-      "activeCount": 513,
+      "activeCount": 512,
       "comingSoonCount": 0
     },
     {
       "state": "Boquerón",
       "country": "Paraguay",
-      "activeCount": 511,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Hidalgo",
-      "country": "Mexico",
       "activeCount": 511,
       "comingSoonCount": 0
     },
@@ -1789,9 +1813,9 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Zacatecas",
+      "state": "Campeche",
       "country": "Mexico",
-      "activeCount": 494,
+      "activeCount": 496,
       "comingSoonCount": 0
     },
     {
@@ -1843,9 +1867,9 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Guerrero",
+      "state": "Nayarit",
       "country": "Mexico",
-      "activeCount": 466,
+      "activeCount": 463,
       "comingSoonCount": 0
     },
     {
@@ -1857,12 +1881,6 @@
     {
       "state": "Navarra",
       "country": "Spain",
-      "activeCount": 455,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Campeche",
-      "country": "Mexico",
       "activeCount": 455,
       "comingSoonCount": 0
     },
@@ -1881,6 +1899,12 @@
     {
       "state": "Amapá",
       "country": "Brazil",
+      "activeCount": 445,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Tabasco",
+      "country": "Mexico",
       "activeCount": 445,
       "comingSoonCount": 0
     },
@@ -1909,12 +1933,6 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Nayarit",
-      "country": "Mexico",
-      "activeCount": 430,
-      "comingSoonCount": 0
-    },
-    {
       "state": "Moquegua",
       "country": "Peru",
       "activeCount": 428,
@@ -1924,6 +1942,12 @@
       "state": "Sancti Spíritus",
       "country": "Cuba",
       "activeCount": 426,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Colima",
+      "country": "Mexico",
+      "activeCount": 423,
       "comingSoonCount": 0
     },
     {
@@ -1942,12 +1966,6 @@
       "state": "San Miguel",
       "country": "El Salvador",
       "activeCount": 420,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Tabasco",
-      "country": "Mexico",
-      "activeCount": 418,
       "comingSoonCount": 0
     },
     {
@@ -1981,6 +1999,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Baja California Sur",
+      "country": "Mexico",
+      "activeCount": 409,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Morona Santiago",
       "country": "Ecuador",
       "activeCount": 406,
@@ -2002,12 +2026,6 @@
       "state": "Quezaltenango",
       "country": "Guatemala",
       "activeCount": 398,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Colima",
-      "country": "Mexico",
-      "activeCount": 397,
       "comingSoonCount": 0
     },
     {
@@ -2043,12 +2061,6 @@
     {
       "state": "Canar",
       "country": "Ecuador",
-      "activeCount": 374,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Baja California Sur",
-      "country": "Mexico",
       "activeCount": 374,
       "comingSoonCount": 0
     },
@@ -2119,6 +2131,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Morelos",
+      "country": "Mexico",
+      "activeCount": 338,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Cotopaxi",
       "country": "Ecuador",
       "activeCount": 338,
@@ -2173,12 +2191,6 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Morelos",
-      "country": "Mexico",
-      "activeCount": 311,
-      "comingSoonCount": 0
-    },
-    {
       "state": "Chontales",
       "country": "Nicaragua",
       "activeCount": 310,
@@ -2229,6 +2241,12 @@
     {
       "state": "Alto Paraná",
       "country": "Paraguay",
+      "activeCount": 293,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Aguascalientes",
+      "country": "Mexico",
       "activeCount": 293,
       "comingSoonCount": 0
     },
@@ -2341,12 +2359,6 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Aguascalientes",
-      "country": "Mexico",
-      "activeCount": 263,
-      "comingSoonCount": 0
-    },
-    {
       "state": "Westmoreland",
       "country": "Jamaica",
       "activeCount": 255,
@@ -2443,6 +2455,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Tlaxcala",
+      "country": "Mexico",
+      "activeCount": 220,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Madriz",
       "country": "Nicaragua",
       "activeCount": 218,
@@ -2500,12 +2518,6 @@
       "state": "Colón",
       "country": "Panama",
       "activeCount": 204,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Tlaxcala",
-      "country": "Mexico",
-      "activeCount": 201,
       "comingSoonCount": 0
     },
     {
@@ -3011,13 +3023,319 @@
       "country": "Jamaica",
       "activeCount": 101,
       "comingSoonCount": 0
+    },
+    {
+      "state": "San Clemente",
+      "country": "Chile",
+      "activeCount": 99,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Baja Verapaz",
+      "country": "Guatemala",
+      "activeCount": 98,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Canindeyú",
+      "country": "Paraguay",
+      "activeCount": 97,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Nippes",
+      "country": "Haiti",
+      "activeCount": 97,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Río Negro",
+      "country": "Uruguay",
+      "activeCount": 94,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Petapa",
+      "country": "Guatemala",
+      "activeCount": 92,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "San Pedro de Macorís",
+      "country": "Dominican Republic",
+      "activeCount": 92,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Hanover",
+      "country": "Jamaica",
+      "activeCount": 91,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Monte Plata",
+      "country": "Dominican Republic",
+      "activeCount": 87,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "MI",
+      "country": "Canada",
+      "activeCount": 87,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Municipality of Bovec",
+      "country": "Slovenia",
+      "activeCount": 83,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Pando",
+      "country": "Bolivia",
+      "activeCount": 83,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Saint Mary",
+      "country": "Jamaica",
+      "activeCount": 81,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Treinta y Tres",
+      "country": "Uruguay",
+      "activeCount": 81,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Darién",
+      "country": "Panama",
+      "activeCount": 80,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Clarendon",
+      "country": "Jamaica",
+      "activeCount": 80,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Upper Takutu-Upper Essequibo",
+      "country": "Guyana",
+      "activeCount": 79,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Freeport",
+      "country": "The Bahamas",
+      "activeCount": 78,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "San José",
+      "country": "Uruguay",
+      "activeCount": 77,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Hato Mayor",
+      "country": "Dominican Republic",
+      "activeCount": 77,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Trelawny",
+      "country": "Jamaica",
+      "activeCount": 76,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Baoruco",
+      "country": "Dominican Republic",
+      "activeCount": 74,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Peravia",
+      "country": "Dominican Republic",
+      "activeCount": 72,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Guainía",
+      "country": "Colombia",
+      "activeCount": 71,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Kuna Yala",
+      "country": "Panama",
+      "activeCount": 71,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Ñeembucú",
+      "country": "Paraguay",
+      "activeCount": 71,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Soriano",
+      "country": "Uruguay",
+      "activeCount": 69,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Kingston",
+      "country": "Jamaica",
+      "activeCount": 68,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Elías Piña",
+      "country": "Dominican Republic",
+      "activeCount": 68,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "San Vicente de Tagua Tagua",
+      "country": "Chile",
+      "activeCount": 68,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "San Juan",
+      "country": "Dominican Republic",
+      "activeCount": 66,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Presidente Hayes",
+      "country": "Paraguay",
+      "activeCount": 65,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Sánchez Ramírez",
+      "country": "Dominican Republic",
+      "activeCount": 65,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Valais",
+      "country": "Switzerland",
+      "activeCount": 64,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Monte Cristi",
+      "country": "Dominican Republic",
+      "activeCount": 63,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Nouvelle-Aquitaine",
+      "country": "France",
+      "activeCount": 62,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Amambay",
+      "country": "Paraguay",
+      "activeCount": 62,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "VA",
+      "country": "Venezuela",
+      "activeCount": 62,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Exuma",
+      "country": "The Bahamas",
+      "activeCount": 58,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Pomeroon-Supenaam",
+      "country": "Guyana",
+      "activeCount": 57,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Alto Paraguay",
+      "country": "Paraguay",
+      "activeCount": 55,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Valverde",
+      "country": "Dominican Republic",
+      "activeCount": 53,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Kärnten",
+      "country": "Austria",
+      "activeCount": 53,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Brokopondo",
+      "country": "Suriname",
+      "activeCount": 52,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Florida",
+      "country": "Uruguay",
+      "activeCount": 52,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Independencia",
+      "country": "Dominican Republic",
+      "activeCount": 51,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Saskatchewan",
+      "country": "Canada",
+      "activeCount": 51,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Palencia",
+      "country": "Guatemala",
+      "activeCount": 51,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "San José Pinula",
+      "country": "Guatemala",
+      "activeCount": 50,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Municipality of Kranjska Gora",
+      "country": "Slovenia",
+      "activeCount": 50,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Central Abaco",
+      "country": "The Bahamas",
+      "activeCount": 50,
+      "comingSoonCount": 0
     }
   ],
-  "totalActiveRaw": 1320479,
-  "totalActive": 1304550,
+  "totalActiveRaw": 1322770,
+  "totalActive": 1313644,
   "totalComingSoon": 0,
-  "totalCountries": 35,
-  "totalActiveCountries": 35,
-  "totalActiveRegions": 502,
-  "generatedAt": "2026-06-21T10:35:06.261Z"
+  "totalCountries": 36,
+  "totalActiveCountries": 36,
+  "totalActiveRegions": 555,
+  "generatedAt": "2026-06-21T12:05:56.588Z"
 }
