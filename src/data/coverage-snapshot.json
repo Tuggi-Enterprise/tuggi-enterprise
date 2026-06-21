@@ -3,7 +3,7 @@
     {
       "state": "California",
       "country": "United States of America",
-      "activeCount": 45604,
+      "activeCount": 45620,
       "comingSoonCount": 0
     },
     {
@@ -15,7 +15,7 @@
     {
       "state": "Texas",
       "country": "United States of America",
-      "activeCount": 33711,
+      "activeCount": 33790,
       "comingSoonCount": 0
     },
     {
@@ -141,7 +141,7 @@
     {
       "state": "Arizona",
       "country": "United States of America",
-      "activeCount": 15102,
+      "activeCount": 15109,
       "comingSoonCount": 0
     },
     {
@@ -219,7 +219,7 @@
     {
       "state": "New Mexico",
       "country": "United States of America",
-      "activeCount": 9908,
+      "activeCount": 9910,
       "comingSoonCount": 0
     },
     {
@@ -553,6 +553,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Sinaloa",
+      "country": "Mexico",
+      "activeCount": 2956,
+      "comingSoonCount": 0
+    },
+    {
       "state": "San José",
       "country": "Costa Rica",
       "activeCount": 2946,
@@ -871,6 +877,18 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Mexico City",
+      "country": "Mexico",
+      "activeCount": 1600,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Jalisco",
+      "country": "Mexico",
+      "activeCount": 1596,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Miranda",
       "country": "Venezuela",
       "activeCount": 1582,
@@ -949,6 +967,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Chihuahua",
+      "country": "Mexico",
+      "activeCount": 1339,
+      "comingSoonCount": 0
+    },
+    {
       "state": "San Salvador",
       "country": "El Salvador",
       "activeCount": 1325,
@@ -994,6 +1018,12 @@
       "state": "Sucre",
       "country": "Venezuela",
       "activeCount": 1213,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Veracruz",
+      "country": "Mexico",
+      "activeCount": 1205,
       "comingSoonCount": 0
     },
     {
@@ -1147,6 +1177,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Yucatán",
+      "country": "Mexico",
+      "activeCount": 978,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Bolívar",
       "country": "Colombia",
       "activeCount": 977,
@@ -1189,6 +1225,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Sonora",
+      "country": "Mexico",
+      "activeCount": 957,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Mérida",
       "country": "Venezuela",
       "activeCount": 949,
@@ -1213,6 +1255,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Chiapas",
+      "country": "Mexico",
+      "activeCount": 926,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Lambayeque",
       "country": "Peru",
       "activeCount": 925,
@@ -1231,6 +1279,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Ouest",
+      "country": "Haiti",
+      "activeCount": 914,
+      "comingSoonCount": 0
+    },
+    {
       "state": "San Luis",
       "country": "Argentina",
       "activeCount": 913,
@@ -1246,12 +1300,6 @@
       "state": "Francisco Morazán",
       "country": "Honduras",
       "activeCount": 906,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Ouest",
-      "country": "Haiti",
-      "activeCount": 898,
       "comingSoonCount": 0
     },
     {
@@ -1315,6 +1363,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Nuevo León",
+      "country": "Mexico",
+      "activeCount": 839,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Tocantins",
       "country": "Brazil",
       "activeCount": 823,
@@ -1375,6 +1429,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Santa Ana",
+      "country": "El Salvador",
+      "activeCount": 776,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Norte de Santander",
       "country": "Colombia",
       "activeCount": 776,
@@ -1387,15 +1447,15 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Santa Ana",
-      "country": "El Salvador",
-      "activeCount": 770,
-      "comingSoonCount": 0
-    },
-    {
       "state": "Monagas",
       "country": "Venezuela",
       "activeCount": 743,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Puebla",
+      "country": "Mexico",
+      "activeCount": 742,
       "comingSoonCount": 0
     },
     {
@@ -1441,6 +1501,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Tamaulipas",
+      "country": "Mexico",
+      "activeCount": 695,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Risaralda",
       "country": "Colombia",
       "activeCount": 694,
@@ -1468,6 +1534,12 @@
       "state": "Santiago de Cuba",
       "country": "Cuba",
       "activeCount": 685,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Baja California",
+      "country": "Mexico",
+      "activeCount": 675,
       "comingSoonCount": 0
     },
     {
@@ -1507,6 +1579,18 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Querétaro",
+      "country": "Mexico",
+      "activeCount": 661,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "San Luis Potosí",
+      "country": "Mexico",
+      "activeCount": 657,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Yaracuy",
       "country": "Venezuela",
       "activeCount": 655,
@@ -1522,6 +1606,12 @@
       "state": "Canelones",
       "country": "Uruguay",
       "activeCount": 648,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Oaxaca",
+      "country": "Mexico",
+      "activeCount": 647,
       "comingSoonCount": 0
     },
     {
@@ -1555,9 +1645,27 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Quintana Roo",
+      "country": "Mexico",
+      "activeCount": 606,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Magdalena",
       "country": "Colombia",
       "activeCount": 596,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Durango",
+      "country": "Mexico",
+      "activeCount": 588,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Michoacán",
+      "country": "Mexico",
+      "activeCount": 586,
       "comingSoonCount": 0
     },
     {
@@ -1579,15 +1687,27 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Río San Juan",
+      "state": "Rio San Juan",
       "country": "Nicaragua",
       "activeCount": 550,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Guanajuato",
+      "country": "Mexico",
+      "activeCount": 548,
       "comingSoonCount": 0
     },
     {
       "state": "Huancavelica",
       "country": "Peru",
       "activeCount": 547,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Cayo",
+      "country": "Belize",
+      "activeCount": 545,
       "comingSoonCount": 0
     },
     {
@@ -1603,14 +1723,14 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Cayo",
-      "country": "Belize",
-      "activeCount": 537,
+      "state": "Distrito Nacional",
+      "country": "Dominican Republic",
+      "activeCount": 535,
       "comingSoonCount": 0
     },
     {
-      "state": "Distrito Nacional",
-      "country": "Dominican Republic",
+      "state": "Petén",
+      "country": "Guatemala",
       "activeCount": 535,
       "comingSoonCount": 0
     },
@@ -1645,9 +1765,33 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Coahuila",
+      "country": "Mexico",
+      "activeCount": 513,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Boquerón",
       "country": "Paraguay",
       "activeCount": 511,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Hidalgo",
+      "country": "Mexico",
+      "activeCount": 511,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Huehuetenango",
+      "country": "Guatemala",
+      "activeCount": 499,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Zacatecas",
+      "country": "Mexico",
+      "activeCount": 494,
       "comingSoonCount": 0
     },
     {
@@ -1663,21 +1807,15 @@
       "comingSoonCount": 0
     },
     {
+      "state": "L'Artibonite",
+      "country": "Haiti",
+      "activeCount": 488,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Tungurahua",
       "country": "Ecuador",
       "activeCount": 482,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "L'Artibonite",
-      "country": "Haiti",
-      "activeCount": 481,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Petén",
-      "country": "Guatemala",
-      "activeCount": 477,
       "comingSoonCount": 0
     },
     {
@@ -1705,6 +1843,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Guerrero",
+      "country": "Mexico",
+      "activeCount": 466,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Santiago del Estero",
       "country": "Argentina",
       "activeCount": 458,
@@ -1713,6 +1857,12 @@
     {
       "state": "Navarra",
       "country": "Spain",
+      "activeCount": 455,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Campeche",
+      "country": "Mexico",
       "activeCount": 455,
       "comingSoonCount": 0
     },
@@ -1726,12 +1876,6 @@
       "state": "Santo Domingo de los Tsáchilas",
       "country": "Ecuador",
       "activeCount": 452,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Huehuetenango",
-      "country": "Guatemala",
-      "activeCount": 446,
       "comingSoonCount": 0
     },
     {
@@ -1755,13 +1899,19 @@
     {
       "state": "Santo Domingo",
       "country": "Dominican Republic",
-      "activeCount": 433,
+      "activeCount": 434,
       "comingSoonCount": 0
     },
     {
       "state": "Granma",
       "country": "Cuba",
       "activeCount": 431,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Nayarit",
+      "country": "Mexico",
+      "activeCount": 430,
       "comingSoonCount": 0
     },
     {
@@ -1795,6 +1945,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Tabasco",
+      "country": "Mexico",
+      "activeCount": 418,
+      "comingSoonCount": 0
+    },
+    {
       "state": "La Guajira",
       "country": "Colombia",
       "activeCount": 415,
@@ -1819,6 +1975,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Escuintla",
+      "country": "Guatemala",
+      "activeCount": 410,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Morona Santiago",
       "country": "Ecuador",
       "activeCount": 406,
@@ -1827,13 +1989,25 @@
     {
       "state": "Santiago",
       "country": "Dominican Republic",
-      "activeCount": 401,
+      "activeCount": 403,
       "comingSoonCount": 0
     },
     {
       "state": "Asunción",
       "country": "Paraguay",
       "activeCount": 400,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Quezaltenango",
+      "country": "Guatemala",
+      "activeCount": 398,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Colima",
+      "country": "Mexico",
+      "activeCount": 397,
       "comingSoonCount": 0
     },
     {
@@ -1873,6 +2047,18 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Baja California Sur",
+      "country": "Mexico",
+      "activeCount": 374,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Alta Verapaz",
+      "country": "Guatemala",
+      "activeCount": 373,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Graubünden",
       "country": "Switzerland",
       "activeCount": 372,
@@ -1891,27 +2077,15 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Panama",
-      "country": "Panama",
-      "activeCount": 363,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Quezaltenango",
-      "country": "Guatemala",
-      "activeCount": 356,
-      "comingSoonCount": 0
-    },
-    {
       "state": "Vatican",
       "country": "Vatican",
       "activeCount": 354,
       "comingSoonCount": 0
     },
     {
-      "state": "Escuintla",
-      "country": "Guatemala",
-      "activeCount": 352,
+      "state": "Sud-Est",
+      "country": "Haiti",
+      "activeCount": 353,
       "comingSoonCount": 0
     },
     {
@@ -1921,20 +2095,26 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Sud-Est",
-      "country": "Haiti",
-      "activeCount": 341,
-      "comingSoonCount": 0
-    },
-    {
       "state": "Yoro",
       "country": "Honduras",
       "activeCount": 341,
       "comingSoonCount": 0
     },
     {
+      "state": "Sacatepéquez",
+      "country": "Guatemala",
+      "activeCount": 341,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Apure",
       "country": "Venezuela",
+      "activeCount": 339,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Guatemala City",
+      "country": "Guatemala",
       "activeCount": 339,
       "comingSoonCount": 0
     },
@@ -1951,26 +2131,20 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Sud",
+      "country": "Haiti",
+      "activeCount": 336,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Napo",
       "country": "Ecuador",
       "activeCount": 335,
       "comingSoonCount": 0
     },
     {
-      "state": "Sud",
-      "country": "Haiti",
-      "activeCount": 333,
-      "comingSoonCount": 0
-    },
-    {
       "state": "Lima Province",
       "country": "Peru",
-      "activeCount": 328,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Alta Verapaz",
-      "country": "Guatemala",
       "activeCount": 328,
       "comingSoonCount": 0
     },
@@ -1999,6 +2173,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Morelos",
+      "country": "Mexico",
+      "activeCount": 311,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Chontales",
       "country": "Nicaragua",
       "activeCount": 310,
@@ -2017,6 +2197,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Izabal",
+      "country": "Guatemala",
+      "activeCount": 304,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Zamora Chinchipe",
       "country": "Ecuador",
       "activeCount": 303,
@@ -2029,15 +2215,15 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Guantánamo",
-      "country": "Cuba",
-      "activeCount": 297,
+      "state": "Copán",
+      "country": "Honduras",
+      "activeCount": 298,
       "comingSoonCount": 0
     },
     {
-      "state": "Sacatepéquez",
-      "country": "Guatemala",
-      "activeCount": 294,
+      "state": "Guantánamo",
+      "country": "Cuba",
+      "activeCount": 297,
       "comingSoonCount": 0
     },
     {
@@ -2047,21 +2233,15 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Copán",
-      "country": "Honduras",
-      "activeCount": 292,
+      "state": "Nord",
+      "country": "Haiti",
+      "activeCount": 293,
       "comingSoonCount": 0
     },
     {
       "state": "Arauca",
       "country": "Colombia",
       "activeCount": 292,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Nord",
-      "country": "Haiti",
-      "activeCount": 289,
       "comingSoonCount": 0
     },
     {
@@ -2089,9 +2269,21 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Jutiapa",
+      "country": "Guatemala",
+      "activeCount": 281,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Ucayali",
       "country": "Peru",
       "activeCount": 280,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Chiquimula",
+      "country": "Guatemala",
+      "activeCount": 276,
       "comingSoonCount": 0
     },
     {
@@ -2101,15 +2293,21 @@
       "comingSoonCount": 0
     },
     {
+      "state": "San Marcos",
+      "country": "Guatemala",
+      "activeCount": 272,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Cienfuegos",
       "country": "Cuba",
       "activeCount": 271,
       "comingSoonCount": 0
     },
     {
-      "state": "Belize",
-      "country": "Belize",
-      "activeCount": 269,
+      "state": "Villa Nueva",
+      "country": "Guatemala",
+      "activeCount": 271,
       "comingSoonCount": 0
     },
     {
@@ -2125,6 +2323,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Santa Bárbara",
+      "country": "Honduras",
+      "activeCount": 264,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Morazán",
       "country": "El Salvador",
       "activeCount": 264,
@@ -2137,15 +2341,9 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Santa Bárbara",
-      "country": "Honduras",
-      "activeCount": 262,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Izabal",
-      "country": "Guatemala",
-      "activeCount": 259,
+      "state": "Aguascalientes",
+      "country": "Mexico",
+      "activeCount": 263,
       "comingSoonCount": 0
     },
     {
@@ -2155,15 +2353,15 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Saint Andrew",
-      "country": "Jamaica",
-      "activeCount": 252,
+      "state": "Toledo",
+      "country": "Belize",
+      "activeCount": 253,
       "comingSoonCount": 0
     },
     {
-      "state": "Chihuahua",
-      "country": "Mexico",
-      "activeCount": 251,
+      "state": "Saint Andrew",
+      "country": "Jamaica",
+      "activeCount": 252,
       "comingSoonCount": 0
     },
     {
@@ -2179,18 +2377,6 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Toledo",
-      "country": "Belize",
-      "activeCount": 248,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Chiquimula",
-      "country": "Guatemala",
-      "activeCount": 247,
-      "comingSoonCount": 0
-    },
-    {
       "state": "Región de Murcia",
       "country": "Spain",
       "activeCount": 246,
@@ -2200,18 +2386,6 @@
       "state": "Tarija",
       "country": "Bolivia",
       "activeCount": 246,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "San Marcos",
-      "country": "Guatemala",
-      "activeCount": 242,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Jutiapa",
-      "country": "Guatemala",
-      "activeCount": 240,
       "comingSoonCount": 0
     },
     {
@@ -2229,7 +2403,7 @@
     {
       "state": "Ahuachapán",
       "country": "El Salvador",
-      "activeCount": 234,
+      "activeCount": 236,
       "comingSoonCount": 0
     },
     {
@@ -2253,6 +2427,12 @@
     {
       "state": "Amazonas",
       "country": "Colombia",
+      "activeCount": 225,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Chimaltenango",
+      "country": "Guatemala",
       "activeCount": 225,
       "comingSoonCount": 0
     },
@@ -2281,15 +2461,15 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Concepción",
-      "country": "Paraguay",
+      "state": "Stann Creek",
+      "country": "Belize",
       "activeCount": 212,
       "comingSoonCount": 0
     },
     {
-      "state": "Chimaltenango",
-      "country": "Guatemala",
-      "activeCount": 211,
+      "state": "Concepción",
+      "country": "Paraguay",
+      "activeCount": 212,
       "comingSoonCount": 0
     },
     {
@@ -2305,9 +2485,27 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Quiché",
+      "country": "Guatemala",
+      "activeCount": 207,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Sololá",
+      "country": "Guatemala",
+      "activeCount": 204,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Colón",
       "country": "Panama",
       "activeCount": 204,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Tlaxcala",
+      "country": "Mexico",
+      "activeCount": 201,
       "comingSoonCount": 0
     },
     {
@@ -2323,9 +2521,9 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Stann Creek",
-      "country": "Belize",
-      "activeCount": 194,
+      "state": "Mixco",
+      "country": "Guatemala",
+      "activeCount": 192,
       "comingSoonCount": 0
     },
     {
@@ -2359,14 +2557,14 @@
       "comingSoonCount": 0
     },
     {
-      "state": "La Vega",
-      "country": "Dominican Republic",
-      "activeCount": 183,
+      "state": "Nord-Ouest",
+      "country": "Haiti",
+      "activeCount": 185,
       "comingSoonCount": 0
     },
     {
-      "state": "Nord-Ouest",
-      "country": "Haiti",
+      "state": "La Vega",
+      "country": "Dominican Republic",
       "activeCount": 183,
       "comingSoonCount": 0
     },
@@ -2419,21 +2617,9 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Sololá",
-      "country": "Guatemala",
-      "activeCount": 175,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Quiché",
-      "country": "Guatemala",
-      "activeCount": 174,
-      "comingSoonCount": 0
-    },
-    {
       "state": "La Altagracia",
       "country": "Dominican Republic",
-      "activeCount": 172,
+      "activeCount": 173,
       "comingSoonCount": 0
     },
     {
@@ -2455,9 +2641,21 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Zacapa",
+      "country": "Guatemala",
+      "activeCount": 170,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Paysandú",
       "country": "Uruguay",
       "activeCount": 168,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Retalhuleu",
+      "country": "Guatemala",
+      "activeCount": 165,
       "comingSoonCount": 0
     },
     {
@@ -2497,15 +2695,9 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Chiapas",
-      "country": "Mexico",
-      "activeCount": 157,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Zacapa",
+      "state": "Santa Rosa",
       "country": "Guatemala",
-      "activeCount": 155,
+      "activeCount": 159,
       "comingSoonCount": 0
     },
     {
@@ -2517,7 +2709,7 @@
     {
       "state": "Nord-Est",
       "country": "Haiti",
-      "activeCount": 153,
+      "activeCount": 154,
       "comingSoonCount": 0
     },
     {
@@ -2539,15 +2731,9 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Sinaloa",
-      "country": "Mexico",
-      "activeCount": 148,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Retalhuleu",
+      "state": "Santa Catarina Pinula",
       "country": "Guatemala",
-      "activeCount": 148,
+      "activeCount": 150,
       "comingSoonCount": 0
     },
     {
@@ -2559,13 +2745,7 @@
     {
       "state": "Centre",
       "country": "Haiti",
-      "activeCount": 147,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Santa Rosa",
-      "country": "Guatemala",
-      "activeCount": 145,
+      "activeCount": 148,
       "comingSoonCount": 0
     },
     {
@@ -2587,6 +2767,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "El Progreso",
+      "country": "Guatemala",
+      "activeCount": 139,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Alberta",
       "country": "Canada",
       "activeCount": 138,
@@ -2596,6 +2782,12 @@
       "state": "Portland",
       "country": "Jamaica",
       "activeCount": 137,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Suchitepéquez",
+      "country": "Guatemala",
+      "activeCount": 135,
       "comingSoonCount": 0
     },
     {
@@ -2653,15 +2845,15 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Sonora",
-      "country": "Mexico",
+      "state": "Jalapa",
+      "country": "Guatemala",
       "activeCount": 126,
       "comingSoonCount": 0
     },
     {
-      "state": "El Progreso",
-      "country": "Guatemala",
-      "activeCount": 126,
+      "state": "Orange Walk",
+      "country": "Belize",
+      "activeCount": 125,
       "comingSoonCount": 0
     },
     {
@@ -2671,27 +2863,9 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Tamaulipas",
-      "country": "Mexico",
-      "activeCount": 124,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Suchitepéquez",
-      "country": "Guatemala",
-      "activeCount": 122,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Orange Walk",
-      "country": "Belize",
-      "activeCount": 120,
-      "comingSoonCount": 0
-    },
-    {
       "state": "Ocotepeque",
       "country": "Honduras",
-      "activeCount": 120,
+      "activeCount": 123,
       "comingSoonCount": 0
     },
     {
@@ -2737,15 +2911,21 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Corozal",
+      "country": "Belize",
+      "activeCount": 114,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Paramaribo",
       "country": "Suriname",
       "activeCount": 114,
       "comingSoonCount": 0
     },
     {
-      "state": "Jalapa",
+      "state": "Chinautla",
       "country": "Guatemala",
-      "activeCount": 112,
+      "activeCount": 111,
       "comingSoonCount": 0
     },
     {
@@ -2758,12 +2938,6 @@
       "state": "María Trinidad Sánchez",
       "country": "Dominican Republic",
       "activeCount": 111,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Corozal",
-      "country": "Belize",
-      "activeCount": 110,
       "comingSoonCount": 0
     },
     {
@@ -2839,11 +3013,11 @@
       "comingSoonCount": 0
     }
   ],
-  "totalActiveRaw": 1295221,
-  "totalActive": 1280468,
+  "totalActiveRaw": 1320479,
+  "totalActive": 1304550,
   "totalComingSoon": 0,
   "totalCountries": 35,
   "totalActiveCountries": 35,
-  "totalActiveRegions": 473,
-  "generatedAt": "2026-06-21T00:40:04.875Z"
+  "totalActiveRegions": 502,
+  "generatedAt": "2026-06-21T10:35:06.261Z"
 }
