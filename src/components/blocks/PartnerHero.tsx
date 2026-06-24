@@ -465,8 +465,8 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
                 </>
               ) : partnerData?.name ? (
                 <>
-                  <span className="block text-2xl md:text-3xl font-bold text-tuggi-primary">
-                    &amp;
+                  <span className="block text-sm md:text-base font-semibold text-tuggi-slate uppercase tracking-wide">
+                    {locale.includes("pt") ? "Indicado por" : locale.includes("es") ? "Recomendado por" : "Referred by"}
                   </span>
                   <span className="block text-3xl md:text-4xl font-extrabold text-tuggi-dark leading-tight mt-1">
                     {partnerData.name}
