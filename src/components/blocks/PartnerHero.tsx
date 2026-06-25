@@ -28,25 +28,6 @@ interface PartnerHeroProps {
   coupon?: CouponPreview;
 }
 
-/** Localized partner-type label (matches the inline locale convention in this file). */
-function partnerTypeLabel(type: string, locale: string): string {
-  const pt = locale.includes("pt");
-  const es = locale.includes("es");
-  const it = locale.includes("it");
-  switch (type) {
-    case "driver":
-      return pt ? "Motorista" : es ? "Conductor" : it ? "Autista" : "Driver";
-    case "hotel":
-      return pt ? "Hotel / Pousada" : "Hotel";
-    case "influencer":
-      return "Influencer";
-    case "creator":
-      return "Creator";
-    default:
-      return pt ? "Parceiro" : es ? "Socio" : it ? "Partner" : "Partner";
-  }
-}
-
 /** Ensure an external URL has a protocol so the <a href> resolves correctly. */
 function normalizeUrl(url: string): string {
   return /^https?:\/\//i.test(url) ? url : `https://${url}`;
@@ -528,51 +509,45 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
               )}
             </h1>
 
-            {/* Partner identity + contact — first-contact familiarity and a way
-                to stay connected with the partner. Real partners only. */}
-            {!isTuggi && partnerData?.name && (
-              <div className="flex flex-col items-center gap-2.5 mb-6 -mt-1">
-                {partnerData.clientType && (
-                  <span className="inline-flex items-center px-3 py-1 rounded-full bg-tuggi-bg text-tuggi-primary text-xs font-semibold tracking-wide">
-                    {partnerTypeLabel(partnerData.clientType, locale)}
-                  </span>
-                )}
-                {(partnerData.website || partnerData.social) && (
-                  <div className="flex flex-wrap items-center justify-center gap-2">
-                    {partnerData.website && (
+            {/* Stay-connected: partner contact links, only when the partner
+                provided them. The "Indicado por {name}" above already carries the
+                continuity — no type chip needed (it looked orphaned). */}
+            {!isTuggi &&
+              partnerData?.name &&
+              (partnerData.website || partnerData.social) && (
+                <div className="flex flex-wrap items-center justify-center gap-2 mb-6 -mt-1">
+                  {partnerData.website && (
+                    <a
+                      href={normalizeUrl(partnerData.website)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => trackEvent("partner_contact_click", { kind: "website" })}
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-slate-200 text-tuggi-dark text-xs font-semibold hover:bg-slate-50 transition-colors"
+                    >
+                      <Globe size={14} className="text-tuggi-primary" />
+                      {locale.includes("pt") ? "Visitar site" : locale.includes("es") ? "Visitar sitio" : locale.includes("it") ? "Visita il sito" : "Visit site"}
+                    </a>
+                  )}
+                  {partnerData.social &&
+                    (socialHref(partnerData.social) ? (
                       <a
-                        href={normalizeUrl(partnerData.website)}
+                        href={socialHref(partnerData.social)!}
                         target="_blank"
                         rel="noopener noreferrer"
-                        onClick={() => trackEvent("partner_contact_click", { kind: "website" })}
+                        onClick={() => trackEvent("partner_contact_click", { kind: "social" })}
                         className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-slate-200 text-tuggi-dark text-xs font-semibold hover:bg-slate-50 transition-colors"
                       >
-                        <Globe size={14} className="text-tuggi-primary" />
-                        {locale.includes("pt") ? "Visitar site" : locale.includes("es") ? "Visitar sitio" : locale.includes("it") ? "Visita il sito" : "Visit site"}
+                        <AtSign size={14} className="text-tuggi-primary" />
+                        {formatSocial(partnerData.social)}
                       </a>
-                    )}
-                    {partnerData.social &&
-                      (socialHref(partnerData.social) ? (
-                        <a
-                          href={socialHref(partnerData.social)!}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={() => trackEvent("partner_contact_click", { kind: "social" })}
-                          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-slate-200 text-tuggi-dark text-xs font-semibold hover:bg-slate-50 transition-colors"
-                        >
-                          <AtSign size={14} className="text-tuggi-primary" />
-                          {formatSocial(partnerData.social)}
-                        </a>
-                      ) : (
-                        <span className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-slate-200 text-tuggi-dark text-xs font-semibold">
-                          <AtSign size={14} className="text-tuggi-primary" />
-                          {formatSocial(partnerData.social)}
-                        </span>
-                      ))}
-                  </div>
-                )}
-              </div>
-            )}
+                    ) : (
+                      <span className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-slate-200 text-tuggi-dark text-xs font-semibold">
+                        <AtSign size={14} className="text-tuggi-primary" />
+                        {formatSocial(partnerData.social)}
+                      </span>
+                    ))}
+                </div>
+              )}
 
             {/* Description with collapse */}
             <p className="text-tuggi-slate text-sm md:text-base mb-6 leading-relaxed max-w-sm mx-auto">
