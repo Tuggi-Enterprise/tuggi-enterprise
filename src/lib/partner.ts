@@ -15,17 +15,26 @@ export interface PartnerData {
   isTuggi: boolean;
   /** DB language used for the welcome audio/text (e.g. "pt-br", "pt-pt", "en-us"). Drives the call-audio file. */
   audioLang: string;
+  /** Partner identity for the "stay connected" framing (type chip + contact links). */
+  clientType?: string | null;
+  website?: string | null;
+  social?: string | null;
 }
 
 type ClientRow = {
   id: string;
   slug: string | null;
+  name: string | null;
   company_name: string | null;
   welcome_poi_id: string | null;
   metadata: { welcome_poi_id?: string } | null;
+  client_type: string | null;
+  website: string | null;
+  social_handle: string | null;
 };
 
-const CLIENT_COLUMNS = "id, slug, company_name, welcome_poi_id, metadata";
+const CLIENT_COLUMNS =
+  "id, slug, name, company_name, welcome_poi_id, metadata, client_type, website, social_handle";
 
 /** Maps a next-intl locale to the language code used in core.attraction_descriptions. */
 export function getDbLang(locale: string): string {
@@ -85,10 +94,15 @@ async function buildPartnerData(
   const welcome = await fetchLocalizedWelcome(supabase, welcomePoiId, dbLang);
   return {
     id: client.id,
+    // Prefer company_name; fall back to the personal name so bare clients (e.g. a
+    // driver, who has no company_name) still surface a name for the referral framing.
+    name: isTuggi ? null : (client.company_name ?? client.name),
     slug: client.slug,
-    name: isTuggi ? null : client.company_name,
     isTuggi,
     audioLang: dbLang,
+    clientType: isTuggi ? null : client.client_type,
+    website: isTuggi ? null : client.website,
+    social: isTuggi ? null : client.social_handle,
     ...welcome,
   };
 }

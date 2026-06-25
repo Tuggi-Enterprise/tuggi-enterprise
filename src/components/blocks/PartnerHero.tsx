@@ -4,7 +4,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { ArrowRight, Check, Copy, Gift, Loader2, Pause, Play } from "lucide-react";
+import { ArrowRight, AtSign, Check, Copy, Gift, Globe, Loader2, Pause, Play } from "lucide-react";
 
 interface CouponPreview {
   code: string;
@@ -20,9 +20,50 @@ interface PartnerHeroProps {
     isTuggi?: boolean;
     /** Resolved welcome dialect (e.g. "pt-pt", "pt-br", "en-us") — drives the call audio. */
     audioLang?: string;
+    clientType?: string | null;
+    website?: string | null;
+    social?: string | null;
   } | null;
   /** When present, render the gift-card style redeem block. */
   coupon?: CouponPreview;
+}
+
+/** Localized partner-type label (matches the inline locale convention in this file). */
+function partnerTypeLabel(type: string, locale: string): string {
+  const pt = locale.includes("pt");
+  const es = locale.includes("es");
+  const it = locale.includes("it");
+  switch (type) {
+    case "driver":
+      return pt ? "Motorista" : es ? "Conductor" : it ? "Autista" : "Driver";
+    case "hotel":
+      return pt ? "Hotel / Pousada" : "Hotel";
+    case "influencer":
+      return "Influencer";
+    case "creator":
+      return "Creator";
+    default:
+      return pt ? "Parceiro" : es ? "Socio" : it ? "Partner" : "Partner";
+  }
+}
+
+/** Ensure an external URL has a protocol so the <a href> resolves correctly. */
+function normalizeUrl(url: string): string {
+  return /^https?:\/\//i.test(url) ? url : `https://${url}`;
+}
+
+/** A social value may be a full URL or a bare @handle. Returns a link target or null. */
+function socialHref(social: string): string | null {
+  if (/^https?:\/\//i.test(social)) return social;
+  if (social.includes(".")) return `https://${social}`;
+  return null; // bare @handle — platform unknown, show as text only
+}
+
+function formatSocial(social: string): string {
+  if (/^https?:\/\//i.test(social)) {
+    return social.replace(/^https?:\/\//i, "").replace(/\/$/, "");
+  }
+  return social.startsWith("@") ? social : `@${social}`;
 }
 
 const REDIRECT_DELAY_SECONDS = 5;
@@ -465,8 +506,8 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
                 </>
               ) : partnerData?.name ? (
                 <>
-                  <span className="block text-2xl md:text-3xl font-bold text-tuggi-primary">
-                    &amp;
+                  <span className="block text-sm md:text-base font-semibold text-tuggi-slate uppercase tracking-wide">
+                    {locale.includes("pt") ? "Indicado por" : locale.includes("es") ? "Recomendado por" : "Referred by"}
                   </span>
                   <span className="block text-3xl md:text-4xl font-extrabold text-tuggi-dark leading-tight mt-1">
                     {partnerData.name}
@@ -486,7 +527,53 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
                 </>
               )}
             </h1>
-            
+
+            {/* Partner identity + contact — first-contact familiarity and a way
+                to stay connected with the partner. Real partners only. */}
+            {!isTuggi && partnerData?.name && (
+              <div className="flex flex-col items-center gap-2.5 mb-6 -mt-1">
+                {partnerData.clientType && (
+                  <span className="inline-flex items-center px-3 py-1 rounded-full bg-tuggi-bg text-tuggi-primary text-xs font-semibold tracking-wide">
+                    {partnerTypeLabel(partnerData.clientType, locale)}
+                  </span>
+                )}
+                {(partnerData.website || partnerData.social) && (
+                  <div className="flex flex-wrap items-center justify-center gap-2">
+                    {partnerData.website && (
+                      <a
+                        href={normalizeUrl(partnerData.website)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => trackEvent("partner_contact_click", { kind: "website" })}
+                        className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-slate-200 text-tuggi-dark text-xs font-semibold hover:bg-slate-50 transition-colors"
+                      >
+                        <Globe size={14} className="text-tuggi-primary" />
+                        {locale.includes("pt") ? "Visitar site" : locale.includes("es") ? "Visitar sitio" : locale.includes("it") ? "Visita il sito" : "Visit site"}
+                      </a>
+                    )}
+                    {partnerData.social &&
+                      (socialHref(partnerData.social) ? (
+                        <a
+                          href={socialHref(partnerData.social)!}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={() => trackEvent("partner_contact_click", { kind: "social" })}
+                          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-slate-200 text-tuggi-dark text-xs font-semibold hover:bg-slate-50 transition-colors"
+                        >
+                          <AtSign size={14} className="text-tuggi-primary" />
+                          {formatSocial(partnerData.social)}
+                        </a>
+                      ) : (
+                        <span className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-slate-200 text-tuggi-dark text-xs font-semibold">
+                          <AtSign size={14} className="text-tuggi-primary" />
+                          {formatSocial(partnerData.social)}
+                        </span>
+                      ))}
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Description with collapse */}
             <p className="text-tuggi-slate text-sm md:text-base mb-6 leading-relaxed max-w-sm mx-auto">
               {isDescExpanded || !isLongDesc ? descriptionText : `${descriptionText.substring(0, maxDescLength)}...`}
