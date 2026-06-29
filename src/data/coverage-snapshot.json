@@ -3,7 +3,7 @@
     {
       "state": "California",
       "country": "United States of America",
-      "activeCount": 45638,
+      "activeCount": 45620,
       "comingSoonCount": 0
     },
     {
@@ -15,7 +15,7 @@
     {
       "state": "Texas",
       "country": "United States of America",
-      "activeCount": 33918,
+      "activeCount": 33837,
       "comingSoonCount": 0
     },
     {
@@ -33,49 +33,61 @@
     {
       "state": "Florida",
       "country": "United States of America",
-      "activeCount": 23787,
+      "activeCount": 23718,
       "comingSoonCount": 0
     },
     {
       "state": "New York",
       "country": "United States of America",
-      "activeCount": 23569,
+      "activeCount": 23589,
       "comingSoonCount": 0
     },
     {
       "state": "Michigan",
       "country": "United States of America",
-      "activeCount": 23069,
+      "activeCount": 23090,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Québec",
+      "country": "Canada",
+      "activeCount": 22855,
       "comingSoonCount": 0
     },
     {
       "state": "Minnesota",
       "country": "United States of America",
-      "activeCount": 21020,
+      "activeCount": 21060,
       "comingSoonCount": 0
     },
     {
       "state": "Illinois",
       "country": "United States of America",
-      "activeCount": 20355,
+      "activeCount": 20340,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Ontario",
+      "country": "Canada",
+      "activeCount": 19369,
       "comingSoonCount": 0
     },
     {
       "state": "Massachusetts",
       "country": "United States of America",
-      "activeCount": 18712,
+      "activeCount": 18692,
       "comingSoonCount": 0
     },
     {
       "state": "Wisconsin",
       "country": "United States of America",
-      "activeCount": 18537,
+      "activeCount": 18526,
       "comingSoonCount": 0
     },
     {
       "state": "North Carolina",
       "country": "United States of America",
-      "activeCount": 18499,
+      "activeCount": 18483,
       "comingSoonCount": 0
     },
     {
@@ -87,7 +99,7 @@
     {
       "state": "Pennsylvania",
       "country": "United States of America",
-      "activeCount": 18317,
+      "activeCount": 18306,
       "comingSoonCount": 0
     },
     {
@@ -99,13 +111,13 @@
     {
       "state": "Washington",
       "country": "United States of America",
-      "activeCount": 18026,
+      "activeCount": 17997,
       "comingSoonCount": 0
     },
     {
       "state": "Virginia",
       "country": "United States of America",
-      "activeCount": 17829,
+      "activeCount": 17814,
       "comingSoonCount": 0
     },
     {
@@ -115,33 +127,33 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Georgia",
+      "state": "Ohio",
       "country": "United States of America",
-      "activeCount": 17185,
+      "activeCount": 17085,
       "comingSoonCount": 0
     },
     {
-      "state": "Ohio",
+      "state": "Georgia",
       "country": "United States of America",
-      "activeCount": 17095,
+      "activeCount": 16973,
       "comingSoonCount": 0
     },
     {
       "state": "Maine",
       "country": "United States of America",
-      "activeCount": 15518,
+      "activeCount": 15519,
       "comingSoonCount": 0
     },
     {
       "state": "Colorado",
       "country": "United States of America",
-      "activeCount": 15285,
+      "activeCount": 15276,
       "comingSoonCount": 0
     },
     {
       "state": "Arizona",
       "country": "United States of America",
-      "activeCount": 15121,
+      "activeCount": 15113,
       "comingSoonCount": 0
     },
     {
@@ -159,13 +171,19 @@
     {
       "state": "Oregon",
       "country": "United States of America",
-      "activeCount": 12906,
+      "activeCount": 12877,
       "comingSoonCount": 0
     },
     {
       "state": "Maryland",
       "country": "United States of America",
-      "activeCount": 12615,
+      "activeCount": 12603,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "British Columbia",
+      "country": "Canada",
+      "activeCount": 12459,
       "comingSoonCount": 0
     },
     {
@@ -183,13 +201,13 @@
     {
       "state": "Connecticut",
       "country": "United States of America",
-      "activeCount": 11878,
+      "activeCount": 11870,
       "comingSoonCount": 0
     },
     {
       "state": "Lazio",
       "country": "Italy",
-      "activeCount": 11748,
+      "activeCount": 11747,
       "comingSoonCount": 0
     },
     {
@@ -201,43 +219,43 @@
     {
       "state": "South Carolina",
       "country": "United States of America",
-      "activeCount": 11247,
+      "activeCount": 11233,
       "comingSoonCount": 0
     },
     {
       "state": "Alaska",
       "country": "United States of America",
-      "activeCount": 10655,
+      "activeCount": 10800,
       "comingSoonCount": 0
     },
     {
       "state": "Iowa",
       "country": "United States of America",
-      "activeCount": 10063,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "New Mexico",
-      "country": "United States of America",
-      "activeCount": 9918,
+      "activeCount": 9979,
       "comingSoonCount": 0
     },
     {
       "state": "Montana",
       "country": "United States of America",
-      "activeCount": 9651,
+      "activeCount": 9653,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "New Mexico",
+      "country": "United States of America",
+      "activeCount": 9636,
       "comingSoonCount": 0
     },
     {
       "state": "Tennessee",
       "country": "United States of America",
-      "activeCount": 9628,
+      "activeCount": 9624,
       "comingSoonCount": 0
     },
     {
       "state": "Utah",
       "country": "United States of America",
-      "activeCount": 9517,
+      "activeCount": 9514,
       "comingSoonCount": 0
     },
     {
@@ -249,13 +267,13 @@
     {
       "state": "Indiana",
       "country": "United States of America",
-      "activeCount": 9415,
+      "activeCount": 9404,
       "comingSoonCount": 0
     },
     {
       "state": "New Hampshire",
       "country": "United States of America",
-      "activeCount": 9130,
+      "activeCount": 9127,
       "comingSoonCount": 0
     },
     {
@@ -285,7 +303,7 @@
     {
       "state": "Missouri",
       "country": "United States of America",
-      "activeCount": 8098,
+      "activeCount": 8092,
       "comingSoonCount": 0
     },
     {
@@ -307,45 +325,39 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Oklahoma",
+      "state": "Nebraska",
       "country": "United States of America",
-      "activeCount": 7432,
+      "activeCount": 7402,
       "comingSoonCount": 0
     },
     {
-      "state": "Nebraska",
+      "state": "Oklahoma",
       "country": "United States of America",
-      "activeCount": 7413,
+      "activeCount": 7279,
       "comingSoonCount": 0
     },
     {
       "state": "Alabama",
       "country": "United States of America",
-      "activeCount": 7022,
+      "activeCount": 7017,
       "comingSoonCount": 0
     },
     {
       "state": "Nevada",
       "country": "United States of America",
-      "activeCount": 6988,
+      "activeCount": 6982,
       "comingSoonCount": 0
     },
     {
       "state": "New Jersey",
       "country": "United States of America",
-      "activeCount": 6934,
+      "activeCount": 6928,
       "comingSoonCount": 0
     },
     {
       "state": "Idaho",
       "country": "United States of America",
-      "activeCount": 6903,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Québec",
-      "country": "Canada",
-      "activeCount": 6744,
+      "activeCount": 6894,
       "comingSoonCount": 0
     },
     {
@@ -355,15 +367,15 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Apulia",
-      "country": "Italy",
-      "activeCount": 6500,
+      "state": "Sinaloa",
+      "country": "Mexico",
+      "activeCount": 6532,
       "comingSoonCount": 0
     },
     {
-      "state": "Sinaloa",
-      "country": "Mexico",
-      "activeCount": 6494,
+      "state": "Apulia",
+      "country": "Italy",
+      "activeCount": 6500,
       "comingSoonCount": 0
     },
     {
@@ -373,27 +385,15 @@
       "comingSoonCount": 0
     },
     {
-      "state": "México",
-      "country": "Mexico",
-      "activeCount": 5819,
-      "comingSoonCount": 0
-    },
-    {
       "state": "Louisiana",
       "country": "United States of America",
-      "activeCount": 5784,
+      "activeCount": 5779,
       "comingSoonCount": 0
     },
     {
       "state": "Illes Balears",
       "country": "Spain",
       "activeCount": 5567,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Ontario",
-      "country": "Canada",
-      "activeCount": 5440,
       "comingSoonCount": 0
     },
     {
@@ -411,7 +411,7 @@
     {
       "state": "Kansas",
       "country": "United States of America",
-      "activeCount": 5234,
+      "activeCount": 5222,
       "comingSoonCount": 0
     },
     {
@@ -429,7 +429,7 @@
     {
       "state": "Wyoming",
       "country": "United States of America",
-      "activeCount": 5087,
+      "activeCount": 5082,
       "comingSoonCount": 0
     },
     {
@@ -441,7 +441,7 @@
     {
       "state": "Arkansas",
       "country": "United States of America",
-      "activeCount": 4826,
+      "activeCount": 4822,
       "comingSoonCount": 0
     },
     {
@@ -453,13 +453,19 @@
     {
       "state": "Mexico City",
       "country": "Mexico",
-      "activeCount": 4622,
+      "activeCount": 4626,
       "comingSoonCount": 0
     },
     {
       "state": "Kentucky",
       "country": "United States of America",
-      "activeCount": 4613,
+      "activeCount": 4610,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Newfoundland and Labrador",
+      "country": "Canada",
+      "activeCount": 4510,
       "comingSoonCount": 0
     },
     {
@@ -471,7 +477,7 @@
     {
       "state": "Jalisco",
       "country": "Mexico",
-      "activeCount": 4258,
+      "activeCount": 4261,
       "comingSoonCount": 0
     },
     {
@@ -483,13 +489,13 @@
     {
       "state": "Vermont",
       "country": "United States of America",
-      "activeCount": 4005,
+      "activeCount": 4015,
       "comingSoonCount": 0
     },
     {
       "state": "West Virginia",
       "country": "United States of America",
-      "activeCount": 4005,
+      "activeCount": 4003,
       "comingSoonCount": 0
     },
     {
@@ -502,6 +508,12 @@
       "state": "Espírito Santo",
       "country": "Brazil",
       "activeCount": 3984,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Nova Scotia",
+      "country": "Canada",
+      "activeCount": 3877,
       "comingSoonCount": 0
     },
     {
@@ -555,7 +567,7 @@
     {
       "state": "Mississippi",
       "country": "United States of America",
-      "activeCount": 3349,
+      "activeCount": 3346,
       "comingSoonCount": 0
     },
     {
@@ -567,13 +579,7 @@
     {
       "state": "Veracruz",
       "country": "Mexico",
-      "activeCount": 3160,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "British Columbia",
-      "country": "Canada",
-      "activeCount": 3144,
+      "activeCount": 3162,
       "comingSoonCount": 0
     },
     {
@@ -598,6 +604,12 @@
       "state": "Piauí",
       "country": "Brazil",
       "activeCount": 3061,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Alberta",
+      "country": "Canada",
+      "activeCount": 3046,
       "comingSoonCount": 0
     },
     {
@@ -661,6 +673,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Manitoba",
+      "country": "Canada",
+      "activeCount": 2581,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Maranhão",
       "country": "Brazil",
       "activeCount": 2573,
@@ -669,7 +687,7 @@
     {
       "state": "Yucatán",
       "country": "Mexico",
-      "activeCount": 2534,
+      "activeCount": 2536,
       "comingSoonCount": 0
     },
     {
@@ -685,21 +703,27 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Cork",
+      "country": "Ireland",
+      "activeCount": 2486,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Arequipa",
       "country": "Peru",
       "activeCount": 2486,
       "comingSoonCount": 0
     },
     {
-      "state": "South Dakota",
+      "state": "Rhode Island",
       "country": "United States of America",
-      "activeCount": 2459,
+      "activeCount": 2452,
       "comingSoonCount": 0
     },
     {
-      "state": "Rhode Island",
+      "state": "South Dakota",
       "country": "United States of America",
-      "activeCount": 2455,
+      "activeCount": 2450,
       "comingSoonCount": 0
     },
     {
@@ -723,13 +747,13 @@
     {
       "state": "Sonora",
       "country": "Mexico",
-      "activeCount": 2426,
+      "activeCount": 2425,
       "comingSoonCount": 0
     },
     {
       "state": "North Dakota",
       "country": "United States of America",
-      "activeCount": 2380,
+      "activeCount": 2386,
       "comingSoonCount": 0
     },
     {
@@ -766,6 +790,12 @@
       "state": "Maule",
       "country": "Chile",
       "activeCount": 2217,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Dublin",
+      "country": "Ireland",
+      "activeCount": 2198,
       "comingSoonCount": 0
     },
     {
@@ -813,13 +843,13 @@
     {
       "state": "Nuevo León",
       "country": "Mexico",
-      "activeCount": 2115,
+      "activeCount": 2114,
       "comingSoonCount": 0
     },
     {
       "state": "Delaware",
       "country": "United States of America",
-      "activeCount": 2069,
+      "activeCount": 2068,
       "comingSoonCount": 0
     },
     {
@@ -933,7 +963,7 @@
     {
       "state": "Oaxaca",
       "country": "Mexico",
-      "activeCount": 1700,
+      "activeCount": 1701,
       "comingSoonCount": 0
     },
     {
@@ -945,13 +975,13 @@
     {
       "state": "Baja California",
       "country": "Mexico",
-      "activeCount": 1661,
+      "activeCount": 1663,
       "comingSoonCount": 0
     },
     {
       "state": "Michoacán",
       "country": "Mexico",
-      "activeCount": 1637,
+      "activeCount": 1639,
       "comingSoonCount": 0
     },
     {
@@ -967,21 +997,27 @@
       "comingSoonCount": 0
     },
     {
-      "state": "District of Columbia",
-      "country": "United States of America",
-      "activeCount": 1617,
-      "comingSoonCount": 0
-    },
-    {
       "state": "Coquimbo",
       "country": "Chile",
       "activeCount": 1616,
       "comingSoonCount": 0
     },
     {
+      "state": "District of Columbia",
+      "country": "United States of America",
+      "activeCount": 1587,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Miranda",
       "country": "Venezuela",
       "activeCount": 1582,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Galway",
+      "country": "Ireland",
+      "activeCount": 1578,
       "comingSoonCount": 0
     },
     {
@@ -1033,6 +1069,18 @@
       "comingSoonCount": 0
     },
     {
+      "state": "New Brunswick",
+      "country": "Canada",
+      "activeCount": 1462,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Saskatchewan",
+      "country": "Canada",
+      "activeCount": 1437,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Tamaulipas",
       "country": "Mexico",
       "activeCount": 1432,
@@ -1047,7 +1095,13 @@
     {
       "state": "Guanajuato",
       "country": "Mexico",
-      "activeCount": 1405,
+      "activeCount": 1406,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Highland",
+      "country": "United Kingdom",
+      "activeCount": 1395,
       "comingSoonCount": 0
     },
     {
@@ -1071,7 +1125,7 @@
     {
       "state": "Zacatecas",
       "country": "Mexico",
-      "activeCount": 1362,
+      "activeCount": 1363,
       "comingSoonCount": 0
     },
     {
@@ -1159,6 +1213,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Kerry",
+      "country": "Ireland",
+      "activeCount": 1199,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Táchira",
       "country": "Venezuela",
       "activeCount": 1179,
@@ -1207,15 +1267,15 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Sergipe",
-      "country": "Brazil",
-      "activeCount": 1141,
+      "state": "Campeche",
+      "country": "Mexico",
+      "activeCount": 1144,
       "comingSoonCount": 0
     },
     {
-      "state": "Campeche",
-      "country": "Mexico",
-      "activeCount": 1134,
+      "state": "Sergipe",
+      "country": "Brazil",
+      "activeCount": 1141,
       "comingSoonCount": 0
     },
     {
@@ -1237,9 +1297,21 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Nunavut",
+      "country": "Canada",
+      "activeCount": 1117,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Atlántico Norte",
       "country": "Nicaragua",
-      "activeCount": 1119,
+      "activeCount": 1117,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Eilean Siar",
+      "country": "United Kingdom",
+      "activeCount": 1105,
       "comingSoonCount": 0
     },
     {
@@ -1275,7 +1347,7 @@
     {
       "state": "Baja California Sur",
       "country": "Mexico",
-      "activeCount": 1035,
+      "activeCount": 1036,
       "comingSoonCount": 0
     },
     {
@@ -1429,12 +1501,6 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Newfoundland and Labrador",
-      "country": "Canada",
-      "activeCount": 912,
-      "comingSoonCount": 0
-    },
-    {
       "state": "Santa Cruz",
       "country": "Bolivia",
       "activeCount": 910,
@@ -1501,6 +1567,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Mayo",
+      "country": "Ireland",
+      "activeCount": 840,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Atacama",
       "country": "Chile",
       "activeCount": 840,
@@ -1555,6 +1627,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Clare",
+      "country": "Ireland",
+      "activeCount": 787,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Comayagua",
       "country": "Honduras",
       "activeCount": 783,
@@ -1585,9 +1663,9 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Nova Scotia",
-      "country": "Canada",
-      "activeCount": 752,
+      "state": "North Yorkshire",
+      "country": "United Kingdom",
+      "activeCount": 764,
       "comingSoonCount": 0
     },
     {
@@ -1603,9 +1681,9 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Alberta",
+      "state": "Yukon",
       "country": "Canada",
-      "activeCount": 733,
+      "activeCount": 730,
       "comingSoonCount": 0
     },
     {
@@ -1639,6 +1717,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Cavan",
+      "country": "Ireland",
+      "activeCount": 707,
+      "comingSoonCount": 0
+    },
+    {
       "state": "La Libertad",
       "country": "El Salvador",
       "activeCount": 707,
@@ -1654,6 +1738,12 @@
       "state": "Risaralda",
       "country": "Colombia",
       "activeCount": 694,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Donegal",
+      "country": "Ireland",
+      "activeCount": 692,
       "comingSoonCount": 0
     },
     {
@@ -1678,6 +1768,12 @@
       "state": "Santiago de Cuba",
       "country": "Cuba",
       "activeCount": 685,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Kilkenny",
+      "country": "Ireland",
+      "activeCount": 682,
       "comingSoonCount": 0
     },
     {
@@ -1753,12 +1849,6 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Manitoba",
-      "country": "Canada",
-      "activeCount": 616,
-      "comingSoonCount": 0
-    },
-    {
       "state": "Villa Clara",
       "country": "Cuba",
       "activeCount": 612,
@@ -1768,6 +1858,12 @@
       "state": "Veraguas",
       "country": "Panama",
       "activeCount": 608,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Northwest Territories",
+      "country": "Canada",
+      "activeCount": 603,
       "comingSoonCount": 0
     },
     {
@@ -1786,6 +1882,12 @@
       "state": "Callao",
       "country": "Peru",
       "activeCount": 565,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Fermanagh",
+      "country": "United Kingdom",
+      "activeCount": 550,
       "comingSoonCount": 0
     },
     {
@@ -1861,15 +1963,15 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Cesar",
-      "country": "Colombia",
-      "activeCount": 515,
-      "comingSoonCount": 0
-    },
-    {
       "state": "Matanzas",
       "country": "Cuba",
       "activeCount": 514,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Cesar",
+      "country": "Colombia",
+      "activeCount": 513,
       "comingSoonCount": 0
     },
     {
@@ -1882,6 +1984,12 @@
       "state": "Huehuetenango",
       "country": "Guatemala",
       "activeCount": 500,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Waterford",
+      "country": "Ireland",
+      "activeCount": 496,
       "comingSoonCount": 0
     },
     {
@@ -1903,15 +2011,15 @@
       "comingSoonCount": 0
     },
     {
-      "state": "New Brunswick",
-      "country": "Canada",
-      "activeCount": 485,
-      "comingSoonCount": 0
-    },
-    {
       "state": "Tungurahua",
       "country": "Ecuador",
       "activeCount": 482,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Leitrim",
+      "country": "Ireland",
+      "activeCount": 479,
       "comingSoonCount": 0
     },
     {
@@ -1924,6 +2032,12 @@
       "state": "Acre",
       "country": "Brazil",
       "activeCount": 475,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Wexford",
+      "country": "Ireland",
+      "activeCount": 472,
       "comingSoonCount": 0
     },
     {
@@ -1942,6 +2056,12 @@
       "state": "Santiago del Estero",
       "country": "Argentina",
       "activeCount": 458,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "North Tipperary",
+      "country": "Ireland",
+      "activeCount": 456,
       "comingSoonCount": 0
     },
     {
@@ -2059,6 +2179,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Birmingham",
+      "country": "United Kingdom",
+      "activeCount": 404,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Santiago",
       "country": "Dominican Republic",
       "activeCount": 403,
@@ -2107,9 +2233,21 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Cumbria",
+      "country": "United Kingdom",
+      "activeCount": 379,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Canar",
       "country": "Ecuador",
       "activeCount": 374,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Edinburgh",
+      "country": "United Kingdom",
+      "activeCount": 373,
       "comingSoonCount": 0
     },
     {
@@ -2131,9 +2269,27 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Monaghan",
+      "country": "Ireland",
+      "activeCount": 370,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Atlántida",
       "country": "Honduras",
       "activeCount": 367,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Argyll and Bute",
+      "country": "United Kingdom",
+      "activeCount": 365,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Newry and Mourne",
+      "country": "United Kingdom",
+      "activeCount": 357,
       "comingSoonCount": 0
     },
     {
@@ -2152,6 +2308,18 @@
       "state": "Carazo",
       "country": "Nicaragua",
       "activeCount": 349,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Bristol",
+      "country": "United Kingdom",
+      "activeCount": 344,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Wicklow",
+      "country": "Ireland",
+      "activeCount": 343,
       "comingSoonCount": 0
     },
     {
@@ -2203,21 +2371,27 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Prince Edward Island",
+      "country": "Canada",
+      "activeCount": 329,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Lima Province",
       "country": "Peru",
       "activeCount": 328,
       "comingSoonCount": 0
     },
     {
-      "state": "Usulután",
-      "country": "El Salvador",
-      "activeCount": 322,
+      "state": "Limerick",
+      "country": "Ireland",
+      "activeCount": 324,
       "comingSoonCount": 0
     },
     {
-      "state": "Saskatchewan",
-      "country": "Canada",
-      "activeCount": 321,
+      "state": "Usulután",
+      "country": "El Salvador",
+      "activeCount": 322,
       "comingSoonCount": 0
     },
     {
@@ -2230,6 +2404,12 @@
       "state": "Los Ríos",
       "country": "Ecuador",
       "activeCount": 317,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Belfast",
+      "country": "United Kingdom",
+      "activeCount": 315,
       "comingSoonCount": 0
     },
     {
@@ -2253,7 +2433,7 @@
     {
       "state": "Las Tunas",
       "country": "Cuba",
-      "activeCount": 307,
+      "activeCount": 306,
       "comingSoonCount": 0
     },
     {
@@ -2311,6 +2491,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Meath",
+      "country": "Ireland",
+      "activeCount": 287,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Bocas del Toro",
       "country": "Panama",
       "activeCount": 285,
@@ -2338,6 +2524,12 @@
       "state": "Ucayali",
       "country": "Peru",
       "activeCount": 280,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "South Tipperary",
+      "country": "Ireland",
+      "activeCount": 278,
       "comingSoonCount": 0
     },
     {
@@ -2371,6 +2563,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Fingal",
+      "country": "Ireland",
+      "activeCount": 270,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Olancho",
       "country": "Honduras",
       "activeCount": 267,
@@ -2395,9 +2593,21 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Louth",
+      "country": "Ireland",
+      "activeCount": 264,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Dungannon",
+      "country": "United Kingdom",
+      "activeCount": 263,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Amazonas",
       "country": "Venezuela",
-      "activeCount": 263,
+      "activeCount": 262,
       "comingSoonCount": 0
     },
     {
@@ -2461,6 +2671,24 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Kildare",
+      "country": "Ireland",
+      "activeCount": 234,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Orkney",
+      "country": "United Kingdom",
+      "activeCount": 234,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Glasgow",
+      "country": "United Kingdom",
+      "activeCount": 231,
+      "comingSoonCount": 0
+    },
+    {
       "state": "La Unión",
       "country": "El Salvador",
       "activeCount": 226,
@@ -2491,9 +2719,27 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Sligo",
+      "country": "Ireland",
+      "activeCount": 222,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Madriz",
       "country": "Nicaragua",
       "activeCount": 218,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Newcastle upon Tyne",
+      "country": "United Kingdom",
+      "activeCount": 218,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Kyle of Lochalsh",
+      "country": "United Kingdom",
+      "activeCount": 216,
       "comingSoonCount": 0
     },
     {
@@ -2551,6 +2797,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Laoighis",
+      "country": "Ireland",
+      "activeCount": 201,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Cordillera",
       "country": "Paraguay",
       "activeCount": 198,
@@ -2587,6 +2839,18 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Dooagh",
+      "country": "Ireland",
+      "activeCount": 190,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Puerto Escondido (Tepeolulco Puerto Escondido)",
+      "country": "Mexico",
+      "activeCount": 190,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Los Santos",
       "country": "Panama",
       "activeCount": 190,
@@ -2599,9 +2863,45 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Westmeath",
+      "country": "Ireland",
+      "activeCount": 188,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Ballinagh",
+      "country": "Ireland",
+      "activeCount": 187,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Brae",
+      "country": "United Kingdom",
+      "activeCount": 187,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Ballinamore",
+      "country": "Ireland",
+      "activeCount": 185,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Nord-Ouest",
       "country": "Haiti",
       "activeCount": 185,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "South Dublin",
+      "country": "Ireland",
+      "activeCount": 184,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Down",
+      "country": "United Kingdom",
+      "activeCount": 184,
       "comingSoonCount": 0
     },
     {
@@ -2613,12 +2913,6 @@
     {
       "state": "Boaco",
       "country": "Nicaragua",
-      "activeCount": 182,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Yukon",
-      "country": "Canada",
       "activeCount": 182,
       "comingSoonCount": 0
     },
@@ -2641,6 +2935,36 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Hampshire",
+      "country": "United Kingdom",
+      "activeCount": 180,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Dún Laoghaire–Rathdown",
+      "country": "Ireland",
+      "activeCount": 180,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Cootehill",
+      "country": "Ireland",
+      "activeCount": 180,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Colonia el Salado",
+      "country": "Mexico",
+      "activeCount": 179,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Carlow",
+      "country": "Ireland",
+      "activeCount": 178,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Caaguazú",
       "country": "Paraguay",
       "activeCount": 178,
@@ -2653,6 +2977,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Oxfordshire",
+      "country": "United Kingdom",
+      "activeCount": 177,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Tirol",
       "country": "Austria",
       "activeCount": 177,
@@ -2661,6 +2991,18 @@
     {
       "state": "La Romana",
       "country": "Dominican Republic",
+      "activeCount": 176,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Nottingham",
+      "country": "United Kingdom",
+      "activeCount": 176,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Ecatepec de Morelos",
+      "country": "Mexico",
       "activeCount": 176,
       "comingSoonCount": 0
     },
@@ -2689,6 +3031,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Callan",
+      "country": "Ireland",
+      "activeCount": 170,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Zacapa",
       "country": "Guatemala",
       "activeCount": 170,
@@ -2697,6 +3045,12 @@
     {
       "state": "Paysandú",
       "country": "Uruguay",
+      "activeCount": 168,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Cambridgeshire",
+      "country": "United Kingdom",
       "activeCount": 168,
       "comingSoonCount": 0
     },
@@ -2713,8 +3067,26 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Shetland Islands",
+      "country": "United Kingdom",
+      "activeCount": 164,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Ballyshannon",
+      "country": "Ireland",
+      "activeCount": 164,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Paraguarí",
       "country": "Paraguay",
+      "activeCount": 164,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Ross Carbery",
+      "country": "Ireland",
       "activeCount": 164,
       "comingSoonCount": 0
     },
@@ -2731,9 +3103,21 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Colonia Lindavista",
+      "country": "Mexico",
+      "activeCount": 162,
+      "comingSoonCount": 0
+    },
+    {
       "state": "San Pedro",
       "country": "Paraguay",
       "activeCount": 162,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Moyle",
+      "country": "United Kingdom",
+      "activeCount": 161,
       "comingSoonCount": 0
     },
     {
@@ -2743,14 +3127,32 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Lisburn",
+      "country": "United Kingdom",
+      "activeCount": 159,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Santa Rosa",
       "country": "Guatemala",
       "activeCount": 159,
       "comingSoonCount": 0
     },
     {
-      "state": "ᓄᓇᕗᑦ Nunavut",
-      "country": "Canada",
+      "state": "Dungloe",
+      "country": "Ireland",
+      "activeCount": 158,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Roscommon",
+      "country": "Ireland",
+      "activeCount": 156,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "York",
+      "country": "United Kingdom",
       "activeCount": 156,
       "comingSoonCount": 0
     },
@@ -2767,6 +3169,24 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Ringsend",
+      "country": "Ireland",
+      "activeCount": 153,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Glenties",
+      "country": "Ireland",
+      "activeCount": 153,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Sandwick",
+      "country": "United Kingdom",
+      "activeCount": 153,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Saint James",
       "country": "Jamaica",
       "activeCount": 151,
@@ -2779,15 +3199,39 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Newport",
+      "country": "United Kingdom",
+      "activeCount": 151,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Misiones",
       "country": "Paraguay",
       "activeCount": 151,
       "comingSoonCount": 0
     },
     {
+      "state": "Moate",
+      "country": "Ireland",
+      "activeCount": 150,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Santa Catarina Pinula",
       "country": "Guatemala",
       "activeCount": 150,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Sheffield",
+      "country": "United Kingdom",
+      "activeCount": 149,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Devon",
+      "country": "United Kingdom",
+      "activeCount": 148,
       "comingSoonCount": 0
     },
     {
@@ -2803,14 +3247,56 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Naucalpan de Juárez",
+      "country": "Mexico",
+      "activeCount": 147,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Toluca de Lerdo",
+      "country": "Mexico",
+      "activeCount": 147,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Dunlewy",
+      "country": "Ireland",
+      "activeCount": 145,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Craigavon",
+      "country": "United Kingdom",
+      "activeCount": 143,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Cardiff",
+      "country": "United Kingdom",
+      "activeCount": 142,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Guairá",
       "country": "Paraguay",
       "activeCount": 142,
       "comingSoonCount": 0
     },
     {
+      "state": "Banbridge",
+      "country": "United Kingdom",
+      "activeCount": 142,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Guaviare",
       "country": "Colombia",
+      "activeCount": 141,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Foxford",
+      "country": "Ireland",
       "activeCount": 141,
       "comingSoonCount": 0
     },
@@ -2827,9 +3313,33 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Killala",
+      "country": "Ireland",
+      "activeCount": 138,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Santo Tomás Chiconautla",
+      "country": "Mexico",
+      "activeCount": 138,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Portland",
       "country": "Jamaica",
       "activeCount": 137,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Offaly",
+      "country": "Ireland",
+      "activeCount": 137,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Urlingford",
+      "country": "Ireland",
+      "activeCount": 136,
       "comingSoonCount": 0
     },
     {
@@ -2839,8 +3349,26 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Shercock",
+      "country": "Ireland",
+      "activeCount": 134,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Leeds",
+      "country": "United Kingdom",
+      "activeCount": 134,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Isla de la Juventud",
       "country": "Cuba",
+      "activeCount": 134,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Newtownabbey",
+      "country": "United Kingdom",
       "activeCount": 134,
       "comingSoonCount": 0
     },
@@ -2851,14 +3379,38 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Larne",
+      "country": "United Kingdom",
+      "activeCount": 133,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Cuscatlán",
       "country": "El Salvador",
       "activeCount": 132,
       "comingSoonCount": 0
     },
     {
+      "state": "Ballyhaise",
+      "country": "Ireland",
+      "activeCount": 132,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Freshford",
+      "country": "Ireland",
+      "activeCount": 132,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Euskadi",
       "country": "Spain",
+      "activeCount": 131,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Benbecula",
+      "country": "United Kingdom",
       "activeCount": 131,
       "comingSoonCount": 0
     },
@@ -2887,8 +3439,20 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Banagher",
+      "country": "Ireland",
+      "activeCount": 129,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Barahona",
       "country": "Dominican Republic",
+      "activeCount": 129,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Kilmacow",
+      "country": "Ireland",
       "activeCount": 129,
       "comingSoonCount": 0
     },
@@ -2905,9 +3469,45 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Crossmolina",
+      "country": "Ireland",
+      "activeCount": 126,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Carlanstown",
+      "country": "Ireland",
+      "activeCount": 125,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Azua",
       "country": "Dominican Republic",
       "activeCount": 125,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Newtownbutler",
+      "country": "United Kingdom",
+      "activeCount": 124,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Isle of Islay",
+      "country": "United Kingdom",
+      "activeCount": 123,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Coleraine",
+      "country": "United Kingdom",
+      "activeCount": 123,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Aberdeen",
+      "country": "United Kingdom",
+      "activeCount": 123,
       "comingSoonCount": 0
     },
     {
@@ -2917,9 +3517,27 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Northwest Territories",
-      "country": "Canada",
+      "state": "Taghmon",
+      "country": "Ireland",
       "activeCount": 122,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Piltown",
+      "country": "Ireland",
+      "activeCount": 121,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Cahersiveen",
+      "country": "Ireland",
+      "activeCount": 121,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Headford",
+      "country": "Ireland",
+      "activeCount": 120,
       "comingSoonCount": 0
     },
     {
@@ -2935,14 +3553,44 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Perthshire and Kinross",
+      "country": "United Kingdom",
+      "activeCount": 119,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Gwynedd",
+      "country": "United Kingdom",
+      "activeCount": 119,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Pedernales",
       "country": "Dominican Republic",
       "activeCount": 118,
       "comingSoonCount": 0
     },
     {
+      "state": "Falcarragh",
+      "country": "Ireland",
+      "activeCount": 117,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Ardara",
+      "country": "Ireland",
+      "activeCount": 117,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Ciudad de Buenos Aires",
       "country": "Argentina",
+      "activeCount": 116,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Ardfinnan",
+      "country": "Ireland",
       "activeCount": 116,
       "comingSoonCount": 0
     },
@@ -2971,8 +3619,38 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Cornwall",
+      "country": "United Kingdom",
+      "activeCount": 113,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Kingscourt",
+      "country": "Ireland",
+      "activeCount": 113,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Broadford",
+      "country": "United Kingdom",
+      "activeCount": 113,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Brighton",
+      "country": "United Kingdom",
+      "activeCount": 112,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Chinautla",
       "country": "Guatemala",
+      "activeCount": 111,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Abbeyfeale",
+      "country": "Ireland",
       "activeCount": 111,
       "comingSoonCount": 0
     },
@@ -2989,8 +3667,26 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Ballygar",
+      "country": "Ireland",
+      "activeCount": 110,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "An Muileann gCearr",
+      "country": "Ireland",
+      "activeCount": 108,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Samaná",
       "country": "Dominican Republic",
+      "activeCount": 108,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Oldcastle",
+      "country": "Ireland",
       "activeCount": 108,
       "comingSoonCount": 0
     },
@@ -3001,9 +3697,63 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Pierowall",
+      "country": "United Kingdom",
+      "activeCount": 108,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Dunmore East",
+      "country": "Ireland",
+      "activeCount": 108,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Balla",
+      "country": "Ireland",
+      "activeCount": 107,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Settle",
+      "country": "United Kingdom",
+      "activeCount": 107,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Killorglin",
+      "country": "Ireland",
+      "activeCount": 106,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Portumna",
+      "country": "Ireland",
+      "activeCount": 106,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Sipaliwini",
       "country": "Suriname",
       "activeCount": 106,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Carndonagh",
+      "country": "Ireland",
+      "activeCount": 105,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Pateley Bridge",
+      "country": "United Kingdom",
+      "activeCount": 105,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Fenit",
+      "country": "Ireland",
+      "activeCount": 105,
       "comingSoonCount": 0
     },
     {
@@ -3015,6 +3765,12 @@
     {
       "state": "Monseñor Nouel",
       "country": "Dominican Republic",
+      "activeCount": 104,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Bailieborough",
+      "country": "Ireland",
       "activeCount": 104,
       "comingSoonCount": 0
     },
@@ -3037,6 +3793,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Courtmacsherry",
+      "country": "Ireland",
+      "activeCount": 103,
+      "comingSoonCount": 0
+    },
+    {
       "state": "East Berbice-Corentyne",
       "country": "Guyana",
       "activeCount": 103,
@@ -3049,9 +3811,45 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Ballymote",
+      "country": "Ireland",
+      "activeCount": 102,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Upper Demerara-Berbice",
       "country": "Guyana",
       "activeCount": 102,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Rosslea",
+      "country": "United Kingdom",
+      "activeCount": 102,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Armagh",
+      "country": "United Kingdom",
+      "activeCount": 101,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Miltown Malbay",
+      "country": "Ireland",
+      "activeCount": 101,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Colonia Gustavo Baz Prada",
+      "country": "Mexico",
+      "activeCount": 101,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Loughrea",
+      "country": "Ireland",
+      "activeCount": 101,
       "comingSoonCount": 0
     },
     {
@@ -3061,8 +3859,56 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Lochgilphead",
+      "country": "United Kingdom",
+      "activeCount": 100,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Borris",
+      "country": "Ireland",
+      "activeCount": 100,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Oban",
+      "country": "United Kingdom",
+      "activeCount": 100,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Ballinrobe",
+      "country": "Ireland",
+      "activeCount": 100,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Ballymoney",
+      "country": "United Kingdom",
+      "activeCount": 100,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Piercetown",
+      "country": "Ireland",
+      "activeCount": 100,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Athy",
+      "country": "Ireland",
+      "activeCount": 99,
+      "comingSoonCount": 0
+    },
+    {
       "state": "San Clemente",
       "country": "Chile",
+      "activeCount": 99,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Tipton",
+      "country": "United Kingdom",
       "activeCount": 99,
       "comingSoonCount": 0
     },
@@ -3070,6 +3916,12 @@
       "state": "Baja Verapaz",
       "country": "Guatemala",
       "activeCount": 98,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Cheltenham",
+      "country": "United Kingdom",
+      "activeCount": 97,
       "comingSoonCount": 0
     },
     {
@@ -3085,9 +3937,33 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Elphin",
+      "country": "Ireland",
+      "activeCount": 96,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Río Negro",
       "country": "Uruguay",
       "activeCount": 94,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Nenagh Bridge",
+      "country": "Ireland",
+      "activeCount": 93,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Virginia",
+      "country": "Ireland",
+      "activeCount": 93,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Crusheen",
+      "country": "Ireland",
+      "activeCount": 93,
       "comingSoonCount": 0
     },
     {
@@ -3103,9 +3979,39 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Claremorris",
+      "country": "Ireland",
+      "activeCount": 91,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Hanover",
       "country": "Jamaica",
       "activeCount": 91,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Castleisland",
+      "country": "Ireland",
+      "activeCount": 90,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Valleymount",
+      "country": "Ireland",
+      "activeCount": 90,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Rathmines",
+      "country": "Ireland",
+      "activeCount": 89,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Enniskerry",
+      "country": "Ireland",
+      "activeCount": 88,
       "comingSoonCount": 0
     },
     {
@@ -3115,14 +4021,146 @@
       "comingSoonCount": 0
     },
     {
-      "state": "MI",
-      "country": "Canada",
+      "state": "Carrick-on-Suir",
+      "country": "Ireland",
       "activeCount": 87,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Cuautitlán Izcalli",
+      "country": "Mexico",
+      "activeCount": 87,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Kanturk",
+      "country": "Ireland",
+      "activeCount": 86,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Mount Merrion",
+      "country": "Ireland",
+      "activeCount": 86,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Coventry",
+      "country": "United Kingdom",
+      "activeCount": 86,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Halkirk",
+      "country": "United Kingdom",
+      "activeCount": 86,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Kilmacrenan",
+      "country": "Ireland",
+      "activeCount": 86,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Rathdowney",
+      "country": "Ireland",
+      "activeCount": 86,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Wolverhampton",
+      "country": "United Kingdom",
+      "activeCount": 85,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Emyvale",
+      "country": "Ireland",
+      "activeCount": 85,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Dudley",
+      "country": "United Kingdom",
+      "activeCount": 85,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Castlerea",
+      "country": "Ireland",
+      "activeCount": 85,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Inishcrone",
+      "country": "Ireland",
+      "activeCount": 85,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Tlalnepantla",
+      "country": "Mexico",
+      "activeCount": 85,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Bennettsbridge",
+      "country": "Ireland",
+      "activeCount": 85,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Toluca",
+      "country": "Mexico",
+      "activeCount": 85,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Glanmire",
+      "country": "Ireland",
+      "activeCount": 84,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Ballybofey",
+      "country": "Ireland",
+      "activeCount": 84,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Derby",
+      "country": "United Kingdom",
+      "activeCount": 84,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Castlepollard",
+      "country": "Ireland",
+      "activeCount": 84,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Dungiven",
+      "country": "United Kingdom",
+      "activeCount": 84,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Chelmsford",
+      "country": "United Kingdom",
+      "activeCount": 83,
       "comingSoonCount": 0
     },
     {
       "state": "Municipality of Bovec",
       "country": "Slovenia",
+      "activeCount": 83,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Addingham",
+      "country": "United Kingdom",
       "activeCount": 83,
       "comingSoonCount": 0
     },
@@ -3133,8 +4171,32 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Fort Augustus",
+      "country": "United Kingdom",
+      "activeCount": 83,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Bath",
+      "country": "United Kingdom",
+      "activeCount": 82,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Kilbeggan",
+      "country": "Ireland",
+      "activeCount": 82,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Saint Mary",
       "country": "Jamaica",
+      "activeCount": 81,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Killenaule",
+      "country": "Ireland",
       "activeCount": 81,
       "comingSoonCount": 0
     },
@@ -3145,8 +4207,32 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Draperstown",
+      "country": "United Kingdom",
+      "activeCount": 81,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Saint Margaret's Hope",
+      "country": "United Kingdom",
+      "activeCount": 81,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Darién",
       "country": "Panama",
+      "activeCount": 80,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Ballincollig",
+      "country": "Ireland",
+      "activeCount": 80,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Castlereagh",
+      "country": "United Kingdom",
       "activeCount": 80,
       "comingSoonCount": 0
     },
@@ -3157,9 +4243,57 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Durham",
+      "country": "United Kingdom",
+      "activeCount": 80,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Castleblayney",
+      "country": "Ireland",
+      "activeCount": 80,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Kilmacthomas",
+      "country": "Ireland",
+      "activeCount": 80,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Northampton",
+      "country": "United Kingdom",
+      "activeCount": 79,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Upper Takutu-Upper Essequibo",
       "country": "Guyana",
       "activeCount": 79,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Walsall",
+      "country": "United Kingdom",
+      "activeCount": 78,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Tullow",
+      "country": "Ireland",
+      "activeCount": 78,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Moycullen",
+      "country": "Ireland",
+      "activeCount": 78,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Rathmore",
+      "country": "Ireland",
+      "activeCount": 78,
       "comingSoonCount": 0
     },
     {
@@ -3169,8 +4303,38 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Ards",
+      "country": "United Kingdom",
+      "activeCount": 78,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Mitchelstown",
+      "country": "Ireland",
+      "activeCount": 77,
+      "comingSoonCount": 0
+    },
+    {
       "state": "San José",
       "country": "Uruguay",
+      "activeCount": 77,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Swindon",
+      "country": "United Kingdom",
+      "activeCount": 77,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Norwich",
+      "country": "United Kingdom",
+      "activeCount": 77,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "West Bromwich",
+      "country": "United Kingdom",
       "activeCount": 77,
       "comingSoonCount": 0
     },
@@ -3181,9 +4345,81 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Granard",
+      "country": "Ireland",
+      "activeCount": 77,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Trá Mhór",
+      "country": "Ireland",
+      "activeCount": 77,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Knocknalower",
+      "country": "Ireland",
+      "activeCount": 76,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Trelawny",
       "country": "Jamaica",
       "activeCount": 76,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Holycross",
+      "country": "Ireland",
+      "activeCount": 75,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Lincoln",
+      "country": "United Kingdom",
+      "activeCount": 74,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Dunmore",
+      "country": "Ireland",
+      "activeCount": 74,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Kilkee",
+      "country": "Ireland",
+      "activeCount": 74,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Portinscale",
+      "country": "United Kingdom",
+      "activeCount": 74,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Ardglass",
+      "country": "United Kingdom",
+      "activeCount": 74,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Foxrock",
+      "country": "Ireland",
+      "activeCount": 74,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Campbeltown",
+      "country": "United Kingdom",
+      "activeCount": 74,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Dundrum",
+      "country": "United Kingdom",
+      "activeCount": 74,
       "comingSoonCount": 0
     },
     {
@@ -3193,8 +4429,50 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Nunavut",
-      "country": "Canada",
+      "state": "Kilrane",
+      "country": "Ireland",
+      "activeCount": 73,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Alrewas",
+      "country": "United Kingdom",
+      "activeCount": 73,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Reading",
+      "country": "United Kingdom",
+      "activeCount": 73,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Castlederg",
+      "country": "United Kingdom",
+      "activeCount": 73,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Bunclody",
+      "country": "Ireland",
+      "activeCount": 72,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Palmerstown",
+      "country": "Ireland",
+      "activeCount": 72,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Omagh",
+      "country": "United Kingdom",
+      "activeCount": 72,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Grange",
+      "country": "Ireland",
       "activeCount": 72,
       "comingSoonCount": 0
     },
@@ -3205,8 +4483,32 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Ballon",
+      "country": "Ireland",
+      "activeCount": 71,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Bearna",
+      "country": "Ireland",
+      "activeCount": 71,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Dundee",
+      "country": "United Kingdom",
+      "activeCount": 71,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Guainía",
       "country": "Colombia",
+      "activeCount": 71,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Preston",
+      "country": "United Kingdom",
       "activeCount": 71,
       "comingSoonCount": 0
     },
@@ -3223,9 +4525,117 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Hacketstown",
+      "country": "Ireland",
+      "activeCount": 71,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Colinton",
+      "country": "United Kingdom",
+      "activeCount": 70,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Sallynoggin",
+      "country": "Ireland",
+      "activeCount": 70,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Nappa Scar",
+      "country": "United Kingdom",
+      "activeCount": 70,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Fethard",
+      "country": "Ireland",
+      "activeCount": 70,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Edgeworthstown",
+      "country": "Ireland",
+      "activeCount": 70,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Derry",
+      "country": "United Kingdom",
+      "activeCount": 70,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Leighlinbridge",
+      "country": "Ireland",
+      "activeCount": 70,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Vista Hermosa",
+      "country": "Mexico",
+      "activeCount": 70,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Enniskeane",
+      "country": "Ireland",
+      "activeCount": 69,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Ballyhaunis",
+      "country": "Ireland",
+      "activeCount": 69,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Scalloway",
+      "country": "United Kingdom",
+      "activeCount": 69,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Cappoquin",
+      "country": "Ireland",
+      "activeCount": 69,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Newtownstewart",
+      "country": "United Kingdom",
+      "activeCount": 69,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Shannon",
+      "country": "Ireland",
+      "activeCount": 69,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Strokestown",
+      "country": "Ireland",
+      "activeCount": 69,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Soriano",
       "country": "Uruguay",
       "activeCount": 69,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Antrim",
+      "country": "United Kingdom",
+      "activeCount": 69,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Kingston upon Hull",
+      "country": "United Kingdom",
+      "activeCount": 68,
       "comingSoonCount": 0
     },
     {
@@ -3241,9 +4651,63 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Peterborough",
+      "country": "United Kingdom",
+      "activeCount": 68,
+      "comingSoonCount": 0
+    },
+    {
       "state": "San Vicente de Tagua Tagua",
       "country": "Chile",
       "activeCount": 68,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Aughrim",
+      "country": "Ireland",
+      "activeCount": 67,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Chalco",
+      "country": "Mexico",
+      "activeCount": 67,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Bruff",
+      "country": "Ireland",
+      "activeCount": 67,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Kinvarra",
+      "country": "Ireland",
+      "activeCount": 67,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Winterburn",
+      "country": "United Kingdom",
+      "activeCount": 66,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Blaenau-Ffestiniog",
+      "country": "United Kingdom",
+      "activeCount": 66,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Tarbert",
+      "country": "United Kingdom",
+      "activeCount": 66,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Ballyragget",
+      "country": "Ireland",
+      "activeCount": 66,
       "comingSoonCount": 0
     },
     {
@@ -3253,8 +4717,44 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Fife",
+      "country": "United Kingdom",
+      "activeCount": 66,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Ballybunnion",
+      "country": "Ireland",
+      "activeCount": 65,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Presidente Hayes",
       "country": "Paraguay",
+      "activeCount": 65,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Keady",
+      "country": "United Kingdom",
+      "activeCount": 65,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Plymouth",
+      "country": "United Kingdom",
+      "activeCount": 65,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Mountrath",
+      "country": "Ireland",
+      "activeCount": 65,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Portaferry",
+      "country": "United Kingdom",
       "activeCount": 65,
       "comingSoonCount": 0
     },
@@ -3265,14 +4765,98 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Tobercurry",
+      "country": "Ireland",
+      "activeCount": 65,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Kilcormac",
+      "country": "Ireland",
+      "activeCount": 65,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Hospital",
+      "country": "Ireland",
+      "activeCount": 65,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Dunbeg",
+      "country": "United Kingdom",
+      "activeCount": 64,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Bradford",
+      "country": "United Kingdom",
+      "activeCount": 64,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Stradbally",
+      "country": "Ireland",
+      "activeCount": 64,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "City of London",
+      "country": "United Kingdom",
+      "activeCount": 64,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Newtownhamilton",
+      "country": "United Kingdom",
+      "activeCount": 64,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Valais",
       "country": "Switzerland",
       "activeCount": 64,
       "comingSoonCount": 0
     },
     {
-      "state": "Prince Edward Island",
-      "country": "Canada",
+      "state": "Maghera",
+      "country": "United Kingdom",
+      "activeCount": 64,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Gowran",
+      "country": "Ireland",
+      "activeCount": 64,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Toormakeady",
+      "country": "Ireland",
+      "activeCount": 64,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Kilsheelan",
+      "country": "Ireland",
+      "activeCount": 64,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Dunkeld",
+      "country": "United Kingdom",
+      "activeCount": 63,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Pontrhydfendigaid",
+      "country": "United Kingdom",
+      "activeCount": 63,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Clara",
+      "country": "Ireland",
       "activeCount": 63,
       "comingSoonCount": 0
     },
@@ -3283,8 +4867,26 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Colchester",
+      "country": "United Kingdom",
+      "activeCount": 63,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Dromcollogher",
+      "country": "Ireland",
+      "activeCount": 63,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Nouvelle-Aquitaine",
       "country": "France",
+      "activeCount": 62,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Shrewsbury",
+      "country": "United Kingdom",
       "activeCount": 62,
       "comingSoonCount": 0
     },
@@ -3295,9 +4897,189 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Ballinroad",
+      "country": "Ireland",
+      "activeCount": 62,
+      "comingSoonCount": 0
+    },
+    {
       "state": "VA",
       "country": "Venezuela",
       "activeCount": 62,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Derrybeg",
+      "country": "Ireland",
+      "activeCount": 62,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Fivemiletown",
+      "country": "United Kingdom",
+      "activeCount": 62,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Mountmellick",
+      "country": "Ireland",
+      "activeCount": 62,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Boston",
+      "country": "Ireland",
+      "activeCount": 61,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Folkestone",
+      "country": "United Kingdom",
+      "activeCount": 61,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Princetown",
+      "country": "United Kingdom",
+      "activeCount": 61,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Ingleton",
+      "country": "United Kingdom",
+      "activeCount": 61,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Annahilt",
+      "country": "United Kingdom",
+      "activeCount": 60,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Leicester",
+      "country": "United Kingdom",
+      "activeCount": 60,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Killin",
+      "country": "United Kingdom",
+      "activeCount": 60,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Millstreet",
+      "country": "Ireland",
+      "activeCount": 60,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Slane",
+      "country": "Ireland",
+      "activeCount": 60,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Bandon",
+      "country": "Ireland",
+      "activeCount": 60,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Gosforth",
+      "country": "United Kingdom",
+      "activeCount": 59,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Tulla",
+      "country": "Ireland",
+      "activeCount": 59,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Darley",
+      "country": "United Kingdom",
+      "activeCount": 59,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Barra",
+      "country": "United Kingdom",
+      "activeCount": 59,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Wednesbury",
+      "country": "United Kingdom",
+      "activeCount": 59,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Foynes",
+      "country": "Ireland",
+      "activeCount": 59,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Bilston",
+      "country": "United Kingdom",
+      "activeCount": 59,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Richmond",
+      "country": "United Kingdom",
+      "activeCount": 59,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Romsey",
+      "country": "United Kingdom",
+      "activeCount": 59,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Baltinglass",
+      "country": "Ireland",
+      "activeCount": 59,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Liverpool",
+      "country": "United Kingdom",
+      "activeCount": 58,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Strathpeffer",
+      "country": "United Kingdom",
+      "activeCount": 58,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Long Eaton",
+      "country": "United Kingdom",
+      "activeCount": 58,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Taunton",
+      "country": "United Kingdom",
+      "activeCount": 58,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Swinford",
+      "country": "Ireland",
+      "activeCount": 58,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Oldbury",
+      "country": "United Kingdom",
+      "activeCount": 58,
       "comingSoonCount": 0
     },
     {
@@ -3307,9 +5089,159 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Borrisokane",
+      "country": "Ireland",
+      "activeCount": 58,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Dromcolliher",
+      "country": "Ireland",
+      "activeCount": 58,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Kilcock",
+      "country": "Ireland",
+      "activeCount": 57,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Ballybay",
+      "country": "Ireland",
+      "activeCount": 57,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Charleville",
+      "country": "Ireland",
+      "activeCount": 57,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "East Kilbride",
+      "country": "United Kingdom",
+      "activeCount": 57,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Pomeroon-Supenaam",
       "country": "Guyana",
       "activeCount": 57,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Kilconnell",
+      "country": "Ireland",
+      "activeCount": 57,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Alborada Jaltenco",
+      "country": "Mexico",
+      "activeCount": 57,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Ballyclare",
+      "country": "United Kingdom",
+      "activeCount": 57,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Ejido del Tejocote",
+      "country": "Mexico",
+      "activeCount": 56,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Tandragee",
+      "country": "United Kingdom",
+      "activeCount": 56,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Stamullin",
+      "country": "Ireland",
+      "activeCount": 56,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Doon",
+      "country": "Ireland",
+      "activeCount": 56,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Annalong",
+      "country": "United Kingdom",
+      "activeCount": 56,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Bournemouth",
+      "country": "United Kingdom",
+      "activeCount": 56,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Castlecomer",
+      "country": "Ireland",
+      "activeCount": 56,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Ex-Rancho San Dimas",
+      "country": "Mexico",
+      "activeCount": 56,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Conna",
+      "country": "Ireland",
+      "activeCount": 56,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Killyleagh",
+      "country": "United Kingdom",
+      "activeCount": 56,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Chapelizod",
+      "country": "Ireland",
+      "activeCount": 55,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Kiltamagh",
+      "country": "Ireland",
+      "activeCount": 55,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Greenhills",
+      "country": "Ireland",
+      "activeCount": 55,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Gloucester",
+      "country": "United Kingdom",
+      "activeCount": 55,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Rathcormac",
+      "country": "Ireland",
+      "activeCount": 55,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Garvagh",
+      "country": "United Kingdom",
+      "activeCount": 55,
       "comingSoonCount": 0
     },
     {
@@ -3319,8 +5251,92 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Otley",
+      "country": "United Kingdom",
+      "activeCount": 54,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Castlebridge",
+      "country": "Ireland",
+      "activeCount": 54,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Aberfeldy",
+      "country": "United Kingdom",
+      "activeCount": 54,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Terenure",
+      "country": "Ireland",
+      "activeCount": 54,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Milton Keynes",
+      "country": "United Kingdom",
+      "activeCount": 54,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Paulstown",
+      "country": "Ireland",
+      "activeCount": 54,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Kilmessan",
+      "country": "Ireland",
+      "activeCount": 54,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Ballymagorry",
+      "country": "United Kingdom",
+      "activeCount": 54,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Killinaboy",
+      "country": "Ireland",
+      "activeCount": 53,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Sunderland",
+      "country": "United Kingdom",
+      "activeCount": 53,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Valverde",
       "country": "Dominican Republic",
+      "activeCount": 53,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Bartley Green",
+      "country": "United Kingdom",
+      "activeCount": 53,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Ballynahinch",
+      "country": "United Kingdom",
+      "activeCount": 53,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Templepatrick",
+      "country": "United Kingdom",
+      "activeCount": 53,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Greenwich",
+      "country": "United Kingdom",
       "activeCount": 53,
       "comingSoonCount": 0
     },
@@ -3337,9 +5353,45 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Blessington",
+      "country": "Ireland",
+      "activeCount": 52,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Smethwick",
+      "country": "United Kingdom",
+      "activeCount": 52,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Mucklagh",
+      "country": "Ireland",
+      "activeCount": 52,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Ballachulish",
+      "country": "United Kingdom",
+      "activeCount": 52,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Fahan",
+      "country": "Ireland",
+      "activeCount": 52,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Florida",
       "country": "Uruguay",
       "activeCount": 52,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Kirriemuir",
+      "country": "United Kingdom",
+      "activeCount": 51,
       "comingSoonCount": 0
     },
     {
@@ -3349,9 +5401,75 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Hawick",
+      "country": "United Kingdom",
+      "activeCount": 51,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Ballater",
+      "country": "United Kingdom",
+      "activeCount": 51,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Hillsborough",
+      "country": "United Kingdom",
+      "activeCount": 51,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Hugh Town",
+      "country": "United Kingdom",
+      "activeCount": 51,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Castledermot",
+      "country": "Ireland",
+      "activeCount": 51,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Spean Bridge",
+      "country": "United Kingdom",
+      "activeCount": 51,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Dromahair",
+      "country": "Ireland",
+      "activeCount": 51,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Douglas",
+      "country": "Ireland",
+      "activeCount": 51,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Manchester",
+      "country": "United Kingdom",
+      "activeCount": 51,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Palencia",
       "country": "Guatemala",
       "activeCount": 51,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Ferbane",
+      "country": "Ireland",
+      "activeCount": 51,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Milton",
+      "country": "United Kingdom",
+      "activeCount": 50,
       "comingSoonCount": 0
     },
     {
@@ -3367,17 +5485,65 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Middleham",
+      "country": "United Kingdom",
+      "activeCount": 50,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Castlerock",
+      "country": "United Kingdom",
+      "activeCount": 50,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Lechlade",
+      "country": "United Kingdom",
+      "activeCount": 50,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Glenavy",
+      "country": "United Kingdom",
+      "activeCount": 50,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Hackney",
+      "country": "United Kingdom",
+      "activeCount": 50,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Newmarket",
+      "country": "Ireland",
+      "activeCount": 50,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Clane",
+      "country": "Ireland",
+      "activeCount": 50,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Durrow",
+      "country": "Ireland",
+      "activeCount": 50,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Central Abaco",
       "country": "The Bahamas",
       "activeCount": 50,
       "comingSoonCount": 0
     }
   ],
-  "totalActiveRaw": 1375548,
-  "totalActive": 1366244,
+  "totalActiveRaw": 1534084,
+  "totalActive": 1466093,
   "totalComingSoon": 0,
-  "totalCountries": 36,
-  "totalActiveCountries": 36,
-  "totalActiveRegions": 562,
-  "generatedAt": "2026-06-23T17:27:08.240Z"
+  "totalCountries": 38,
+  "totalActiveCountries": 38,
+  "totalActiveRegions": 923,
+  "generatedAt": "2026-06-29T12:53:42.259Z"
 }

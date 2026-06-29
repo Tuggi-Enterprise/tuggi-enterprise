@@ -83,11 +83,11 @@ function normaliseCountry(raw) {
   if (["usa","us","united states","estados unidos","us "].includes(lc)) return "United States of America";
   if (lc === "ar")                                                  return "Argentina";
   if (lc === "brasil")                                             return "Brazil";
-  if (lc === "uk" || lc === "reino unido")                        return "United Kingdom";
+  if (["uk","gb","reino unido","great britain","england","scotland","wales"].includes(lc)) return "United Kingdom";
   if (["italia","italia","it"].includes(lc))                      return "Italy";
   if (["espana","espanha","spain"].includes(lc))                  return "Spain";
   if (["franca","france"].includes(lc))                           return "France";
-  if (["irlanda","ireland"].includes(lc))                         return "Ireland";
+  if (["irlanda","ireland","ie"].includes(lc))                    return "Ireland";
   if (["mexico","méxico"].includes(lc))                           return "Mexico";
   if (["paraguay / paraguai","paraguay"].includes(lc))            return "Paraguay";
   if (["osterreich","austria"].includes(lc))                      return "Austria";
@@ -519,13 +519,243 @@ function normaliseState(rawState, country) {
   }
 
   if (country === "Canada") {
-    if (s === "quebec") return "Québec";
-    if (s === "newfoundland" || s === "newfoundland and labrador") return "Newfoundland and Labrador";
-    if (s === "prince edward island" || s === "pei") return "Prince Edward Island";
-    if (s === "nova scotia") return "Nova Scotia";
-    if (s === "new brunswick") return "New Brunswick";
-    if (s === "british columbia" || s === "bc") return "British Columbia";
-    if (s === "northwest territories") return "Northwest Territories";
+    const CA_TOPO = {
+      "on": "Ontario", "qc": "Québec", "pq": "Québec", "bc": "British Columbia",
+      "ab": "Alberta", "mb": "Manitoba", "sk": "Saskatchewan", "ns": "Nova Scotia",
+      "nb": "New Brunswick", "nl": "Newfoundland and Labrador", "nf": "Newfoundland and Labrador",
+      "pe": "Prince Edward Island", "pei": "Prince Edward Island",
+      "nt": "Northwest Territories", "yt": "Yukon", "yk": "Yukon", "nu": "Nunavut",
+      "quebec": "Québec", "ontario": "Ontario", "alberta": "Alberta",
+      "manitoba": "Manitoba", "saskatchewan": "Saskatchewan",
+      "newfoundland": "Newfoundland and Labrador",
+      "newfoundland and labrador": "Newfoundland and Labrador",
+      "prince edward island": "Prince Edward Island",
+      "nova scotia": "Nova Scotia", "new brunswick": "New Brunswick",
+      "british columbia": "British Columbia",
+      "northwest territories": "Northwest Territories",
+      "yukon": "Yukon",
+    };
+    if (CA_TOPO[s]) return CA_TOPO[s];
+    // Inuktitut syllabics prefix on Nunavut
+    if (state.includes("Nunavut")) return "Nunavut";
+    // Drop US state abbreviations filed under Canada (e.g. "MI")
+    if (/^[A-Z]{2}$/.test(state.trim())) return null;
+  }
+
+  if (country === "Ireland") {
+    const bare = state.replace(/^County\s+/i, "").replace(/^Co\.?\s+/i, "").trim();
+    const bs = slug(bare);
+    const IE_COUNTY = {
+      // County name fixes
+      "laois": "Laoighis", "laoigh": "Laoighis", "laouis": "Laoighis",
+      "tipperary": "North Tipperary",
+      "north tipperary": "North Tipperary", "south tipperary": "South Tipperary",
+      "dun laoghaire rathdown": "Dún Laoghaire–Rathdown",
+      "dun laoghaire-rathdown": "Dún Laoghaire–Rathdown",
+      "dún laoghaire–rathdown": "Dún Laoghaire–Rathdown",
+      "dublin city": "Dublin", "dublin 1":"Dublin","dublin 2":"Dublin",
+      // City → county (used when state was province-level; loop sends city as rawInput)
+      "cork":"Cork","skibbereen":"Cork","clonakilty":"Cork","bantry":"Cork",
+      "macroom":"Cork","dunmanway":"Cork","schull":"Cork","castletownbere":"Cork",
+      "kinsale":"Cork","cobh":"Cork","mallow":"Cork","youghal":"Cork",
+      "kenmare":"Kerry","dingle":"Kerry","killarney":"Kerry","tralee":"Kerry",
+      "listowel":"Kerry","cahirciveen":"Kerry","sneem":"Kerry","waterville":"Kerry",
+      "galway":"Galway","clifden":"Galway","oughterard":"Galway","carraroe":"Galway",
+      "tuam":"Galway","ballinasloe":"Galway","gort":"Galway","kinvara":"Galway",
+      "roundstone":"Galway","letterfrack":"Galway","leenane":"Galway",
+      "westport":"Mayo","castlebar":"Mayo","ballina":"Mayo","achill":"Mayo",
+      "belmullet":"Mayo","louisburgh":"Mayo","newport":"Mayo","knock":"Mayo",
+      "dublin":"Dublin","rialto":"Dublin","drumcondra":"Dublin","cabra":"Dublin",
+      "fairview":"Dublin","raheny":"Dublin","artane":"Dublin","clontarf":"Dublin",
+      "glasnevin":"Dublin","ballymun":"Dublin","santry":"Dublin",
+      "swords":"Fingal","malahide":"Fingal","balbriggan":"Fingal","donabate":"Fingal",
+      "rush":"Fingal","lusk":"Fingal","skerries":"Fingal","howth":"Fingal",
+      "blanchardstown":"Fingal","mulhuddart":"Fingal",
+      "tallaght":"South Dublin","clondalkin":"South Dublin","lucan":"South Dublin",
+      "rathcoole":"South Dublin","saggart":"South Dublin",
+      "dún laoghaire":"Dún Laoghaire–Rathdown","dun laoghaire":"Dún Laoghaire–Rathdown",
+      "blackrock":"Dún Laoghaire–Rathdown","stillorgan":"Dún Laoghaire–Rathdown",
+      "dundrum":"Dún Laoghaire–Rathdown","dalkey":"Dún Laoghaire–Rathdown",
+      "kilkenny":"Kilkenny","graiguenamanagh":"Kilkenny","thomastown":"Kilkenny",
+      "waterford":"Waterford","dungarvan":"Waterford","tramore":"Waterford",
+      "passage east":"Waterford","lismore":"Waterford",
+      "wicklow":"Wicklow","arklow":"Wicklow","bray":"Wicklow","greystones":"Wicklow",
+      "roundwood":"Wicklow","rathdrum":"Wicklow","glendalough":"Wicklow",
+      "wexford":"Wexford","new ross":"Wexford","enniscorthy":"Wexford","gorey":"Wexford",
+      "ennis":"Clare","scarriff":"Clare","kilrush":"Clare","lisdoonvarna":"Clare",
+      "lahinch":"Clare","kilfenora":"Clare","doolin":"Clare","ballyvaughan":"Clare",
+      "limerick":"Limerick","newcastle west":"Limerick","adare":"Limerick",
+      "letterkenny":"Donegal","donegal":"Donegal","bundoran":"Donegal",
+      "buncrana":"Donegal","killybegs":"Donegal","millford":"Donegal","milford":"Donegal",
+      "sligo":"Sligo","strandhill":"Sligo","rosses point":"Sligo",
+      "manorhamilton":"Leitrim","carrick-on-shannon":"Leitrim","drumshanbo":"Leitrim",
+      "roscommon":"Roscommon","boyle":"Roscommon",
+      "athlone":"Westmeath","mullingar":"Westmeath",
+      "tullamore":"Offaly","birr":"Offaly","edenderry":"Offaly",
+      "portlaoise":"Laoighis","ballylinan":"Laoighis","abbeyleix":"Laoighis",
+      "longford":"Longford",
+      "navan":"Meath","trim":"Meath","kells":"Meath","ashbourne":"Meath",
+      "drogheda":"Louth","dundalk":"Louth","ardee":"Louth","carlingford":"Louth",
+      "naas":"Kildare","maynooth":"Kildare","celbridge":"Kildare","leixlip":"Kildare",
+      "carlow":"Carlow","muinebheag":"Carlow","bagenalstown":"Carlow",
+      "monaghan":"Monaghan","carrickmacross":"Monaghan","clones":"Monaghan",
+      "cavan":"Cavan","ballyconnell":"Cavan","ballyjamesduff":"Cavan","belturbet":"Cavan",
+      "clonmel":"South Tipperary","cahir":"South Tipperary","cashel":"South Tipperary",
+      "cluain meala":"South Tipperary",
+      "nenagh":"North Tipperary","roscrea":"North Tipperary","thurles":"North Tipperary",
+      "borrisoleigh":"North Tipperary","templemore":"North Tipperary",
+      // Additional cities from data
+      "dooagh":"Mayo","achill island":"Mayo","achill":"Mayo","keel":"Mayo","keem":"Mayo",
+      "foxford":"Mayo","killala":"Mayo","swinford":"Mayo","belmullet":"Mayo",
+      "ballinagh":"Cavan","cootehill":"Cavan","shercock":"Cavan","ballyhaise":"Cavan",
+      "coothill":"Cavan","kingscourt":"Cavan","bailieborough":"Cavan",
+      "ballinamore":"Leitrim","dromahair":"Leitrim","mohill":"Leitrim",
+      "ballyshannon":"Donegal","dungloe":"Donegal","glenties":"Donegal",
+      "dunlewy":"Donegal","ardara":"Donegal","creeslough":"Donegal","carrigart":"Donegal",
+      "ross carbery":"Cork","rosscarbery":"Cork","union hall":"Cork",
+      "ringsend":"Dublin","irishtown":"Dublin","sandymount":"Dublin","portobello":"Dublin",
+      "callan":"Kilkenny","urlingford":"Kilkenny","freshford":"Kilkenny","kilmacow":"Kilkenny",
+      "goresbridge":"Kilkenny","bennettsbridge":"Kilkenny","castlecomer":"Kilkenny",
+      "moate":"Westmeath","athlone":"Westmeath","castlepollard":"Westmeath",
+      "banagher":"Offaly","birr":"Offaly","tullamore":"Offaly","clara":"Offaly",
+      // Self-referential county names (pass-through for when state already is a county)
+      "carlow":"Carlow","cavan":"Cavan","clare":"Clare","cork":"Cork",
+      "donegal":"Donegal","dublin":"Dublin","fingal":"Fingal",
+      "dún laoghaire–rathdown":"Dún Laoghaire–Rathdown",
+      "south dublin":"South Dublin","galway":"Galway","kerry":"Kerry",
+      "kildare":"Kildare","kilkenny":"Kilkenny","laoighis":"Laoighis","leitrim":"Leitrim",
+      "limerick":"Limerick","longford":"Longford","louth":"Louth","mayo":"Mayo",
+      "meath":"Meath","monaghan":"Monaghan","north tipperary":"North Tipperary",
+      "offaly":"Offaly","roscommon":"Roscommon","sligo":"Sligo",
+      "south tipperary":"South Tipperary","waterford":"Waterford","westmeath":"Westmeath",
+      "wexford":"Wexford","wicklow":"Wicklow",
+    };
+    return IE_COUNTY[bs] ?? null; // unknown cities → null, not passed through as fake regions
+  }
+
+  if (country === "United Kingdom") {
+    // Nation/broad names → drop (not TopoJSON features)
+    if (["england","scotland","wales","northern ireland","great britain","gb","uk"].includes(s)) return null;
+    if (s === "london" || s === "greater london") return null;
+    // Yorkshire → specific ridings
+    if (s === "yorkshire" || s === "yorks") return "North Yorkshire";
+    if (s === "west yorkshire") return "Leeds";
+    if (s === "newcastle") return "Newcastle upon Tyne";
+    if (s === "hull") return "Kingston upon Hull";
+    // City → council lookup (used when state was nation-level; loop sends city as rawInput)
+    const UK_CITY = {
+      // NI
+      "enniskillen":"Fermanagh","lisnaskea":"Fermanagh","irvinestown":"Fermanagh",
+      "newry":"Newry and Mourne","crossmaglen":"Newry and Mourne","warrenpoint":"Newry and Mourne",
+      "armagh":"Armagh","portadown":"Craigavon","craigavon":"Craigavon","lurgan":"Craigavon",
+      "belfast":"Belfast","lisburn":"Lisburn","newtownabbey":"Newtownabbey","carnmoney":"Newtownabbey",
+      "antrim":"Antrim","ballymena":"Ballymena","ballymoney":"Ballymoney",
+      "bushmills":"Moyle","rathlin island":"Moyle","ballycastle":"Moyle",
+      "coleraine":"Coleraine","portrush":"Coleraine","portstewart":"Coleraine",
+      "limavady":"Limavady","derry":"Derry","londonderry":"Derry","strabane":"Strabane",
+      "omagh":"Omagh","dungannon":"Dungannon","coalisland":"Dungannon","moy":"Dungannon",
+      "magherafelt":"Magherafelt","cookstown":"Dungannon","castlewellan":"Down",
+      "banbridge":"Banbridge","rathfriland":"Banbridge","downpatrick":"Down",
+      "newtownards":"Ards","bangor":"North Down","holywood":"North Down",
+      "carrickfergus":"Carrickfergus",
+      // Scotland
+      "stornoway":"Eilean Siar","isle of lewis":"Eilean Siar","isle of harris":"Eilean Siar",
+      "isle of north uist":"Eilean Siar","isle of south uist":"Eilean Siar","isle of barra":"Eilean Siar",
+      "inverness":"Highland","ullapool":"Highland","portree":"Highland","lairg":"Highland",
+      "mallaig":"Highland","fort william":"Highland","aviemore":"Highland","nairn":"Highland",
+      "wick":"Highland","thurso":"Highland","isle of skye":"Highland","skye":"Highland",
+      "isle of mull":"Highland","tobermory":"Argyll and Bute",
+      "kirkwall":"Orkney","stromness":"Orkney","orkney":"Orkney",
+      "lerwick":"Shetland Islands","symbister":"Shetland Islands","shetland":"Shetland Islands",
+      "edinburgh":"Edinburgh","leith":"Edinburgh",
+      "glasgow":"Glasgow","govan":"Glasgow","partick":"Glasgow",
+      "aberdeen":"Aberdeen","dundee":"Dundee","broughty ferry":"Dundee",
+      "perth":"Perthshire and Kinross","pitlochry":"Perthshire and Kinross",
+      "st andrews":"Fife","kirkcaldy":"Fife","dunfermline":"Fife","glenrothes":"Fife",
+      "stirling":"Stirling","callander":"Stirling","falkirk":"Falkirk",
+      "ardrishaig":"Argyll and Bute","inveraray":"Argyll and Bute",
+      // Wales
+      "cardiff":"Cardiff","penarth":"Cardiff",
+      "swansea":"Swansea","mumbles":"Swansea",
+      "newport":"Newport","caerleon":"Newport",
+      "bangor":"Gwynedd","caernarfon":"Gwynedd","harlech":"Gwynedd",
+      // England
+      "london":"Westminster","westminster":"Westminster",
+      "manchester":"Manchester","birmingham":"Birmingham","leeds":"Leeds",
+      "sheffield":"Sheffield","bristol":"Bristol","liverpool":"Liverpool",
+      "cambridge":"Cambridgeshire",
+      "grassington":"North Yorkshire","hawes":"North Yorkshire","harrogate":"North Yorkshire",
+      "skipton":"North Yorkshire","scarborough":"North Yorkshire","whitby":"North Yorkshire",
+      "york":"York",
+      "keswick":"Cumbria","windermere":"Cumbria","ambleside":"Cumbria","coniston":"Cumbria",
+      "grasmere":"Cumbria","ullapool":"Highland","carlisle":"Cumbria",
+      "penzance":"Cornwall","st ives":"Cornwall","newquay":"Cornwall","falmouth":"Cornwall",
+      "exeter":"Devon","torquay":"Devon","dartmouth":"Devon","totnes":"Devon",
+      "southampton":"Hampshire","winchester":"Hampshire","michelmersh":"Hampshire",
+      "oxford":"Oxfordshire","durham":"Durham",
+      // Non-matching cities from data
+      "kyle of lochalsh":"Highland","broadford":"Highland","isle of skye":"Highland",
+      "brae":"Shetland Islands","sandwick":"Shetland Islands","symbister":"Shetland Islands",
+      "benbecula":"Eilean Siar","isle of benbecula":"Eilean Siar",
+      "newtownbutler":"Fermanagh","rosslea":"Fermanagh","lisnaskea":"Fermanagh",
+      "isle of islay":"Argyll and Bute","islay":"Argyll and Bute","bowmore":"Argyll and Bute",
+      "lochgilphead":"Argyll and Bute","oban":"Argyll and Bute","inveraray":"Argyll and Bute",
+      "pierowall":"Orkney","westray":"Orkney","rousay":"Orkney",
+      "brighton":"Brighton and Hove","hove":"Brighton and Hove",
+      "settle":"North Yorkshire","pateley bridge":"North Yorkshire","hawes":"North Yorkshire",
+      "ingleton":"North Yorkshire","aysgarth":"North Yorkshire","reeth":"North Yorkshire",
+      "tipton":"Sandwell","rowley regis":"Sandwell","smethwick":"Sandwell",
+      "telford":"Telford and Wrekin","shrewsbury":"Shropshire",
+      "gloucester":"Gloucestershire","cheltenham":"Gloucestershire",
+      "norwich":"Norfolk","ipswich":"Suffolk",
+    };
+    if (UK_CITY[s]) return UK_CITY[s];
+    // If the value is already a valid TopoJSON council name → pass through
+    const UK_COUNCILS = new Set([
+      "aberdeen","aberdeenshire","anglesey","angus","antrim","ards","argyll and bute",
+      "armagh","ballymena","ballymoney","banbridge","barking and dagenham","barnet",
+      "barnsley","bath and north east somerset","bedford","belfast","bexley","birmingham",
+      "blackburn with darwen","blackpool","blaenau gwent","bolton","bournemouth",
+      "bracknell forest","bradford","brent","bridgend","brighton and hove","bristol",
+      "bromley","buckinghamshire","bury","caerphilly","calderdale","cambridgeshire",
+      "camden","cardiff","carmarthenshire","carrickfergus","castlereagh",
+      "central bedfordshire","ceredigion","cheshire east","cheshire west and chester",
+      "city","clackmannanshire","coleraine","conwy","cornwall","coventry","craigavon",
+      "croydon","cumbria","darlington","denbighshire","derby","derbyshire","derry",
+      "devon","doncaster","dorset","down","dudley","dumfries and galloway","dundee",
+      "dungannon","durham","ealing","east ayrshire","east dunbartonshire","east lothian",
+      "east renfrewshire","east riding of yorkshire","east sussex","edinburgh",
+      "eilean siar","enfield","essex","falkirk","fermanagh","fife","flintshire",
+      "gateshead","glasgow","gloucestershire","greenwich","gwynedd","hackney","halton",
+      "hammersmith and fulham","hampshire","haringey","harrow","hartlepool","havering",
+      "herefordshire","hertfordshire","highland","hillingdon","hounslow","inverclyde",
+      "isle of wight","isles of scilly","islington","kensington and chelsea","kent",
+      "kingston upon hull","kingston upon thames","kirklees","knowsley","lambeth",
+      "lancashire","larne","leeds","leicester","leicestershire","lewisham","limavady",
+      "lincolnshire","lisburn","liverpool","luton","magherafelt","manchester","medway",
+      "merseyside","merthyr tydfil","merton","mid ulster","middlesbrough","midlothian",
+      "milton keynes","monmouthshire","moray","moyle","neath port talbot",
+      "newcastle upon tyne","newham","newport","newry and mourne","newtownabbey",
+      "norfolk","north ayrshire","north down","north east lincolnshire","north lanarkshire",
+      "north lincolnshire","north somerset","north tyneside","north yorkshire",
+      "northamptonshire","northumberland","nottingham","nottinghamshire","oldham","omagh",
+      "orkney","oxfordshire","pembrokeshire","perthshire and kinross","peterborough",
+      "plymouth","poole","portsmouth","powys","reading","redbridge","redcar and cleveland",
+      "renfrewshire","rhondda, cynon, taff","richmond upon thames","rochdale","rotherham",
+      "royal borough of windsor and maidenhead","rutland","salford","sandwell",
+      "scottish borders","sefton","sheffield","shetland islands","shropshire","slough",
+      "solihull","somerset","south ayrshire","south gloucestershire","south lanarkshire",
+      "south tyneside","southampton","southend-on-sea","southwark","staffordshire",
+      "stirling","stockport","stockton-on-tees","stoke-on-trent","strabane","suffolk",
+      "sunderland","surrey","sutton","swansea","swindon","tameside","telford and wrekin",
+      "thurrock","torbay","torfaen","tower hamlets","trafford","vale of glamorgan",
+      "wakefield","walsall","waltham forest","wandsworth","warrington","warwickshire",
+      "west berkshire","west dunbartonshire","west lothian","west sussex","westminster",
+      "wigan","wiltshire","wokingham","wolverhampton","worcestershire","wrexham","york",
+    ]);
+    if (UK_COUNCILS.has(s)) return state.trim();
+    // Unknown city → null
+    return null;
   }
 
   if (country === "Argentina") {
@@ -1070,6 +1300,24 @@ rawRows.forEach(r => {
       rawInput = r.city; // only if explicitly mapped
     } else {
       rawInput = null;
+    }
+  } else if (country === "Ireland") {
+    // State is stored at province level (Leinster/Munster/Connacht/Ulster) —
+    // those don't exist as TopoJSON features. Use city to get county-level data.
+    const IRELAND_PROVINCES = new Set(["leinster","munster","connacht","ulster"]);
+    if (!r.state || IRELAND_PROVINCES.has(slug(r.state))) {
+      rawInput = r.city; // city = county town / village, maps to correct county
+    } else {
+      rawInput = r.state;
+    }
+  } else if (country === "United Kingdom") {
+    // State is stored at nation level (England/Scotland/Wales/Northern Ireland) —
+    // not TopoJSON features. Use city to get council-level data.
+    const UK_NATIONS = new Set(["england","scotland","wales","northern ireland","great britain","gb"]);
+    if (!r.state || UK_NATIONS.has(slug(r.state))) {
+      rawInput = r.city;
+    } else {
+      rawInput = r.state;
     }
   } else {
     rawInput = r.state || r.city;
