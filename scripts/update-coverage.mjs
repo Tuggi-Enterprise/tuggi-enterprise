@@ -147,9 +147,29 @@ function findRegion(lat, lng) {
   return null;
 }
 
+// ── DB-state fallback for areas with incomplete TopoJSON coverage ─────────────
+// The Natural Earth 10m TopoJSON has known gaps: the "Baleares" polygon only
+// covers Mallorca (Ibiza, Formentera, Menorca polygons are absent). When PIP
+// returns null, we check the DB's country+state fields to salvage these POIs.
+// Keys are lower-cased DB state values; values are { region, admin } matching
+// the TopoJSON properties format.
+const DB_STATE_FALLBACK = {
+  // Spain — Balearic Islands: community name → TopoJSON province
+  "illes balears":    { name: "Baleares", admin: "Spain" },
+  "balearic islands": { name: "Baleares", admin: "Spain" },
+  "islas baleares":   { name: "Baleares", admin: "Spain" },
+  "baleares":         { name: "Baleares", admin: "Spain" },
+  // Canary Islands — two provinces; without per-island coordinates we assign
+  // to Santa Cruz de Tenerife as the larger/western group
+  "canarias":         { name: "Santa Cruz de Tenerife", admin: "Spain" },
+  "islas canarias":   { name: "Santa Cruz de Tenerife", admin: "Spain" },
+  "canary islands":   { name: "Santa Cruz de Tenerife", admin: "Spain" },
+};
+
 // ── Fetch all active attractions with their coordinates ───────────────────────
 // Uses embedded FK select: attraction_coordinate is 1:1 with attractions via
 // attraction_coordinate.attraction_id FK → attractions.id
+// Also fetches state for DB-fallback when PIP returns null.
 async function fetchAllWithCoords() {
   const { count: planned } = await sb
     .from("attractions")
@@ -165,7 +185,7 @@ async function fetchAllWithCoords() {
   while (true) {
     const { data, error } = await sb
       .from("attractions")
-      .select("id, attraction_coordinate!inner(latitude, longitude)")
+      .select("id, state, attraction_coordinate!inner(latitude, longitude)")
       .eq("is_active", true)
       .gt("id", lastId)
       .order("id")
@@ -179,7 +199,7 @@ async function fetchAllWithCoords() {
         ? r.attraction_coordinate[0]
         : r.attraction_coordinate;
       if (coord?.latitude != null && coord?.longitude != null) {
-        rows.push({ id: r.id, lat: coord.latitude, lng: coord.longitude });
+        rows.push({ id: r.id, lat: coord.latitude, lng: coord.longitude, dbState: r.state });
       }
     }
 
@@ -200,15 +220,23 @@ const allRows = await fetchAllWithCoords();
 
 process.stdout.write("   Running point-in-polygon...");
 const stateMap = new Map();
+let fallbackCount = 0;
 
-for (const { lat, lng } of allRows) {
-  const props = findRegion(lat, lng);
+for (const { lat, lng, dbState } of allRows) {
+  let props = findRegion(lat, lng);
+
+  // DB-state fallback for TopoJSON coverage gaps (Ibiza, Formentera, Menorca…)
+  if (!props && dbState) {
+    props = DB_STATE_FALLBACK[dbState.toLowerCase().trim()] || null;
+    if (props) fallbackCount++;
+  }
+
   if (!props?.name || !props?.admin) continue;
   const key = `${props.name}||${props.admin}`;
   stateMap.set(key, (stateMap.get(key) || 0) + 1);
 }
 
-console.log(" done");
+console.log(` done (${fallbackCount.toLocaleString()} via DB-state fallback)`);
 
 // ── Apply threshold ───────────────────────────────────────────────────────────
 const states = [];
