@@ -5,6 +5,7 @@ import { HomeHowItWorks } from "@/components/blocks/HomeHowItWorks";
 import { HomeFeatureShowcase } from "@/components/blocks/HomeFeatureShowcase";
 import { HomeAudioSample } from "@/components/blocks/HomeAudioSample";
 import { HomeBusinessBand } from "@/components/blocks/HomeBusinessBand";
+import { HomeMotionConfig } from "@/components/blocks/HomeMotionConfig";
 import { FaqSection } from "@/components/blocks/FaqSection";
 import { buildAlternates, buildOpenGraph, buildTwitterCard, defaultRobots } from "@/lib/seo";
 
@@ -67,12 +68,14 @@ export default async function HomePage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
-      <HomeHero />
-      <HomeHowItWorks />
-      <HomeFeatureShowcase />
-      <HomeAudioSample />
-      <HomeBusinessBand />
-      <FaqSection namespace="Home.FAQ" count={HOME_FAQ_COUNT} />
+      <HomeMotionConfig>
+        <HomeHero />
+        <HomeHowItWorks />
+        <HomeFeatureShowcase />
+        <HomeAudioSample />
+        <HomeBusinessBand />
+        <FaqSection namespace="Home.FAQ" count={HOME_FAQ_COUNT} />
+      </HomeMotionConfig>
     </>
   );
 }

@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { useRef, useState } from "react";
-import { Play, Pause } from "lucide-react";
+import { Play } from "lucide-react";
 
 interface SampleCardProps {
   title: string;
@@ -10,6 +10,19 @@ interface SampleCardProps {
   src: string;
   playLabel: string;
   pauseLabel: string;
+}
+
+/** 4-bar CSS equalizer shown while a clip plays (freezes mid-height under
+ *  reduced motion — see globals.css). White bars sit on the blue play button. */
+function Equalizer() {
+  return (
+    <span className="flex items-end gap-[3px] h-5" aria-hidden="true">
+      <span className="tuggi-eq-bar w-1 h-full rounded-full bg-white" />
+      <span className="tuggi-eq-bar w-1 h-full rounded-full bg-white" />
+      <span className="tuggi-eq-bar w-1 h-full rounded-full bg-white" />
+      <span className="tuggi-eq-bar w-1 h-full rounded-full bg-white" />
+    </span>
+  );
 }
 
 function SampleCard({ title, location, src, playLabel, pauseLabel }: SampleCardProps) {
@@ -24,15 +37,15 @@ function SampleCard({ title, location, src, playLabel, pauseLabel }: SampleCardP
   };
 
   return (
-    <div className="flex items-center gap-4 bg-white rounded-2xl border border-gray-200 p-5 shadow-sm">
+    <div className="flex items-center gap-4 bg-white rounded-2xl border border-gray-200 p-5 shadow-sm transition-[transform,box-shadow] duration-150 hover:-translate-y-0.5 hover:shadow-md motion-reduce:transition-none motion-reduce:hover:translate-y-0">
       <button
         type="button"
         onClick={toggle}
         aria-label={isPlaying ? pauseLabel : playLabel}
-        className="w-14 h-14 rounded-full bg-tuggi-primary text-white flex items-center justify-center hover:bg-[#0090c9] transition-colors shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary focus-visible:ring-offset-2"
+        className="w-14 h-14 rounded-full bg-tuggi-primary text-white flex items-center justify-center hover:bg-[#0090c9] transition-[background-color,transform] duration-150 active:scale-95 motion-reduce:active:scale-100 shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary focus-visible:ring-offset-2"
       >
         {isPlaying ? (
-          <Pause className="w-6 h-6" aria-hidden="true" />
+          <Equalizer />
         ) : (
           <Play className="w-6 h-6 ml-0.5" aria-hidden="true" />
         )}
@@ -56,7 +69,8 @@ function SampleCard({ title, location, src, playLabel, pauseLabel }: SampleCardP
 /**
  * "Hear a sample" — a minimal, accessible player with two real story clips
  * reused from public/audio/. Native <audio> under the hood; the button owns the
- * accessible label and stays in sync via play/pause/ended events.
+ * accessible label and stays in sync via play/pause/ended events. While a clip
+ * plays, its play icon becomes a live equalizer.
  */
 export function HomeAudioSample() {
   const t = useTranslations("Home.AudioSample");

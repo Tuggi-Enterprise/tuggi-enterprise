@@ -30,7 +30,7 @@ export function HomeBusinessBand() {
             >
               <span>{t("fleetsLink")}</span>
               <ArrowRight
-                className="w-4 h-4 group-hover:translate-x-1 transition-transform"
+                className="w-4 h-4 group-hover:translate-x-1 motion-reduce:group-hover:translate-x-0 transition-transform"
                 aria-hidden="true"
               />
             </Link>
@@ -42,7 +42,7 @@ export function HomeBusinessBand() {
             >
               <span>{t("cityOsLink")}</span>
               <ArrowRight
-                className="w-4 h-4 group-hover:translate-x-1 transition-transform"
+                className="w-4 h-4 group-hover:translate-x-1 motion-reduce:group-hover:translate-x-0 transition-transform"
                 aria-hidden="true"
               />
             </Link>

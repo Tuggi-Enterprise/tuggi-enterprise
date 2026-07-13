@@ -23,3 +23,66 @@ body {
 .no-layout #fat-footer {
   display: none !important;
 }
+
+/* --- Home motion pass: GPU-friendly CSS loops (transform/opacity only) --- */
+
+/* GPS "radar" ping behind the hero phone — suggests location-triggered audio.
+   The keyframe owns the transform (centres via translate + scales up). */
+@keyframes tuggi-gps-ping {
+  0% {
+    transform: translate(-50%, -50%) scale(0.45);
+    opacity: 0.22;
+  }
+  75% {
+    opacity: 0;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2.2);
+    opacity: 0;
+  }
+}
+.tuggi-gps-ring {
+  /* `backwards` keeps the delayed ring in its centred 0% state during the
+     delay instead of flashing off-centre at full opacity. */
+  animation: tuggi-gps-ping 3s cubic-bezier(0.21, 0.47, 0.32, 0.98) infinite backwards;
+}
+.tuggi-gps-ring--delayed {
+  animation-delay: 1.5s;
+}
+
+/* 4-bar equalizer shown while an audio sample plays. */
+@keyframes tuggi-eq {
+  0%,
+  100% {
+    transform: scaleY(0.3);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+.tuggi-eq-bar {
+  transform-origin: bottom center;
+  animation: tuggi-eq 0.9s ease-in-out infinite;
+}
+.tuggi-eq-bar:nth-child(2) {
+  animation-delay: 0.18s;
+}
+.tuggi-eq-bar:nth-child(3) {
+  animation-delay: 0.36s;
+}
+.tuggi-eq-bar:nth-child(4) {
+  animation-delay: 0.12s;
+}
+
+/* Reduced motion: kill the loops. GPS ping hides; the equalizer freezes at
+   mid-height so it still reads as "playing" without any movement. */
+@media (prefers-reduced-motion: reduce) {
+  .tuggi-gps-ring {
+    animation: none;
+    opacity: 0;
+  }
+  .tuggi-eq-bar {
+    animation: none;
+    transform: scaleY(0.55);
+  }
+}

@@ -69,7 +69,8 @@
       "trustLine": "Empieza gratis · Funciona sin conexión · Audio en 8+ idiomas",
       "appStoreAlt": "Descarga TUGGI en la App Store",
       "playStoreAlt": "Consigue TUGGI en Google Play",
-      "phoneAlt": "Mapa de TUGGI que muestra historias en audio, eventos y rutas cercanas"
+      "phoneAlt": "Mapa de TUGGI que muestra historias en audio, eventos y rutas cercanas",
+      "nowPlaying": "A tu izquierda: Gruta de los Esclavos"
     },
     "Simulator": {
       "tag": "Demostración Tecnológica",

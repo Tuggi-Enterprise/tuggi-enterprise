@@ -69,7 +69,8 @@
       "trustLine": "Free to start · Works offline · Audio in 8+ languages",
       "appStoreAlt": "Download TUGGI on the App Store",
       "playStoreAlt": "Get TUGGI on Google Play",
-      "phoneAlt": "TUGGI map showing nearby audio stories, events and trails"
+      "phoneAlt": "TUGGI map showing nearby audio stories, events and trails",
+      "nowPlaying": "On your left: Slave's Grotto"
     },
     "Simulator": {
       "tag": "Core Tech Demo",
