@@ -183,15 +183,22 @@ async function fetchAllWithCoords() {
   let fetched = 0;
 
   while (true) {
-    const { data, error } = await sb
-      .from("attractions")
-      .select("id, state, attraction_coordinate!inner(latitude, longitude)")
-      .eq("is_active", true)
-      .gt("id", lastId)
-      .order("id")
-      .limit(PAGE_SIZE_CURSOR);
-
-    if (error) throw new Error("Fetch error: " + (error.message || JSON.stringify(error)));
+    let data, error, retries = 0;
+    while (retries < 5) {
+      ({ data, error } = await sb
+        .from("attractions")
+        .select("id, state, attraction_coordinate!inner(latitude, longitude)")
+        .eq("is_active", true)
+        .gt("id", lastId)
+        .order("id")
+        .limit(PAGE_SIZE_CURSOR));
+      if (!error) break;
+      if (!error.message?.includes("timeout")) throw new Error("Fetch error: " + (error.message || JSON.stringify(error)));
+      retries++;
+      process.stdout.write(`\r   ⏳ Timeout at ${fetched.toLocaleString()}, retry ${retries}/5...`);
+      await new Promise(r => setTimeout(r, 2000 * retries));
+    }
+    if (error) throw new Error("Fetch error after retries: " + error.message);
     if (!data || data.length === 0) break;
 
     for (const r of data) {
