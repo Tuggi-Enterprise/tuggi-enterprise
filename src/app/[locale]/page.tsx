@@ -1,12 +1,14 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Metadata } from "next";
-import { HeroSection } from "@/components/blocks/HeroSection";
-import { InteractiveSimulator } from "@/components/blocks/InteractiveSimulator";
-import { EnterpriseFork } from "@/components/blocks/EnterpriseFork";
+import { HomeHero } from "@/components/blocks/HomeHero";
+import { HomeHowItWorks } from "@/components/blocks/HomeHowItWorks";
+import { HomeFeatureShowcase } from "@/components/blocks/HomeFeatureShowcase";
+import { HomeAudioSample } from "@/components/blocks/HomeAudioSample";
+import { HomeBusinessBand } from "@/components/blocks/HomeBusinessBand";
 import { FaqSection } from "@/components/blocks/FaqSection";
 import { buildAlternates, buildOpenGraph, buildTwitterCard, defaultRobots } from "@/lib/seo";
 
-const HOME_FAQ_COUNT = 6;
+const HOME_FAQ_COUNT = 7;
 
 export async function generateMetadata({
   params,
@@ -65,9 +67,11 @@ export default async function HomePage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
-      <HeroSection />
-      <InteractiveSimulator />
-      <EnterpriseFork />
+      <HomeHero />
+      <HomeHowItWorks />
+      <HomeFeatureShowcase />
+      <HomeAudioSample />
+      <HomeBusinessBand />
       <FaqSection namespace="Home.FAQ" count={HOME_FAQ_COUNT} />
     </>
   );

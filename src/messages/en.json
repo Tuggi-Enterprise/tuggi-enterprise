@@ -59,13 +59,17 @@
       "q5": "Does TUGGI work offline and in my language?",
       "a5": "Yes. Download a route in advance and listen with no signal and no roaming charges. TUGGI offers audio in 8+ languages with synchronized closed captions for deaf and hard-of-hearing travelers.",
       "q6": "How is TUGGI different from Google Maps or a human guide?",
-      "a6": "TUGGI isn't a navigation app and doesn't replace your GPS — it runs alongside it and adds self-guided audio storytelling about the places you pass. Unlike a human guide, it's available 24/7, in multiple languages, hands-free, and free to start."
+      "a6": "TUGGI isn't a navigation app and doesn't replace your GPS — it runs alongside it and adds self-guided audio storytelling about the places you pass. Unlike a human guide, it's available 24/7, in multiple languages, hands-free, and free to start.",
+      "q7": "Who is TUGGI for?",
+      "a7": "For anyone who likes to explore on the move: tourists, curious locals, cyclists, walkers, passengers on a bus, train or van, and drivers too. It works on a road trip, on a walking city tour, on a bike or scooter ride, and on public transport. Because the audio is triggered by GPS and runs offline, the experience is the same in any mode of transport."
     },
     "Hero": {
-      "title": "Your self-guided audio travel guide",
-      "subtitle": "The cultural copilot for the road. Audio stories trigger automatically as you travel — zero screens, eyes on the scenery.",
-      "downloadApp": "Download App",
-      "contactSales": "Contact Sales"
+      "title": "You move, TUGGI tells the story of every place.",
+      "subtitle": "Turn TUGGI on, start moving and put your phone away. It uses GPS to spot each point of interest along the way and reads its story out loud. Works on foot, by bike, by car or on public transport, offline and in your language.",
+      "trustLine": "Free to start · Works offline · Audio in 8+ languages",
+      "appStoreAlt": "Download TUGGI on the App Store",
+      "playStoreAlt": "Get TUGGI on Google Play",
+      "phoneAlt": "TUGGI map showing nearby audio stories, events and trails"
     },
     "Simulator": {
       "tag": "Core Tech Demo",
@@ -94,6 +98,49 @@
       "b2bTitle": "For Fleets & Rentals",
       "b2bDesc": "De-commoditize your fleet and boost your NPS. Operate as an automated local guide and generate new RevPA streams.",
       "b2bLinkLabel": "Fleet Solutions"
+    },
+    "HowItWorks": {
+      "title": "Start listening in one minute",
+      "step1": "Download the app and pick your language.",
+      "step2": "Start the guide and put your phone away.",
+      "step3": "Stories play on their own as you pass each place."
+    },
+    "Showcase": {
+      "feat1Title": "It says the name before telling the story",
+      "feat1Body": "The moment you get close to a point of interest, TUGGI says the name of the place and only then starts the story. You know what's around you right away, without stopping to look it up. And since every story comes with a synced transcript, people who are deaf or hard of hearing follow along on screen.",
+      "feat1Alt": "TUGGI story card for a point of interest, with buttons to listen to the story and read the transcript",
+      "feat2Title": "Still, it shows you around. Moving, it speaks.",
+      "feat2Body": "When you stop, open the map and see what's around: points of interest, events and trails, each with its distance. Start moving again and TUGGI goes back to narrating.",
+      "feat2Alt": "TUGGI explore-around-you list of nearby points of interest with distances",
+      "feat3Title": "See what's happening right now",
+      "feat3Body": "Festivals, fairs and local events show up on your map with dates and reminders. Found something you like? Tap \"take me there\" and go.",
+      "feat3Alt": "TUGGI event detail card with the date, a reminder and a take-me-there button",
+      "feat4Title": "There's a route ready, but you're in charge",
+      "feat4Body": "If you feel like it, follow a themed trail, such as the Rota Religiosa de Búzios, with its stops and stories already in place. If you don't, forget the route: TUGGI narrates wherever you go.",
+      "feat4Alt": "TUGGI trail detail with the route drawn on the map and its stops",
+      "feat5Title": "Every trip lands in your passport",
+      "feat5Body": "The app adds it all up: places discovered, cities, kilometers covered and hours of audio. It becomes a log of your travels you can show your friends.",
+      "feat5Alt": "TUGGI explorer passport showing discoveries, cities, kilometers and listening hours",
+      "feat6Title": "Made to go anywhere",
+      "feat6Body": "Download the maps and use everything without internet. Control the guide by voice with Siri or Google, without taking your phone out of your pocket. And listen in 8+ languages, whichever suits you.",
+      "feat6AltTools": "TUGGI explorer tools including offline maps and voice commands",
+      "feat6AltLanguages": "TUGGI audio language selector with English, Spanish, Italian, Portuguese and more"
+    },
+    "AudioSample": {
+      "title": "Hear TUGGI for yourself",
+      "subtitle": "Two short stories, just the way you'd hear them while exploring.",
+      "sample1Title": "Walt Disney World Resort",
+      "sample1Loc": "Orlando, USA",
+      "sample2Title": "Paulista Avenue",
+      "sample2Loc": "São Paulo, Brazil",
+      "play": "Play story",
+      "pause": "Pause story"
+    },
+    "Business": {
+      "title": "TUGGI for your business",
+      "body": "Transfer companies, rental fleets and destinations use TUGGI to give every traveler a local guide.",
+      "fleetsLink": "For fleets & operators",
+      "cityOsLink": "For destinations"
     }
   },
   "CityOS": {
@@ -529,52 +576,52 @@
     "support": "Report to Support"
   },
   "Metadata": {
-    "rootTitle": "Tuggi",
-    "rootDescription": "Tuggi Enterprise Solutions",
-    "homeTitle": "TUGGI | Self-Guided Audio Travel Guide",
-    "homeDescription": "Self-guided audio tours that play automatically as you travel. Hands-free stories about the places around you — by car, on foot, or by bike. Offline, in 8 languages.",
-    "driveTitle": "TUGGI | Self-Guided Audio Tours, Offline",
+    "rootTitle": "TUGGI — Self-Guided Audio Travel Guide",
+    "rootDescription": "TUGGI tells you a place's story out loud the moment you get near it. Works offline, in 8+ languages, free to start on iOS and Android.",
+    "homeTitle": "Self-Guided Audio Travel Guide — Stories That Play As You Go | TUGGI",
+    "homeDescription": "TUGGI tells you each place's story out loud as you pass by, however you travel. A self-guided audio travel guide that works offline, in your language. Free to start.",
+    "driveTitle": "Self-Guided Audio Tours, Offline",
     "driveDescription": "Download TUGGI: self-guided audio tours that play automatically as you travel — by car, on foot, or by bike. Hands-free, offline, closed captions, 8+ languages. Free to start.",
     "cityOsTitle": "City OS: Territorial Governance & Hands-Free Audio",
-    "cityOsDescription": "B2G Solutions for Smart Cities",
-    "fleetsTitle": "Tuggi Fleets | Ancillary Revenue for Car Rentals",
-    "fleetsDescription": "B2B2C solutions for fleets",
-    "techTitle": "Tuggi Technology | Swift Architecture & Cache",
-    "techDescription": "Our robust engine and caches",
-    "purposeTitle": "The Audio Thesis | Our Purpose",
-    "purposeDescription": "Institutional values of Tuggi",
-    "contactTitle": "Contact Tuggi | Lead Router",
-    "contactDescription": "Get in touch with our team",
-    "trustCenterTitle": "Tuggi Trust Center",
+    "cityOsDescription": "Bring your destination's stories to every visitor, in their own language, the moment they explore. Accessible across your whole territory, and you stay in control.",
+    "fleetsTitle": "Fleets | Ancillary Revenue for Car Rentals",
+    "fleetsDescription": "Give every passenger a local guide in their own language. TUGGI turns a transfer or rental into a story-filled ride, with a simple monthly license per vehicle.",
+    "techTitle": "How TUGGI Works — Offline, GPS-Triggered Audio",
+    "techDescription": "A look under TUGGI's hood: how GPS triggers each story, how it knows which side you're passing, and how it keeps playing offline on iOS and Android.",
+    "purposeTitle": "Our Purpose",
+    "purposeDescription": "We built TUGGI on one idea: every place has a story worth hearing, and everyone should be able to listen, in their own language and hands-free.",
+    "contactTitle": "Contact Us",
+    "contactDescription": "Have a question about the app, a fleet, a destination, or press? The TUGGI team is here to help.",
+    "trustCenterTitle": "Trust Center",
     "trustCenterDescription": "Legal and Compliance",
-    "termsTitle": "Terms of Use | Tuggi",
+    "termsTitle": "Terms of Use",
     "termsDescription": "Terms and conditions of our services",
-    "privacyTitle": "Privacy Policy | Tuggi",
+    "privacyTitle": "Privacy Policy",
     "privacyDescription": "How we process your data",
-    "deletionTitle": "Data Deletion | Tuggi",
+    "deletionTitle": "Data Deletion",
     "deletionDescription": "Request your data to be deleted",
-    "securityTitle": "Security SLA | Tuggi",
+    "securityTitle": "Security SLA",
     "securityDescription": "Our security commitments",
-    "accessibilityTitle": "Accessibility & Inclusion | Tuggi",
+    "accessibilityTitle": "Accessibility & Inclusion",
     "accessibilityDescription": "Accessibility policies"
   },
   "SEO_CITY_OS": {
-    "title": "TUGGI City OS | Smart Tourism Destination Infrastructure",
-    "description": "Transform your municipality into a Smart Tourism Destination with minimal CAPEX. TUGGI City OS delivers accessibility, data intelligence, and total narrative governance.",
-    "ogTitle": "TUGGI City OS: The Ultimate Smart Destination Infrastructure"
+    "title": "Multilingual Audio Guides for Smart Destinations",
+    "description": "Every visitor hears your destination's own stories, in their language, as they explore. Accessible, territory-wide, and you stay in control of what's told.",
+    "ogTitle": "TUGGI City OS: Your Destination, Narrated for Every Visitor"
   },
   "SEO_FLEETS": {
-    "title": "TUGGI Fleets | Boost RevPA and NPS with the Cultural Copilot",
-    "description": "Transform standard car rentals into a Premium Cultural Experience. Generate massive ancillary revenue with minimal hardware investment and boost your rental's NPS.",
-    "ogTitle": "TUGGI Fleets: Ancillary Revenue and NPS for Rentals"
+    "title": "In-Car Audio Guides for Rental & Transfer Fleets",
+    "description": "Turn rentals and transfers into a ride worth remembering. Passengers hear a local guide in their language; you add revenue and lift NPS, nothing to install.",
+    "ogTitle": "TUGGI Fleets: An Audio Guide for Every Passenger"
   },
   "SEO_PURPOSE": {
-    "title": "TUGGI | Our Purpose & The Audio Manifesto",
-    "description": "Discover the thesis behind TUGGI. Why we believe audio is the most natural way to explore the world and how we are giving narrative sovereignty back to destinations.",
-    "ogTitle": "TUGGI: The Audio Manifesto & Our Purpose"
+    "title": "Our Purpose — Why Every Place Deserves to Be Heard",
+    "description": "We built TUGGI on one idea: every place has a story worth hearing, and everyone should be able to listen, in their own language and hands-free.",
+    "ogTitle": "TUGGI: Why Every Place Deserves to Be Heard"
   },
   "SEO_COVERAGE": {
-    "title": "TUGGI Live Destinations | Choose Where You Explore",
+    "title": "Live Destinations — Choose Where You Explore",
     "description": "TUGGI is live across {count}+ points of interest in Italy, Spain, Portugal, Brazil, Chile, the USA and more. Audio stories play automatically the moment you start exploring.",
     "ogTitle": "TUGGI is Live in {countries} Countries — {count}+ Audio Stories Ready"
   },

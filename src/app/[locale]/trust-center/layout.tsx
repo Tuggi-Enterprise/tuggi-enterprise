@@ -10,8 +10,15 @@ export async function generateMetadata({
 }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "Metadata" });
+  // Re-declare the brand template here: a plain-string `title` in this nested
+  // layout would suppress the root "%s | TUGGI" template for the legal pages
+  // below it, leaving them brandless. This keeps their titles brand-free in the
+  // messages while the template still appends "| TUGGI".
   return {
-    title: t("trustCenterTitle"),
+    title: {
+      template: "%s | TUGGI",
+      default: t("trustCenterTitle"),
+    },
   };
 }
 
