@@ -1,12 +1,14 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Metadata } from "next";
-import { DriveHero } from "@/components/blocks/DriveHero";
-import { DriveBehavior } from "@/components/blocks/DriveBehavior";
+import { DrivePlansHero } from "@/components/blocks/DrivePlansHero";
+import { DrivePricing } from "@/components/blocks/DrivePricing";
 import { DriveSamples } from "@/components/blocks/DriveSamples";
 import { DriveFeatures } from "@/components/blocks/DriveFeatures";
-import { DrivePricing } from "@/components/blocks/DrivePricing";
+import { DriveComparison } from "@/components/blocks/DriveComparison";
 import { DriveConversion } from "@/components/blocks/DriveConversion";
 import { DriveFAQ } from "@/components/blocks/DriveFAQ";
+import { DriveStickyCta } from "@/components/blocks/DriveStickyCta";
+import { HomeMotionConfig } from "@/components/blocks/HomeMotionConfig";
 import { buildAlternates, buildOpenGraph, buildTwitterCard, defaultRobots } from "@/lib/seo";
 
 export async function generateMetadata({
@@ -59,13 +61,16 @@ export default async function DrivePage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
-      <DriveHero />
-      <DriveBehavior />
-      <DriveSamples />
-      <DriveFeatures />
-      <DrivePricing />
-      <DriveFAQ />
-      <DriveConversion />
+      <HomeMotionConfig>
+        <DrivePlansHero />
+        <DrivePricing />
+        <DriveSamples />
+        <DriveFeatures />
+        <DriveComparison />
+        <DriveFAQ />
+        <DriveConversion />
+      </HomeMotionConfig>
+      <DriveStickyCta />
     </article>
   );
 }

@@ -21,7 +21,7 @@
     "navFleets": "Flotte",
     "navTech": "Tecnologia",
     "navPurpose": "Il Nostro Scopo",
-    "navB2c": "TUGGI",
+    "navB2c": "Piani",
     "navContact": "Contatti",
     "downloadApp": "Scarica l'App",
     "navTours": "Audioguide"
@@ -278,7 +278,7 @@
     },
     "Samples": {
       "tag": "Curatela Premium",
-      "title": "Ascolta il mondo prendere vita.",
+      "title": "Ascolta cosa sblocchi",
       "subtitle": "Ogni viaggio in auto, tour a piedi o percorso in bici prende vita con racconti che non troveresti mai da solo. Nessun itinerario fisso — la tua audioguida autoguidata parte automaticamente, esattamente a ogni punto di interesse.",
       "sample1Title": "Walt Disney World Resort",
       "sample1Loc": "Orlando, USA",
@@ -286,22 +286,18 @@
       "sample2Loc": "San Paolo, Brasile",
       "sample3Title": "Ponte di Rialto",
       "sample3Loc": "Venezia, Italia",
-      "socialProof": "⭐⭐⭐⭐⭐ Oltre 50.000 racconti ascoltati da viaggiatori di tutto il mondo.",
+      "socialProof": "Oltre 50.000 storie riprodotte da viaggiatori di tutto il mondo.",
       "directional": "Direzionale",
       "story": "Racconto",
       "play": "Riproduci",
       "pause": "Pausa"
     },
     "Features": {
-      "title": "Il Kit di Sopravvivenza del Viaggiatore",
+      "title": "Incluso in tutti i pass",
       "feat1Title": "Modalità 100% Offline",
       "feat1Desc": "Scarica il pacchetto della città in hotel. Zero costi di roaming dati in viaggio.",
-      "feat2Title": "Avvisi Multe e Pericoli",
-      "feat2Desc": "Avvisi audio prima di entrare in zone a traffico limitato o aree pericolose, facendoti risparmiare centinaia di euro in multe.",
       "feat3Title": "Audio Multilingue",
-      "feat3Desc": "Narrazione ad alta fedeltà in 8+ lingue native.",
-      "feat4Title": "Accessibilità per i Passeggeri",
-      "feat4Desc": "Sottotitoli e opzioni di lettura del testo sincronizzati con l'audio, così i passeggeri con difficoltà uditive non perdono mai un racconto."
+      "feat3Desc": "Narrazione ad alta fedeltà in 8+ lingue native."
     },
     "Pricing": {
       "title": "Travel Pass",
@@ -311,31 +307,38 @@
       "pass1Title": "Pass 7 Giorni",
       "pass1Desc": "Ideale per noleggi del weekend e brevi fughe.",
       "pass1Renewal": "Pagamento unico. Nessun rinnovo automatico.",
-      "pass1Feat1": "Mappe e Audio 100% Offline.",
-      "pass1Feat2": "Trigger Audio Premium Illimitati.",
-      "pass1Feat3": "Avvisi Multe e Pericoli.",
-      "pass1Feat4": "Accessibilità e Sottotitoli Completi.",
+      "pass1Feat1": "Mappe e audio 100% offline",
+      "pass1Feat2": "Storie illimitate",
+      "pass1Feat3": "Sottotitoli sincronizzati in tutte le lingue",
       "pass1Action": "Sblocca 7 Giorni",
       "pass2Title": "Pass 30 Giorni",
       "pass2Desc": "Ideale per lunghi viaggi e vacanze prolungate.",
       "pass2Renewal": "Pagamento unico. Nessun rinnovo automatico.",
-      "pass2Feat1": "Tutte le funzioni del Pass 7 Giorni.",
-      "pass2Feat2": "Valido per un viaggio di 30 giorni.",
+      "pass2Feat1": "Tutto del Pass 7 Giorni",
+      "pass2Feat2": "Valido per un viaggio di 30 giorni",
       "pass2Action": "Sblocca 30 Giorni",
       "pass3Title": "Pass Annuale",
       "pass3Desc": "Accesso illimitato tutto l'anno con lo sconto più grande.",
       "pass3Renewal": "Abbonamento annuale. Disdici quando vuoi.",
-      "pass3Feat1": "Uso illimitato in tutti i viaggi.",
-      "pass3Feat2": "Accesso prioritario alle nuove funzioni.",
+      "pass3Feat1": "Uso illimitato tutto l'anno",
+      "pass3Feat2": "Accesso prioritario alle nuove funzioni",
       "pass3Action": "Abbonati al Piano Annuale",
-      "freeLead": "24h di audio illimitato gratis al download — senza carta. Poi fino a 5 racconti gratis ogni giorno.",
       "pass3PriceLine": "A partire da pochi centesimi al giorno",
-      "storeNote": "Vedrai il prezzo locale esatto nell'App Store o su Google Play."
+      "storeNote": "Vedrai il prezzo locale esatto nell'App Store o su Google Play.",
+      "pass2Feat3": "Tutte le 8+ lingue incluse",
+      "pass3Feat3": "Mappe e audio 100% offline",
+      "anchor": "Meno di un singolo tour guidato — e racconta tutto il tuo viaggio.",
+      "chip1": "Senza carta",
+      "chip2": "Pagamento unico",
+      "chip3": "Senza rinnovo automatico",
+      "periodOnce": "pagamento unico",
+      "periodYear": "all’anno"
     },
     "Conversion": {
-      "title": "Migliora il tuo viaggio oggi.",
+      "title": "Ogni luogo ha una storia. Inizia ad ascoltare oggi.",
       "downloadApp": "Scarica sull'App Store",
-      "downloadPlay": "Scarica su Google Play"
+      "downloadPlay": "Scarica su Google Play",
+      "qrCaption": "Inquadra con la fotocamera per scaricare"
     },
     "FAQ": {
       "title": "Domande Frequenti",
@@ -353,8 +356,47 @@
       "a6": "No. L'audio parte automaticamente in base alla posizione, a mani libere e a schermo spento."
     },
     "Accessibility": {
-      "title": "Pensato per Tutti",
-      "body": "I sottotitoli sincronizzati permettono ai viaggiatori sordi e con difficoltà uditive di seguire ogni racconto. E poiché TUGGI è audio-first, supporta naturalmente i viaggiatori ipovedenti — senza bisogno di leggere."
+      "title": "Accessibilità completa",
+      "body": "I sottotitoli sincronizzati con l'audio permettono ai viaggiatori sordi o con problemi di udito di seguire ogni storia. E poiché TUGGI è prima di tutto audio, i viaggiatori ipovedenti esplorano senza dover leggere."
+    },
+    "PlansHero": {
+      "title": "Scegli il tuo pass di viaggio",
+      "subtitle": "Scarica e ricevi 24 ore di audio illimitato, senza carta e senza abbonarti a nulla. È la nostra idea di libertà: esplorare quanto vuoi prima di decidere. Poi un pass sblocca tutto quando vuoi.",
+      "appStoreAlt": "Scarica TUGGI sull'App Store",
+      "playStoreAlt": "Scarica TUGGI su Google Play"
+    },
+    "Comparison": {
+      "title": "Come si confronta TUGGI",
+      "colGuide": "Guida privata",
+      "colAudio": "Tour audio tradizionali",
+      "colTuggi": "TUGGI",
+      "rowCost": "Costo",
+      "costGuide": "Tariffa giornaliera della guida",
+      "costAudio": "Si paga per tour, per città",
+      "costTuggi": "Un pass, tutto il viaggio",
+      "rowLang": "Lingue",
+      "langGuide": "La lingua della guida",
+      "langAudio": "Poche per tour",
+      "langTuggi": "8+ lingue",
+      "rowRoute": "Percorso",
+      "routeGuide": "L'itinerario della guida",
+      "routeAudio": "Un percorso fisso da seguire",
+      "routeTuggi": "Qualsiasi strada tu scelga",
+      "rowDrive": "Alla guida",
+      "driveAudio": "Tocca lo schermo a ogni tappa",
+      "driveTuggi": "Automatico, mani libere",
+      "rowOffline": "Offline",
+      "offlineAudio": "Varia",
+      "offlineTuggi": "Sempre",
+      "rowCaptions": "Sottotitoli sincronizzati",
+      "captionsAudio": "Raro",
+      "captionsTuggi": "In ogni storia",
+      "notApplicable": "Non applicabile",
+      "footnote": "TUGGI funziona insieme alla tua app di navigazione e alla tua musica."
+    },
+    "Sticky": {
+      "text": "Inizia gratis — 24h illimitate",
+      "cta": "Scarica"
     }
   },
   "Contact": {
@@ -581,8 +623,8 @@
     "rootDescription": "TUGGI ti racconta la storia di un luogo ad alta voce appena ti avvicini. Funziona offline, in 8+ lingue, gratis su iOS e Android.",
     "homeTitle": "Audioguida di Viaggio — Storie che Partono Mentre Passi | TUGGI",
     "homeDescription": "TUGGI ti racconta la storia di ogni luogo ad alta voce mentre passi, comunque tu viaggi. Un'audioguida di viaggio autoguidata, offline e nella tua lingua. Inizia gratis.",
-    "driveTitle": "Audioguide Autoguidate, Offline",
-    "driveDescription": "Scarica TUGGI: audioguide autoguidate che partono automaticamente mentre viaggi — in auto, a piedi o in bici. A mani libere, offline, sottotitoli, 8+ lingue. Gratis per iniziare.",
+    "driveTitle": "Piani e Prezzi — Pass di Viaggio",
+    "driveDescription": "Inizia gratis con 24h di audio illimitato. Pass di 7 o 30 giorni a pagamento unico, senza rinnovo automatico, e piano annuale. Prezzo locale su App Store e Google Play.",
     "cityOsTitle": "City OS: Governance Territoriale e Audio a Mani Libere",
     "cityOsDescription": "Porta le storie della tua destinazione a ogni visitatore, nella sua lingua, mentre esplora. Accessibile in tutto il territorio, e il controllo resta tuo.",
     "fleetsTitle": "Flotte | Ricavi Accessori per Noleggi Auto",

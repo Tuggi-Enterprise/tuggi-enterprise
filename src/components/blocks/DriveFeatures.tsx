@@ -1,71 +1,62 @@
-import { useTranslations } from "next-intl";
-import { WifiOff, AlertTriangle, Globe, Captions, HeartHandshake } from "lucide-react";
+"use client";
 
+import { useTranslations } from "next-intl";
+import { motion } from "framer-motion";
+import { WifiOff, Globe, Accessibility as AccessibilityIcon } from "lucide-react";
+
+const EASE: [number, number, number, number] = [0.21, 0.47, 0.32, 0.98];
+const container = { hidden: {}, show: { transition: { staggerChildren: 0.08 } } };
+const item = {
+  hidden: { opacity: 0, y: 16 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: EASE } },
+};
+
+/**
+ * "Included in every pass" — three cards: offline, multilingual audio, and a
+ * single merged accessibility card (captions for deaf/HoH + audio-first for low
+ * vision). The old "Fines & Hazard Alerts" card was removed (feature doesn't
+ * exist) and the two accessibility cards were merged into one.
+ */
 export function DriveFeatures() {
   const t = useTranslations("Drive.Features");
   const a = useTranslations("Drive.Accessibility");
 
+  const cards = [
+    { icon: WifiOff, title: t("feat1Title"), body: t("feat1Desc") },
+    { icon: Globe, title: t("feat3Title"), body: t("feat3Desc") },
+    { icon: AccessibilityIcon, title: a("title"), body: a("body") },
+  ];
+
   return (
     <section className="py-24 bg-tuggi-bg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
         <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-tuggi-dark tracking-tight mb-4">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-tuggi-dark tracking-tight">
             {t("title")}
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
-          
-          {/* Feature 1 */}
-          <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-start hover:shadow-md transition-shadow">
-            <div className="w-14 h-14 bg-slate-100 rounded-xl flex items-center justify-center mb-6">
-              <WifiOff className="w-7 h-7 text-tuggi-dark" />
-            </div>
-            <h3 className="text-2xl font-bold text-tuggi-dark mb-4">{t("feat1Title")}</h3>
-            <p className="text-slate-600 leading-relaxed">{t("feat1Desc")}</p>
-          </div>
-
-          {/* Feature 2 */}
-          <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-start hover:shadow-md transition-shadow">
-            <div className="w-14 h-14 bg-rose-50 rounded-xl flex items-center justify-center mb-6">
-              <AlertTriangle className="w-7 h-7 text-rose-500" />
-            </div>
-            <h3 className="text-2xl font-bold text-tuggi-dark mb-4">{t("feat2Title")}</h3>
-            <p className="text-slate-600 leading-relaxed">{t("feat2Desc")}</p>
-          </div>
-
-          {/* Feature 3 */}
-          <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-start hover:shadow-md transition-shadow">
-            <div className="w-14 h-14 bg-tuggi-primary/10 rounded-xl flex items-center justify-center mb-6">
-              <Globe className="w-7 h-7 text-tuggi-primary" />
-            </div>
-            <h3 className="text-2xl font-bold text-tuggi-dark mb-4">{t("feat3Title")}</h3>
-            <p className="text-slate-600 leading-relaxed">{t("feat3Desc")}</p>
-          </div>
-
-          {/* Feature 4 */}
-          <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-start hover:shadow-md transition-shadow">
-            <div className="w-14 h-14 bg-emerald-50 rounded-xl flex items-center justify-center mb-6">
-              <Captions className="w-7 h-7 text-emerald-500" />
-            </div>
-            <h3 className="text-2xl font-bold text-tuggi-dark mb-4">{t("feat4Title")}</h3>
-            <p className="text-slate-600 leading-relaxed">{t("feat4Desc")}</p>
-          </div>
-
-        </div>
-
-        {/* Accessibility callout */}
-        <div className="mt-10 flex items-start gap-6 bg-emerald-50 border border-emerald-200 rounded-2xl p-8">
-          <div className="w-14 h-14 bg-emerald-100 rounded-xl flex items-center justify-center flex-shrink-0">
-            <HeartHandshake className="w-7 h-7 text-emerald-600" />
-          </div>
-          <div>
-            <h3 className="text-xl font-bold text-tuggi-dark mb-2">{a("title")}</h3>
-            <p className="text-slate-600 leading-relaxed">{a("body")}</p>
-          </div>
-        </div>
-
+        <motion.div
+          variants={container}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-80px" }}
+          className="grid grid-cols-1 md:grid-cols-3 gap-8"
+        >
+          {cards.map((card, i) => (
+            <motion.div
+              key={i}
+              variants={item}
+              className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-start transition-shadow hover:shadow-md"
+            >
+              <div className="w-14 h-14 bg-tuggi-primary/10 rounded-xl flex items-center justify-center mb-6">
+                <card.icon className="w-7 h-7 text-tuggi-primary" aria-hidden="true" />
+              </div>
+              <h3 className="text-2xl font-bold text-tuggi-dark mb-4">{card.title}</h3>
+              <p className="text-slate-600 leading-relaxed">{card.body}</p>
+            </motion.div>
+          ))}
+        </motion.div>
       </div>
     </section>
   );

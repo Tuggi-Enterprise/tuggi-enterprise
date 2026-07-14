@@ -168,14 +168,14 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
             </div>
 
             <Link 
-              href="/drive" 
+              href="/download"
               className="hidden sm:block bg-[#FF6F00] text-[#0B1220] font-bold rounded-xl px-7 py-3 hover:bg-[#E65F00] transition-all shadow-md hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6F00] focus:ring-offset-2 active:scale-95"
             >
               {t("downloadApp")}
             </Link>
             
             <Link 
-              href="/drive" 
+              href="/download"
               className="sm:hidden bg-[#FF6F00] text-[#0B1220] p-3 rounded-xl hover:bg-[#E65F00] transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6F00] active:scale-95"
               aria-label={t("downloadApp")}
             >
@@ -285,7 +285,7 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
         {/* Corporate CTA Footer */}
         <div className="p-6 bg-slate-50 border-t border-gray-100 shrink-0">
           <Link 
-            href="/drive" 
+            href="/download"
             onClick={() => setIsMobileMenuOpen(false)}
             className="flex items-center justify-center gap-2 bg-[#FF6F00] text-[#0B1220] font-bold rounded-xl px-6 py-4 text-sm transition-all hover:bg-[#E65F00] shadow-lg shadow-orange-500/10 active:scale-[0.98]"
           >

@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { useState, useRef } from "react";
-import { Play, Pause, Volume2, Navigation } from "lucide-react";
+import { Play, Volume2, Navigation } from "lucide-react";
 
 interface AudioCardProps {
   title: string;
@@ -15,9 +15,22 @@ interface AudioCardProps {
   pauseLabel: string;
 }
 
-function AudioCard({ 
-  title, 
-  location, 
+/** 4-bar CSS equalizer shown while a clip plays (freezes mid-height under
+ *  reduced motion — see globals.css). Matches the home audio section. */
+function Equalizer() {
+  return (
+    <span className="flex items-end gap-[3px] h-5" aria-hidden="true">
+      <span className="tuggi-eq-bar w-1 h-full rounded-full bg-white" />
+      <span className="tuggi-eq-bar w-1 h-full rounded-full bg-white" />
+      <span className="tuggi-eq-bar w-1 h-full rounded-full bg-white" />
+      <span className="tuggi-eq-bar w-1 h-full rounded-full bg-white" />
+    </span>
+  );
+}
+
+function AudioCard({
+  title,
+  location,
   dirSrc, 
   descSrc, 
   directionalLabel, 
@@ -66,7 +79,7 @@ function AudioCard({
           className="w-12 h-12 rounded-full bg-tuggi-primary text-white flex items-center justify-center hover:bg-blue-500 transition-colors flex-shrink-0 shadow-[0_0_15px_rgba(0,168,232,0.3)] focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-tuggi-dark"
           aria-label={isPlaying ? pauseLabel : playLabel}
         >
-          {isPlaying ? <Pause className="w-5 h-5" aria-hidden="true" /> : <Play className="w-5 h-5 ml-1" aria-hidden="true" />}
+          {isPlaying ? <Equalizer /> : <Play className="w-5 h-5 ml-1" aria-hidden="true" />}
         </button>
       </div>
 
@@ -142,6 +155,7 @@ export function DriveSamples() {
           />
         </div>
 
+        {/* TODO(Leandro): confirm 50k plays stat is accurate; if not confirmed, delete this line */}
         <p className="text-center text-slate-500 text-sm font-medium">
           {t("socialProof")}
         </p>

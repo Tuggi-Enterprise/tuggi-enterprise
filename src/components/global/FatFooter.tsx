@@ -1,7 +1,7 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import Image from "next/image";
-import { APP_STORE_URL, PLAY_STORE_URL } from "@/lib/app-meta";
+import { FooterStoreBadges } from "@/components/blocks/FooterStoreBadges";
 
 export function FatFooter() {
   const t = useTranslations("Footer");
@@ -33,7 +33,7 @@ export function FatFooter() {
             <h3 className="text-xs font-bold tracking-widest text-white uppercase mb-6">
               {t("driveB2c")}
             </h3>
-            <Link href="/drive" className="text-sm text-slate-400 hover:text-white transition-colors duration-200 block mb-3 focus-visible:ring-2 focus-visible:ring-tuggi-primary focus:outline-none rounded-sm w-max">
+            <Link href="/download" className="text-sm text-slate-400 hover:text-white transition-colors duration-200 block mb-3 focus-visible:ring-2 focus-visible:ring-tuggi-primary focus:outline-none rounded-sm w-max">
               {t("appDownload")}
             </Link>
             <Link href="/drive" className="text-sm text-slate-400 hover:text-white transition-colors duration-200 block mb-3 focus-visible:ring-2 focus-visible:ring-tuggi-primary focus:outline-none rounded-sm w-max">
@@ -42,36 +42,7 @@ export function FatFooter() {
             <Link href="/tours" className="text-sm text-slate-400 hover:text-white transition-colors duration-200 block mb-3 focus-visible:ring-2 focus-visible:ring-tuggi-primary focus:outline-none rounded-sm w-max">
               {t("audioTours")}
             </Link>
-            <div className="flex flex-col gap-3 mt-6">
-              <a
-                href={APP_STORE_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:opacity-80 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-lg w-max"
-              >
-                <Image
-                  src="/images/badges/app-store-badge.svg"
-                  alt="Download on the App Store"
-                  width={120}
-                  height={35}
-                  className="h-9 w-auto"
-                />
-              </a>
-              <a
-                href={PLAY_STORE_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:opacity-80 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-lg w-max"
-              >
-                <Image 
-                  src="/images/badges/google-play-badge.svg"
-                  alt="Get it on Google Play"
-                  width={120}
-                  height={35}
-                  className="h-9 w-auto"
-                />
-              </a>
-            </div>
+            <FooterStoreBadges />
           </div>
 
           {/* Column 2: Enterprise (B2B/B2G) */}
