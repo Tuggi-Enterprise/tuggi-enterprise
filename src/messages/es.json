@@ -66,7 +66,7 @@
     "Hero": {
       "title": "Tú te mueves, TUGGI cuenta la historia de cada lugar.",
       "subtitle": "Enciende TUGGI, ponte en movimiento y guarda el teléfono. Con el GPS reconoce cada punto de interés del camino y cuenta su historia en voz alta. Vale a pie, en bici, en coche o en transporte público, sin conexión y en tu idioma.",
-      "trustLine": "Empieza gratis · Funciona sin conexión · Audio en 8+ idiomas",
+      "trustLine": "Empieza gratis · Funciona sin conexión · Audio en 10 idiomas",
       "appStoreAlt": "Descarga TUGGI en la App Store",
       "playStoreAlt": "Consigue TUGGI en Google Play",
       "phoneAlt": "Mapa de TUGGI que muestra historias en audio, eventos y rutas cercanas",
@@ -123,7 +123,7 @@
       "feat5Body": "La app lo suma todo: lugares descubiertos, ciudades, kilómetros recorridos y horas de audio. Se vuelve un registro de tus viajes que puedes enseñar a tus amigos.",
       "feat5Alt": "Pasaporte del explorador en TUGGI con descubrimientos, ciudades, kilómetros y horas de audio",
       "feat6Title": "Hecho para llevar a cualquier parte",
-      "feat6Body": "Descarga los mapas y usa todo sin internet. Controla la guía por voz con Siri o Google, sin sacar el teléfono del bolsillo. Y escucha en 8+ idiomas, como mejor te venga.",
+      "feat6Body": "Descarga los mapas y usa todo sin internet. Controla la guía por voz con Siri o Google, sin sacar el teléfono del bolsillo. Y escucha en 10 idiomas, como mejor te venga.",
       "feat6AltTools": "Herramientas del explorador en TUGGI, con mapas sin conexión y comandos de voz",
       "feat6AltLanguages": "Selector de idioma de audio de TUGGI con inglés, español, italiano, portugués y más"
     },
@@ -325,14 +325,20 @@
       "pass3Action": "Suscribirse al Plan Anual",
       "pass3PriceLine": "Desde unos céntimos al día",
       "storeNote": "Verás tu precio local exacto en la App Store o Google Play.",
-      "pass2Feat3": "Los 8+ idiomas incluidos",
+      "pass2Feat3": "Los 10 idiomas incluidos",
       "pass3Feat3": "Mapas y audio 100% sin conexión",
       "anchor": "Menos que un solo tour guiado — y narra todo tu viaje.",
       "chip1": "Sin tarjeta",
       "chip2": "Pago único",
       "chip3": "Sin renovación automática",
       "periodOnce": "pago único",
-      "periodYear": "por año"
+      "periodYear": "por año",
+      "freeTitle": "Gratis",
+      "free1": "24 horas de audio ilimitado al descargar",
+      "free2": "Después de las 24h, historias gratis limitadas al día",
+      "free3": "Sin tarjeta",
+      "freeAction": "Empezar gratis",
+      "annualNote": "¿Exploras todo el año? El pase anual está disponible dentro de la app."
     },
     "Conversion": {
       "title": "Cada lugar tiene una historia. Empieza a escuchar hoy.",
@@ -377,7 +383,7 @@
       "rowLang": "Idiomas",
       "langGuide": "El idioma del guía",
       "langAudio": "Pocos por tour",
-      "langTuggi": "8+ idiomas",
+      "langTuggi": "10 idiomas",
       "rowRoute": "Recorrido",
       "routeGuide": "El itinerario del guía",
       "routeAudio": "Una ruta fija a seguir",
@@ -620,7 +626,7 @@
   },
   "Metadata": {
     "rootTitle": "TUGGI — Audioguía de Viaje",
-    "rootDescription": "TUGGI te cuenta la historia de un lugar en voz alta en cuanto te acercas. Funciona sin conexión, en 8+ idiomas, gratis para empezar en iOS y Android.",
+    "rootDescription": "TUGGI te cuenta la historia de un lugar en voz alta en cuanto te acercas. Funciona sin conexión, en 10 idiomas, gratis para empezar en iOS y Android.",
     "homeTitle": "Audioguía de Viaje — Historias que Suenan al Pasar | TUGGI",
     "homeDescription": "TUGGI te cuenta la historia de cada lugar en voz alta mientras pasas, viajes como viajes. Una audioguía de viaje autoguiada, sin conexión y en tu idioma. Empieza gratis.",
     "driveTitle": "Planes y Precios — Pases de Viaje",
@@ -790,5 +796,21 @@
     "hubEmpty": "Pronto habrá nuevas audioguías en tu idioma. Vuelve en breve.",
     "viewAllInCountry": "Ver las {count}",
     "audioLanguages": "Idiomas del audio"
+  },
+  "Languages": {
+    "title": "Escucha en tu idioma",
+    "subtitle": "Del portugués al coreano, con acentos distintos para que te sientas en casa. Encuentra el tuyo abajo.",
+    "langs": [
+      "Portugués (BR)",
+      "Portugués (PT)",
+      "Inglés (EE. UU.)",
+      "Inglés (UK)",
+      "Español",
+      "Italiano",
+      "Francés",
+      "Alemán",
+      "Mandarín",
+      "Coreano"
+    ]
   }
 }

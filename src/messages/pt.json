@@ -49,7 +49,7 @@
     "FAQ": {
       "title": "Perguntas frequentes",
       "q1": "Qual é o melhor app de áudio-guia autoguiado?",
-      "a1": "O TUGGI é um áudio-guia de viagem autoguiado para iOS e Android. Ele toca histórias em áudio sobre os lugares ao seu redor automaticamente, ativadas por GPS — sem usar as mãos e sem olhar a tela — enquanto você dirige, caminha ou pedala. Funciona 100% offline, tem 8+ idiomas com legendas e é grátis para começar.",
+      "a1": "O TUGGI é um áudio-guia de viagem autoguiado para iOS e Android. Ele toca histórias em áudio sobre os lugares ao seu redor automaticamente, ativadas por GPS — sem usar as mãos e sem olhar a tela — enquanto você dirige, caminha ou pedala. Funciona 100% offline, tem 10 idiomas com legendas e é grátis para começar.",
       "q2": "Existe um app de áudio-guia de viagem grátis?",
       "a2": "Sim. O TUGGI é grátis para baixar e já começa com histórias diárias. Para ouvir sem limites, você libera um Travel Pass (7 ou 30 dias, pagamento único) ou o plano anual. Você vê o preço exato na App Store ou no Google Play.",
       "q3": "Qual é um bom app de viagem para road trip?",
@@ -57,7 +57,7 @@
       "q4": "Dá para explorar uma cidade sem guia turístico?",
       "a4": "Sim. O TUGGI funciona como um áudio-guia autoguiado para você explorar no seu ritmo, sem contratar guia humano nem tour fixo. As histórias tocam sozinhas ao chegar em cada ponto de interesse, a pé ou de carro.",
       "q5": "O TUGGI funciona offline e no meu idioma?",
-      "a5": "Sim. Baixe a rota antes e ouça sem sinal e sem custo de roaming. O TUGGI oferece áudio em 8+ idiomas com legendas sincronizadas para viajantes surdos e com deficiência auditiva.",
+      "a5": "Sim. Baixe a rota antes e ouça sem sinal e sem custo de roaming. O TUGGI oferece áudio em 10 idiomas com legendas sincronizadas para viajantes surdos e com deficiência auditiva.",
       "q6": "Como o TUGGI é diferente do Google Maps ou de um guia humano?",
       "a6": "O TUGGI não é um app de navegação e não substitui o seu GPS — ele roda junto e adiciona narração em áudio autoguiada sobre os lugares por onde você passa. Diferente de um guia humano, está disponível 24/7, em vários idiomas, sem usar as mãos e grátis para começar.",
       "q7": "Para quem o TUGGI é indicado?",
@@ -66,7 +66,7 @@
     "Hero": {
       "title": "Você se move, o TUGGI conta a história de cada lugar.",
       "subtitle": "Ligue o TUGGI, comece a se mover e guarde o celular. Pelo GPS ele reconhece cada ponto turístico do caminho e conta a história em voz alta. Vale a pé, de bike, de carro ou no transporte público, offline e no seu idioma.",
-      "trustLine": "Comece grátis · Funciona offline · Áudio em 8+ idiomas",
+      "trustLine": "Comece grátis · Funciona offline · Áudio em 10 idiomas",
       "appStoreAlt": "Baixe o TUGGI na App Store",
       "playStoreAlt": "Baixe o TUGGI no Google Play",
       "phoneAlt": "Mapa do TUGGI mostrando histórias em áudio, eventos e trilhas por perto",
@@ -123,7 +123,7 @@
       "feat5Body": "O app soma tudo: lugares descobertos, cidades, quilômetros percorridos e horas de áudio. Vira um histórico das suas viagens que dá pra mostrar pros amigos.",
       "feat5Alt": "Passaporte do explorador no TUGGI com descobertas, cidades, quilômetros e horas de áudio",
       "feat6Title": "Feito pra levar pra qualquer lugar",
-      "feat6Body": "Baixe os mapas e use tudo sem internet. Controle o guia por voz com a Siri ou o Google, sem tirar o celular do bolso. E ouça em 8+ idiomas, do jeito que for melhor pra você.",
+      "feat6Body": "Baixe os mapas e use tudo sem internet. Controle o guia por voz com a Siri ou o Google, sem tirar o celular do bolso. E ouça em 10 idiomas, do jeito que for melhor pra você.",
       "feat6AltTools": "Ferramentas do explorador no TUGGI, incluindo mapas offline e comandos de voz",
       "feat6AltLanguages": "Seletor de idioma de áudio do TUGGI com inglês, espanhol, italiano, português e mais"
     },
@@ -325,14 +325,20 @@
       "pass3Action": "Assinar Plano Anual",
       "pass3PriceLine": "A partir de alguns centavos por dia",
       "storeNote": "Você verá seu preço local exato na App Store ou Google Play.",
-      "pass2Feat3": "Todos os 8+ idiomas incluídos",
+      "pass2Feat3": "Todos os 10 idiomas incluídos",
       "pass3Feat3": "Mapas e áudio 100% offline",
       "anchor": "Menos que um único tour guiado — e narra a viagem inteira.",
       "chip1": "Sem cartão",
       "chip2": "Pagamento único",
       "chip3": "Sem renovação automática",
       "periodOnce": "pagamento único",
-      "periodYear": "por ano"
+      "periodYear": "por ano",
+      "freeTitle": "Grátis",
+      "free1": "24 horas de áudio ilimitado ao baixar",
+      "free2": "Depois das 24h, histórias grátis limitadas por dia",
+      "free3": "Sem cartão",
+      "freeAction": "Começar grátis",
+      "annualNote": "Explora o ano inteiro? O passe anual está disponível dentro do app."
     },
     "Conversion": {
       "title": "Todo lugar tem uma história. Comece a ouvir hoje.",
@@ -377,7 +383,7 @@
       "rowLang": "Idiomas",
       "langGuide": "O idioma do guia",
       "langAudio": "Poucos por tour",
-      "langTuggi": "8+ idiomas",
+      "langTuggi": "10 idiomas",
       "rowRoute": "Caminho",
       "routeGuide": "O roteiro do guia",
       "routeAudio": "Rota fixa a seguir",
@@ -620,10 +626,10 @@
   },
   "Metadata": {
     "rootTitle": "TUGGI — Guia de Viagem em Áudio",
-    "rootDescription": "O TUGGI conta a história de um lugar em voz alta assim que você chega perto. Funciona offline, em 8+ idiomas, grátis para começar no iOS e no Android.",
+    "rootDescription": "O TUGGI conta a história de um lugar em voz alta assim que você chega perto. Funciona offline, em 10 idiomas, grátis para começar no iOS e no Android.",
     "homeTitle": "Guia de Viagem em Áudio - Histórias que Tocam Enquanto Você Passa | TUGGI",
     "homeDescription": "O TUGGI conta a história de cada lugar em voz alta enquanto você passa, viaje como viajar. Áudio-guia de viagem autoguiado, offline e no seu idioma. Comece grátis.",
-    "driveTitle": "Planos e Preços — Passes de Viagem",
+    "driveTitle": "Planos e Preços - Passes de Viagem",
     "driveDescription": "Comece grátis com 24h de áudio ilimitado. Passes de 7 ou 30 dias com pagamento único, sem renovação automática, e plano anual. Preço local na App Store e Google Play.",
     "cityOsTitle": "City OS: Governança Territorial e Áudio Hands-Free",
     "cityOsDescription": "Leve as histórias do seu destino a cada visitante, no idioma dele, na hora em que ele explora. Acessível em todo o território, e o controle continua sendo seu.",
@@ -790,5 +796,21 @@
     "hubEmpty": "Novos roteiros de áudio chegam em breve no seu idioma. Volte logo.",
     "viewAllInCountry": "Ver todas as {count}",
     "audioLanguages": "Idiomas do áudio"
+  },
+  "Languages": {
+    "title": "Ouça no seu idioma",
+    "subtitle": "Do português ao coreano, com sotaques diferentes pra você se sentir em casa. Ache o seu abaixo.",
+    "langs": [
+      "Português (BR)",
+      "Português (PT)",
+      "Inglês (EUA)",
+      "Inglês (UK)",
+      "Espanhol",
+      "Italiano",
+      "Francês",
+      "Alemão",
+      "Mandarim",
+      "Coreano"
+    ]
   }
 }

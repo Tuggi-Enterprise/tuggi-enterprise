@@ -7,6 +7,7 @@ import { DriveFeatures } from "@/components/blocks/DriveFeatures";
 import { DriveComparison } from "@/components/blocks/DriveComparison";
 import { DriveConversion } from "@/components/blocks/DriveConversion";
 import { DriveFAQ } from "@/components/blocks/DriveFAQ";
+import { LanguagesStrip } from "@/components/blocks/LanguagesStrip";
 import { DriveStickyCta } from "@/components/blocks/DriveStickyCta";
 import { HomeMotionConfig } from "@/components/blocks/HomeMotionConfig";
 import { buildAlternates, buildOpenGraph, buildTwitterCard, defaultRobots } from "@/lib/seo";
@@ -66,6 +67,7 @@ export default async function DrivePage({
         <DrivePricing />
         <DriveSamples />
         <DriveFeatures />
+        <LanguagesStrip />
         <DriveComparison />
         <DriveFAQ />
         <DriveConversion />

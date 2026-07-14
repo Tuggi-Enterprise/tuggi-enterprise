@@ -24,6 +24,6 @@ export const APP_FEATURES = [
   "Self-guided audio stories that trigger automatically by GPS location",
   "Hands-free, screen-off playback while you drive, walk, or cycle",
   "Works fully offline — download routes in advance, no roaming",
-  "Audio in 8+ languages with synchronized closed captions",
+  "Audio in 10 languages with synchronized closed captions",
   "Free to start; optional 7-day, 30-day, or annual Travel Pass",
 ];

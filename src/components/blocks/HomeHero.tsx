@@ -83,8 +83,7 @@ export function HomeHero() {
               </a>
             </div>
 
-            {/* Language count lives in Home.Hero.trustLine ("8+"); bump to "10"
-                if KO/ZH TTS is confirmed live. */}
+            {/* Language count lives in Home.Hero.trustLine (10 audio languages). */}
             <p className="mt-6 text-sm font-medium text-tuggi-slate">{t("trustLine")}</p>
           </div>
 
