@@ -142,6 +142,12 @@
       "body": "Aziende di transfer, flotte a noleggio e destinazioni usano TUGGI per dare a ogni viaggiatore una guida locale.",
       "fleetsLink": "Per flotte e operatori",
       "cityOsLink": "Per destinazioni"
+    },
+    "Context": {
+      "title": "Cos’è TUGGI",
+      "p1": "TUGGI è una guida di viaggio audio autoguidata per iPhone e Android. Usa il GPS per riconoscere i luoghi che attraversi e racconta la storia di ciascuno ad alta voce, al momento giusto, senza che tu cerchi nulla sullo schermo. Funziona come viaggi: a piedi, in bici, in auto, in autobus o in metro.",
+      "p2": "Le storie partono da sole quando ti avvicini a un punto di interesse. Poiché tutto funziona offline, scarichi la città prima di partire e ascolti senza internet e senza consumare dati in roaming. E dato che ogni storia ha i sottotitoli sincronizzati, i viaggiatori sordi o con problemi di udito la seguono sullo schermo.",
+      "p3": "TUGGI non sostituisce la tua app di navigazione: funziona insieme a lei, senza intralciare la mappa o la musica, e aggiunge solo la narrazione culturale del percorso. Inizia gratis, scegli tra 10 lingue e trasforma qualsiasi tragitto in un viaggio con una storia."
     }
   },
   "CityOS": {
@@ -403,6 +409,12 @@
     "Sticky": {
       "text": "Inizia gratis — 24h illimitate",
       "cta": "Scarica"
+    },
+    "PlansExplainer": {
+      "title": "Come funzionano i piani di TUGGI",
+      "p1": "Puoi usare TUGGI gratis: al download hai 24 ore di audio illimitato, senza carta e senza abbonarti a nulla. Dopo, l’app resta gratuita con un numero limitato di storie al giorno, così esplori con calma prima di decidere.",
+      "p2": "Quando vuoi ascoltare senza limiti, scegli un pass a pagamento unico: quello da 7 giorni per un viaggio breve, o quello da 30 giorni per vacanze più lunghe. Sono a pagamento unico, senza rinnovo automatico. Chi viaggia tutto l’anno trova il piano annuale nell’app.",
+      "p3": "Ogni pass include mappe e audio 100% offline, sottotitoli sincronizzati e tutte le 10 lingue. I prezzi variano per paese e vedi il prezzo esatto sull’App Store o su Google Play prima di confermare. Non viene addebitato nulla senza la tua conferma nello store."
     }
   },
   "Contact": {

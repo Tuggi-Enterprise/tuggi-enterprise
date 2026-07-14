@@ -142,6 +142,12 @@
       "body": "Empresas de transfer, frotas de aluguel e destinos usam o TUGGI para dar a cada viajante um guia local.",
       "fleetsLink": "Para frotas e operadores",
       "cityOsLink": "Para destinos"
+    },
+    "Context": {
+      "title": "O que é o TUGGI",
+      "p1": "O TUGGI é um áudio-guia de viagem autoguiado para iPhone e Android. Ele usa o GPS para reconhecer os lugares por onde você passa e conta a história de cada um em voz alta, na hora certa, sem você precisar procurar nada na tela. Funciona do jeito que você viaja: a pé, de bike, de carro, de ônibus ou no metrô.",
+      "p2": "As histórias tocam sozinhas quando você se aproxima de um ponto turístico. Como tudo funciona offline, você baixa a cidade antes de sair e ouve sem internet e sem gastar dados em roaming. E como o áudio vem com legenda sincronizada, viajantes surdos ou com baixa audição acompanham cada história pela tela.",
+      "p3": "O TUGGI não substitui o seu GPS de navegação: ele roda junto, sem atrapalhar o mapa nem a música, e só adiciona a narração cultural do caminho. Comece grátis, escolha entre 10 idiomas e transforme qualquer trajeto em uma viagem com história."
     }
   },
   "CityOS": {
@@ -403,6 +409,12 @@
     "Sticky": {
       "text": "Comece grátis — 24h ilimitadas",
       "cta": "Baixar"
+    },
+    "PlansExplainer": {
+      "title": "Como funcionam os planos do TUGGI",
+      "p1": "Dá pra usar o TUGGI de graça: ao baixar, você tem 24 horas de áudio ilimitado, sem cartão e sem assinar nada. Depois desse período, o app continua gratuito com um número limitado de histórias por dia, então você explora no seu ritmo antes de decidir.",
+      "p2": "Quando quiser ouvir sem limites, escolha um passe de pagamento único: o de 7 dias, ideal pra uma viagem curta, ou o de 30 dias, pra férias mais longas. São pagamento único, sem renovação automática. Quem viaja o ano todo encontra o plano anual dentro do app.",
+      "p3": "Todos os passes incluem mapas e áudio 100% offline, legendas sincronizadas e os 10 idiomas. Os valores variam por país e você vê o preço exato na App Store ou no Google Play antes de confirmar. Nada é cobrado sem a sua confirmação na loja."
     }
   },
   "Contact": {

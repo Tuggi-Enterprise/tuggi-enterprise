@@ -6,6 +6,7 @@ import { HomeFeatureShowcase } from "@/components/blocks/HomeFeatureShowcase";
 import { HomeAudioSample } from "@/components/blocks/HomeAudioSample";
 import { HomeBusinessBand } from "@/components/blocks/HomeBusinessBand";
 import { HomeMotionConfig } from "@/components/blocks/HomeMotionConfig";
+import { ProseSection } from "@/components/blocks/ProseSection";
 import { FaqSection } from "@/components/blocks/FaqSection";
 import { buildAlternates, buildOpenGraph, buildTwitterCard, defaultRobots } from "@/lib/seo";
 
@@ -73,6 +74,7 @@ export default async function HomePage({
         <HomeHowItWorks />
         <HomeFeatureShowcase />
         <HomeAudioSample />
+        <ProseSection namespace="Home.Context" />
         <HomeBusinessBand />
         <FaqSection namespace="Home.FAQ" count={HOME_FAQ_COUNT} />
       </HomeMotionConfig>
