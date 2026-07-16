@@ -148,6 +148,14 @@
       "p1": "TUGGI is a self-guided audio travel guide for iPhone and Android. It uses GPS to recognize the places you pass and tells the story of each one out loud, at the right moment, without you searching for anything on the screen. It works however you travel: on foot, by bike, by car, by bus or on the metro.",
       "p2": "Stories start on their own as you get close to a point of interest. Because everything works offline, you download a city before you leave and listen with no internet and no roaming data. And since every story comes with synchronized captions, deaf and hard-of-hearing travelers follow along on screen.",
       "p3": "TUGGI does not replace your navigation app: it runs alongside it, without getting in the way of your map or your music, and simply adds the cultural narration of the route. Start free, pick from 10 languages, and turn any trip into a journey with a story."
+    },
+    "Coverage": {
+      "title": "Live in {count} countries",
+      "subtitle": "Stories already waiting at your destination.",
+      "americas": "Americas",
+      "europe": "Europe",
+      "more": "and {count} more countries around the world",
+      "cta": "See full coverage"
     }
   },
   "CityOS": {
