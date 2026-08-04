@@ -838,6 +838,7 @@
       "rural": "Rural"
     },
     "languagesCount": "{count, plural, one {# idioma} other {# idiomas}}",
+    "statesNavLabel": "Estados com roteiros",
     "audioLanguages": "Idiomas do áudio",
     "audioPause": "Pausar a prévia",
     "audioSeek": "Avançar na prévia",

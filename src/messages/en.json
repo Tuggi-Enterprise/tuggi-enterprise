@@ -838,6 +838,7 @@
       "rural": "Countryside"
     },
     "languagesCount": "{count, plural, one {# language} other {# languages}}",
+    "statesNavLabel": "States with routes",
     "audioLanguages": "Audio languages",
     "audioPause": "Pause preview",
     "audioSeek": "Seek within the preview",

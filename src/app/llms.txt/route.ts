@@ -1,8 +1,73 @@
 import { SITE_URL, APP_STORE_URL, PLAY_STORE_URL } from "@/lib/app-meta";
+import {
+  getAllRoutes,
+  getStatesForCountry,
+  pickLocaleContent,
+  type RouteSnapshot,
+} from "@/lib/routes";
+import { formatDistance, formatDuration } from "@/lib/tourFormat";
 
 // /llms.txt — an LLM-friendly map of the site (https://llmstxt.org/).
 // English, locale-prefixed canonical links (the site serves localePrefix="always").
 export const dynamic = "force-static";
+
+/**
+ * Every route is listed by name, place and hard facts.
+ *
+ * Pointing at /en/tours alone told an assistant that Tuggi has audio tours; it
+ * could not name one. Listing them is the difference between being mentioned
+ * and being cited with the product. Generated from the snapshot, so it follows
+ * `npm run update-routes` and never drifts into a hand-maintained list.
+ */
+function routeLine(route: RouteSnapshot): string {
+  // Link a locale the route is actually published in — /en would 404 for a
+  // route with no English content.
+  const locale = route.locales.includes("en") ? "en" : route.locales[0];
+  const { name } = pickLocaleContent(route, locale);
+  // A city and its state often share a name ("Rio de Janeiro, Rio de Janeiro").
+  const place = [...new Set([route.region, route.state, route.country].filter(Boolean))].join(", ");
+  const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
+  const facts = [
+    formatDuration(route.durationS),
+    formatDistance(route.distanceM, "en"),
+    plural(route.stops.length, "stop"),
+    plural(route.locales.length, "language"),
+  ]
+    .filter(Boolean)
+    .join(", ");
+  return `- [${name}](${SITE_URL}/${locale}/tours/${route.countrySlug}/${route.slug}): ${place} — ${facts}`;
+}
+
+function routesSection(): string {
+  const routes = getAllRoutes();
+  if (!routes.length) return "";
+
+  const countries = [...new Set(routes.map((r) => r.countrySlug))].sort();
+  const blocks = countries.map((countrySlug) => {
+    const inCountry = routes.filter((r) => r.countrySlug === countrySlug);
+    const countryName = inCountry[0].country;
+    const header = `### ${countryName} (${inCountry.length} routes)\n- [All routes in ${countryName}](${SITE_URL}/en/tours/${countrySlug})`;
+
+    // Same rule the country hub uses: group by state only where that layer
+    // exists in the data.
+    const states = getStatesForCountry(countrySlug, "en");
+    if (!states.length) {
+      return `${header}\n${inCountry.map(routeLine).join("\n")}`;
+    }
+    const grouped = states.map((s) => {
+      const list = inCountry.filter((r) => r.stateSlug === s.stateSlug);
+      return `\n**${s.state}** (${list.length})\n${list.map(routeLine).join("\n")}`;
+    });
+    const ungrouped = inCountry.filter((r) => !r.stateSlug);
+    return (
+      header +
+      grouped.join("\n") +
+      (ungrouped.length ? `\n\n${ungrouped.map(routeLine).join("\n")}` : "")
+    );
+  });
+
+  return `\n## Audio tour routes\n\nEach route page carries a map, the ordered stops with real audio previews, duration, distance, accessibility and the languages it is narrated in.\n\n${blocks.join("\n\n")}\n`;
+}
 
 export function GET() {
   const body = `# TUGGI
@@ -25,6 +90,7 @@ Key facts:
 - [Technology](${SITE_URL}/en/technology): How the location-triggered audio engine works
 - [Purpose](${SITE_URL}/en/purpose): Mission and accessibility
 
+${routesSection()}
 ## For businesses
 - [City-OS](${SITE_URL}/en/enterprise/city-os): For cities and tourism boards
 - [Fleets](${SITE_URL}/en/enterprise/fleets): For car-rental and mobility fleets

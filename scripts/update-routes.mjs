@@ -113,6 +113,37 @@ function countrySlugOf(rawCountry) {
   return MAP[s] || s;
 }
 
+/**
+ * Resolve the state (province / federative unit) a route belongs to.
+ *
+ * Priority:
+ *   1. metadata.state — an explicit authored override. Same pattern country and
+ *      region already use, so it needs no migration. This is the escape hatch
+ *      for genuinely interstate routes, where counting POIs picks the wrong one.
+ *   2. The state most of the route's linked POIs sit in.
+ *   3. null — and that is a real answer, not a failure.
+ *
+ * There is deliberately NO fallback to `region`: region holds things like
+ * "Açores — São Miguel" and "Vale do Café", which are not states. Dressing one
+ * up as a state would put a lie in the URL and in the page hierarchy. A country
+ * whose POIs carry no state (Portugal — the division there is the district)
+ * simply is not grouped by state.
+ */
+function resolveState(metadata, stops, attractionById) {
+  const override = (metadata?.state ?? "").toString().trim();
+  if (override) return override;
+
+  const counts = new Map();
+  for (const stop of stops) {
+    const state = stop.attractionId ? attractionById.get(stop.attractionId)?.state : null;
+    if (state) counts.set(state, (counts.get(state) ?? 0) + 1);
+  }
+  if (!counts.size) return null;
+
+  // Ties break on the name so the snapshot is reproducible run to run.
+  return [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0][0];
+}
+
 /** Parse a possibly-stringified jsonb column into an object/array. */
 function parseJson(v, fallback) {
   if (v == null) return fallback;
@@ -386,12 +417,16 @@ for (const { row, waypoints, metadata } of parsedRoutes) {
     };
   }).filter(s => s.name || (s.lat != null && s.lng != null));
 
+  const state = resolveState(metadata, stops, attractionById);
+
   routes.push({
     id: row.id,
     slug,
     country,
     countrySlug,
     region,
+    state,
+    stateSlug: state ? slugify(state) : null,
     updatedAt: row.updated_at ?? null,
     distanceM: typeof metadata.distance === "number" ? metadata.distance : null,
     durationS: typeof metadata.duration === "number" ? metadata.duration : null,
@@ -412,6 +447,24 @@ for (const { row, waypoints, metadata } of parsedRoutes) {
 
 routes.sort((a, b) => (a.country || "").localeCompare(b.country || "") || a.slug.localeCompare(b.slug));
 
+// A state slug will become a URL segment sitting exactly where route slugs sit
+// today. If the two ever collide inside a country, one of the pages silently
+// shadows the other — so fail the snapshot instead of shipping it.
+{
+  const routeSlugs = new Map();
+  for (const r of routes) {
+    if (!routeSlugs.has(r.countrySlug)) routeSlugs.set(r.countrySlug, new Set());
+    routeSlugs.get(r.countrySlug).add(r.slug);
+  }
+  const clashes = routes
+    .filter((r) => r.stateSlug && routeSlugs.get(r.countrySlug).has(r.stateSlug))
+    .map((r) => `${r.countrySlug}/${r.stateSlug}`);
+  if (clashes.length) {
+    console.error(`❌  slug de estado colide com slug de rota: ${[...new Set(clashes)].join(", ")}`);
+    process.exit(1);
+  }
+}
+
 const snapshot = {
   generatedAt: new Date().toISOString(),
   totalRoutes: routes.length,
@@ -427,6 +480,15 @@ console.log("");
 console.log(`✅  Snapshot saved → src/data/routes-snapshot.json (${routes.length} routes)`);
 const byCountry = {};
 routes.forEach(r => { byCountry[r.country] = (byCountry[r.country] || 0) + 1; });
-Object.entries(byCountry).forEach(([c, n]) => console.log(`     ${String(n).padStart(3)}  ${c}`));
+Object.entries(byCountry).forEach(([c, n]) => {
+  console.log(`     ${String(n).padStart(3)}  ${c}`);
+  const inCountry = routes.filter(r => r.country === c);
+  const stateless = inCountry.filter(r => !r.state).length;
+  const byState = {};
+  inCountry.forEach(r => { if (r.state) byState[r.state] = (byState[r.state] || 0) + 1; });
+  Object.entries(byState).sort((a, b) => b[1] - a[1])
+    .forEach(([s, n2]) => console.log(`          ${String(n2).padStart(3)}  ${s}`));
+  if (stateless) console.log(`          ${String(stateless).padStart(3)}  (sem estado — não agrupa)`);
+});
 console.log("");
 console.log("👉  Commit src/data/routes-snapshot.json and push to deploy.");

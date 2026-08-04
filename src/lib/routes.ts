@@ -47,6 +47,13 @@ export interface RouteSnapshot {
   country: string;
   countrySlug: string;
   region: string | null;
+  /**
+   * State / province, when the country has that layer at all. Null is a real
+   * answer — Portugal's POIs carry no state, and its routes are simply not
+   * grouped. See resolveState() in scripts/update-routes.mjs.
+   */
+  state: string | null;
+  stateSlug: string | null;
   updatedAt: string | null;
   distanceM: number | null;
   durationS: number | null;
@@ -130,6 +137,58 @@ export function countryName(route: RouteSnapshot, locale: string): string {
   return localizedCountryName(route.countrySlug, locale, route.country);
 }
 
+export interface StateSummary {
+  stateSlug: string;
+  state: string;
+  count: number;
+  /** Distinct regions inside the state, in route order — a preview of what's there. */
+  regions: string[];
+}
+
+/**
+ * States of a country that have ≥1 route eligible for `locale`, biggest first.
+ *
+ * Returns an EMPTY array when the country has no state layer at all, which is
+ * the signal to fall back to a flat list. State names come from the database in
+ * their own language — unlike countries, `Intl` has no display names for them,
+ * and a proper noun does not translate anyway.
+ */
+export function getStatesForCountry(
+  countrySlug: string,
+  locale: string
+): StateSummary[] {
+  const byState = new Map<string, StateSummary>();
+  for (const r of getRoutesByCountry(countrySlug, locale)) {
+    if (!r.state || !r.stateSlug) continue;
+    const existing = byState.get(r.stateSlug);
+    if (existing) {
+      existing.count += 1;
+      if (r.region && !existing.regions.includes(r.region)) existing.regions.push(r.region);
+    } else {
+      byState.set(r.stateSlug, {
+        stateSlug: r.stateSlug,
+        state: r.state,
+        count: 1,
+        regions: r.region ? [r.region] : [],
+      });
+    }
+  }
+  return [...byState.values()].sort(
+    (a, b) => b.count - a.count || a.state.localeCompare(b.state, locale)
+  );
+}
+
+/** Routes of one state, eligible for `locale`, richest first. */
+export function getRoutesByState(
+  countrySlug: string,
+  stateSlug: string,
+  locale: string
+): RouteSnapshot[] {
+  return getRoutesByCountry(countrySlug, locale)
+    .filter((r) => r.stateSlug === stateSlug)
+    .sort((a, b) => b.stops.length - a.stops.length);
+}
+
 /** Routes within one country eligible for `locale`. */
 export function getRoutesByCountry(
   countrySlug: string,
@@ -138,7 +197,11 @@ export function getRoutesByCountry(
   return getRoutesForLocale(locale).filter((r) => r.countrySlug === countrySlug);
 }
 
-/** Other routes in the same country (then region) eligible for `locale`. */
+/**
+ * Other routes near this one: same region first, then same state, then the rest
+ * of the country. Region alone is too fine a net — "Conservatória" has two
+ * routes — so a second ring keeps the block genuinely useful.
+ */
 export function relatedRoutes(
   route: RouteSnapshot,
   locale: string,
@@ -147,9 +210,14 @@ export function relatedRoutes(
   const sameCountry = getRoutesByCountry(route.countrySlug, locale).filter(
     (r) => r.slug !== route.slug
   );
-  const sameRegion = sameCountry.filter((r) => r.region === route.region);
-  const rest = sameCountry.filter((r) => r.region !== route.region);
-  return [...sameRegion, ...rest].slice(0, n);
+  const rank = (r: RouteSnapshot) => {
+    if (route.region && r.region === route.region) return 0;
+    if (route.stateSlug && r.stateSlug === route.stateSlug) return 1;
+    return 2;
+  };
+  return [...sameCountry]
+    .sort((a, b) => rank(a) - rank(b) || b.stops.length - a.stops.length)
+    .slice(0, n);
 }
 
 /**

@@ -838,6 +838,7 @@
       "rural": "Campagna"
     },
     "languagesCount": "{count, plural, one {# lingua} other {# lingue}}",
+    "statesNavLabel": "Stati con percorsi",
     "audioLanguages": "Lingue dell'audio",
     "audioPause": "Metti in pausa l'anteprima",
     "audioSeek": "Scorri l'anteprima",

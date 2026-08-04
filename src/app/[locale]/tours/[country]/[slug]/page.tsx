@@ -39,6 +39,15 @@ function clamp(text: string, max = 200): string {
   return clean.length > max ? `${clean.slice(0, max - 1).trimEnd()}…` : clean;
 }
 
+/** Seconds → ISO 8601 duration ("PT7H37M"), the only form schema.org reads. */
+function isoDuration(seconds: number | null): string | null {
+  if (seconds == null || !isFinite(seconds) || seconds <= 0) return null;
+  const total = Math.round(seconds / 60);
+  const hours = Math.floor(total / 60);
+  const minutes = total % 60;
+  return `PT${hours ? `${hours}H` : ""}${minutes ? `${minutes}M` : ""}` || null;
+}
+
 export function generateStaticParams(): Params[] {
   const params: Params[] = [];
   for (const locale of routing.locales) {
@@ -194,6 +203,8 @@ export default async function RouteDetailPage({
         name: content.name,
         description: clamp(content.description, 300),
         url: pageUrl,
+        // Generated per route by opengraph-image.tsx — the route's own shape.
+        image: `${pageUrl}/opengraph-image`,
         inLanguage: locale,
         touristType: "Self-guided audio tour",
         provider: {
@@ -204,6 +215,30 @@ export default async function RouteDetailPage({
         ...(placeLabel
           ? { containedInPlace: { "@type": "Place", name: placeLabel } }
           : {}),
+        ...(isoDuration(route.durationS) ? { duration: isoDuration(route.durationS) } : {}),
+        // `Trip` has no `distance` property, and inventing one is worse than
+        // omitting it — so the numeric facts ride in additionalProperty, which
+        // schema.org does define on every Thing.
+        additionalProperty: [
+          ...(route.distanceM
+            ? [{
+                "@type": "PropertyValue",
+                name: "distance",
+                value: Math.round(route.distanceM),
+                unitCode: "MTR",
+              }]
+            : []),
+          {
+            "@type": "PropertyValue",
+            name: "stops",
+            value: route.stops.length,
+          },
+          {
+            "@type": "PropertyValue",
+            name: "availableLanguages",
+            value: route.locales.join(", "),
+          },
+        ],
         itinerary: {
           "@type": "ItemList",
           numberOfItems: route.stops.length,

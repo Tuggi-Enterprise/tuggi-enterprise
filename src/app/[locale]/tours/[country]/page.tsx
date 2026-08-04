@@ -3,7 +3,13 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { routing } from "@/i18n/routing";
-import { countryName, getCountriesForLocale, getRoutesByCountry } from "@/lib/routes";
+import {
+  countryName,
+  getCountriesForLocale,
+  getRoutesByCountry,
+  getRoutesByState,
+  getStatesForCountry,
+} from "@/lib/routes";
 import { countryCodeOf } from "@/lib/countryNames";
 import {
   buildAlternatesFor,
@@ -99,6 +105,7 @@ export default async function CountryHubPage({
   const inCountry = countryInPhrase(t, country, countryLabel);
   const pageUrl = buildUrl(locale, `tours/${country}`);
   const vms = routes.map((r) => toRouteCardVM(r, locale));
+  const states = getStatesForCountry(country, locale);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -158,15 +165,63 @@ export default async function CountryHubPage({
         </div>
       </section>
 
-      <section className="pb-20 bg-white">
-        <div className="page-shell">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {vms.map((vm) => (
-              <RouteCard key={vm.href} vm={vm} />
-            ))}
+      {/* Grouped by state where the country has that layer, flat where it does
+          not (Portugal's POIs carry no state — see resolveState in
+          scripts/update-routes.mjs). One grid of 25 identical cards was the
+          problem this page had; four labelled blocks with a jump nav is the fix. */}
+      {states.length > 0 ? (
+        <>
+          <nav
+            aria-label={t("statesNavLabel")}
+            className="sticky top-20 z-20 bg-white/95 backdrop-blur border-b border-gray-100"
+          >
+            <div className="page-shell flex flex-wrap gap-2 py-3">
+              {states.map((s) => (
+                <a
+                  key={s.stateSlug}
+                  href={`#estado-${s.stateSlug}`}
+                  className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3.5 py-1.5 text-sm font-semibold text-tuggi-dark hover:border-tuggi-primary transition-colors"
+                >
+                  {s.state}
+                  <span className="text-xs font-bold text-tuggi-slate">{s.count}</span>
+                </a>
+              ))}
+            </div>
+          </nav>
+
+          <section className="pb-20 bg-white">
+            <div className="page-shell space-y-14 pt-10">
+              {states.map((s) => (
+                <div key={s.stateSlug} id={`estado-${s.stateSlug}`} className="scroll-mt-36">
+                  <h2 className="text-2xl md:text-3xl font-black text-tuggi-dark">
+                    {s.state}
+                  </h2>
+                  {s.regions.length > 0 && (
+                    <p className="mt-1 mb-6 text-sm text-tuggi-slate">
+                      {s.regions.join(" · ")}
+                    </p>
+                  )}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {getRoutesByState(country, s.stateSlug, locale).map((r) => (
+                      <RouteCard key={r.slug} vm={toRouteCardVM(r, locale)} />
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        </>
+      ) : (
+        <section className="pb-20 bg-white">
+          <div className="page-shell">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {vms.map((vm) => (
+                <RouteCard key={vm.href} vm={vm} />
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
     </article>
   );
 }
