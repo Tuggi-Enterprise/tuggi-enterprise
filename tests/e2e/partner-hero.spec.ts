@@ -1,4 +1,4 @@
-import { test, expect, type Page } from "@playwright/test";
+import { test, expect, type Locator, type Page } from "@playwright/test";
 
 /**
  * Covers the /d/<slug> co-branding lockup added in PartnerHero.tsx (Tuggi
@@ -138,15 +138,31 @@ test.describe("no horizontal overflow on mobile viewports", () => {
 });
 
 test.describe("cookie consent banner vs. the floating download CTA", () => {
-  // CONFIRMED bug, not covered by "Testes a deixar no repo" — filed for dev
-  // to fix in CookieBanner.tsx / PartnerHero.tsx (tuggi-enterprise is dev's
-  // area, not QA's). Kept as test.fail() so the suite documents the exact
-  // regression instead of silently dropping it: remove the annotation once
-  // the CTA is reachable while the banner is showing.
-  test.fail(
-    true,
-    "CookieBanner (z-[100], fixed bottom-0) currently renders on top of the fixed download CTA (z-50) on first visit — see the QA report for measured bounding boxes."
-  );
+  /**
+   * Reads whatever the browser considers topmost at the CTA's own center. The
+   * CTA slides up over the banner's height (a 300ms CSS transition on `bottom`,
+   * see PartnerHero.tsx), so the box is re-measured on every poll instead of
+   * once up front — sampling mid-slide is otherwise a coin flip.
+   */
+  async function elementAtCtaCenter(page: Page, cta: Locator) {
+    const box = await cta.boundingBox();
+    if (!box) return null;
+    return page.evaluate(
+      ({ x, y }) => {
+        const el = document.elementFromPoint(x, y);
+        return el?.closest("button")?.textContent ?? el?.tagName ?? null;
+      },
+      { x: box.x + box.width / 2, y: box.y + box.height / 2 }
+    );
+  }
+
+  /** True once the CTA has finished being lifted clear of the banner. */
+  async function ctaClearsBanner(cta: Locator, banner: Locator) {
+    const ctaBox = await cta.boundingBox();
+    const bannerBox = await banner.boundingBox();
+    if (!ctaBox || !bannerBox) return false;
+    return ctaBox.y >= 0 && ctaBox.y + ctaBox.height <= bannerBox.y;
+  }
 
   test("the download CTA remains the element under its own center point", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
@@ -155,18 +171,47 @@ test.describe("cookie consent banner vs. the floating download CTA", () => {
 
     const cta = page.getByRole("button", { name: /discover more in the app/i });
     await expect(cta).toBeVisible();
+    // First visit: no tuggi_cookie_consent, so the legally required banner is
+    // up. It must stay up — the fix stacks the CTA above it, it does not
+    // suppress or lower the banner.
     const banner = page.getByText(/we use cookies/i);
     await expect(banner).toBeVisible();
 
-    const ctaBox = await cta.boundingBox();
-    expect(ctaBox).not.toBeNull();
-    const center = { x: ctaBox!.x + ctaBox!.width / 2, y: ctaBox!.y + ctaBox!.height / 2 };
+    await expect
+      .poll(() => elementAtCtaCenter(page, cta), {
+        message: "topmost element at the CTA's center point while the consent banner is showing",
+      })
+      .toContain("DISCOVER MORE IN THE APP");
 
-    const elementAtCenter = await page.evaluate(({ x, y }) => {
-      const el = document.elementFromPoint(x, y);
-      return el?.closest("button")?.textContent ?? el?.tagName ?? null;
-    }, center);
+    // ...and the two stop overlapping entirely, not merely at that one pixel,
+    // with the whole button still on screen after the lift.
+    await expect
+      .poll(() => ctaClearsBanner(cta, banner), {
+        message: "CTA sits fully above the banner and fully inside the viewport",
+      })
+      .toBe(true);
+  });
 
-    expect(elementAtCenter).toContain("DISCOVER MORE IN THE APP");
+  test("the CTA drops back to the bottom once consent is answered", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto(NO_LOGO_PATH);
+    await waitForLockup(page);
+
+    const cta = page.getByRole("button", { name: /discover more in the app/i });
+    const banner = page.getByText(/we use cookies/i);
+    await expect.poll(() => ctaClearsBanner(cta, banner)).toBe(true);
+    const liftedTop = (await cta.boundingBox())!.y;
+
+    // Decline (not accept): accepting reloads the page, which would prove
+    // nothing about the banner unmounting.
+    await page.getByRole("button", { name: /decline/i }).click();
+    await expect(banner).toBeHidden();
+
+    await expect
+      .poll(async () => (await cta.boundingBox())!.y, {
+        message: "CTA top edge after the banner is dismissed",
+      })
+      .toBeGreaterThan(liftedTop);
+    await expect.poll(() => elementAtCtaCenter(page, cta)).toContain("DISCOVER MORE IN THE APP");
   });
 });

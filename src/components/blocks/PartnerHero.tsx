@@ -6,6 +6,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight, AtSign, Check, Copy, Gift, Globe, Loader2, Pause, Play } from "lucide-react";
 import { APP_STORE_URL, PLAY_STORE_URL } from "@/lib/app-meta";
+import { COOKIE_BANNER_HEIGHT_VAR } from "@/components/global/CookieBanner";
 
 interface CouponPreview {
   code: string;
@@ -463,6 +464,9 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
               width={180}
               height={54}
               className="h-12 w-auto"
+              // Above the fold on a page reached from a printed QR code: lazy
+              // loading would push it out of the initial fetch and into LCP.
+              priority
             />
             {!isTuggi && partnerData?.logoUrl && (
               <>
@@ -708,12 +712,23 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
           </motion.div>
         </div>
 
-        {/* Floating CTA */}
+        {/* Floating CTA — the only job of this page, so it can never be covered.
+            The cookie banner is legally required and outranks everything at the
+            bottom of the viewport (z-[100]); instead of fighting it with z-index
+            (which would just hide the consent choice), the CTA stacks on top of
+            it, reading the banner's own published height. No second copy of the
+            consent state lives here: "0px" simply means "no banner showing". */}
         <motion.div
           initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.5, type: "spring", damping: 20 }}
-          className="fixed bottom-0 left-0 right-0 z-50 px-5 pb-6 pt-10 bg-gradient-to-t from-tuggi-bg via-tuggi-bg/95 to-transparent pointer-events-none"
+          className="fixed left-0 right-0 z-50 px-5 pt-10 bg-gradient-to-t from-tuggi-bg via-tuggi-bg/95 to-transparent pointer-events-none transition-[bottom] duration-300 ease-out motion-reduce:transition-none"
+          style={{
+            bottom: `var(${COOKIE_BANNER_HEIGHT_VAR}, 0px)`,
+            // Clears the iOS home indicator when the banner is not up; while it
+            // is, the banner's own inset already does that.
+            paddingBottom: "calc(1.5rem + env(safe-area-inset-bottom))",
+          }}
         >
           <button 
             onClick={handleRedirect}
