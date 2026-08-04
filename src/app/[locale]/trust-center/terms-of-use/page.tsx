@@ -29,7 +29,7 @@ export default async function TermsOfUsePage({ params }: { params: Promise<{ loc
   const t = await getTranslations({ locale, namespace: "Legal.Terms" });
 
   return (
-    <article className="prose prose-slate max-w-none prose-headings:text-tuggi-dark prose-p:text-slate-600 prose-strong:text-tuggi-dark prose-a:text-tuggi-primary">
+    <article className="prose prose-slate max-w-none prose-headings:text-tuggi-dark prose-p:text-slate-600 prose-strong:text-tuggi-dark prose-a:text-tuggi-primary-text">
       <h1>{t("title")}</h1>
       <p className="text-sm font-semibold tracking-wider uppercase text-slate-400 !mb-8 border-b border-gray-100 pb-4">
         {t("lastUpdated")}

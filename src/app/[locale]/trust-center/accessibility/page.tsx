@@ -69,7 +69,7 @@ export default async function AccessibilityPage({ params }: { params: Promise<{ 
           <li>{t.rich("s3Item2", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
         </ul>
         <p>
-          <a href={`mailto:${t("contactEmail")}`} className="text-tuggi-primary font-bold hover:underline">
+          <a href={`mailto:${t("contactEmail")}`} className="text-tuggi-primary-text font-bold hover:underline">
             {t("contactEmail")}
           </a>
         </p>

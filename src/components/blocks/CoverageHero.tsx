@@ -24,7 +24,7 @@ export function CoverageHero({
   ];
 
   return (
-    <section className="relative pt-32 pb-20 overflow-hidden bg-white">
+    <section className="relative pt-10 lg:pt-32 pb-14 lg:pb-20 overflow-hidden bg-white">
       {/* Decorative background elements */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none opacity-5">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-tuggi-primary blur-[120px]" />
@@ -36,7 +36,7 @@ export function CoverageHero({
           <motion.span
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-block px-4 py-1.5 mb-6 text-sm font-bold tracking-wider text-tuggi-primary uppercase bg-tuggi-primary/10 rounded-full"
+            className="inline-block px-4 py-1.5 mb-6 text-sm font-bold tracking-wider text-tuggi-primary-text uppercase bg-tuggi-primary/5 rounded-full"
           >
             {t("Hero.tag")}
           </motion.span>

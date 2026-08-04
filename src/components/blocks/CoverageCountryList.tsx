@@ -99,7 +99,7 @@ export function CoverageCountryList({ states }: CoverageCountryListProps) {
               {/* Badge + Name */}
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-2xl bg-tuggi-primary/10 flex items-center justify-center shrink-0">
-                  <span className="text-xs font-black text-tuggi-primary tracking-tight">
+                  <span className="text-xs font-black text-tuggi-primary-text tracking-tight">
                     {getInitials(card.displayName)}
                   </span>
                 </div>
@@ -110,7 +110,7 @@ export function CoverageCountryList({ states }: CoverageCountryListProps) {
 
               {/* Stats row */}
               <div className="flex items-baseline gap-1 mb-1">
-                <span className="text-2xl font-black text-tuggi-primary">
+                <span className="text-2xl font-black text-tuggi-primary-text">
                   {card.totalActive.toLocaleString()}
                 </span>
                 <span className="text-xs font-bold text-tuggi-slate uppercase tracking-wider">
@@ -132,7 +132,7 @@ export function CoverageCountryList({ states }: CoverageCountryListProps) {
                   </span>
                 ))}
                 {card.extraCount > 0 && (
-                  <span className="text-[11px] font-semibold bg-tuggi-primary/10 text-tuggi-primary px-2 py-0.5 rounded-full">
+                  <span className="text-[11px] font-semibold bg-tuggi-primary/10 text-tuggi-primary-text px-2 py-0.5 rounded-full">
                     +{card.extraCount} {t("CountryList.statesLabel")}
                   </span>
                 )}

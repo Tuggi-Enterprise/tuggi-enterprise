@@ -16,6 +16,27 @@ body {
   color: var(--color-tuggi-slate);
 }
 
+/* The page grid — one rail for the whole site.
+   The global header sets it (it is the element always on screen), so every
+   section below lines up with the logo instead of each page inventing its own
+   max-width. Prose still gets a narrower measure INSIDE this, left-aligned. */
+.page-shell {
+  width: 100%;
+  max-width: 80rem;
+  margin-inline: auto;
+  padding-inline: 1rem;
+}
+@media (min-width: 40rem) {
+  .page-shell {
+    padding-inline: 1.5rem;
+  }
+}
+@media (min-width: 64rem) {
+  .page-shell {
+    padding-inline: 2rem;
+  }
+}
+
 /* LP Specific: Hide Global UI */
 .no-layout header,
 .no-layout footer,
@@ -85,4 +106,90 @@ body {
     animation: none;
     transform: scaleY(0.55);
   }
+}
+
+/* --- Route map: pins and permanent stop labels (see RouteMap.tsx) --------- */
+
+/* Numbered pin. Dark digits on brand cyan — the same pairing as the site's
+   CTAs (6.92:1); white on #00a8e8 would be 2.70:1 and fail at 12px.
+   The white ring separates the pin from the route line, and the outer
+   primary-text ring gives the pin a 4.26:1 edge against a pale basemap —
+   brand cyan alone is 2.37:1, under the 3:1 that WCAG 1.4.11 asks of a
+   non-text component. */
+.tuggi-pin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: 2px solid #fff;
+  border-radius: 9999px;
+  background: var(--color-tuggi-primary);
+  color: var(--color-tuggi-dark);
+  font-size: 12px;
+  font-weight: 800;
+  box-shadow: 0 0 0 1px var(--color-tuggi-primary-text), 0 1px 4px rgb(11 18 32 / 0.35);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* A stop with no story or audio.
+   Hollow, not just grey: the difference between the two pin states has to
+   survive without colour (WCAG 1.4.1) — filled vs outlined reads in greyscale,
+   and 2.21:1 between cyan and slate does not. Outlined also stops the stop
+   from looking disabled; a pass-through point is a real part of the route. */
+.tuggi-pin--muted {
+  background: #fff;
+  color: var(--color-tuggi-slate);
+  border-color: var(--color-tuggi-slate);
+  box-shadow: 0 1px 4px rgb(11 18 32 / 0.25);
+}
+
+/* The stop the reader is currently on, driven by the itinerary scroll. */
+.tuggi-pin.is-active {
+  transform: scale(1.25);
+  box-shadow: 0 0 0 4px rgb(0 168 232 / 0.35), 0 1px 4px rgb(11 18 32 / 0.35);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tuggi-pin {
+    transition: none;
+  }
+}
+
+/* A white pill next to each numbered pin. The collision pass in RouteMap
+   toggles `.is-hidden`; hovering a pin adds `.is-forced` so a hidden label is
+   still reachable.
+   Hiding uses `visibility`, not `opacity`: Leaflet writes the tooltip's opacity
+   as an INLINE style (leaflet-src.js, Tooltip._initLayout), which would win over
+   any class. `visibility: hidden` also keeps the element measurable, which is
+   what the collision pass reads — `display: none` would not. */
+.leaflet-tooltip.tuggi-stop-label {
+  padding: 3px 8px;
+  /* Leaflet nudges directional tooltips by 6px to clear their arrow. We drew no
+     arrow, and the collision pass assumes the offset is the only gap. */
+  margin: 0;
+  border: 0;
+  border-radius: 9999px;
+  background: #fff;
+  color: var(--color-tuggi-dark);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+  box-shadow: 0 1px 4px rgb(11 18 32 / 0.18);
+}
+
+/* Leaflet draws a little arrow on directional tooltips — a pill does not need one. */
+.leaflet-tooltip.tuggi-stop-label::before {
+  display: none;
+}
+
+.leaflet-tooltip.tuggi-stop-label.is-hidden {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.leaflet-tooltip.tuggi-stop-label.is-forced {
+  z-index: 1000;
+  visibility: visible;
 }

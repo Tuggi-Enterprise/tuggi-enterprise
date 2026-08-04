@@ -50,13 +50,13 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
   return (
     <>
       <header className="sticky top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
-        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between" aria-label="Main Navigation">
+        <nav className="page-shell h-20 flex items-center justify-between" aria-label="Main Navigation">
           
           {/* Left: Logo */}
           <div className="flex items-center gap-4">
             <button 
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2 text-slate-600 hover:text-tuggi-primary transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-lg"
+              className="lg:hidden p-2 text-slate-600 hover:text-tuggi-primary-text transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-lg"
               aria-label="Toggle Menu"
             >
               {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -75,14 +75,14 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
           </div>
 
           {/* Center: Navigation (Desktop) */}
-          <div className="hidden md:flex items-center gap-10">
+          <div className="hidden lg:flex items-center gap-10">
             
             {/* Dropdown for Platform */}
             <div className="relative group">
               <button
                 onClick={() => setIsPlatformOpen(!isPlatformOpen)}
                 onMouseEnter={() => setIsPlatformOpen(true)}
-                className="text-sm font-semibold text-slate-600 hover:text-tuggi-primary transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-sm py-2 flex items-center gap-1.5"
+                className="text-sm font-semibold text-slate-600 hover:text-tuggi-primary-text transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-sm py-2 flex items-center gap-1.5"
                 aria-haspopup="true"
                 aria-expanded={isPlatformOpen}
               >
@@ -94,19 +94,19 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
                 className={`absolute top-full left-1/2 -translate-x-1/2 mt-2 w-64 bg-white border border-gray-100 rounded-2xl shadow-2xl transition-all duration-200 z-50 overflow-hidden ${isPlatformOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible translate-y-1'}`}
               >
                 <div className="p-2 space-y-1">
-                  <Link href="/enterprise/city-os" className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-tuggi-primary rounded-xl transition-colors">
+                  <Link href="/enterprise/city-os" className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-tuggi-primary-text rounded-xl transition-colors">
                     <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500">
                       <Building2 className="w-4 h-4" />
                     </div>
                     {t("navCityOs")}
                   </Link>
-                  <Link href="/enterprise/fleets" className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-tuggi-primary rounded-xl transition-colors">
+                  <Link href="/enterprise/fleets" className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-tuggi-primary-text rounded-xl transition-colors">
                     <div className="w-8 h-8 rounded-lg bg-orange-50 flex items-center justify-center text-orange-500">
                       <Smartphone className="w-4 h-4" />
                     </div>
                     {t("navFleets")}
                   </Link>
-                  <Link href="/technology" className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-tuggi-primary rounded-xl transition-colors">
+                  <Link href="/technology" className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-tuggi-primary-text rounded-xl transition-colors">
                     <div className="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center text-purple-500">
                       <Cpu className="w-4 h-4" />
                     </div>
@@ -116,16 +116,16 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
               </div>
             </div>
 
-            <Link href="/drive" className="text-sm font-semibold text-slate-600 hover:text-tuggi-primary transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-sm py-2">
+            <Link href="/drive" className="text-sm font-semibold text-slate-600 hover:text-tuggi-primary-text transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-sm py-2">
               {t("navB2c")}
             </Link>
 
-            <Link href="/tours" className="text-sm font-semibold text-slate-600 hover:text-tuggi-primary transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-sm py-2 flex items-center gap-1.5">
+            <Link href="/tours" className="text-sm font-semibold text-slate-600 hover:text-tuggi-primary-text transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-sm py-2 flex items-center gap-1.5">
               <Compass className="w-4 h-4 text-tuggi-primary" />
               {t("navTours")}
             </Link>
 
-            <Link href="/purpose" className="text-sm font-semibold text-slate-600 hover:text-tuggi-primary transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-sm py-2">
+            <Link href="/purpose" className="text-sm font-semibold text-slate-600 hover:text-tuggi-primary-text transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-sm py-2">
               {t("navPurpose")}
             </Link>
           </div>
@@ -136,7 +136,7 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
             <div className="relative">
               <button 
                 onClick={() => setIsLocaleOpen(!isLocaleOpen)}
-                className="text-sm font-bold text-slate-500 hover:text-tuggi-primary uppercase flex items-center gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-lg px-2 py-1.5 transition-colors"
+                className="text-sm font-bold text-slate-500 hover:text-tuggi-primary-text uppercase flex items-center gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-lg px-2 py-1.5 transition-colors"
                 aria-expanded={isLocaleOpen}
               >
                 <span>{currentLocale.toUpperCase()}</span>
@@ -156,7 +156,7 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
                       className={`flex items-center justify-between px-4 py-2.5 text-sm font-bold rounded-xl transition-colors ${
                         currentLocale === loc.code 
                           ? "text-tuggi-primary bg-blue-50/50" 
-                          : "text-slate-600 hover:bg-slate-50 hover:text-tuggi-primary"
+                          : "text-slate-600 hover:bg-slate-50 hover:text-tuggi-primary-text"
                       }`}
                     >
                       {loc.label}
@@ -188,14 +188,14 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
       {/* Mobile Menu Backdrop */}
       {isMobileMenuOpen && (
         <div 
-          className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] transition-opacity duration-300 md:hidden"
+          className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] transition-opacity duration-300 lg:hidden"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
 
       {/* Mobile Menu Panel */}
       <div 
-        className={`fixed inset-y-0 left-0 w-[85%] max-w-[320px] bg-white z-[110] shadow-2xl transition-transform duration-300 ease-in-out md:hidden flex flex-col h-full ${
+        className={`fixed inset-y-0 left-0 w-[85%] max-w-[320px] bg-white z-[110] shadow-2xl transition-transform duration-300 ease-in-out lg:hidden flex flex-col h-full ${
           isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
