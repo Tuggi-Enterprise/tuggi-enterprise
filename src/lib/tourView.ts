@@ -3,8 +3,9 @@
  * view-models from a RouteSnapshot. Keeps the page components declarative.
  */
 import type { RouteCardVM } from "@/components/blocks/RouteCard";
-import { pickLocaleContent, type RouteSnapshot } from "@/lib/routes";
+import { countryName, pickLocaleContent, type RouteSnapshot } from "@/lib/routes";
 import { formatDistance, formatDuration } from "@/lib/tourFormat";
+import { buildRouteTrace } from "@/lib/routeTrace";
 
 /**
  * Autonyms — language names shown in their own language.
@@ -34,23 +35,23 @@ export function countryHref(locale: string, countrySlug: string): string {
   return `/${locale}/tours/${countrySlug}`;
 }
 
+/** At most two themes on a card — a wall of tags stops being scannable. */
+const MAX_CARD_THEMES = 2;
+
 export function toRouteCardVM(route: RouteSnapshot, locale: string): RouteCardVM {
   const content = pickLocaleContent(route, locale);
   return {
     href: routeHref(locale, route),
     name: content.name,
     region: route.region,
-    country: route.country,
+    country: countryName(route, locale),
     stopsCount: route.stops.length,
     durationStr: formatDuration(route.durationS),
-    languageLabels: languageLabelsFor(route.locales),
-  };
-}
-
-/** Localised distance + duration for a route (re-exported convenience). */
-export function routeFacts(route: RouteSnapshot, locale: string) {
-  return {
     distanceStr: formatDistance(route.distanceM, locale),
-    durationStr: formatDuration(route.durationS),
+    // Built here, on the server: the raw geometry is far too heavy to hand to
+    // a client component just so it can draw a thumbnail.
+    trace: buildRouteTrace(route.geometry?.coordinates),
+    themes: route.scenicProfile.slice(0, MAX_CARD_THEMES),
+    languageCount: route.locales.length,
   };
 }

@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { routing } from "@/i18n/routing";
 import {
+  countryName,
   getRoute,
   getRoutesForLocale,
   pickLocaleContent,
@@ -22,11 +23,12 @@ import {
 import { formatDistance, formatDuration } from "@/lib/tourFormat";
 import { languageLabelsFor, toRouteCardVM } from "@/lib/tourView";
 import { RouteHero } from "@/components/blocks/RouteHero";
-import { RouteMap } from "@/components/blocks/RouteMap";
-import { RouteStops, type RouteStopView } from "@/components/blocks/RouteStops";
+import { RouteExplorer } from "@/components/blocks/RouteExplorer";
+import { type RouteStopView } from "@/components/blocks/RouteStops";
 import { RouteFaq, type FaqItem } from "@/components/blocks/RouteFaq";
 import { RelatedRoutes } from "@/components/blocks/RelatedRoutes";
 import { AppDownloadButton } from "@/components/blocks/AppDownloadButton";
+import { StickyCta } from "@/components/blocks/StickyCta";
 
 export const dynamicParams = false;
 
@@ -72,7 +74,7 @@ export async function generateMetadata({
   const title = t("metaTitle", { name: titleBase });
   const description = content.description
     ? clamp(content.description)
-    : t("metaDescFallback", { place: route.region || route.country });
+    : t("metaDescFallback", { place: route.region || countryName(route, locale) });
 
   return {
     title,
@@ -103,29 +105,51 @@ export default async function RouteDetailPage({
 
   const t = await getTranslations({ locale, namespace: "Tours" });
   const content = pickLocaleContent(route, locale);
+  const countryLabel = countryName(route, locale);
+  const placeLabel = route.region || countryLabel;
   const pageUrl = buildUrl(locale, `tours/${country}/${slug}`);
   const distanceStr = formatDistance(route.distanceM, locale);
   const durationStr = formatDuration(route.durationS);
   const languageLabels = languageLabelsFor(route.locales);
 
   // ── Stops view (localized description + audio, base name) ──────────────────
-  const stops: RouteStopView[] = route.stops.map((stop, i) => {
+  const defaultLang = siteLocaleToAudioLang(locale, country);
+  const stopViews = route.stops.map((stop, i) => {
     const stopContent = pickStopContent(stop, locale, country);
+    const audios = stopAudios(stop);
+    const description = stopContent?.description ?? "";
     return {
       position: i + 1,
       name: stop.name,
-      description: stopContent?.description ?? "",
-      audios: stopAudios(stop),
-      defaultLang: siteLocaleToAudioLang(locale, country),
-      isGeneric: stop.isGeneric,
+      description,
+      audios,
+      hasContent: Boolean(description) || audios.length > 0,
     };
   });
 
-  const mapStops = route.stops.map((s) => ({
+  // Consecutive stops with the same name AND text collapse into one entry: the
+  // catalogue carries a handful of these (distinct POIs a couple of hundred
+  // metres apart sharing a name and description). Showing the same block twice
+  // reads as a bug; the merged positions keep their anchors.
+  const stops: RouteStopView[] = [];
+  for (const view of stopViews) {
+    const previous = stops[stops.length - 1];
+    if (
+      previous &&
+      previous.name === view.name &&
+      previous.description === view.description
+    ) {
+      previous.alsoPositions.push(view.position);
+      continue;
+    }
+    stops.push({ ...view, alsoPositions: [], defaultLang });
+  }
+
+  const mapStops = route.stops.map((s, i) => ({
     name: s.name,
     lat: s.lat,
     lng: s.lng,
-    isGeneric: s.isGeneric,
+    hasContent: stopViews[i].hasContent,
   }));
 
   // ── FAQ (genuine, data-driven) ─────────────────────────────────────────────
@@ -135,7 +159,8 @@ export default async function RouteDetailPage({
     answer: t("faq.duration.a", {
       duration: durationStr || t("facts.varies"),
       distance: distanceStr || "—",
-      stops: stops.length,
+      // The real stop count — `stops` is the merged view, which is shorter.
+      stops: route.stops.length,
     }),
   });
   if (route.accessibility && route.accessibility !== "unknown") {
@@ -176,8 +201,8 @@ export default async function RouteDetailPage({
           name: "TUGGI",
           url: "https://www.tuggi.app",
         },
-        ...(route.region || route.country
-          ? { containedInPlace: { "@type": "Place", name: route.region || route.country } }
+        ...(placeLabel
+          ? { containedInPlace: { "@type": "Place", name: placeLabel } }
           : {}),
         itinerary: {
           "@type": "ItemList",
@@ -188,8 +213,8 @@ export default async function RouteDetailPage({
             item: {
               "@type": "TouristAttraction",
               name: s.name,
-              ...(route.region || route.country
-                ? { containedInPlace: { "@type": "Place", name: route.region || route.country } }
+              ...(placeLabel
+                ? { containedInPlace: { "@type": "Place", name: placeLabel } }
                 : {}),
               ...(s.lat != null && s.lng != null
                 ? { geo: { "@type": "GeoCoordinates", latitude: s.lat, longitude: s.lng } }
@@ -204,7 +229,7 @@ export default async function RouteDetailPage({
         itemListElement: [
           { "@type": "ListItem", position: 1, name: "TUGGI", item: "https://www.tuggi.app" },
           { "@type": "ListItem", position: 2, name: t("breadcrumbTours"), item: buildUrl(locale, "tours") },
-          { "@type": "ListItem", position: 3, name: route.country, item: buildUrl(locale, `tours/${country}`) },
+          { "@type": "ListItem", position: 3, name: countryLabel, item: buildUrl(locale, `tours/${country}`) },
           { "@type": "ListItem", position: 4, name: content.name, item: pageUrl },
         ],
       },
@@ -229,13 +254,13 @@ export default async function RouteDetailPage({
 
       {/* Breadcrumb */}
       <nav aria-label="Breadcrumb" className="bg-white border-b border-gray-100">
-        <div className="container mx-auto px-6 py-3 max-w-5xl text-sm text-tuggi-slate flex flex-wrap gap-2">
-          <Link href={`/${locale}/tours`} className="hover:text-tuggi-primary">
+        <div className="page-shell py-3 text-sm text-tuggi-slate flex flex-wrap gap-2">
+          <Link href={`/${locale}/tours`} className="hover:text-tuggi-primary-text">
             {t("breadcrumbTours")}
           </Link>
           <span aria-hidden>›</span>
-          <Link href={`/${locale}/tours/${country}`} className="hover:text-tuggi-primary">
-            {route.country}
+          <Link href={`/${locale}/tours/${country}`} className="hover:text-tuggi-primary-text">
+            {countryLabel}
           </Link>
           <span aria-hidden>›</span>
           <span className="text-tuggi-dark font-semibold line-clamp-1">{content.name}</span>
@@ -245,7 +270,8 @@ export default async function RouteDetailPage({
       <RouteHero
         name={content.name}
         region={route.region}
-        country={route.country}
+        country={countryLabel}
+        description={content.description}
         durationStr={durationStr}
         distanceStr={distanceStr}
         stopsCount={route.stops.length}
@@ -255,47 +281,49 @@ export default async function RouteDetailPage({
         languageLabels={languageLabels}
       />
 
-      {/* Intro / description */}
-      {content.description && (
-        <section className="bg-white">
-          <div className="container mx-auto px-6 max-w-3xl pb-8">
-            <p className="text-lg text-tuggi-slate leading-relaxed whitespace-pre-line">
-              {content.description}
-            </p>
-          </div>
-        </section>
-      )}
-
-      {/* Map */}
-      <section id="route-map" className="bg-white pb-16">
-        <div className="container mx-auto px-6 max-w-5xl">
-          <div className="rounded-3xl overflow-hidden border border-gray-100 shadow-sm h-[420px]">
-            <RouteMap line={route.geometry?.coordinates ?? null} stops={mapStops} />
-          </div>
-        </div>
-      </section>
-
-      <RouteStops stops={stops} />
+      {/* Map + itinerary, side by side and in sync on desktop */}
+      <RouteExplorer
+        line={route.geometry?.coordinates ?? null}
+        mapStops={mapStops}
+        stops={stops}
+      />
 
       <RouteFaq items={faqItems} />
 
       <RelatedRoutes vms={related} />
 
       {/* Final CTA */}
-      <section className="py-20 bg-tuggi-primary/5 border-t border-gray-100">
-        <div className="container mx-auto px-6 text-center max-w-2xl">
-          <h2 className="text-3xl md:text-4xl font-black text-tuggi-dark mb-4">
-            {t("ctaTitle")}
-          </h2>
-          <p className="text-tuggi-slate text-lg mb-8">{t("ctaSubtitle")}</p>
-          <AppDownloadButton
-            eventLabel="route_footer"
-            className="inline-block px-10 py-5 bg-tuggi-primary text-tuggi-dark font-black rounded-2xl shadow-xl shadow-tuggi-primary/20 hover:shadow-2xl hover:-translate-y-1 transition-all"
-          >
-            {t("ctaButton")}
-          </AppDownloadButton>
+      <section
+        id="route-final-cta"
+        className="py-20 bg-tuggi-primary/5 border-t border-gray-100"
+      >
+        <div className="page-shell">
+          {/* Deliberately centred: this is a closing band, not a content block. */}
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="text-3xl md:text-4xl font-black text-tuggi-dark mb-4">
+              {t("ctaTitle")}
+            </h2>
+            <p className="text-tuggi-slate text-lg mb-8">{t("ctaSubtitle")}</p>
+            <AppDownloadButton
+              eventLabel="route_footer"
+              className="inline-block px-10 py-5 bg-tuggi-primary text-tuggi-dark font-black rounded-2xl shadow-xl shadow-tuggi-primary/20 hover:shadow-2xl hover:-translate-y-1 transition-all"
+            >
+              {t("ctaButton")}
+            </AppDownloadButton>
+          </div>
         </div>
       </section>
+
+      {/* Mobile only: the itinerary runs far past a screen, so the way out to
+          the app has to travel with the reader. Desktop keeps its CTA in the
+          sticky map column instead. */}
+      <StickyCta
+        text={t("stickyText")}
+        cta={t("stickyCta")}
+        afterId="route-hero"
+        untilId="route-final-cta"
+        placement="route_sticky"
+      />
     </article>
   );
 }

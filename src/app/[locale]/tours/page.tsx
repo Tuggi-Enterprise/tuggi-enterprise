@@ -88,9 +88,9 @@ export default async function ToursHubPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <section className="pt-28 pb-10 bg-white">
-        <div className="container mx-auto px-6 max-w-5xl text-center">
-          <span className="inline-block px-4 py-1.5 mb-5 text-sm font-bold tracking-wider text-tuggi-primary uppercase bg-tuggi-primary/10 rounded-full">
+      <section className="pt-10 lg:pt-28 pb-10 bg-white">
+        <div className="page-shell text-center">
+          <span className="inline-block px-4 py-1.5 mb-5 text-sm font-bold tracking-wider text-tuggi-primary-text uppercase bg-tuggi-primary/5 rounded-full">
             {t("heroTag")}
           </span>
           <h1 className="text-4xl md:text-6xl font-black text-tuggi-dark mb-4">
@@ -102,15 +102,15 @@ export default async function ToursHubPage({
 
       {countries.length === 0 ? (
         <section className="pb-24 bg-white">
-          <div className="container mx-auto px-6 max-w-2xl text-center text-tuggi-slate">
+          <div className="page-shell max-w-2xl text-center text-tuggi-slate">
             {t("hubEmpty")}
           </div>
         </section>
       ) : (
         <section className="pb-24 bg-white">
-          <div className="container mx-auto px-6 max-w-5xl space-y-16">
+          <div className="page-shell space-y-16">
             {countries.map((c) => {
-              const routes = getRoutesByCountry(c.countrySlug, locale).slice(0, 6);
+              const routes = getRoutesByCountry(c.countrySlug, locale).slice(0, 8);
               const vms = routes.map((r) => toRouteCardVM(r, locale));
               return (
                 <div key={c.countrySlug}>
@@ -120,13 +120,13 @@ export default async function ToursHubPage({
                     </h2>
                     <Link
                       href={countryHref(locale, c.countrySlug)}
-                      className="inline-flex items-center gap-1.5 text-sm font-bold text-tuggi-primary hover:gap-2.5 transition-all"
+                      className="inline-flex items-center gap-1.5 text-sm font-bold text-tuggi-primary-text hover:gap-2.5 transition-all"
                     >
                       {t("viewAllInCountry", { count: c.count })}
                       <ArrowRight className="w-4 h-4" />
                     </Link>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     {vms.map((vm) => (
                       <RouteCard key={vm.href} vm={vm} />
                     ))}

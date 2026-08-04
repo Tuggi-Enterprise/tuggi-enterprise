@@ -22,11 +22,13 @@ export function RouteFaq({ items }: RouteFaqProps) {
 
   return (
     <section className="py-16 bg-tuggi-bg" aria-labelledby="faq-heading">
-      <div className="container mx-auto px-6 max-w-3xl">
+      {/* The answers keep a readable measure inside the page grid, on the same
+          left rail as every other section. */}
+      <div className="page-shell">
         <h2 id="faq-heading" className="text-3xl md:text-4xl font-black text-tuggi-dark mb-8">
           {t("faqTitle")}
         </h2>
-        <div className="space-y-3">
+        <div className="space-y-3 max-w-3xl">
           {items.map((item) => (
             <details
               key={item.question}

@@ -12,6 +12,7 @@
  */
 
 import snapshot from "@/data/routes-snapshot.json";
+import { localizedCountryName } from "@/lib/countryNames";
 
 export interface RouteLocaleContent {
   name: string;
@@ -102,7 +103,11 @@ export function getRoute(
   );
 }
 
-/** Countries that have ≥1 route eligible for `locale`, with counts. */
+/**
+ * Countries that have ≥1 route eligible for `locale`, with counts.
+ * `country` is already written in the page's language, so callers render it
+ * directly and the alphabetical sort follows that language.
+ */
 export function getCountriesForLocale(locale: string): CountrySummary[] {
   const byCountry = new Map<string, CountrySummary>();
   for (const r of getRoutesForLocale(locale)) {
@@ -111,13 +116,18 @@ export function getCountriesForLocale(locale: string): CountrySummary[] {
     else
       byCountry.set(r.countrySlug, {
         countrySlug: r.countrySlug,
-        country: r.country,
+        country: countryName(r, locale),
         count: 1,
       });
   }
   return [...byCountry.values()].sort((a, b) =>
-    a.country.localeCompare(b.country)
+    a.country.localeCompare(b.country, locale)
   );
+}
+
+/** A route's country written in the page's language ("Brasil" on a pt page). */
+export function countryName(route: RouteSnapshot, locale: string): string {
+  return localizedCountryName(route.countrySlug, locale, route.country);
 }
 
 /** Routes within one country eligible for `locale`. */

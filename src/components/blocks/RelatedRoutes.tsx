@@ -9,7 +9,7 @@ export function RelatedRoutes({ vms }: { vms: RouteCardVM[] }) {
 
   return (
     <section className="py-16 bg-white border-t border-gray-100" aria-labelledby="related-heading">
-      <div className="container mx-auto px-6 max-w-5xl">
+      <div className="page-shell">
         <h2 id="related-heading" className="text-3xl font-black text-tuggi-dark mb-8">
           {t("relatedTitle")}
         </h2>
