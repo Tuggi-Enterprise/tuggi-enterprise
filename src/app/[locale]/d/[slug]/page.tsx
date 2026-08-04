@@ -3,12 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { cookies, headers } from "next/headers";
 import { PartnerHeroWrapper } from "@/components/blocks/PartnerHeroWrapper";
-import {
-  getCouponBySlug,
-  getPartnerBySlug,
-  type CouponContext,
-  type PartnerData,
-} from "@/lib/partner";
+import { resolvePartnerOrCoupon } from "@/lib/partner";
 import { resolveWelcomeLang } from "@/lib/ptDialect";
 import { buildTwitterCard, defaultRobots } from "@/lib/seo";
 
@@ -32,30 +27,6 @@ async function resolveDbLang(locale: string, langParam?: string | null): Promise
     acceptLanguage: h.get("accept-language"),
     cookie: c.get("NEXT_LOCALE")?.value,
   });
-}
-
-/**
- * Resolves a /d/<slug> URL in two passes:
- *   1. Coupon code (UPPERCASE convention: WEBSUMMIT26). Returns the owner +
- *      coupon metadata so the page renders the redeem block.
- *   2. Partner slug (lowercase-with-hyphens convention: neymar-jr). Returns
- *      just the owner — existing behaviour.
- * `null` means neither matched and the caller should 404.
- */
-async function resolvePartnerOrCoupon(
-  slug: string,
-  dbLang: string
-): Promise<
-  | { partner: PartnerData; coupon: CouponContext["coupon"] | null }
-  | null
-> {
-  const coupon = await getCouponBySlug(slug, dbLang);
-  if (coupon) return { partner: coupon.partner, coupon: coupon.coupon };
-
-  const partner = await getPartnerBySlug(slug, dbLang);
-  if (partner) return { partner, coupon: null };
-
-  return null;
 }
 
 export async function generateMetadata({
@@ -86,6 +57,16 @@ export async function generateMetadata({
   // the middleware resolves the language per request, so the canonical is self-referential.
   const canonical = `/d/${slug}`;
 
+  // A partner with a seal gets the generated card (./opengraph-image.tsx), which
+  // draws the seal next to the name — the link travels on WhatsApp and Instagram
+  // to promote the event, and the generic photo says nothing about who invites.
+  // The URL is written out because config-based metadata wins over the
+  // opengraph-image file convention: setting `images` here suppresses the
+  // generated one, so pointing at it is the only way it ships.
+  const ogImage = partner.logoUrl
+    ? `/d/${encodeURIComponent(slug)}/opengraph-image`
+    : OG_IMAGE;
+
   return {
     title,
     description,
@@ -97,9 +78,9 @@ export async function generateMetadata({
       url: `https://www.tuggi.app/d/${slug}`,
       siteName: "TUGGI",
       type: "website",
-      images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: partner.name ?? "TUGGI" }],
+      images: [{ url: ogImage, width: 1200, height: 630, alt: partner.name ?? "TUGGI" }],
     },
-    twitter: buildTwitterCard({ title, description }),
+    twitter: buildTwitterCard({ title, description, image: ogImage }),
   };
 }
 

@@ -5,6 +5,7 @@ import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight, AtSign, Check, Copy, Gift, Globe, Loader2, Pause, Play } from "lucide-react";
+import { APP_STORE_URL, PLAY_STORE_URL } from "@/lib/app-meta";
 
 interface CouponPreview {
   code: string;
@@ -23,6 +24,8 @@ interface PartnerHeroProps {
     clientType?: string | null;
     website?: string | null;
     social?: string | null;
+    /** Partner seal for the hero lockup. Absent for most partners — see PartnerData.logoUrl. */
+    logoUrl?: string | null;
   } | null;
   /** When present, render the gift-card style redeem block. */
   coupon?: CouponPreview;
@@ -46,11 +49,6 @@ function formatSocial(social: string): string {
   }
   return social.startsWith("@") ? social : `@${social}`;
 }
-
-const REDIRECT_DELAY_SECONDS = 5;
-const AUDIO_MAX_DURATION = 15;
-const APP_STORE_URL = "https://apps.apple.com/app/tuggi-drive/id6744379818";
-const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.tuggidrive.app";
 
 // Sound wave bars component
 function SoundWave({ isPlaying, dark = false }: { isPlaying: boolean; dark?: boolean }) {
@@ -449,12 +447,15 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
         {/* Main Content */}
         <div className="max-w-md w-full flex flex-col items-center pb-28">
           
-          {/* Logo Tuggi */}
+          {/* Co-branding lockup: Tuggi stays dominant (h-12), the partner enters
+              as an endorsement seal (h-10) so the QR sticker on the table and the
+              page carry the same mark. Almost no partner has a logo — without one
+              this collapses back to the bare Tuggi logo, no divider, no gap. */}
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="mb-5"
+            className="mb-5 flex items-center gap-4"
           >
             <Image
               src="/images/logo_tuggi_full.png"
@@ -463,6 +464,18 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
               height={54}
               className="h-12 w-auto"
             />
+            {!isTuggi && partnerData?.logoUrl && (
+              <>
+                <span aria-hidden="true" className="h-8 w-px bg-slate-300/70" />
+                <Image
+                  src={partnerData.logoUrl}
+                  alt={partnerData.name ?? ""}
+                  width={160}
+                  height={64}
+                  className="h-10 w-auto max-w-[140px] object-contain"
+                />
+              </>
+            )}
           </motion.div>
 
           <motion.div

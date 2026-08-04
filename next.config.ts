@@ -1,11 +1,34 @@
 import createNextIntlPlugin from 'next-intl/plugin';
 import type { NextConfig } from "next";
+import { getStorageHost, STORAGE_PUBLIC_PATH } from "./src/lib/storage";
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
+
+// Partner logos (core.clients.avatar_url) are the only remote images the site
+// renders. next/image rejects every host absent from this allowlist with a 400,
+// so the list is also the guard on a column an admin types by hand in the CMS.
+// Host derived from SUPABASE_URL — see src/lib/storage.ts, which the runtime
+// side reads too. Empty list when the env var is missing: no allowlist is the
+// safe answer, and no partner logo renders (the fallback layout, already the
+// common case).
+const storageHost = getStorageHost();
 
 const nextConfig: NextConfig = {
   /* config options here */
   reactCompiler: false,
+  images: {
+    remotePatterns: storageHost
+      ? [
+          {
+            protocol: "https",
+            hostname: storageHost,
+            // `search` stays unset (Next implies `**`) on purpose: a cache-busting
+            // query on our own object must not turn a partner logo into a 400.
+            pathname: `${STORAGE_PUBLIC_PATH}**`,
+          },
+        ]
+      : [],
+  },
   // 301 (Moved Permanently) redirects for old indexed URLs so SEO equity
   // transfers and nobody hits a 404. (Runs before the next-intl middleware.)
   async redirects() {

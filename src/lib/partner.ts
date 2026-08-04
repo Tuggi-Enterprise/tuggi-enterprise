@@ -1,5 +1,6 @@
 import { cache } from "react";
 import { getSupabaseServer } from "@/lib/supabase-server";
+import { isPublicStorageUrl } from "@/lib/storage";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 /** Internal "Tuggi" client — not a real partner; rendered as the default experience. */
@@ -19,6 +20,13 @@ export interface PartnerData {
   clientType?: string | null;
   website?: string | null;
   social?: string | null;
+  /**
+   * Partner seal rendered in the hero lockup next to the Tuggi logo (co-branding:
+   * the visitor scanned a QR printed with the partner's mark and needs to see it
+   * again to know the page is the right one). Null unless core.clients.avatar_url
+   * is a public object in our own Storage — see isPublicStorageUrl.
+   */
+  logoUrl?: string | null;
 }
 
 type ClientRow = {
@@ -31,10 +39,29 @@ type ClientRow = {
   client_type: string | null;
   website: string | null;
   social_handle: string | null;
+  avatar_url: string | null;
 };
 
 const CLIENT_COLUMNS =
-  "id, slug, name, company_name, welcome_poi_id, metadata, client_type, website, social_handle";
+  "id, slug, name, company_name, welcome_poi_id, metadata, client_type, website, social_handle, avatar_url";
+
+/**
+ * Narrows a free-text avatar_url down to what next/image is allowed to render.
+ * Most partners have no logo at all, so null is the ordinary answer here, not
+ * an error path — the hero renders without the seal.
+ */
+function toLogoUrl(avatarUrl: string | null | undefined): string | null {
+  const trimmed = avatarUrl?.trim();
+  if (!trimmed) return null;
+  if (!isPublicStorageUrl(trimmed)) {
+    // A seal that never shows up is the worst outcome for the curator who filled
+    // the field, so leave a trace: next/image would answer 400 for this URL and
+    // the visitor would see a broken image instead of the plain hero.
+    console.warn("Ignoring partner logo outside Supabase Storage:", trimmed);
+    return null;
+  }
+  return trimmed;
+}
 
 /** Maps a next-intl locale to the language code used in core.attraction_descriptions. */
 export function getDbLang(locale: string): string {
@@ -103,6 +130,7 @@ async function buildPartnerData(
     clientType: isTuggi ? null : client.client_type,
     website: isTuggi ? null : client.website,
     social: isTuggi ? null : client.social_handle,
+    logoUrl: isTuggi ? null : toLogoUrl(client.avatar_url),
     ...welcome,
   };
 }
@@ -202,6 +230,9 @@ async function resolveCoupon(
       name: isTuggi ? null : (result.owner_name ?? null),
       isTuggi,
       audioLang: dbLang,
+      // Same seal as the partner flow: the RPC already returns the owner's
+      // avatar, and a coupon LP renders the very same hero.
+      logoUrl: isTuggi ? null : toLogoUrl(result.owner_avatar_url),
       ...welcome,
     };
 
@@ -220,3 +251,27 @@ export const getCouponBySlug = cache(
   (code: string, dbLang: string): Promise<CouponContext | null> =>
     resolveCoupon(code, dbLang)
 );
+
+/**
+ * Resolves a /d/<slug> URL in two passes:
+ *   1. Coupon code (UPPERCASE convention: WEBSUMMIT26). Returns the owner +
+ *      coupon metadata so the page renders the redeem block.
+ *   2. Partner slug (lowercase-with-hyphens convention: neymar-jr). Returns
+ *      just the owner — existing behaviour.
+ * `null` means neither matched and the caller should 404.
+ *
+ * Lives here because the page and its opengraph-image both resolve the same
+ * URL and must agree on what it is.
+ */
+export async function resolvePartnerOrCoupon(
+  slug: string,
+  dbLang: string
+): Promise<{ partner: PartnerData; coupon: CouponPreview | null } | null> {
+  const coupon = await getCouponBySlug(slug, dbLang);
+  if (coupon) return { partner: coupon.partner, coupon: coupon.coupon };
+
+  const partner = await getPartnerBySlug(slug, dbLang);
+  if (partner) return { partner, coupon: null };
+
+  return null;
+}
