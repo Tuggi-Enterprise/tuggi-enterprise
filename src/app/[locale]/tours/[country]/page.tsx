@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { routing } from "@/i18n/routing";
 import {
   countryName,
@@ -20,6 +21,9 @@ import {
 } from "@/lib/seo";
 import { toRouteCardVM } from "@/lib/tourView";
 import { RouteCard } from "@/components/blocks/RouteCard";
+
+/** Two rows at the widest breakpoint — enough to show the range, not the catalogue. */
+const STATE_PREVIEW_COUNT = 8;
 
 type Params = { locale: string; country: string };
 
@@ -177,37 +181,58 @@ export default async function CountryHubPage({
           >
             <div className="page-shell flex flex-wrap gap-2 py-3">
               {states.map((s) => (
-                <a
+                <Link
                   key={s.stateSlug}
-                  href={`#estado-${s.stateSlug}`}
+                  href={`/${locale}/tours/${country}/state/${s.stateSlug}`}
                   className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3.5 py-1.5 text-sm font-semibold text-tuggi-dark hover:border-tuggi-primary transition-colors"
                 >
                   {s.state}
                   <span className="text-xs font-bold text-tuggi-slate">{s.count}</span>
-                </a>
+                </Link>
               ))}
             </div>
           </nav>
 
           <section className="pb-20 bg-white">
             <div className="page-shell space-y-14 pt-10">
-              {states.map((s) => (
-                <div key={s.stateSlug} id={`estado-${s.stateSlug}`} className="scroll-mt-36">
-                  <h2 className="text-2xl md:text-3xl font-black text-tuggi-dark">
-                    {s.state}
-                  </h2>
-                  {s.regions.length > 0 && (
-                    <p className="mt-1 mb-6 text-sm text-tuggi-slate">
-                      {s.regions.join(" · ")}
-                    </p>
-                  )}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    {getRoutesByState(country, s.stateSlug, locale).map((r) => (
-                      <RouteCard key={r.slug} vm={toRouteCardVM(r, locale)} />
-                    ))}
+              {states.map((s) => {
+                const stateHref = `/${locale}/tours/${country}/state/${s.stateSlug}`;
+                // The country page is an index, not the full catalogue: it shows
+                // two rows and hands off to the state hub, which holds them all.
+                const inState = getRoutesByState(country, s.stateSlug, locale);
+                const shown = inState.slice(0, STATE_PREVIEW_COUNT);
+
+                return (
+                  <div key={s.stateSlug} id={`estado-${s.stateSlug}`} className="scroll-mt-36">
+                    <div className="flex flex-wrap items-baseline justify-between gap-3">
+                      <h2 className="text-2xl md:text-3xl font-black text-tuggi-dark">
+                        <Link href={stateHref} className="hover:text-tuggi-primary-text">
+                          {s.state}
+                        </Link>
+                      </h2>
+                      {inState.length > shown.length && (
+                        <Link
+                          href={stateHref}
+                          className="inline-flex items-center gap-1.5 text-sm font-bold text-tuggi-primary-text hover:gap-2.5 transition-all"
+                        >
+                          {t("viewAllInState", { count: inState.length })}
+                          <ArrowRight className="w-4 h-4" />
+                        </Link>
+                      )}
+                    </div>
+                    {s.regions.length > 0 && (
+                      <p className="mt-1 mb-6 text-sm text-tuggi-slate">
+                        {s.regions.join(" · ")}
+                      </p>
+                    )}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                      {shown.map((r) => (
+                        <RouteCard key={r.slug} vm={toRouteCardVM(r, locale)} />
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </section>
         </>

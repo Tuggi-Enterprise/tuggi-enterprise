@@ -718,6 +718,7 @@
       "sectionTitle": "Elige Tu Destino",
       "sectionSubtitle": "Selecciona un país y descubre exactamente dónde explorarás con TUGGI. El audio suena automáticamente mientras recorres cada región.",
       "statesLabel": "regiones",
+      "toursLabel": "Audioguías",
       "attractionsLabel": "historias"
     },
     "CTA": {
@@ -839,6 +840,11 @@
     },
     "languagesCount": "{count, plural, one {# idioma} other {# idiomas}}",
     "statesNavLabel": "Estados con rutas",
+    "stateMetaTitle": "{state} — Audioguías Autoguiadas",
+    "stateMetaDesc": "{count, plural, one {# audioguía autoguiada seleccionada} other {# audioguías autoguiadas seleccionadas}} — {state}, {country}. Mapas, paradas y vistas previas de audio reales.",
+    "stateTitle": "{state}",
+    "stateSubtitle": "{count, plural, one {# ruta seleccionada} other {# rutas seleccionadas}} — {country}. Cada una con mapa, paradas y vistas previas de audio reales.",
+    "viewAllInState": "Ver todas las {count}",
     "audioLanguages": "Idiomas del audio",
     "audioPause": "Pausar la vista previa",
     "audioSeek": "Avanzar en la vista previa",

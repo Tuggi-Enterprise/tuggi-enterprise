@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import { useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
@@ -16,12 +18,14 @@ interface CountryCard {
 }
 
 interface CoverageCountryListProps {
+  /** "<país>|<estado>" → caminho do hub de roteiros, montado no servidor. */
+  tourHubs?: Record<string, string>;
   states: StateCoverage[];
 }
 
 const MAX_REGION_PILLS = 4;
 
-export function CoverageCountryList({ states }: CoverageCountryListProps) {
+export function CoverageCountryList({ states, tourHubs = {} }: CoverageCountryListProps) {
   const t = useTranslations("Coverage");
 
   const countryCards = useMemo((): CountryCard[] => {
@@ -123,20 +127,65 @@ export function CoverageCountryList({ states }: CoverageCountryListProps) {
 
               {/* Region pills */}
               <div className="flex flex-wrap gap-1.5">
-                {card.topRegions.map(region => (
-                  <span
-                    key={region}
-                    className="text-[11px] font-semibold bg-white border border-gray-200 text-tuggi-slate px-2 py-0.5 rounded-full"
-                  >
-                    {region}
-                  </span>
-                ))}
+                {card.topRegions.map(region => {
+                  // Where the state already has curated routes, the pill becomes
+                  // the way in. Coverage and tours were two trees that never
+                  // linked to each other.
+                  const href = tourHubs[`${card.displayName}|${region}`];
+                  const label = "text-[11px] font-semibold px-2 py-0.5 rounded-full border";
+                  return href ? (
+                    <Link
+                      key={region}
+                      href={href}
+                      className={`${label} bg-white border-tuggi-primary/40 text-tuggi-primary-text hover:border-tuggi-primary transition-colors`}
+                    >
+                      {region} ›
+                    </Link>
+                  ) : (
+                    <span
+                      key={region}
+                      className={`${label} bg-white border-gray-200 text-tuggi-slate`}
+                    >
+                      {region}
+                    </span>
+                  );
+                })}
                 {card.extraCount > 0 && (
                   <span className="text-[11px] font-semibold bg-tuggi-primary/10 text-tuggi-primary-text px-2 py-0.5 rounded-full">
                     +{card.extraCount} {t("CountryList.statesLabel")}
                   </span>
                 )}
               </div>
+
+              {/* Estados deste país que já têm roteiro. As pílulas acima listam
+                  os estados com mais atrações, que raramente são os mesmos —
+                  Rio de Janeiro tem 15 roteiros e não aparece entre eles. */}
+              {(() => {
+                const prefix = `${card.displayName}|`;
+                const withTours = Object.entries(tourHubs)
+                  .filter(([key]) => key.startsWith(prefix))
+                  .map(([key, href]) => ({ state: key.slice(prefix.length), href }))
+                  .sort((a, b) => a.state.localeCompare(b.state));
+                if (!withTours.length) return null;
+                return (
+                  <div className="mt-4 pt-4 border-t border-gray-200/70">
+                    <div className="text-[11px] font-bold uppercase tracking-wider text-tuggi-slate mb-2">
+                      {t("CountryList.toursLabel")}
+                    </div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {withTours.map(({ state, href }) => (
+                        <Link
+                          key={state}
+                          href={href}
+                          className="text-[11px] font-semibold px-2 py-0.5 rounded-full border bg-white border-tuggi-primary/40 text-tuggi-primary-text hover:border-tuggi-primary transition-colors"
+                        >
+                          {state} ›
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })()}
             </motion.div>
           ))}
         </div>

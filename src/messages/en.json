@@ -718,7 +718,8 @@
       "sectionTitle": "Choose Your Destination",
       "sectionSubtitle": "Pick a country and see exactly where you'll travel with TUGGI. Audio plays automatically as you explore each region.",
       "statesLabel": "regions",
-      "attractionsLabel": "stories"
+      "attractionsLabel": "stories",
+      "toursLabel": "Audio tours"
     },
     "CTA": {
       "title": "Bring TUGGI to your city.",
@@ -839,6 +840,11 @@
     },
     "languagesCount": "{count, plural, one {# language} other {# languages}}",
     "statesNavLabel": "States with routes",
+    "stateMetaTitle": "{state} — Self-Guided Audio Tours",
+    "stateMetaDesc": "{count, plural, one {# curated self-guided audio tour} other {# curated self-guided audio tours}} in {state}, {country} — maps, stops and real audio previews.",
+    "stateTitle": "{state}",
+    "stateSubtitle": "{count, plural, one {# curated route} other {# curated routes}} across {country}, each with a map, stops and real audio previews.",
+    "viewAllInState": "View all {count}",
     "audioLanguages": "Audio languages",
     "audioPause": "Pause preview",
     "audioSeek": "Seek within the preview",

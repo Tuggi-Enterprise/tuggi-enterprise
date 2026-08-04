@@ -8,6 +8,7 @@ import {
   getCountriesForLocale,
   getGeneratedAt,
   getRoutesByCountry,
+  getRoutesByState,
 } from "@/lib/routes";
 
 /**
@@ -86,6 +87,33 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     for (const locale of localesForCountry) {
       entries.push({
         url: buildUrl(locale, `tours/${countrySlug}`),
+        lastModified: snapshotDate,
+        changeFrequency: "weekly",
+        priority: 0.7,
+        alternates,
+      });
+    }
+  }
+
+  // State hubs — /tours/<country>/state/<state>, only where the data has a state
+  // layer at all. A hub holding one route is noindex on the page itself, so it
+  // stays out of here too.
+  const stateKeys = new Set(
+    getAllRoutes()
+      .filter((r) => r.stateSlug)
+      .map((r) => `${r.countrySlug}|${r.stateSlug}`)
+  );
+  for (const key of stateKeys) {
+    const [countrySlug, stateSlug] = key.split("|");
+    const localesForState = routing.locales.filter(
+      (loc) => getRoutesByState(countrySlug, stateSlug, loc).length > 1
+    );
+    if (!localesForState.length) continue;
+    const pagePath = `tours/${countrySlug}/state/${stateSlug}`;
+    const alternates = { languages: buildSitemapAlternatesFor(pagePath, localesForState) };
+    for (const locale of localesForState) {
+      entries.push({
+        url: buildUrl(locale, pagePath),
         lastModified: snapshotDate,
         changeFrequency: "weekly",
         priority: 0.7,

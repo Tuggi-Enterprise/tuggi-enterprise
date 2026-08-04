@@ -447,20 +447,15 @@ for (const { row, waypoints, metadata } of parsedRoutes) {
 
 routes.sort((a, b) => (a.country || "").localeCompare(b.country || "") || a.slug.localeCompare(b.slug));
 
-// A state slug will become a URL segment sitting exactly where route slugs sit
-// today. If the two ever collide inside a country, one of the pages silently
-// shadows the other — so fail the snapshot instead of shipping it.
+// State hubs live at /tours/<country>/state/<state>. `state` is a STATIC segment
+// and Next resolves it before the dynamic route slug, so a route slugged "state"
+// would be unreachable. Fail the snapshot rather than ship a dead page.
 {
-  const routeSlugs = new Map();
-  for (const r of routes) {
-    if (!routeSlugs.has(r.countrySlug)) routeSlugs.set(r.countrySlug, new Set());
-    routeSlugs.get(r.countrySlug).add(r.slug);
-  }
-  const clashes = routes
-    .filter((r) => r.stateSlug && routeSlugs.get(r.countrySlug).has(r.stateSlug))
-    .map((r) => `${r.countrySlug}/${r.stateSlug}`);
-  if (clashes.length) {
-    console.error(`❌  slug de estado colide com slug de rota: ${[...new Set(clashes)].join(", ")}`);
+  const reserved = routes.filter((r) => r.slug === "state");
+  if (reserved.length) {
+    console.error(
+      `❌  slug reservado pelo hub de estado: ${reserved.map((r) => `${r.countrySlug}/${r.slug}`).join(", ")}`
+    );
     process.exit(1);
   }
 }

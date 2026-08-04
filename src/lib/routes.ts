@@ -12,7 +12,7 @@
  */
 
 import snapshot from "@/data/routes-snapshot.json";
-import { localizedCountryName } from "@/lib/countryNames";
+import { getCountryDisplayName, localizedCountryName } from "@/lib/countryNames";
 
 export interface RouteLocaleContent {
   name: string;
@@ -176,6 +176,28 @@ export function getStatesForCountry(
   return [...byState.values()].sort(
     (a, b) => b.count - a.count || a.state.localeCompare(b.state, locale)
   );
+}
+
+/**
+ * State name → its tours hub path, keyed by `"<country display name>|<state>"`.
+ *
+ * Lets the coverage page — which knows 980 states and nothing about tours —
+ * link the handful that already have routes. Both sides read `attractions.state`
+ * from the same database, so the raw names match exactly and no slug
+ * normalisation is needed on the coverage side.
+ *
+ * Must be called on the SERVER and its result passed down: the coverage list is
+ * a client component, and importing this module there would ship the whole route
+ * snapshot to the browser.
+ */
+export function getStateHubPaths(locale: string): Record<string, string> {
+  const paths: Record<string, string> = {};
+  for (const r of getRoutesForLocale(locale)) {
+    if (!r.state || !r.stateSlug) continue;
+    paths[`${getCountryDisplayName(r.country)}|${r.state}`] =
+      `/${locale}/tours/${r.countrySlug}/state/${r.stateSlug}`;
+  }
+  return paths;
 }
 
 /** Routes of one state, eligible for `locale`, richest first. */
