@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, AtSign, Check, Copy, Gift, Globe, Loader2, Pause, Play } from "lucide-react";
 import { APP_STORE_URL, PLAY_STORE_URL } from "@/lib/app-meta";
 import { COOKIE_BANNER_HEIGHT_VAR } from "@/components/global/CookieBanner";
+import { PartnerCampaignHero } from "./PartnerCampaignHero";
 
 interface CouponPreview {
   code: string;
@@ -419,6 +420,13 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
   const maxDescLength = 220;
   const isLongDesc = descriptionText.length > maxDescLength;
 
+  // A partner with a seal is running a campaign: the visitor scanned a printed
+  // piece that already carries that mark, so the page mirrors the piece instead
+  // of the generic template. Every partner without one (the large majority)
+  // keeps the layout below, unchanged. The coupon flow keeps it too — that page
+  // has a single job (redeem) and a campaign narrative around it would bury it.
+  const isCampaign = !isTuggi && !!partnerData?.logoUrl && !coupon;
+
   // Inline translation pro MORE/LESS local
   const isPt = locale.includes("pt");
   const isEs = locale.includes("es");
@@ -427,6 +435,160 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
   const tLess = isPt ? "MENOS" : isEs ? "MENOS" : isIt ? "MENO" : "LESS";
   const tPlay = isPt ? "Tocar áudio" : isEs ? "Reproducir audio" : isIt ? "Riproduci audio" : "Play audio";
   const tPause = isPt ? "Pausar áudio" : isEs ? "Pausar audio" : isIt ? "Metti in pausa" : "Pause audio";
+
+  /* Partner welcome text with its collapse control. Declared once and placed by
+     whichever layout renders below — the campaign variant left-aligns it in the
+     content column, the default one keeps it centred under the title. */
+  const descriptionBlock = (
+    <p
+      className={`text-tuggi-slate text-sm md:text-base leading-relaxed ${
+        isCampaign ? "" : "mb-6 max-w-sm mx-auto"
+      }`}
+    >
+      {isDescExpanded || !isLongDesc ? descriptionText : `${descriptionText.substring(0, maxDescLength)}...`}
+      {isLongDesc && (
+        <button
+          onClick={() => {
+            const newState = !isDescExpanded;
+            setIsDescExpanded(newState);
+            trackEvent("download_page_description_toggle", { action: newState ? "expand" : "collapse" });
+          }}
+          className="ml-1.5 text-tuggi-primary font-semibold text-xs focus:outline-none uppercase tracking-wider hover:underline"
+        >
+          {isDescExpanded ? tLess : tMore}
+        </button>
+      )}
+    </p>
+  );
+
+  /* The 12s-capped welcome player + its crossfade into the call audio. Same
+     element in both layouts: this is the validated proof-of-product, not
+     decoration, so neither variant gets its own copy of it. */
+  const audioCard = partnerData?.audioUrl && audioReady && (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.3 }}
+      className="w-full max-w-sm mx-auto"
+    >
+      <div className="relative bg-white rounded-2xl p-4 shadow-[0_8px_32px_rgba(8,17,33,0.06)] border border-slate-100/60 flex flex-col gap-3">
+        <div className="flex items-center gap-3">
+          {/* AVATAR / SOUNDWAVE */}
+          <div className="relative w-12 h-12 rounded-full bg-tuggi-bg flex items-center justify-center shrink-0">
+            {isAudioPlaying ? (
+              <>
+                <SoundWave isPlaying={true} dark={false} />
+                <span className="absolute inset-0 rounded-full border border-tuggi-primary animate-ping opacity-20"></span>
+              </>
+            ) : autoplayBlocked ? (
+              <Play size={20} className="text-tuggi-primary ml-1" />
+            ) : (
+              <SoundWave isPlaying={false} dark={false} />
+            )}
+          </div>
+
+          {/* TEXT INFO */}
+          <div className="flex-1 text-left min-w-0">
+            <p className="font-bold text-tuggi-dark truncate text-sm">
+              {isTuggi ? 'TUGGI' : (partnerData.name || 'TUGGI')}
+            </p>
+            <p className="text-[11px] text-tuggi-slate flex items-center gap-1.5 mt-0.5 font-medium">
+              {isAudioPlaying ? (
+                <span className="text-tuggi-primary flex items-center gap-1.5">
+                  <span className="relative flex h-1.5 w-1.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-tuggi-primary opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-tuggi-primary"></span>
+                  </span>
+                  Playing
+                </span>
+              ) : autoplayBlocked ? (
+                'Tap the play button'
+              ) : (
+                'Paused'
+              )}
+            </p>
+          </div>
+
+          {/* BIG PLAY BUTTON */}
+          <button
+            type="button"
+            onClick={toggleAudio}
+            aria-label={isAudioPlaying ? tPause : tPlay}
+            aria-pressed={isAudioPlaying}
+            className="w-10 h-10 rounded-full bg-tuggi-dark text-white shadow-md flex items-center justify-center focus:outline-none hover:scale-105 active:scale-95 transition-all"
+          >
+            {isAudioPlaying ? <Pause size={14} aria-hidden="true" /> : <Play size={14} className="ml-0.5" aria-hidden="true" />}
+          </button>
+        </div>
+
+        {/* PROGRESS BAR */}
+        <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden mt-1">
+          <motion.div
+            className="h-full bg-gradient-to-r from-tuggi-secondary to-tuggi-primary"
+            style={{ width: `${audioProgress}%` }}
+            transition={{ duration: 0.1 }}
+          />
+        </div>
+      </div>
+    </motion.div>
+  );
+
+  /* The page's only job, so it can never be covered. The cookie banner is
+     legally required and outranks everything at the bottom of the viewport
+     (z-[100]); instead of fighting it with z-index (which would just hide the
+     consent choice), the CTA stacks on top of it, reading the banner's own
+     published height. No second copy of the consent state lives here: "0px"
+     simply means "no banner showing". Identical in both layouts — the campaign
+     one ends on the page background so this fade never lands on its dark band. */
+  const floatingCta = (
+    <motion.div
+      initial={{ y: 100, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ delay: 0.5, type: "spring", damping: 20 }}
+      className="fixed left-0 right-0 z-50 px-5 pt-10 bg-gradient-to-t from-tuggi-bg via-tuggi-bg/95 to-transparent pointer-events-none transition-[bottom] duration-300 ease-out motion-reduce:transition-none"
+      style={{
+        bottom: `var(${COOKIE_BANNER_HEIGHT_VAR}, 0px)`,
+        // Clears the iOS home indicator when the banner is not up; while it
+        // is, the banner's own inset already does that.
+        paddingBottom: "calc(1.5rem + env(safe-area-inset-bottom))",
+      }}
+    >
+      <button
+        onClick={handleRedirect}
+        className="w-full max-w-sm mx-auto flex items-center justify-center gap-2 py-4 bg-tuggi-primary text-white font-black text-base rounded-2xl shadow-[0_8px_32px_rgba(0,168,232,0.3)] hover:shadow-[0_8px_40px_rgba(0,168,232,0.45)] hover:scale-[1.02] active:scale-95 transition-all pointer-events-auto"
+      >
+        {isRedirecting ? (
+          <>
+            <Loader2 size={18} className="animate-spin" />
+            {t("openingStore")}
+          </>
+        ) : (
+          <>
+            {t("cta")}
+            <ArrowRight size={18} />
+          </>
+        )}
+      </button>
+      <p className="text-center text-tuggi-slate/50 text-[9px] uppercase tracking-[0.2em] font-bold mt-3 pointer-events-none">
+        {t("trustFooter")}
+      </p>
+    </motion.div>
+  );
+
+  if (isCampaign) {
+    return (
+      <section className="relative w-full overflow-hidden bg-tuggi-bg text-tuggi-dark">
+        <PartnerCampaignHero
+          sealUrl={partnerData!.logoUrl!}
+          partnerName={partnerData!.name ?? ""}
+          audioSlot={audioCard}
+          descriptionSlot={descriptionBlock}
+          onStoreClick={(store) => trackEvent("download_page_store_badge_click", { target_store: store })}
+        />
+        {floatingCta}
+      </section>
+    );
+  }
 
   return (
     <section className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-tuggi-bg text-tuggi-dark">
@@ -567,91 +729,10 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
               )}
 
             {/* Description with collapse */}
-            <p className="text-tuggi-slate text-sm md:text-base mb-6 leading-relaxed max-w-sm mx-auto">
-              {isDescExpanded || !isLongDesc ? descriptionText : `${descriptionText.substring(0, maxDescLength)}...`}
-              {isLongDesc && (
-                <button 
-                  onClick={() => {
-                    const newState = !isDescExpanded;
-                    setIsDescExpanded(newState);
-                    trackEvent("download_page_description_toggle", { action: newState ? "expand" : "collapse" });
-                  }}
-                  className="ml-1.5 text-tuggi-primary font-semibold text-xs focus:outline-none uppercase tracking-wider hover:underline"
-                >
-                  {isDescExpanded ? tLess : tMore}
-                </button>
-              )}
-            </p>
+            {descriptionBlock}
 
             {/* Audio Player */}
-            {partnerData?.audioUrl && audioReady && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="w-full max-w-sm mx-auto"
-              >
-                <div className="relative bg-white rounded-2xl p-4 shadow-[0_8px_32px_rgba(8,17,33,0.06)] border border-slate-100/60 flex flex-col gap-3">
-                  <div className="flex items-center gap-3">
-                    {/* AVATAR / SOUNDWAVE */}
-                    <div className="relative w-12 h-12 rounded-full bg-tuggi-bg flex items-center justify-center shrink-0">
-                      {isAudioPlaying ? (
-                        <>
-                          <SoundWave isPlaying={true} dark={false} />
-                          <span className="absolute inset-0 rounded-full border border-tuggi-primary animate-ping opacity-20"></span>
-                        </>
-                      ) : autoplayBlocked ? (
-                        <Play size={20} className="text-tuggi-primary ml-1" />
-                      ) : (
-                        <SoundWave isPlaying={false} dark={false} />
-                      )}
-                    </div>
-
-                    {/* TEXT INFO */}
-                    <div className="flex-1 text-left min-w-0">
-                      <p className="font-bold text-tuggi-dark truncate text-sm">
-                        {isTuggi ? 'TUGGI' : (partnerData.name || 'TUGGI')}
-                      </p>
-                      <p className="text-[11px] text-tuggi-slate flex items-center gap-1.5 mt-0.5 font-medium">
-                        {isAudioPlaying ? (
-                          <span className="text-tuggi-primary flex items-center gap-1.5">
-                            <span className="relative flex h-1.5 w-1.5">
-                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-tuggi-primary opacity-75"></span>
-                              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-tuggi-primary"></span>
-                            </span>
-                            Playing 
-                          </span>
-                        ) : autoplayBlocked ? (
-                          'Tap the play button'
-                        ) : (
-                          'Paused'
-                        )}
-                      </p>
-                    </div>
-
-                    {/* BIG PLAY BUTTON */}
-                    <button
-                      type="button"
-                      onClick={toggleAudio}
-                      aria-label={isAudioPlaying ? tPause : tPlay}
-                      aria-pressed={isAudioPlaying}
-                      className="w-10 h-10 rounded-full bg-tuggi-dark text-white shadow-md flex items-center justify-center focus:outline-none hover:scale-105 active:scale-95 transition-all"
-                    >
-                      {isAudioPlaying ? <Pause size={14} aria-hidden="true" /> : <Play size={14} className="ml-0.5" aria-hidden="true" />}
-                    </button>
-                  </div>
-
-                  {/* PROGRESS BAR */}
-                  <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden mt-1">
-                    <motion.div
-                      className="h-full bg-gradient-to-r from-tuggi-secondary to-tuggi-primary"
-                      style={{ width: `${audioProgress}%` }}
-                      transition={{ duration: 0.1 }}
-                    />
-                  </div>
-                </div>
-              </motion.div>
-            )}
+            {audioCard}
 
             {/* Coupon redemption block — only renders when /d/<slug> resolves
                 to an active coupon code. The owner attribution lives in the
@@ -712,44 +793,7 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
           </motion.div>
         </div>
 
-        {/* Floating CTA — the only job of this page, so it can never be covered.
-            The cookie banner is legally required and outranks everything at the
-            bottom of the viewport (z-[100]); instead of fighting it with z-index
-            (which would just hide the consent choice), the CTA stacks on top of
-            it, reading the banner's own published height. No second copy of the
-            consent state lives here: "0px" simply means "no banner showing". */}
-        <motion.div
-          initial={{ y: 100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.5, type: "spring", damping: 20 }}
-          className="fixed left-0 right-0 z-50 px-5 pt-10 bg-gradient-to-t from-tuggi-bg via-tuggi-bg/95 to-transparent pointer-events-none transition-[bottom] duration-300 ease-out motion-reduce:transition-none"
-          style={{
-            bottom: `var(${COOKIE_BANNER_HEIGHT_VAR}, 0px)`,
-            // Clears the iOS home indicator when the banner is not up; while it
-            // is, the banner's own inset already does that.
-            paddingBottom: "calc(1.5rem + env(safe-area-inset-bottom))",
-          }}
-        >
-          <button 
-            onClick={handleRedirect}
-            className="w-full max-w-sm mx-auto flex items-center justify-center gap-2 py-4 bg-tuggi-primary text-white font-black text-base rounded-2xl shadow-[0_8px_32px_rgba(0,168,232,0.3)] hover:shadow-[0_8px_40px_rgba(0,168,232,0.45)] hover:scale-[1.02] active:scale-95 transition-all pointer-events-auto"
-          >
-            {isRedirecting ? (
-              <>
-                <Loader2 size={18} className="animate-spin" />
-                {t("openingStore")}
-              </>
-            ) : (
-              <>
-                {t("cta")}
-                <ArrowRight size={18} />
-              </>
-            )}
-          </button>
-          <p className="text-center text-tuggi-slate/50 text-[9px] uppercase tracking-[0.2em] font-bold mt-3 pointer-events-none">
-            {t("trustFooter")}
-          </p>
-        </motion.div>
+        {floatingCta}
       </div>
     </section>
   );

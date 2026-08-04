@@ -13,7 +13,21 @@
     "cta": "SCOPRI DI PIÙ NELL'APP",
     "officialApp": "App Ufficiale",
     "trustFooter": "Connessione Sicura • Distribuzione App Ufficiale • Powered by Tuggi",
-    "loading": "Caricamento..."
+    "loading": "Caricamento...",
+    "Campaign": {
+      "headline": "Tra un piatto e l'altro, la regione racconta <accent>la propria storia</accent>.",
+      "subtext": "Tuggi riconosce dove stai passando e racconta, nella tua lingua, che cosa c'è lì. Il forte, la chiesa, il casale, la laguna, la storia che nessuno ti ha mai raccontato. Tu prosegui il viaggio e ascolti.",
+      "stepsHeading": "Come funziona",
+      "step1Title": "Aprila e dimenticala",
+      "step1Text": "Avvia l'app all'inizio della gita e rimetti il telefono in tasca.",
+      "step2Title": "L'audio parte da solo",
+      "step2Text": "Quando ti avvicini a un luogo, la narrazione parte automaticamente.",
+      "step3Title": "La strada è tua",
+      "step3Text": "Una deviazione, una sosta, il ritorno lungo la spiaggia. Il contenuto è nel territorio, non in un itinerario fisso.",
+      "bandTitle": "Scarica gratis",
+      "bandSubtitle": "Provala ora!",
+      "photoAlt": "Un viaggiatore che ascolta Tuggi dal telefono durante la gita"
+    }
   },
   "Header": {
     "navPlatform": "Piattaforma",

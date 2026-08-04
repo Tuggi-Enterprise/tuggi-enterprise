@@ -13,7 +13,21 @@
     "cta": "DESCUBRE MÁS EN LA APP",
     "officialApp": "App Oficial",
     "trustFooter": "Conexión Segura • Distribución Oficial • Impulsado por Tuggi",
-    "loading": "Cargando..."
+    "loading": "Cargando...",
+    "Campaign": {
+      "headline": "Entre un plato y otro, la región cuenta <accent>su propia historia</accent>.",
+      "subtext": "Tuggi reconoce por dónde estás pasando y narra, en tu idioma, lo que hay allí. El fuerte, la iglesia, el caserón, la laguna, la historia que nadie te contó. Tú solo sigues el viaje y escuchas.",
+      "stepsHeading": "Cómo funciona",
+      "step1Title": "Ábrela y olvídate",
+      "step1Text": "Enciende la app al empezar el paseo y guarda el móvil en el bolsillo.",
+      "step2Title": "El audio empieza solo",
+      "step2Text": "Al acercarte a un lugar, la narración entra automáticamente.",
+      "step3Title": "El camino es tuyo",
+      "step3Text": "Un desvío, una parada, la vuelta por la playa. El contenido está en el territorio, no en un itinerario fijo.",
+      "bandTitle": "Descarga gratis",
+      "bandSubtitle": "¡Pruébala ahora!",
+      "photoAlt": "Una viajera escuchando Tuggi en el móvil durante el paseo"
+    }
   },
   "Header": {
     "navPlatform": "Plataforma",

@@ -1,18 +1,22 @@
 import { test, expect, type Locator, type Page } from "@playwright/test";
+import { APP_STORE_URL, PLAY_STORE_URL } from "../../src/lib/app-meta";
 
 /**
- * Covers the /d/<slug> co-branding lockup added in PartnerHero.tsx (Tuggi
- * logo + optional partner seal). Runs against a local production build
- * (`npm run build && npm run start`, wired by playwright.config.ts) talking
- * to the mock PostgREST double in mock-supabase-server.mjs — never the real
- * Supabase project. See that file for why: the one real-world partner this
- * feature ships for (the Delícias do Vale do Café festival) has a NULL
- * avatar_url in production today, so the "with logo" branch has no real
- * fixture to point at yet.
+ * Covers the two layouts /d/<slug> can render (see PartnerHero.tsx):
+ *
+ *   - no seal  → the default hero. The common case by a wide margin, and the
+ *                one that must never regress when the campaign work moves.
+ *   - a seal   → the campaign layout (PartnerCampaignHero.tsx), which mirrors
+ *                the printed table-top piece: seal-anchored masthead, serif
+ *                headline with a coloured stress, three numbered steps, photo
+ *                band and a dark download band where the seal returns.
+ *
+ * Runs against a local production build (`npm run build && npm run start`,
+ * wired by playwright.config.ts) talking to the mock PostgREST double in
+ * mock-supabase-server.mjs — never the real Supabase project.
  *
  * Fixture slugs (see mock-supabase-server.mjs):
- *   /d/e2e-sem-logo  — a partner with no avatar_url (the common case: almost
- *                       no partner has uploaded a logo).
+ *   /d/e2e-sem-logo  — a partner with no avatar_url.
  *   /d/e2e-com-logo  — the same partner, with an avatar_url set.
  * Both use the festival's real name ("Delícias do Vale do Café") so the
  * overflow checks exercise the actual long name that triggered this task.
@@ -21,6 +25,12 @@ import { test, expect, type Locator, type Page } from "@playwright/test";
 const NO_LOGO_PATH = "/d/e2e-sem-logo";
 const WITH_LOGO_PATH = "/d/e2e-com-logo";
 const PARTNER_NAME = "Delícias do Vale do Café";
+
+/** --color-tuggi-primary / --color-tuggi-secondary, as the browser reports them. */
+const TUGGI_PRIMARY = "rgb(0, 168, 232)";
+const TUGGI_SECONDARY = "rgb(255, 111, 0)";
+/** Distinctive part of the fixture's avatar_url, to count seal renders. */
+const SEAL_SRC_FRAGMENT = "e2e-logo.png";
 
 /**
  * The lockup's entrance is a framer-motion fade/slide, and each <img> inside
@@ -66,6 +76,22 @@ test.describe("partner brand lockup — no avatar_url (the common case)", () => 
     await expect(page.locator("h1")).toContainText(PARTNER_NAME);
   });
 
+  test("does not pick up any campaign furniture", async ({ page }) => {
+    // The campaign layout is gated on the seal alone. A partner without one is
+    // the majority of this route, and must keep the hero it had before the
+    // campaign work — not a half-dressed version of it.
+    await page.goto(NO_LOGO_PATH);
+    await waitForLockup(page);
+
+    await expect(page.locator("ol")).toHaveCount(0);
+    // `:visible` because the site's global footer stays in the DOM on this
+    // route — `.no-layout` only hides it — and it carries its own store links.
+    await expect(page.locator('a[href*="apps.apple.com"]:visible')).toHaveCount(0);
+    await expect(page.locator('a[href*="play.google.com"]:visible')).toHaveCount(0);
+    // The single CTA button stays the only way out of the page.
+    await expect(page.getByRole("button", { name: /discover more in the app/i })).toBeVisible();
+  });
+
   test("lockup screenshot baseline (no logo)", async ({ page }) => {
     await page.goto(NO_LOGO_PATH);
     const lockup = await waitForLockup(page);
@@ -73,32 +99,99 @@ test.describe("partner brand lockup — no avatar_url (the common case)", () => 
   });
 });
 
-test.describe("partner brand lockup — with avatar_url", () => {
-  test("renders the partner seal beside the Tuggi logo without exceeding the lockup width", async ({ page }) => {
+test.describe("campaign layout — with avatar_url", () => {
+  test("anchors the masthead with a seal at campaign scale, inside the viewport", async ({ page }) => {
     await page.goto(WITH_LOGO_PATH);
     const lockup = await waitForLockup(page);
 
     await expect(lockup.locator("img")).toHaveCount(2);
-    await expect(lockup.locator('span[aria-hidden="true"]')).toHaveCount(1);
 
     const viewport = page.viewportSize();
     expect(viewport).not.toBeNull();
     const box = await lockup.boundingBox();
     expect(box).not.toBeNull();
-    // The lockup (Tuggi logo + divider + seal) must fit inside the viewport
-    // on its own — this is the exact regression the added seal could cause.
+    // The masthead (Tuggi logo + seal) must fit inside the viewport on its own
+    // — this is the exact regression the seal could cause.
     expect(box!.x).toBeGreaterThanOrEqual(0);
     expect(box!.x + box!.width).toBeLessThanOrEqual(viewport!.width + 1);
 
-    // The seal itself is capped by className="... max-w-[140px] ..." in
-    // PartnerHero.tsx — assert the box, not the class name, so this fails
-    // if a future edit changes the cap without updating the intent.
+    // The complaint that started this task was "the only thing that landed was
+    // a logo" — a 40px mark lost at the top. Assert the seal has real presence
+    // and is still bounded, by box rather than by class name.
     const sealBox = await lockup.locator("img").nth(1).boundingBox();
     expect(sealBox).not.toBeNull();
+    expect(sealBox!.height).toBeGreaterThanOrEqual(60);
     expect(sealBox!.width).toBeLessThanOrEqual(140);
   });
 
-  test("lockup screenshot baseline (with logo)", async ({ page }) => {
+  test("leads with the campaign headline, stressed in the Tuggi blue", async ({ page }) => {
+    await page.goto(WITH_LOGO_PATH);
+    await waitForLockup(page);
+
+    const h1 = page.locator("h1");
+    await expect(h1).toContainText("Between one dish and the next");
+    // The stress is part of the message, not decoration: the sentence has to
+    // arrive with "its own story" set apart.
+    const accent = h1.locator("span");
+    await expect(accent).toHaveText("its own story");
+    await expect(accent).toHaveCSS("color", TUGGI_PRIMARY);
+  });
+
+  test("explains the product in three numbered steps, numbered in the campaign orange", async ({ page }) => {
+    await page.goto(WITH_LOGO_PATH);
+    await waitForLockup(page);
+
+    const steps = page.locator("ol > li");
+    await expect(steps).toHaveCount(3);
+    await expect(steps.nth(0)).toContainText("Open it and forget it");
+    await expect(steps.nth(1)).toContainText("The audio starts on its own");
+    await expect(steps.nth(2)).toContainText("The route is yours");
+
+    for (const [i, label] of ["01", "02", "03"].entries()) {
+      const number = steps.nth(i).locator('span[aria-hidden="true"]');
+      await expect(number).toHaveText(label);
+      await expect(number).toHaveCSS("color", TUGGI_SECONDARY);
+    }
+  });
+
+  test("closes on a download band carrying both stores and the seal again", async ({ page }) => {
+    await page.goto(WITH_LOGO_PATH);
+    await waitForLockup(page);
+
+    // Both stores, because this band is the fallback for whoever the
+    // platform sniff behind the floating CTA gets wrong (desktop included).
+    // `:visible` skips the global footer, which stays in the DOM behind
+    // `.no-layout` with store links of its own.
+    await expect(page.locator(`a[href="${APP_STORE_URL}"]:visible`)).toHaveCount(1);
+    await expect(page.locator(`a[href="${PLAY_STORE_URL}"]:visible`)).toHaveCount(1);
+
+    // The seal signs off the piece the same way it opens it.
+    await expect(page.locator(`img[src*="${SEAL_SRC_FRAGMENT}"]`)).toHaveCount(2);
+  });
+
+  test("the download band is readable once scrolled to the end, banner or no banner", async ({ page }) => {
+    // The band lives under a fixed CTA that itself sits above the consent
+    // banner. Its trailing spacer is sized off the banner's published height,
+    // so reaching the bottom has to expose the band whatever consent is doing.
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto(WITH_LOGO_PATH);
+    await waitForLockup(page);
+
+    const band = page.getByText("Download free");
+    const cta = page.getByRole("button", { name: /discover more in the app/i });
+
+    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+    await expect
+      .poll(async () => {
+        const bandBox = await band.boundingBox();
+        const ctaBox = await cta.boundingBox();
+        if (!bandBox || !ctaBox) return false;
+        return bandBox.y >= 0 && bandBox.y + bandBox.height <= ctaBox.y;
+      }, { message: "download band fully visible above the floating CTA at the end of the scroll" })
+      .toBe(true);
+  });
+
+  test("masthead screenshot baseline (campaign)", async ({ page }) => {
     await page.goto(WITH_LOGO_PATH);
     const lockup = await waitForLockup(page);
     // NOTE: Next's image optimizer refuses the fixture's avatar_url (SSRF
@@ -107,8 +200,8 @@ test.describe("partner brand lockup — with avatar_url", () => {
     // The browser's own broken-image glyph isn't pixel-stable across runs
     // (this masking was added after the baseline flaked with a ~3% pixel
     // diff on a rerun with no code change), so that one image is masked out
-    // of the comparison. Everything else in the lockup — the Tuggi logo, the
-    // divider, and their positions — is still a real, strict baseline.
+    // of the comparison. Everything else in the masthead — the Tuggi logo, the
+    // seal's reserved box and their positions — is still a real, strict baseline.
     await expect(lockup).toHaveScreenshot("lockup-with-logo.png", {
       mask: [lockup.locator("img").nth(1)],
     });
