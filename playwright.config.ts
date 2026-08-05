@@ -2,7 +2,9 @@ import { defineConfig, devices } from "@playwright/test";
 
 // Fixed, non-default ports so this suite never collides with a `next dev`
 // a human left running on 3000, or a local Supabase stack on the usual 54321.
-const MOCK_SUPABASE_PORT = 4010;
+// Exported because a spec talks to the double directly (reading back the rows
+// the attribution route stored) — one declaration, not two.
+export const MOCK_SUPABASE_PORT = 4010;
 const APP_PORT = 3100;
 // ...and a build directory of its own, for the same reason. `next build` and
 // `next dev` both own `.next/`: building the suite under a running dev server

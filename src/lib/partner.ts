@@ -1,10 +1,8 @@
 import { cache } from "react";
 import { getSupabaseServer } from "@/lib/supabase-server";
 import { isPublicStorageUrl } from "@/lib/storage";
+import { TUGGI_PARTNER_ID } from "@/lib/app-meta";
 import type { SupabaseClient } from "@supabase/supabase-js";
-
-/** Internal "Tuggi" client — not a real partner; rendered as the default experience. */
-export const TUGGI_PARTNER_ID = "8be94d35-282d-46bf-bc12-6fcd2f83a432";
 
 export interface PartnerData {
   /** Resolved client UUID — required for download attribution (clipboard, /api/attribution, Play Store referrer). */

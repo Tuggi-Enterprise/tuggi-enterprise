@@ -71,6 +71,16 @@ const CLIENTS_BY_SLUG = {
   },
 };
 
+/**
+ * Rows the app inserted into drive.click_fingerprints, keyed by partner_id and
+ * readable back over `GET /__fingerprints?partner_id=...`. This is how the
+ * attribution route's server-side decisions become observable from a test: what
+ * matters about a fingerprint is the value that got *stored* (above all the IP,
+ * which the route must take from the edge header and never from the caller's
+ * body), and there is no other way to see it from the browser side.
+ */
+const fingerprintsByPartner = new Map();
+
 function sendJson(res, status, body) {
   const json = JSON.stringify(body);
   res.writeHead(status, { "Content-Type": "application/json" });
@@ -83,12 +93,49 @@ function readEqFilter(url, column) {
   return raw?.startsWith("eq.") ? raw.slice(3) : null;
 }
 
+function readBody(req) {
+  return new Promise((resolve) => {
+    let raw = "";
+    req.setEncoding("utf8");
+    req.on("data", (chunk) => {
+      raw += chunk;
+    });
+    req.on("end", () => resolve(raw));
+  });
+}
+
 const server = http.createServer((req, res) => {
+  const url = new URL(req.url ?? "/", `http://${HOST}:${PORT}`);
+
+  if (url.pathname === "/rest/v1/click_fingerprints" && req.method === "POST") {
+    // PartnerHero fires this on mount (src/app/api/attribution) for every visit
+    // with a partnerId. The body is kept so the attribution tests can read back
+    // what was stored; see fingerprintsByPartner.
+    readBody(req).then((raw) => {
+      try {
+        const rows = JSON.parse(raw);
+        for (const row of Array.isArray(rows) ? rows : [rows]) {
+          if (row?.partner_id) fingerprintsByPartner.set(row.partner_id, row);
+        }
+      } catch {
+        // Malformed body is the app's problem, not the double's — still answer.
+      }
+      sendJson(res, 201, { success: true });
+    });
+    return;
+  }
+
   // Drain the request body so clients that stream a POST payload (the rpc
   // call below) don't hang waiting on us to read it.
   req.resume();
 
-  const url = new URL(req.url ?? "/", `http://${HOST}:${PORT}`);
+  if (url.pathname === "/__fingerprints" && req.method === "GET") {
+    const partnerId = url.searchParams.get("partner_id");
+    sendJson(res, 200, {
+      row: (partnerId && fingerprintsByPartner.get(partnerId)) || null,
+    });
+    return;
+  }
 
   if (url.pathname === "/__health") {
     res.writeHead(200);
@@ -131,15 +178,6 @@ const server = http.createServer((req, res) => {
     // No coupon fixtures in this suite — every /d/<slug> under test resolves
     // as a plain partner, never the coupon-redeem variant.
     sendJson(res, 200, { found: false });
-    return;
-  }
-
-  if (url.pathname === "/rest/v1/click_fingerprints" && req.method === "POST") {
-    // PartnerHero fires this on mount (src/app/api/attribution) for every
-    // visit with a partnerId — unrelated to the lockup under test here, but
-    // answering it avoids drowning the webServer log in attribution errors
-    // on every test run.
-    sendJson(res, 201, { success: true });
     return;
   }
 

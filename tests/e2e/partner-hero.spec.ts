@@ -262,7 +262,10 @@ test.describe("campaign layout — with avatar_url", () => {
     // `:visible` skips the global footer, which stays in the DOM behind
     // `.no-layout` with store links of its own.
     await expect(page.locator(`a[href="${APP_STORE_URL}"]:visible`)).toHaveCount(1);
-    await expect(page.locator(`a[href="${PLAY_STORE_URL}"]:visible`)).toHaveCount(1);
+    // Prefix, not equality: the Play link carries the partner's install
+    // referrer. What that referrer must contain is asserted in
+    // download-attribution.spec.ts, which owns that rule.
+    await expect(page.locator(`a[href^="${PLAY_STORE_URL}"]:visible`)).toHaveCount(1);
 
     // The seal signs off the piece the same way it opens it.
     await expect(page.locator(`img[src*="${SEAL_SRC_FRAGMENT}"]`)).toHaveCount(2);

@@ -2,7 +2,7 @@ import { MetadataRoute } from "next";
 import { routing } from "@/i18n/routing";
 import { buildUrl, buildSitemapAlternates, buildSitemapAlternatesFor } from "@/lib/seo";
 import { getSupabaseServer } from "@/lib/supabase-server";
-import { TUGGI_PARTNER_ID } from "@/lib/partner";
+import { TUGGI_PARTNER_ID } from "@/lib/app-meta";
 import {
   getAllRoutes,
   getCountriesForLocale,

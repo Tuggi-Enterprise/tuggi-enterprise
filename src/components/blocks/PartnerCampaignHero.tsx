@@ -3,13 +3,19 @@
 import type { ReactNode } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { APP_STORE_URL, PLAY_STORE_URL } from "@/lib/app-meta";
+import { APP_STORE_URL, buildPlayStoreUrl } from "@/lib/app-meta";
 import { COOKIE_BANNER_HEIGHT_VAR } from "@/components/global/CookieBanner";
 
 interface PartnerCampaignHeroProps {
   /** Partner seal (already narrowed to our own Storage by lib/partner.ts). */
   sealUrl: string;
   partnerName: string;
+  /**
+   * Resolved partner UUID. Only used to build the Play badge's link: the badges
+   * are a real way out of this page, so they carry the same install referrer as
+   * the floating CTA (see buildPlayStoreUrl).
+   */
+  partnerId?: string;
   /** The shared audio player card, owned by PartnerHero — behaviour is not duplicated here. */
   audioSlot?: ReactNode;
   /** The partner's own welcome text, rendered by PartnerHero with its collapse control. */
@@ -69,6 +75,7 @@ function WaveDivider() {
 export function PartnerCampaignHero({
   sealUrl,
   partnerName,
+  partnerId,
   audioSlot,
   descriptionSlot,
   onStoreClick,
@@ -232,7 +239,7 @@ export function PartnerCampaignHero({
                 />
               </a>
               <a
-                href={PLAY_STORE_URL}
+                href={buildPlayStoreUrl(partnerId)}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => onStoreClick("play_store")}

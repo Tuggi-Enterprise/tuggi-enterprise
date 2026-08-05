@@ -5,7 +5,7 @@ import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight, AtSign, Check, Copy, Gift, Globe, Loader2, Pause, Play } from "lucide-react";
-import { APP_STORE_URL, PLAY_STORE_URL } from "@/lib/app-meta";
+import { APP_STORE_URL, buildPlayStoreUrl } from "@/lib/app-meta";
 import { COOKIE_BANNER_HEIGHT_VAR } from "@/components/global/CookieBanner";
 import { PartnerCampaignHero } from "./PartnerCampaignHero";
 
@@ -369,17 +369,18 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
       // Silent fail — fingerprint fallback covers this case
     }
 
-    // ✅ FINGERPRINT: Record click in DB for server-side matching
+    // ✅ FINGERPRINT: Record click in DB for server-side matching.
+    // The IP is not read here: /api/attribution takes it from the edge header,
+    // which is the same public IP an IP-echo service would report, is not
+    // forgeable by a caller, and does not hand every visitor's address to a
+    // third party we have no data agreement with before they consent to
+    // anything.
     try {
-      const ipResponse = await fetch("https://api.ipify.org?format=json");
-      const { ip } = await ipResponse.json();
-
       const response = await fetch("/api/attribution", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           partner_id: pId,
-          client_ip: ip,
           user_agent: navigator.userAgent,
           language: navigator.language,
           timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -398,16 +399,10 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
     setIsRedirecting(true);
     trackEvent("download_page_cta_click", { target_store: platform === "ios" ? "app_store" : "play_store" });
 
-    let targetUrl: string;
-    if (platform === "ios") {
-      targetUrl = APP_STORE_URL;
-    } else {
-      // ✅ PLAY REFERRER: Append referrer param so Android InstallReferrerClient
-      // can read the partner_id on first app launch (100% reliable, survives IP changes)
-      targetUrl = partnerId
-        ? `${PLAY_STORE_URL}&referrer=${encodeURIComponent('partner_id_' + partnerId)}`
-        : PLAY_STORE_URL;
-    }
+    // iOS has no install-referrer equivalent — attribution there rides on the
+    // clipboard + fingerprint pair written by captureFingerprint.
+    const targetUrl =
+      platform === "ios" ? APP_STORE_URL : buildPlayStoreUrl(partnerId);
 
     window.location.href = targetUrl;
   };
@@ -593,6 +588,7 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
         <PartnerCampaignHero
           sealUrl={partnerData!.logoUrl!}
           partnerName={partnerData!.name ?? ""}
+          partnerId={partnerId}
           audioSlot={audioCard}
           descriptionSlot={descriptionBlock}
           onStoreClick={(store) => trackEvent("download_page_store_badge_click", { target_store: store })}
