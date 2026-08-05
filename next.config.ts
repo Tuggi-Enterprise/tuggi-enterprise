@@ -15,6 +15,11 @@ const storageHost = getStorageHost();
 
 const nextConfig: NextConfig = {
   /* config options here */
+  // Lets a build opt out of the shared `.next/`. `next dev` and `next build`
+  // both own that directory, so building while a dev server is up on 3000
+  // swaps its chunks out mid-flight and nothing hydrates any more. The e2e
+  // suite sets this (see playwright.config.ts); production leaves it unset.
+  distDir: process.env.TUGGI_DIST_DIR || ".next",
   reactCompiler: false,
   images: {
     remotePatterns: storageHost

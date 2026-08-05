@@ -40,8 +40,15 @@ function PartnerHeroContent({ partnerData, partnerId, coupon }: WrapperProps) {
 export function PartnerHeroWrapper({ partnerData, partnerId, coupon }: WrapperProps) {
   const t = useTranslations("Download");
   return (
-    <Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center text-white">{t("loading")}</div>}>
-      <PartnerHeroContent partnerData={partnerData} partnerId={partnerId} coupon={coupon} />
-    </Suspense>
+    // data-lp-chrome="off" is the server-rendered half of the rule in
+    // globals.css that strips the site header/footer from a landing page. It
+    // has to be in the markup, not in a hydration effect: this page is opened
+    // from a printed QR on roaming data, and until the JS lands the visitor
+    // would otherwise scroll through the entire corporate footer.
+    <div data-lp-chrome="off">
+      <Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center text-white">{t("loading")}</div>}>
+        <PartnerHeroContent partnerData={partnerData} partnerId={partnerId} coupon={coupon} />
+      </Suspense>
+    </div>
   );
 }

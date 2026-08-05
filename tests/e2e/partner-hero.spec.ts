@@ -26,6 +26,16 @@ const NO_LOGO_PATH = "/d/e2e-sem-logo";
 const WITH_LOGO_PATH = "/d/e2e-com-logo";
 const PARTNER_NAME = "Delícias do Vale do Café";
 
+/** iPhone 12/13/14 class — the viewport this page is actually read on. */
+const PHONE = { width: 390, height: 844 } as const;
+/**
+ * The campaign page is a QR landing read standing at a restaurant table. The
+ * budget is stated in folds, not in pixels of taste: everything the visitor
+ * needs fits in two screens of a 390x844 phone, and the whole document stays
+ * under 2000px. It was 4809px before this budget existed.
+ */
+const MAX_PAGE_HEIGHT = 2000;
+
 /** --color-tuggi-primary / --color-tuggi-secondary, as the browser reports them. */
 const TUGGI_PRIMARY = "rgb(0, 168, 232)";
 const TUGGI_SECONDARY = "rgb(255, 111, 0)";
@@ -189,6 +199,77 @@ test.describe("campaign layout — with avatar_url", () => {
         return bandBox.y >= 0 && bandBox.y + bandBox.height <= ctaBox.y;
       }, { message: "download band fully visible above the floating CTA at the end of the scroll" })
       .toBe(true);
+  });
+
+  test("the whole page fits the mobile height budget", async ({ page }) => {
+    await page.setViewportSize(PHONE);
+    await page.goto(WITH_LOGO_PATH);
+    await waitForLockup(page);
+    // The trailing spacer grows with the consent banner, so measure with the
+    // banner up: that is the worst case and the state a first scan lands in.
+    await expect(page.getByText(/we use cookies/i)).toBeVisible();
+
+    const height = await page.evaluate(() => document.body.scrollHeight);
+    expect(height, `document height at ${PHONE.width}px`).toBeLessThanOrEqual(MAX_PAGE_HEIGHT);
+  });
+
+  test("the player is the first fold, not something to scroll for", async ({ page }) => {
+    // The 12s welcome clip proves the promise before the visitor has decided to
+    // trust the page. Below the fold, or clipped by the floating CTA, it is not
+    // the product any more — it is a detail.
+    await page.setViewportSize(PHONE);
+    await page.goto(WITH_LOGO_PATH);
+    await waitForLockup(page);
+
+    const player = page.locator("[data-block='player']");
+    await expect(player).toBeVisible();
+
+    const ctaBlock = page
+      .getByRole("button", { name: /discover more in the app/i })
+      .locator("..");
+
+    await expect
+      .poll(
+        async () => {
+          const playerBox = await player.boundingBox();
+          const ctaBox = await ctaBlock.boundingBox();
+          if (!playerBox || !ctaBox) return null;
+          return {
+            insideFold: playerBox.y + playerBox.height <= PHONE.height,
+            clearOfCta: playerBox.y + playerBox.height <= ctaBox.y,
+          };
+        },
+        { message: "player box against the first fold and the floating CTA, unscrolled" }
+      )
+      .toEqual({ insideFold: true, clearOfCta: true });
+  });
+
+  test("keeps the partner's own welcome text, collapse control and all", async ({ page }) => {
+    // Compacting the page must not cost the host their voice: the welcome text
+    // is the only copy on the page the partner wrote.
+    await page.setViewportSize(PHONE);
+    await page.goto(WITH_LOGO_PATH);
+    await waitForLockup(page);
+
+    const description = page.locator("[data-block='description']");
+    await expect(description).toContainText("Conservatória");
+
+    const more = description.getByRole("button", { name: "MORE" });
+    // Scrolled into view first: the CTA is fixed over the lower third of the
+    // viewport, so an unscrolled tap here would land on the CTA instead.
+    await more.scrollIntoViewIfNeeded();
+    const collapsed = (await description.innerText()).length;
+    await more.click();
+    await expect(description.getByRole("button", { name: "LESS" })).toBeVisible();
+    expect((await description.innerText()).length).toBeGreaterThan(collapsed);
+  });
+
+  test("carries no photo band", async ({ page }) => {
+    // The band used to hold an app screenshot of Lisbon — 500px of the wrong
+    // region on a Vale do Café campaign. Nothing may quietly put it back.
+    await page.goto(WITH_LOGO_PATH);
+    await waitForLockup(page);
+    await expect(page.locator('img[src*="partner-hero"]')).toHaveCount(0);
   });
 
   test("masthead screenshot baseline (campaign)", async ({ page }) => {

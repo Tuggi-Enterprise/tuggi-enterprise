@@ -37,11 +37,23 @@ body {
   }
 }
 
-/* LP Specific: Hide Global UI */
+/* LP Specific: Hide Global UI.
+   Two triggers, one declaration. `.no-layout` lands on <body> at hydration
+   (PartnerHero), which is too late on the connection these pages are actually
+   read on — a QR scanned abroad renders the whole fat footer first and folds it
+   away seconds later, and the page measures thousands of pixels taller until it
+   does. The `:has()` arm fires straight off the server-rendered markup: an LP
+   marks itself with data-lp-chrome="off" (PartnerHeroWrapper) and the chrome
+   never paints. The class stays because it is what un-marks the page on
+   client-side navigation away from the LP. */
 .no-layout header,
 .no-layout footer,
 .no-layout #global-header,
-.no-layout #fat-footer {
+.no-layout #fat-footer,
+body:has([data-lp-chrome="off"]) header,
+body:has([data-lp-chrome="off"]) footer,
+body:has([data-lp-chrome="off"]) #global-header,
+body:has([data-lp-chrome="off"]) #fat-footer {
   display: none !important;
 }
 

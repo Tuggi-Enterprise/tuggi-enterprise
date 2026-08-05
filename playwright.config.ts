@@ -4,6 +4,12 @@ import { defineConfig, devices } from "@playwright/test";
 // a human left running on 3000, or a local Supabase stack on the usual 54321.
 const MOCK_SUPABASE_PORT = 4010;
 const APP_PORT = 3100;
+// ...and a build directory of its own, for the same reason. `next build` and
+// `next dev` both own `.next/`: building the suite under a running dev server
+// swaps the static chunks out from under it, every page stops hydrating, and
+// the whole suite goes red with framer-motion opacity errors that look like a
+// component defect. next.config.ts reads this via TUGGI_DIST_DIR.
+const DIST_DIR = ".next-e2e";
 
 /**
  * The suite runs against a local production build (`npm run build && npm run
@@ -25,7 +31,9 @@ export default defineConfig({
     {
       command: "node tests/e2e/mock-supabase-server.mjs",
       url: `http://127.0.0.1:${MOCK_SUPABASE_PORT}/__health`,
-      env: { MOCK_SUPABASE_PORT: String(MOCK_SUPABASE_PORT) },
+      // APP_PORT: the welcome-audio fixture points back at the app's own
+      // public/audio, so the double has to know where the app is listening.
+      env: { MOCK_SUPABASE_PORT: String(MOCK_SUPABASE_PORT), APP_PORT: String(APP_PORT) },
       reuseExistingServer: !process.env.CI,
       timeout: 15_000,
       stdout: "pipe",
@@ -43,6 +51,7 @@ export default defineConfig({
         SUPABASE_URL: `http://127.0.0.1:${MOCK_SUPABASE_PORT}`,
         SUPABASE_SERVICE_ROLE_KEY: "e2e-test-key",
         NEXT_PUBLIC_BASE_URL: `http://127.0.0.1:${APP_PORT}`,
+        TUGGI_DIST_DIR: DIST_DIR,
       },
       stdout: "pipe",
     },

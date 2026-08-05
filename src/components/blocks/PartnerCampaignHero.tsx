@@ -17,14 +17,14 @@ interface PartnerCampaignHeroProps {
   onStoreClick: (store: "app_store" | "play_store") => void;
 }
 
-/** The photo band's top edge, matching the printed piece's undulating cut. */
+/** The printed piece's undulating cut, kept as the download band's top edge. */
 function WaveDivider() {
   return (
     <svg
       aria-hidden="true"
       viewBox="0 0 390 28"
       preserveAspectRatio="none"
-      className="absolute inset-x-0 top-0 z-10 h-6 w-full text-tuggi-bg"
+      className="absolute inset-x-0 top-0 h-6 w-full text-tuggi-bg"
     >
       <path
         d="M0 0h390v10c-32 0-49 12-81 12S241 6 195 6 130 22 98 22 32 10 0 10Z"
@@ -36,10 +36,18 @@ function WaveDivider() {
 
 /**
  * Campaign variant of the /d/<slug> hero, rendered when the partner has a seal
- * (see PartnerHero). It follows the printed table-top piece the festival hands
- * out: seal-anchored masthead, heavy serif headline with a coloured stress, the
- * three numbered steps, an ambient photo band, and a dark download band where
- * the seal comes back.
+ * (see PartnerHero). The visitor is standing at a restaurant table with the
+ * printed QR in front of them, so the page is budgeted by fold, not by section:
+ *
+ *   fold 1 (0–844px)  masthead, headline, one bridging line, the player.
+ *   fold 2            the three numbered steps, the host's own words, and the
+ *                     download band the page closes on.
+ *
+ * The player is the product, not decoration: it proves the promise in twelve
+ * seconds and it is why the QR was scanned, so it sits inside the first fold and
+ * above the floating CTA's top edge — even on a first visit, when the consent
+ * banner lifts that CTA to roughly 490px down the viewport. The e2e suite
+ * asserts both (the [data-block] hooks below exist for that budget).
  *
  * Two deliberate constraints:
  * - The headline uses the system serif stack, not a web font. It is the LCP
@@ -70,13 +78,16 @@ export function PartnerCampaignHero({
           Deliberately a <div>: globals.css hides `.no-layout header`, the rule
           that strips the site chrome from this page, and a <header> here would
           be swallowed by it the moment the page hydrates. */}
-      <div className="flex items-center justify-between gap-4 px-5 pt-6 sm:px-8">
+      <div
+        data-block="masthead"
+        className="flex items-center justify-between gap-4 px-5 pt-4 sm:px-8 sm:pt-6"
+      >
         <Image
           src="/images/logo_tuggi_full.png"
           alt="Tuggi"
           width={180}
           height={54}
-          className="h-9 w-auto sm:h-11"
+          className="h-8 w-auto sm:h-11"
           priority
         />
         <Image
@@ -84,85 +95,95 @@ export function PartnerCampaignHero({
           alt={partnerName}
           width={200}
           height={200}
-          sizes="(min-width: 640px) 112px, 88px"
-          className="h-[72px] w-auto max-w-[88px] object-contain sm:h-24 sm:max-w-[112px]"
+          sizes="(min-width: 640px) 112px, 72px"
+          className="h-16 w-auto max-w-[72px] object-contain sm:h-24 sm:max-w-[112px]"
           priority
         />
       </div>
 
-      <div className="mx-auto max-w-2xl px-5 pt-7 sm:px-8 sm:pt-10">
-        <h1 className="font-serif text-[2rem] font-bold leading-[1.1] tracking-[-0.01em] text-tuggi-dark sm:text-5xl">
+      <div className="mx-auto max-w-2xl px-5 pt-4 sm:px-8 sm:pt-8">
+        <h1 className="font-serif text-[2rem] font-bold leading-[1.08] tracking-[-0.01em] text-tuggi-dark sm:text-5xl">
           {t.rich("headline", {
             accent: (chunks) => <span className="text-tuggi-primary">{chunks}</span>,
           })}
         </h1>
 
-        <p className="mt-5 text-[0.95rem] leading-relaxed text-tuggi-slate sm:text-lg">
+        {/* One line, on purpose: the three steps below say the same thing better,
+            and every extra line here pushes the player out of the first fold. */}
+        <p data-block="subtext" className="mt-3 text-[0.95rem] leading-snug text-tuggi-slate sm:text-lg">
           {t("subtext")}
         </p>
 
-        {audioSlot && <div className="mt-7">{audioSlot}</div>}
-        {/* The partner's own welcome text is a different voice from the campaign
-            copy above (and the transcript of the audio, when there is one), so
-            it gets a rule in the campaign accent rather than blending in. */}
-        {descriptionSlot && (
-          <div className="mt-6 border-l-2 border-tuggi-secondary/50 pl-4">{descriptionSlot}</div>
+        {audioSlot && (
+          <div data-block="player" className="mt-4">
+            {audioSlot}
+          </div>
         )}
       </div>
 
-      {/* The three steps — the core of the printed piece. Stacked with hairline
-          rules on the phone, three columns split by vertical rules from sm up,
-          which is how the piece is laid out at table size. */}
-      <section className="mx-auto mt-9 max-w-2xl px-5 sm:mt-12 sm:px-8">
+      {/* The three steps — the core of the printed piece. The number sits on the
+          title's own baseline rather than in a column of its own: it reads as
+          one line on a phone and saves the vertical run that pushed the download
+          band past the second fold. Three columns from sm up, as the piece is
+          laid out at table size. */}
+      <section data-block="steps" className="mx-auto mt-5 max-w-2xl px-5 sm:mt-10 sm:px-8">
         <h2 className="sr-only">{t("stepsHeading")}</h2>
         <ol className="divide-y divide-slate-200 sm:grid sm:grid-cols-3 sm:divide-x sm:divide-y-0">
           {steps.map((step, i) => (
             <li
               key={step.title}
-              className="flex items-start gap-4 py-5 first:pt-0 last:pb-0 sm:flex-col sm:gap-3 sm:px-5 sm:py-0 sm:first:pl-0 sm:last:pr-0"
+              className="py-2.5 first:pt-0 last:pb-0 sm:px-5 sm:py-0 sm:first:pl-0 sm:last:pr-0"
             >
-              <span
-                aria-hidden="true"
-                className="font-serif text-[2.25rem] font-bold leading-none text-tuggi-secondary tabular-nums sm:text-5xl"
-              >
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <div className="min-w-0">
-                <h3 className="text-[0.8rem] font-extrabold uppercase leading-snug tracking-[0.12em] text-tuggi-dark">
+              <div className="flex items-baseline gap-2.5">
+                <span
+                  aria-hidden="true"
+                  className="font-serif text-[1.5rem] font-bold leading-none text-tuggi-secondary tabular-nums sm:text-4xl"
+                >
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <h3 className="text-[0.8rem] font-extrabold uppercase leading-snug tracking-[0.1em] text-tuggi-dark">
                   {step.title}
                 </h3>
-                <p className="mt-1.5 text-sm leading-relaxed text-tuggi-slate">{step.text}</p>
               </div>
+              <p className="mt-1 text-[0.8125rem] leading-snug text-tuggi-slate sm:mt-2">
+                {step.text}
+              </p>
             </li>
           ))}
         </ol>
       </section>
 
-      {/* Ambient band. Our own asset (no third-party image rights involved),
-          below the fold, so it loads lazily. */}
-      <div className="relative mt-10 h-44 w-full sm:mt-14 sm:h-64">
-        <WaveDivider />
-        <Image
-          src="/images/partner-hero.png"
-          alt={t("photoAlt")}
-          fill
-          sizes="100vw"
-          className="object-cover object-center"
-        />
-      </div>
+      {/* The partner's own welcome text is a different voice from the campaign
+          copy above (and from the transcript of the audio, when there is one),
+          so it gets a rule in the campaign accent rather than blending in. It
+          closes the read instead of opening it: at rest the floating CTA covers
+          the lower third of the viewport, and this is the one block here with a
+          control the visitor is meant to tap. */}
+      {descriptionSlot && (
+        <div data-block="description" className="mx-auto mt-5 max-w-2xl px-5 sm:mt-8 sm:px-8">
+          <div className="border-l-2 border-tuggi-secondary/50 pl-4">{descriptionSlot}</div>
+        </div>
+      )}
 
-      {/* Download band. The floating CTA above it goes to the visitor's own
-          store; these badges are the explicit both-stores fallback (desktop,
-          or a phone the sniff got wrong), and the seal signs off the piece. */}
-      <div className="bg-tuggi-dark px-5 pb-9 pt-8 text-white sm:px-8 sm:pb-12">
-        <div className="mx-auto flex max-w-2xl items-center justify-between gap-5">
+      {/* Download band, carrying the printed piece's wave on its top edge (the
+          photo band that used to carry it was an app screenshot of Lisbon —
+          wrong region, and 500px of it). The floating CTA above goes to the
+          visitor's own store; these badges are the explicit both-stores
+          fallback (desktop, or a phone the sniff got wrong), and the seal signs
+          off the piece. */}
+      <div
+        data-block="band"
+        className="relative mt-6 bg-tuggi-dark px-5 pb-6 pt-9 text-white sm:mt-10 sm:px-8 sm:pb-8"
+      >
+        <WaveDivider />
+        <div className="mx-auto flex max-w-2xl items-center justify-between gap-4">
           <div className="min-w-0">
-            <p className="text-2xl font-black leading-tight sm:text-3xl">{t("bandTitle")}</p>
-            <p className="mt-0.5 text-lg font-medium text-tuggi-secondary sm:text-xl">
+            <p className="text-xl font-black leading-tight sm:text-3xl">{t("bandTitle")}</p>
+            <p className="text-base font-medium text-tuggi-secondary sm:text-xl">
               {t("bandSubtitle")}
             </p>
 
-            <div className="mt-4 flex flex-wrap items-center gap-3">
+            <div className="mt-3 flex flex-wrap items-center gap-2">
               <a
                 href={APP_STORE_URL}
                 target="_blank"
@@ -175,7 +196,7 @@ export function PartnerCampaignHero({
                   alt="Download on the App Store"
                   width={120}
                   height={35}
-                  className="h-10 w-auto"
+                  className="h-9 w-auto"
                   // The optimizer answers 400 for SVG unless dangerouslyAllowSVG
                   // is on (it is not, and turning it on for a badge is not worth
                   // the script-in-SVG surface). Nothing to optimize here anyway.
@@ -194,7 +215,7 @@ export function PartnerCampaignHero({
                   alt="Get it on Google Play"
                   width={120}
                   height={35}
-                  className="h-10 w-auto"
+                  className="h-9 w-auto"
                   unoptimized
                 />
               </a>
@@ -207,8 +228,8 @@ export function PartnerCampaignHero({
             aria-hidden="true"
             width={200}
             height={200}
-            sizes="(min-width: 640px) 112px, 80px"
-            className="h-20 w-auto max-w-[80px] shrink-0 object-contain sm:h-28 sm:max-w-[112px]"
+            sizes="(min-width: 640px) 112px, 72px"
+            className="h-[72px] w-auto max-w-[72px] shrink-0 object-contain sm:h-28 sm:max-w-[112px]"
           />
         </div>
       </div>
@@ -222,9 +243,10 @@ export function PartnerCampaignHero({
           second copy of the consent state) so that scrolling to the end always
           reveals the download band, banner up or not. */}
       <div
+        data-block="spacer"
         aria-hidden="true"
         className="w-full"
-        style={{ height: `calc(10rem + var(${COOKIE_BANNER_HEIGHT_VAR}, 0px))` }}
+        style={{ height: `calc(9rem + var(${COOKIE_BANNER_HEIGHT_VAR}, 0px))` }}
       />
     </div>
   );

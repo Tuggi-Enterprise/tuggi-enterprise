@@ -17,7 +17,15 @@
 import http from "node:http";
 
 const PORT = Number(process.env.MOCK_SUPABASE_PORT || 4010);
+// The welcome audio is served by the app under test itself (public/audio), so
+// the fixture needs to know where that is. A real row points at Supabase
+// Storage; what matters to the page is that the URL decodes as audio.
+const APP_PORT = Number(process.env.APP_PORT || 3100);
 const HOST = "127.0.0.1";
+
+/** Long enough to exercise the description's collapse control (maxDescLength = 220). */
+const WELCOME_DESCRIPTION =
+  "Welcome to the Delícias do Vale do Café festival, here in Conservatória. What reaches your plate started two centuries ago, on the farms coffee built. In the 19th century the coffee barons raised the manor houses that still line these roads, and the kitchens that fed them became the cuisine you are about to taste.";
 
 // The avatar_url below is deliberately "https://" even though this server only
 // speaks plain HTTP: src/lib/storage.ts#isPublicStorageUrl only string-matches
@@ -45,12 +53,16 @@ const CLIENTS_BY_SLUG = {
     social_handle: null,
     avatar_url: null,
   },
+  // The campaign fixture: a seal switches the whole layout, and the welcome POI
+  // gives it the two pieces the mobile fold budget is measured against — the
+  // audio player (the product, which has to sit inside the first fold) and the
+  // partner's own welcome text with its collapse control.
   "e2e-com-logo": {
     id: "22222222-2222-4222-8222-222222222222",
     slug: "e2e-com-logo",
     name: null,
     company_name: "Delícias do Vale do Café",
-    welcome_poi_id: null,
+    welcome_poi_id: "33333333-3333-4333-8333-333333333333",
     metadata: null,
     client_type: "restaurant",
     website: null,
@@ -97,6 +109,21 @@ const server = http.createServer((req, res) => {
       return;
     }
     sendJson(res, 200, client);
+    return;
+  }
+
+  if (url.pathname === "/rest/v1/attraction_descriptions" && req.method === "GET") {
+    const attractionId = readEqFilter(url, "attraction_id");
+    if (!attractionId) {
+      sendJson(res, 406, { code: "PGRST116", message: "no rows" });
+      return;
+    }
+    // Answers in every language rather than only the requested one: the page's
+    // own en-us fallback is not what this fixture is here to exercise.
+    sendJson(res, 200, {
+      audio_url: `http://${HOST}:${APP_PORT}/audio/call_en-us-male.mp3`,
+      description: WELCOME_DESCRIPTION,
+    });
     return;
   }
 

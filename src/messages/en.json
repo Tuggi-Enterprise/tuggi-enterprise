@@ -16,7 +16,7 @@
     "loading": "Loading...",
     "Campaign": {
       "headline": "Between one dish and the next, the region tells <accent>its own story</accent>.",
-      "subtext": "Tuggi knows where you are passing through and narrates, in your language, what is there. The fort, the church, the old manor, the lagoon, the story no one ever told you. You just keep going and listen.",
+      "subtext": "You keep going. The narration follows.",
       "stepsHeading": "How it works",
       "step1Title": "Open it and forget it",
       "step1Text": "Start the app at the beginning of the outing and put your phone back in your pocket.",
@@ -25,8 +25,7 @@
       "step3Title": "The route is yours",
       "step3Text": "A detour, a stop, the long way back along the beach. The content is in the territory, not in a fixed itinerary.",
       "bandTitle": "Download free",
-      "bandSubtitle": "Try it now!",
-      "photoAlt": "A traveller listening to Tuggi on their phone during a trip"
+      "bandSubtitle": "Try it now!"
     }
   },
   "Header": {

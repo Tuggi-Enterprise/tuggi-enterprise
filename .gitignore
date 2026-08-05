@@ -19,6 +19,9 @@
 
 # next.js
 /.next/
+# TUGGI_DIST_DIR builds (the e2e suite uses one so it never overwrites the
+# .next/ a `next dev` on 3000 is serving from — see playwright.config.ts).
+/.next-*/
 /out/
 
 # production

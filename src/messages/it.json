@@ -16,7 +16,7 @@
     "loading": "Caricamento...",
     "Campaign": {
       "headline": "Tra un piatto e l'altro, la regione racconta <accent>la propria storia</accent>.",
-      "subtext": "Tuggi riconosce dove stai passando e racconta, nella tua lingua, che cosa c'è lì. Il forte, la chiesa, il casale, la laguna, la storia che nessuno ti ha mai raccontato. Tu prosegui il viaggio e ascolti.",
+      "subtext": "Tu prosegui il viaggio. La narrazione ti segue.",
       "stepsHeading": "Come funziona",
       "step1Title": "Aprila e dimenticala",
       "step1Text": "Avvia l'app all'inizio della gita e rimetti il telefono in tasca.",
@@ -25,8 +25,7 @@
       "step3Title": "La strada è tua",
       "step3Text": "Una deviazione, una sosta, il ritorno lungo la spiaggia. Il contenuto è nel territorio, non in un itinerario fisso.",
       "bandTitle": "Scarica gratis",
-      "bandSubtitle": "Provala ora!",
-      "photoAlt": "Un viaggiatore che ascolta Tuggi dal telefono durante la gita"
+      "bandSubtitle": "Provala ora!"
     }
   },
   "Header": {
