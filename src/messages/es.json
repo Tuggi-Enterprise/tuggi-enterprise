@@ -17,6 +17,7 @@
     "Campaign": {
       "headline": "Entre un plato y otro, la región cuenta <accent>su propia historia</accent>.",
       "subtext": "Tú sigues el viaje. La narración te acompaña.",
+      "referredBy": "Recomendado por {name}",
       "stepsHeading": "Cómo funciona",
       "step1Title": "Ábrela y olvídate",
       "step1Text": "Enciende la app al empezar el paseo y guarda el móvil en el bolsillo.",

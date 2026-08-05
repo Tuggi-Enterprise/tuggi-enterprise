@@ -17,6 +17,7 @@
     "Campaign": {
       "headline": "Entre um prato e outro, a região conta a <accent>própria história</accent>.",
       "subtext": "Você segue viagem. A narração acompanha.",
+      "referredBy": "Indicado por {name}",
       "stepsHeading": "Como funciona",
       "step1Title": "Abra e esqueça",
       "step1Text": "Ligue o app no começo do passeio e guarde o celular no bolso.",

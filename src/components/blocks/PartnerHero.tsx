@@ -415,17 +415,28 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
   const t = useTranslations("Download");
   const tCoupon = useTranslations("Coupon");
 
-  const [isDescExpanded, setIsDescExpanded] = useState(false);
-  const descriptionText = partnerData?.description || t("heroSubtitle");
-  const maxDescLength = 220;
-  const isLongDesc = descriptionText.length > maxDescLength;
-
   // A partner with a seal is running a campaign: the visitor scanned a printed
   // piece that already carries that mark, so the page mirrors the piece instead
   // of the generic template. Every partner without one (the large majority)
   // keeps the layout below, unchanged. The coupon flow keeps it too — that page
   // has a single job (redeem) and a campaign narrative around it would bury it.
   const isCampaign = !isTuggi && !!partnerData?.logoUrl && !coupon;
+
+  const [isDescExpanded, setIsDescExpanded] = useState(false);
+  const descriptionText = partnerData?.description || t("heroSubtitle");
+  // The campaign layout puts this text above the player, inside the ~450px the
+  // consent banner leaves clear on a first visit (see PartnerCampaignHero): a
+  // teaser of about three lines is what fits there without pushing the player
+  // under the floating CTA. Nothing is lost — MORE opens the whole text, and
+  // the default layout, which has room below the fold, keeps the long form.
+  const maxDescLength = isCampaign ? 130 : 220;
+  const isLongDesc = descriptionText.length > maxDescLength;
+  // Cut back to the last whole word: at the campaign's shorter cap the raw
+  // substring lands mid-word often enough to read as a rendering bug.
+  const collapsedDescription = descriptionText
+    .substring(0, maxDescLength)
+    .replace(/\s+\S*$/, "")
+    .trimEnd();
 
   // Inline translation pro MORE/LESS local
   const isPt = locale.includes("pt");
@@ -438,14 +449,15 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
 
   /* Partner welcome text with its collapse control. Declared once and placed by
      whichever layout renders below — the campaign variant left-aligns it in the
-     content column, the default one keeps it centred under the title. */
+     content column and tightens the leading, since there it shares the first
+     fold with the player; the default one keeps it centred under the title. */
   const descriptionBlock = (
     <p
-      className={`text-tuggi-slate text-sm md:text-base leading-relaxed ${
-        isCampaign ? "" : "mb-6 max-w-sm mx-auto"
+      className={`text-tuggi-slate text-sm md:text-base ${
+        isCampaign ? "leading-snug" : "leading-relaxed mb-6 max-w-sm mx-auto"
       }`}
     >
-      {isDescExpanded || !isLongDesc ? descriptionText : `${descriptionText.substring(0, maxDescLength)}...`}
+      {isDescExpanded || !isLongDesc ? descriptionText : `${collapsedDescription}...`}
       {isLongDesc && (
         <button
           onClick={() => {

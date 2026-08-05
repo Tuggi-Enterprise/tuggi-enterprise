@@ -7,9 +7,11 @@ import { APP_STORE_URL, PLAY_STORE_URL } from "../../src/lib/app-meta";
  *   - no seal  → the default hero. The common case by a wide margin, and the
  *                one that must never regress when the campaign work moves.
  *   - a seal   → the campaign layout (PartnerCampaignHero.tsx), which mirrors
- *                the printed table-top piece: seal-anchored masthead, serif
- *                headline with a coloured stress, three numbered steps, photo
- *                band and a dark download band where the seal returns.
+ *                the printed table-top piece and reads as three acts: the
+ *                headline with a coloured stress, then the place and its host
+ *                (referral line, the host's own words, the player), then the
+ *                three numbered steps that explain the product, closing on a
+ *                dark download band where the seal returns.
  *
  * Runs against a local production build (`npm run build && npm run start`,
  * wired by playwright.config.ts) talking to the mock PostgREST double in
@@ -147,6 +149,93 @@ test.describe("campaign layout — with avatar_url", () => {
     await expect(accent).toHaveCSS("color", TUGGI_PRIMARY);
   });
 
+  test("sets the campaign in the site's own typeface, headline included", async ({ page }) => {
+    // The headline and the step numbers were set in the system serif stack.
+    // The site is Inter end to end (see the [locale] layout), and a second
+    // family on the one page a visitor meets first read as a different site.
+    await page.goto(WITH_LOGO_PATH);
+    await waitForLockup(page);
+
+    const families = await page.evaluate(() => {
+      const family = (el: Element | null) => (el ? getComputedStyle(el).fontFamily : null);
+      return {
+        body: family(document.body),
+        headline: family(document.querySelector("h1")),
+        stepNumber: family(document.querySelector("ol > li span[aria-hidden='true']")),
+      };
+    });
+
+    expect(families.body).toMatch(/Inter/i);
+    // Compared against the body rather than to a literal: next/font hashes the
+    // family name at build time, and the claim here is "the same as the rest of
+    // the site", not "this exact string".
+    expect(families.headline).toBe(families.body);
+    expect(families.stepNumber).toBe(families.body);
+  });
+
+  test("reads as three acts: the title, the place and its host, then how it works", async ({ page }) => {
+    // The ordering *is* the feature: the host's words frame the audio, and the
+    // three steps explain a product the visitor has already heard. Asserted by
+    // vertical position, because a DOM-order check would still pass if CSS
+    // reshuffled the blocks on screen.
+    await page.setViewportSize(PHONE);
+    await page.goto(WITH_LOGO_PATH);
+    await waitForLockup(page);
+    await expect(page.locator("[data-block='player']")).toBeVisible();
+
+    const layout = await page.evaluate(() => {
+      const box = (sel: string) => {
+        const el = document.querySelector(sel);
+        if (!el) return null;
+        const r = el.getBoundingClientRect();
+        return { top: Math.round(r.top + window.scrollY), bottom: Math.round(r.bottom + window.scrollY) };
+      };
+      return {
+        headline: box("h1"),
+        subtext: box("[data-block='subtext']"),
+        referral: box("[data-block='referral']"),
+        description: box("[data-block='description']"),
+        player: box("[data-block='player']"),
+        steps: box("[data-block='steps']"),
+        band: box("[data-block='band']"),
+      };
+    });
+
+    for (const [name, value] of Object.entries(layout)) {
+      expect(value, `${name} must render`).not.toBeNull();
+    }
+
+    const sequence = [
+      "headline",
+      "subtext",
+      "referral",
+      "description",
+      "player",
+      "steps",
+      "band",
+    ] as const;
+    for (let i = 1; i < sequence.length; i++) {
+      const previous = sequence[i - 1];
+      const current = sequence[i];
+      expect(
+        layout[current]!.top,
+        `${current} must start below ${previous}`
+      ).toBeGreaterThanOrEqual(layout[previous]!.bottom);
+    }
+  });
+
+  test("names the partner that referred the visit, above their own words", async ({ page }) => {
+    // The seal in the masthead is a mark; this line says what it means. The
+    // default layout carries it in the h1, and the campaign layout lost it
+    // when it stopped using that h1.
+    await page.setViewportSize(PHONE);
+    await page.goto(WITH_LOGO_PATH);
+    await waitForLockup(page);
+
+    const referral = page.locator("[data-block='referral']");
+    await expect(referral).toHaveText(`Referred by ${PARTNER_NAME}`);
+  });
+
   test("explains the product in three numbered steps, numbered in the campaign orange", async ({ page }) => {
     await page.goto(WITH_LOGO_PATH);
     await waitForLockup(page);
@@ -216,7 +305,11 @@ test.describe("campaign layout — with avatar_url", () => {
   test("the player is the first fold, not something to scroll for", async ({ page }) => {
     // The 12s welcome clip proves the promise before the visitor has decided to
     // trust the page. Below the fold, or clipped by the floating CTA, it is not
-    // the product any more — it is a detail.
+    // the product any more — it is a detail. This is the tightest budget on the
+    // page: the host's text now sits between the headline and the player, and
+    // on a first visit the consent banner lifts the CTA to ~450px, so the whole
+    // of act 1 + act 2 has to fit above that. If this goes red, the fix is the
+    // teaser length in PartnerHero (maxDescLength), not a looser bound here.
     await page.setViewportSize(PHONE);
     await page.goto(WITH_LOGO_PATH);
     await waitForLockup(page);

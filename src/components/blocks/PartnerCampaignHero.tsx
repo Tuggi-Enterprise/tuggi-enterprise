@@ -37,22 +37,32 @@ function WaveDivider() {
 /**
  * Campaign variant of the /d/<slug> hero, rendered when the partner has a seal
  * (see PartnerHero). The visitor is standing at a restaurant table with the
- * printed QR in front of them, so the page is budgeted by fold, not by section:
+ * printed QR in front of them, so the page is budgeted by fold, not by section,
+ * and it reads as three acts:
  *
- *   fold 1 (0–844px)  masthead, headline, one bridging line, the player.
- *   fold 2            the three numbered steps, the host's own words, and the
- *                     download band the page closes on.
+ *   1. the page title — masthead, headline, one bridging line;
+ *   2. the place and its host — who referred you, the host's own words, and
+ *      the player right under them: the text frames, the audio delivers;
+ *   3. how Tuggi works — the three numbered steps, read as an explanation of
+ *      the product only after the visitor has heard the proof.
+ *
+ * Then the download band closes the page. Acts 2 and 3 were the other way
+ * around until the ordering was corrected: the steps explained a product whose
+ * proof the visitor had not heard yet, and the host's text was stranded below
+ * them.
  *
  * The player is the product, not decoration: it proves the promise in twelve
  * seconds and it is why the QR was scanned, so it sits inside the first fold and
  * above the floating CTA's top edge — even on a first visit, when the consent
- * banner lifts that CTA to roughly 490px down the viewport. The e2e suite
- * asserts both (the [data-block] hooks below exist for that budget).
+ * banner lifts that CTA to roughly 450px down the viewport. That ~450px is the
+ * whole budget for act 1 + act 2, which is why the host's text is capped short
+ * here (PartnerHero's maxDescLength) and opens with MORE. The e2e suite asserts
+ * the budget; the [data-block] hooks below exist for it.
  *
  * Two deliberate constraints:
- * - The headline uses the system serif stack, not a web font. It is the LCP
- *   element on a page reached from a printed QR (often on roaming data), so a
- *   font round-trip would be paid by every scan for a purely typographic gain.
+ * - Typography is the site's own (Inter, set on <html>). The headline carries
+ *   its weight through size and weight, not through a second family: a serif
+ *   stack read as foreign to the rest of the site.
  * - No scroll/entrance animation. Everything below the fold is content the
  *   visitor came for; animating it only delays it on a low-end phone.
  */
@@ -101,33 +111,63 @@ export function PartnerCampaignHero({
         />
       </div>
 
+      {/* Act 1 — the page title. */}
       <div className="mx-auto max-w-2xl px-5 pt-4 sm:px-8 sm:pt-8">
-        <h1 className="font-serif text-[2rem] font-bold leading-[1.08] tracking-[-0.01em] text-tuggi-dark sm:text-5xl">
+        <h1 className="text-[1.875rem] font-black leading-[1.05] tracking-[-0.03em] text-tuggi-dark sm:text-5xl">
           {t.rich("headline", {
             accent: (chunks) => <span className="text-tuggi-primary">{chunks}</span>,
           })}
         </h1>
 
-        {/* One line, on purpose: the three steps below say the same thing better,
-            and every extra line here pushes the player out of the first fold. */}
-        <p data-block="subtext" className="mt-3 text-[0.95rem] leading-snug text-tuggi-slate sm:text-lg">
+        {/* One line, on purpose: every extra line here pushes the player past
+            the floating CTA's top edge, and the steps in act 3 say the same
+            thing in full. */}
+        <p data-block="subtext" className="mt-2.5 text-[0.95rem] leading-snug text-tuggi-slate sm:text-lg">
           {t("subtext")}
         </p>
+      </div>
+
+      {/* Act 2 — the place and its host, in one block. The referral line is what
+          the visitor scanned: the seal in the masthead is a mark, this names it.
+          The host's own text is a different voice from the campaign copy above,
+          so it keeps the rule in the campaign accent; the player sits directly
+          under it, close enough to read as the same block rather than as a
+          separate feature. */}
+      <section data-block="poi" className="mx-auto mt-3.5 max-w-2xl px-5 sm:mt-6 sm:px-8">
+        {partnerName && (
+          <p
+            data-block="referral"
+            className="text-[0.6875rem] font-bold uppercase leading-none tracking-[0.14em] text-tuggi-slate/80 sm:text-xs"
+          >
+            {t("referredBy", { name: partnerName })}
+          </p>
+        )}
+
+        {descriptionSlot && (
+          <div data-block="description" className="mt-2 border-l-2 border-tuggi-secondary/50 pl-4">
+            {descriptionSlot}
+          </div>
+        )}
 
         {audioSlot && (
-          <div data-block="player" className="mt-4">
+          <div data-block="player" className="mt-3">
             {audioSlot}
           </div>
         )}
-      </div>
+      </section>
 
-      {/* The three steps — the core of the printed piece. The number sits on the
+      {/* Act 3 — how Tuggi works, the core of the printed piece, now read as an
+          explanation of what the visitor has just heard. The number sits on the
           title's own baseline rather than in a column of its own: it reads as
           one line on a phone and saves the vertical run that pushed the download
           band past the second fold. Three columns from sm up, as the piece is
-          laid out at table size. */}
-      <section data-block="steps" className="mx-auto mt-5 max-w-2xl px-5 sm:mt-10 sm:px-8">
-        <h2 className="sr-only">{t("stepsHeading")}</h2>
+          laid out at table size. The heading is visible here (it was sr-only
+          while the block sat mid-page): as the closing act it has to announce
+          itself, otherwise the steps read as three loose captions. */}
+      <section data-block="steps" className="mx-auto mt-6 max-w-2xl px-5 sm:mt-10 sm:px-8">
+        <h2 className="mb-2 text-[0.6875rem] font-bold uppercase leading-none tracking-[0.14em] text-tuggi-slate/80 sm:mb-4 sm:text-xs">
+          {t("stepsHeading")}
+        </h2>
         <ol className="divide-y divide-slate-200 sm:grid sm:grid-cols-3 sm:divide-x sm:divide-y-0">
           {steps.map((step, i) => (
             <li
@@ -137,7 +177,7 @@ export function PartnerCampaignHero({
               <div className="flex items-baseline gap-2.5">
                 <span
                   aria-hidden="true"
-                  className="font-serif text-[1.5rem] font-bold leading-none text-tuggi-secondary tabular-nums sm:text-4xl"
+                  className="text-[1.375rem] font-black leading-none tracking-[-0.02em] text-tuggi-secondary tabular-nums sm:text-4xl"
                 >
                   {String(i + 1).padStart(2, "0")}
                 </span>
@@ -152,18 +192,6 @@ export function PartnerCampaignHero({
           ))}
         </ol>
       </section>
-
-      {/* The partner's own welcome text is a different voice from the campaign
-          copy above (and from the transcript of the audio, when there is one),
-          so it gets a rule in the campaign accent rather than blending in. It
-          closes the read instead of opening it: at rest the floating CTA covers
-          the lower third of the viewport, and this is the one block here with a
-          control the visitor is meant to tap. */}
-      {descriptionSlot && (
-        <div data-block="description" className="mx-auto mt-5 max-w-2xl px-5 sm:mt-8 sm:px-8">
-          <div className="border-l-2 border-tuggi-secondary/50 pl-4">{descriptionSlot}</div>
-        </div>
-      )}
 
       {/* Download band, carrying the printed piece's wave on its top edge (the
           photo band that used to carry it was an app screenshot of Lisbon —

@@ -17,6 +17,7 @@
     "Campaign": {
       "headline": "Between one dish and the next, the region tells <accent>its own story</accent>.",
       "subtext": "You keep going. The narration follows.",
+      "referredBy": "Referred by {name}",
       "stepsHeading": "How it works",
       "step1Title": "Open it and forget it",
       "step1Text": "Start the app at the beginning of the outing and put your phone back in your pocket.",
