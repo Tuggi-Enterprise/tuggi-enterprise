@@ -39,7 +39,7 @@ export function EnterpriseFork() {
 
           {/* Card 2: B2G Route */}
           <Link 
-            href="/enterprise/city-os" 
+            href="/destinations" 
             onClick={() => sendGAEvent({ event: 'click_enterprise_fork', value: 'b2g_city_os' })}
             className="group flex flex-col p-10 bg-white border border-gray-200 rounded-md shadow-sm hover:border-tuggi-primary hover:shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-tuggi-primary focus:ring-offset-2"
           >

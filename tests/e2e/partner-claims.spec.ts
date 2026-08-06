@@ -1,6 +1,7 @@
 import { test, expect, type Page } from "@playwright/test";
 import fs from "node:fs";
 import path from "node:path";
+import { localizedPathname } from "../../src/i18n/pathnames";
 
 /**
  * BR-B2B-007 — "O que a oferta publicada ao parceiro pode afirmar".
@@ -1138,7 +1139,21 @@ const LOCALES = fs
 /** The message namespaces the three partner pages read from. */
 const PARTNER_NAMESPACES = ["Fleets", "CityOS", "Technology", "SEO_FLEETS", "SEO_CITY_OS"];
 
-const PARTNER_PAGES = ["/enterprise/fleets", "/enterprise/city-os", "/technology"];
+/**
+ * The three partner surfaces, as **internal** pathnames — the keys of the
+ * route map in src/i18n/pathnames.ts. The public slug differs per locale
+ * (/pt/destinos, /it/destinazioni), so the URL is resolved below rather than
+ * written here: a test that hard-codes the old URL would still pass through
+ * the 301 and stop checking the page it names.
+ */
+const PARTNER_PAGES = ["/enterprise/fleets", "/destinations", "/technology"];
+
+/** The public URL of an internal pathname, for one locale. */
+function localeUrl(locale: string, pagePath: string): string {
+  if (!pagePath) return `/${locale}`;
+  const slug = localizedPathname(locale, pagePath);
+  return slug === "/" ? `/${locale}` : `/${locale}${slug}`;
+}
 
 interface RenderedPage {
   path: string;
@@ -1238,6 +1253,10 @@ function partnerSourceFiles(): Haystack[] {
 
   files.push(
     ...walk(path.join(SRC, "app/[locale]/enterprise")),
+    // The City OS route moved out of /enterprise and is served at
+    // /destinations, with a 301 per locale. Same page, same claims to guard:
+    // this scope follows the file, it does not shrink with it.
+    ...walk(path.join(SRC, "app/[locale]/destinations")),
     ...walk(path.join(SRC, "app/[locale]/technology")),
     path.join(SRC, "app/llms.txt/route.ts"),
   );
@@ -1367,7 +1386,7 @@ test.describe("BR-B2B-007 — partner-facing copy states only what a vigent rule
       test(`BR-B2B-007: /${locale}${pagePath} renders and serves no forbidden claim`, async ({
         page,
       }) => {
-        const response = await page.goto(`/${locale}${pagePath}`);
+        const response = await page.goto(localeUrl(locale, pagePath));
         expect(response?.status()).toBe(200);
         // The page still has to be a page — a removal that empties it is a
         // regression too, not a pass.
@@ -1442,7 +1461,7 @@ test.describe("BR-B2B-007 — partner-facing copy states only what a vigent rule
   const OG_ALT_PAGES: { path: string; key: string }[] = [
     { path: "", key: "Metadata.homeOgImageAlt" },
     { path: "/enterprise/fleets", key: "SEO_FLEETS.ogImageAlt" },
-    { path: "/enterprise/city-os", key: "SEO_CITY_OS.ogImageAlt" },
+    { path: "/destinations", key: "SEO_CITY_OS.ogImageAlt" },
     { path: "/purpose", key: "SEO_PURPOSE.ogImageAlt" },
     { path: "/coverage", key: "SEO_COVERAGE.ogImageAlt" },
   ];
@@ -1455,7 +1474,7 @@ test.describe("BR-B2B-007 — partner-facing copy states only what a vigent rule
         const expected = flatMessages(locale).get(key);
         expect(expected, `${key} is missing in ${locale}.json`).toBeTruthy();
 
-        await page.goto(`/${locale}${pagePath}`);
+        await page.goto(localeUrl(locale, pagePath));
         const alt = await page
           .locator('meta[property="og:image:alt"]')
           .first()
@@ -1497,7 +1516,7 @@ test.describe("Claim families — a decided class does not come back in new word
         test(`family "${family.id}" is absent from what /${locale}${pagePath} serves`, async ({
           page,
         }) => {
-          const response = await page.goto(`/${locale}${pagePath}`);
+          const response = await page.goto(localeUrl(locale, pagePath));
           expect(response?.status()).toBe(200);
 
           let text = await publishedText(page);

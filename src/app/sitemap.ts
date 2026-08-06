@@ -1,5 +1,6 @@
 import { MetadataRoute } from "next";
 import { routing } from "@/i18n/routing";
+import type { StaticAppPathname } from "@/i18n/pathnames";
 import { buildUrl, buildSitemapAlternates, buildSitemapAlternatesFor } from "@/lib/seo";
 import { getSupabaseServer } from "@/lib/supabase-server";
 import { TUGGI_PARTNER_ID } from "@/lib/app-meta";
@@ -25,15 +26,27 @@ import {
  * (resolved via a middleware rewrite), so they get a single clean URL.
  */
 
-const routes = [
-  "",                          // home
-  "drive",
-  "enterprise/city-os",
-  "enterprise/fleets",
-  "technology",
-  "purpose",
-  "contact",
-  "trust-center/accessibility",
+/**
+ * The static pages that are indexed, as **internal** pathnames.
+ *
+ * The list stays explicit because which pages we ask Google to index is an
+ * editorial decision, not a consequence of a route existing — the route map
+ * also holds `/partners`, whose page does not exist yet, and the trust-center
+ * pages we deliberately do not all list. What is no longer written twice is
+ * the URL: `buildUrl` and `buildSitemapAlternates` resolve the slug per locale
+ * from src/i18n/pathnames.ts, so a translated slug reaches the sitemap without
+ * anybody retyping it. The type makes a route that left the map a compile
+ * error, and tests/e2e/routing.spec.ts asserts none of these 404.
+ */
+const routes: StaticAppPathname[] = [
+  "/",
+  "/drive",
+  "/destinations",
+  "/enterprise/fleets",
+  "/technology",
+  "/purpose",
+  "/contact",
+  "/trust-center/accessibility",
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -47,7 +60,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         url: buildUrl(locale, route),
         lastModified: new Date(),
         changeFrequency: "weekly",
-        priority: route === "" ? 1 : 0.8,
+        priority: route === "/" ? 1 : 0.8,
         alternates,
       });
     }

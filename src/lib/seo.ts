@@ -5,33 +5,49 @@
  *   - every locale, INCLUDING the default "en", is served under its prefix
  *   - canonical for "en" is "/en", for "pt" is "/pt", etc.
  *   - non-prefixed paths (e.g. "/drive") 404, so every emitted URL is prefixed
+ *
+ * Every function here takes the **internal** pathname — the key of the route
+ * map in src/i18n/pathnames.ts — and resolves the public slug per locale from
+ * that map. It used to build all four hreflang URLs out of one string, which
+ * was correct only while every locale shared a slug: with a translated slug,
+ * `buildAlternates("pt", "partners/car-rental")` would have emitted
+ * `/pt/partners/car-rental`, a URL that 404s, and the four language versions
+ * of every new page would have pointed at each other with the wrong address —
+ * the classic way to lose all four at once.
+ *
+ * A pathname the map does not declare passes through unchanged, so every
+ * caller that builds a path at runtime (`tours/<country>/<slug>`) keeps
+ * working: those live under a route whose slug is not translated.
  */
 import { routing } from "@/i18n/routing";
+import { localizedPathname } from "@/i18n/pathnames";
 
 const BASE_URL = "https://www.tuggi.app";
 
 /**
- * Returns the canonical path for a given locale + page path.
+ * Returns the canonical path for a given locale + internal page path.
  *
  * Every locale is prefixed (localePrefix="always"), including the default,
  * because non-prefixed paths 404.
  *
  * @example
- *   localePath("en",    "")               // "/en"
- *   localePath("es",    "")               // "/es"
- *   localePath("en",    "drive")          // "/en/drive"
- *   localePath("pt", "enterprise/city-os") // "/pt/enterprise/city-os"
+ *   localePath("en", "")             // "/en"
+ *   localePath("es", "")             // "/es"
+ *   localePath("en", "drive")        // "/en/drive"
+ *   localePath("pt", "destinations") // "/pt/destinos"
+ *   localePath("it", "technology")   // "/it/tecnologia"
  */
 function localePath(locale: string, pagePath: string): string {
-  const clean = pagePath.replace(/^\//, "").replace(/\/$/, "");
-  return clean ? `/${locale}/${clean}` : `/${locale}`;
+  const localized = localizedPathname(locale, pagePath);
+  return localized === "/" ? `/${locale}` : `/${locale}${localized}`;
 }
 
 /**
  * Builds the `alternates` object for Next.js Metadata.
  *
  * @param locale   - Current page locale (e.g. "en", "pt")
- * @param pagePath - Path WITHOUT locale prefix (e.g. "", "drive", "trust-center/privacy-policy")
+ * @param pagePath - INTERNAL path, without locale prefix (e.g. "", "drive",
+ *                   "destinations", "trust-center/privacy-policy")
  */
 export function buildAlternates(locale: string, pagePath = "") {
   const languages: Record<string, string> = {};
@@ -58,7 +74,7 @@ export function buildAlternates(locale: string, pagePath = "") {
  *   present, otherwise the first available locale).
  *
  * @param locale           - Current page locale
- * @param pagePath          - Path WITHOUT locale prefix (e.g. "tours/portugal/sintra-...")
+ * @param pagePath          - INTERNAL path, without locale prefix (e.g. "tours/portugal/sintra-...")
  * @param availableLocales - Locales for which this exact page is generated
  */
 export function buildAlternatesFor(
@@ -157,16 +173,17 @@ export const defaultRobots = { index: true, follow: true } as const;
  * Builds absolute-URL alternates for the XML sitemap.
  * Values are full URLs (unlike `buildAlternates` which uses relative paths for metadata).
  *
- * @param pagePath - Path WITHOUT locale prefix (e.g. "", "drive", "enterprise/city-os")
+ * @param pagePath - INTERNAL path, without locale prefix (e.g. "", "drive",
+ *                   "destinations")
  *
  * @example
- *   buildSitemapAlternates("drive")
+ *   buildSitemapAlternates("destinations")
  *   // {
- *   //   "en":        "https://www.tuggi.app/en/drive",
- *   //   "es":        "https://www.tuggi.app/es/drive",
- *   //   "pt":        "https://www.tuggi.app/pt/drive",
- *   //   "it":        "https://www.tuggi.app/it/drive",
- *   //   "x-default": "https://www.tuggi.app/en/drive",
+ *   //   "en":        "https://www.tuggi.app/en/destinations",
+ *   //   "es":        "https://www.tuggi.app/es/destinos",
+ *   //   "pt":        "https://www.tuggi.app/pt/destinos",
+ *   //   "it":        "https://www.tuggi.app/it/destinazioni",
+ *   //   "x-default": "https://www.tuggi.app/en/destinations",
  *   // }
  */
 export function buildSitemapAlternates(pagePath = ""): Record<string, string> {

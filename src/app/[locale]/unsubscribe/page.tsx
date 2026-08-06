@@ -1,11 +1,24 @@
 import crypto from "crypto";
 import { setRequestLocale } from "next-intl/server";
 import { getSupabaseServer } from "@/lib/supabase-server";
+import { buildAlternates } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
-export function generateMetadata() {
-  return { title: "Unsubscribe", robots: { index: false, follow: false } };
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  // Declared, even though the page is noindex: without it the page inherits
+  // the layout's alternates, which are the home page's, and /pt/unsubscribe
+  // was declaring /pt as its own canonical.
+  return {
+    title: "Unsubscribe",
+    alternates: buildAlternates(locale, "unsubscribe"),
+    robots: { index: false, follow: false },
+  };
 }
 
 // Verifica a assinatura HMAC stateless gerada pela Edge Function send-newsletter

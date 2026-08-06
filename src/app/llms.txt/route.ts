@@ -92,7 +92,7 @@ Key facts:
 
 ${routesSection()}
 ## For businesses
-- [City-OS](${SITE_URL}/en/enterprise/city-os): For cities and tourism boards
+- [Destinations](${SITE_URL}/en/destinations): For cities and tourism boards
 - [Fleets](${SITE_URL}/en/enterprise/fleets): For car-rental and mobility fleets
 - [Contact](${SITE_URL}/en/contact): Talk to the team
 

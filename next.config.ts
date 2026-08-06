@@ -1,6 +1,8 @@
 import createNextIntlPlugin from 'next-intl/plugin';
 import type { NextConfig } from "next";
 import { getStorageHost, STORAGE_PUBLIC_PATH } from "./src/lib/storage";
+import { DEFAULT_LOCALE, LOCALES } from "./src/i18n/locales";
+import { MOVED_ROUTES, localizedPathname } from "./src/i18n/pathnames";
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
@@ -49,6 +51,26 @@ const nextConfig: NextConfig = {
       ["privacy", "trust-center/privacy-policy"],
     ];
 
+    // Routes that moved (src/i18n/pathnames.ts, MOVED_ROUTES). The destination
+    // is derived from the route map per locale, so a slug is never typed
+    // twice — and 301, not 302/307, because the old URLs are indexed and may
+    // sit in material already sent to a prospect. The un-prefixed source
+    // exists so an old bare link resolves in one hop instead of taking the
+    // middleware's locale redirect first.
+    const MOVED = MOVED_ROUTES.flatMap(({ from, to }) => {
+      const rules = LOCALES.map((locale) => ({
+        source: `/${locale}${from}`,
+        destination: `/${locale}${localizedPathname(locale, to)}`,
+        statusCode: 301 as const,
+      })).filter((rule) => rule.source !== rule.destination);
+
+      const bare = `/${DEFAULT_LOCALE}${localizedPathname(DEFAULT_LOCALE, to)}`;
+      if (bare !== from) {
+        rules.push({ source: from, destination: bare, statusCode: 301 as const });
+      }
+      return rules;
+    });
+
     return [
       // Unified Portuguese locale (pt-br / pt-pt → pt).
       { source: "/pt-br", destination: "/pt", statusCode: 301 },
@@ -65,6 +87,8 @@ const nextConfig: NextConfig = {
         },
         { source: `/${from}`, destination: `/en/${to}`, statusCode: 301 as const },
       ]),
+
+      ...MOVED,
     ];
   },
 };

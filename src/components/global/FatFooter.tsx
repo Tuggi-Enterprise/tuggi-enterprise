@@ -50,8 +50,8 @@ export function FatFooter() {
             <h3 className="text-xs font-bold tracking-widest text-white uppercase mb-6">
               {t("enterprise")}
             </h3>
-            <Link href="/enterprise/city-os" className="text-sm text-slate-400 hover:text-white transition-colors duration-200 block mb-3 focus-visible:ring-2 focus-visible:ring-tuggi-primary focus:outline-none rounded-sm w-max">
-              {t("cityOs")}
+            <Link href="/destinations" className="text-sm text-slate-400 hover:text-white transition-colors duration-200 block mb-3 focus-visible:ring-2 focus-visible:ring-tuggi-primary focus:outline-none rounded-sm w-max">
+              {t("destinations")}
             </Link>
             <Link href="/enterprise/fleets" className="text-sm text-slate-400 hover:text-white transition-colors duration-200 block mb-3 focus-visible:ring-2 focus-visible:ring-tuggi-primary focus:outline-none rounded-sm w-max">
               {t("fleets")}

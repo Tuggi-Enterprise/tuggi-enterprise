@@ -30,15 +30,13 @@
     }
   },
   "Header": {
-    "navPlatform": "Plataforma",
-    "navCityOs": "City OS",
-    "navFleets": "Frotas",
+    "navPartners": "Parcerias",
+    "navDestinations": "Destinos",
     "navTech": "Tecnologia",
-    "navPurpose": "Nosso Propósito",
-    "navB2c": "Planos",
-    "navContact": "Contato",
-    "downloadApp": "Baixar App",
-    "navTours": "Roteiros"
+    "navPlans": "Planos",
+    "navAudioGuides": "Áudio-guias",
+    "navPurpose": "Propósito",
+    "downloadApp": "Baixar App"
   },
   "Footer": {
     "tagline": "Conectando pessoas ao contexto do mundo físico",
@@ -46,7 +44,7 @@
     "appDownload": "Baixar Aplicativo",
     "plans": "Planos",
     "enterprise": "Enterprise (B2B/B2G)",
-    "cityOs": "City OS",
+    "destinations": "Destinos",
     "fleets": "Frotas",
     "technology": "Tecnologia",
     "institutional": "Institucional",

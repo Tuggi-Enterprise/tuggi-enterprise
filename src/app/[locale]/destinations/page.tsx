@@ -21,13 +21,13 @@ export async function generateMetadata({
   return {
     title,
     description,
-    alternates: buildAlternates(locale, "enterprise/city-os"),
+    alternates: buildAlternates(locale, "destinations"),
     robots: defaultRobots,
     openGraph: buildOpenGraph({
       title: ogTitle,
       description,
       locale,
-      pagePath: "enterprise/city-os",
+      pagePath: "destinations",
       siteName: "TUGGI City OS",
       image: "/images/og-image-city-os.jpg",
       imageAlt: t("ogImageAlt"),

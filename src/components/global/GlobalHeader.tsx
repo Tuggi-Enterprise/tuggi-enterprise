@@ -2,66 +2,67 @@
 
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
+import { useParams } from "next/navigation";
 import { Link, usePathname } from "@/i18n/routing";
 import Image from "next/image";
-import { ChevronDown, Menu, X, Globe, Smartphone, Building2, Cpu, Compass } from "lucide-react";
+import { ChevronDown, Menu, X, Smartphone } from "lucide-react";
+import { VISIBLE_NAV_ITEMS } from "@/lib/nav";
+import type { SiteLocale } from "@/i18n/locales";
 
 export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
   const t = useTranslations("Header");
+  // With `pathnames` declared, this is the INTERNAL pathname ("/destinations"),
+  // not the URL the visitor sees — which is exactly what the locale switcher
+  // needs: `<Link locale>` re-resolves the slug for the target language.
   const pathname = usePathname();
+  const params = useParams();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLocaleOpen, setIsLocaleOpen] = useState(false);
-  const [isPlatformOpen, setIsPlatformOpen] = useState(false);
 
-  const locales = [
+  const locales: { code: SiteLocale; label: string }[] = [
     { code: "en", label: "EN" },
     { code: "es", label: "ES" },
     { code: "pt", label: "PT" },
     { code: "it", label: "IT" },
   ];
 
-  // Safeguard: Ensure pathname is completely stripped of any leftover locale prefix
-  const cleanPathname = pathname.replace(/^\/(?:en|es|pt|it)(?=\/|$)/, "") || "/";
-
-  // Close menus on resize or route change
+  // Close menus on route change
   useEffect(() => {
     setIsMobileMenuOpen(false);
     setIsLocaleOpen(false);
-    setIsPlatformOpen(false);
   }, [pathname]);
 
-  // Handle click outside to close dropdowns
+  // Handle click outside to close the locale dropdown
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
       if (!target.closest('.relative')) {
         setIsLocaleOpen(false);
-        setIsPlatformOpen(false);
       }
     };
-    if (isLocaleOpen || isPlatformOpen) {
+    if (isLocaleOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isLocaleOpen, isPlatformOpen]);
+  }, [isLocaleOpen]);
 
   return (
     <>
       <header className="sticky top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
         <nav className="page-shell h-20 flex items-center justify-between" aria-label="Main Navigation">
-          
+
           {/* Left: Logo */}
           <div className="flex items-center gap-4">
-            <button 
+            <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="lg:hidden p-2 text-slate-600 hover:text-tuggi-primary-text transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-lg"
               aria-label="Toggle Menu"
             >
               {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
-            
+
             <Link href="/" className="focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-sm flex items-center transform transition-transform active:scale-95">
               <Image
                 src="/images/logo_tuggi_full.png"
@@ -74,67 +75,26 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
             </Link>
           </div>
 
-          {/* Center: Navigation (Desktop) */}
-          <div className="hidden lg:flex items-center gap-10">
-            
-            {/* Dropdown for Platform */}
-            <div className="relative group">
-              <button
-                onClick={() => setIsPlatformOpen(!isPlatformOpen)}
-                onMouseEnter={() => setIsPlatformOpen(true)}
-                className="text-sm font-semibold text-slate-600 hover:text-tuggi-primary-text transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-sm py-2 flex items-center gap-1.5"
-                aria-haspopup="true"
-                aria-expanded={isPlatformOpen}
+          {/* Center: Navigation (Desktop) — the same registry the panel below
+              renders, so the two widths cannot drift apart again. */}
+          <div className="hidden lg:flex items-center gap-8">
+            {VISIBLE_NAV_ITEMS.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                data-nav-item={item.labelKey}
+                className="text-sm font-semibold text-slate-600 hover:text-tuggi-primary-text transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-sm py-2 whitespace-nowrap"
               >
-                <span>{t("navPlatform")}</span>
-                <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${isPlatformOpen ? 'rotate-180 text-tuggi-primary' : ''}`} />
-              </button>
-              <div 
-                onMouseLeave={() => setIsPlatformOpen(false)}
-                className={`absolute top-full left-1/2 -translate-x-1/2 mt-2 w-64 bg-white border border-gray-100 rounded-2xl shadow-2xl transition-all duration-200 z-50 overflow-hidden ${isPlatformOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible translate-y-1'}`}
-              >
-                <div className="p-2 space-y-1">
-                  <Link href="/enterprise/city-os" className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-tuggi-primary-text rounded-xl transition-colors">
-                    <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500">
-                      <Building2 className="w-4 h-4" />
-                    </div>
-                    {t("navCityOs")}
-                  </Link>
-                  <Link href="/enterprise/fleets" className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-tuggi-primary-text rounded-xl transition-colors">
-                    <div className="w-8 h-8 rounded-lg bg-orange-50 flex items-center justify-center text-orange-500">
-                      <Smartphone className="w-4 h-4" />
-                    </div>
-                    {t("navFleets")}
-                  </Link>
-                  <Link href="/technology" className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-tuggi-primary-text rounded-xl transition-colors">
-                    <div className="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center text-purple-500">
-                      <Cpu className="w-4 h-4" />
-                    </div>
-                    {t("navTech")}
-                  </Link>
-                </div>
-              </div>
-            </div>
-
-            <Link href="/drive" className="text-sm font-semibold text-slate-600 hover:text-tuggi-primary-text transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-sm py-2">
-              {t("navB2c")}
-            </Link>
-
-            <Link href="/tours" className="text-sm font-semibold text-slate-600 hover:text-tuggi-primary-text transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-sm py-2 flex items-center gap-1.5">
-              <Compass className="w-4 h-4 text-tuggi-primary" />
-              {t("navTours")}
-            </Link>
-
-            <Link href="/purpose" className="text-sm font-semibold text-slate-600 hover:text-tuggi-primary-text transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-sm py-2">
-              {t("navPurpose")}
-            </Link>
+                {t(item.labelKey)}
+              </Link>
+            ))}
           </div>
 
           {/* Right: Actions */}
           <div className="flex items-center gap-4 sm:gap-8">
             {/* Locale Dropdown */}
             <div className="relative">
-              <button 
+              <button
                 onClick={() => setIsLocaleOpen(!isLocaleOpen)}
                 className="text-sm font-bold text-slate-500 hover:text-tuggi-primary-text uppercase flex items-center gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-lg px-2 py-1.5 transition-colors"
                 aria-expanded={isLocaleOpen}
@@ -147,15 +107,20 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
                   {locales.map((loc) => (
                     <Link
                       key={loc.code}
-                      href={cleanPathname}
-                      locale={loc.code as "en" | "es" | "pt" | "it"}
+                      // @ts-expect-error -- next-intl validates that `params`
+                      // match the `pathname`; on the current route they always
+                      // do, so the runtime check is the one that matters. This
+                      // is the documented locale-switcher pattern for a routing
+                      // config with `pathnames`.
+                      href={{ pathname, params }}
+                      locale={loc.code}
                       onClick={() => {
                         document.cookie = `NEXT_LOCALE=${loc.code}; path=/; max-age=31536000`;
                         setIsLocaleOpen(false);
                       }}
                       className={`flex items-center justify-between px-4 py-2.5 text-sm font-bold rounded-xl transition-colors ${
-                        currentLocale === loc.code 
-                          ? "text-tuggi-primary bg-blue-50/50" 
+                        currentLocale === loc.code
+                          ? "text-tuggi-primary bg-blue-50/50"
                           : "text-slate-600 hover:bg-slate-50 hover:text-tuggi-primary-text"
                       }`}
                     >
@@ -167,16 +132,16 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
               </div>
             </div>
 
-            <Link 
+            <Link
               href="/download"
-              className="hidden sm:block bg-[#FF6F00] text-[#0B1220] font-bold rounded-xl px-7 py-3 hover:bg-[#E65F00] transition-all shadow-md hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6F00] focus:ring-offset-2 active:scale-95"
+              className="hidden sm:block bg-tuggi-secondary text-tuggi-dark font-bold rounded-xl px-7 py-3 hover:bg-[#E65F00] transition-all shadow-md hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-secondary focus:ring-offset-2 active:scale-95"
             >
               {t("downloadApp")}
             </Link>
-            
-            <Link 
+
+            <Link
               href="/download"
-              className="sm:hidden bg-[#FF6F00] text-[#0B1220] p-3 rounded-xl hover:bg-[#E65F00] transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6F00] active:scale-95"
+              className="sm:hidden bg-tuggi-secondary text-tuggi-dark p-3 rounded-xl hover:bg-[#E65F00] transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-secondary active:scale-95"
               aria-label={t("downloadApp")}
             >
               <Smartphone className="w-5 h-5" />
@@ -187,14 +152,14 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
 
       {/* Mobile Menu Backdrop */}
       {isMobileMenuOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] transition-opacity duration-300 lg:hidden"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
 
       {/* Mobile Menu Panel */}
-      <div 
+      <div
         className={`fixed inset-y-0 left-0 w-[85%] max-w-[320px] bg-white z-[110] shadow-2xl transition-transform duration-300 ease-in-out lg:hidden flex flex-col h-full ${
           isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
@@ -211,8 +176,8 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
               priority
             />
           </Link>
-          <button 
-            onClick={() => setIsMobileMenuOpen(false)} 
+          <button
+            onClick={() => setIsMobileMenuOpen(false)}
             className="p-2 text-slate-400 hover:text-slate-900 transition-colors rounded-lg"
             aria-label="Close Menu"
           >
@@ -222,72 +187,28 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
 
         {/* Navigation Links */}
         <div className="flex-1 overflow-y-auto bg-white py-4">
-          <nav className="flex flex-col">
-            <Link 
-              href="/enterprise/city-os" 
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="flex items-center justify-between px-6 py-5 text-[15px] font-semibold text-slate-700 hover:bg-slate-50 border-b border-slate-50 transition-colors"
-            >
-              <span>{t("navCityOs")}</span>
-              <ChevronDown className="w-4 h-4 text-slate-300 -rotate-90" />
-            </Link>
-            <Link 
-              href="/enterprise/fleets" 
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="flex items-center justify-between px-6 py-5 text-[15px] font-semibold text-slate-700 hover:bg-slate-50 border-b border-slate-50 transition-colors"
-            >
-              <span>{t("navFleets")}</span>
-              <ChevronDown className="w-4 h-4 text-slate-300 -rotate-90" />
-            </Link>
-            <Link 
-              href="/technology" 
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="flex items-center justify-between px-6 py-5 text-[15px] font-semibold text-slate-700 hover:bg-slate-50 border-b border-slate-50 transition-colors"
-            >
-              <span>{t("navTech")}</span>
-              <ChevronDown className="w-4 h-4 text-slate-300 -rotate-90" />
-            </Link>
-            <Link
-              href="/drive"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="flex items-center justify-between px-6 py-5 text-[15px] font-semibold text-slate-700 hover:bg-slate-50 border-b border-slate-50 transition-colors"
-            >
-              <span>{t("navB2c")}</span>
-              <ChevronDown className="w-4 h-4 text-slate-300 -rotate-90" />
-            </Link>
-            <Link
-              href="/tours"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="flex items-center justify-between px-6 py-5 text-[15px] font-semibold text-slate-700 hover:bg-slate-50 border-b border-slate-50 transition-colors"
-            >
-              <span className="flex items-center gap-2"><Compass className="w-4 h-4 text-tuggi-primary" />{t("navTours")}</span>
-              <ChevronDown className="w-4 h-4 text-slate-300 -rotate-90" />
-            </Link>
-            <Link
-              href="/purpose"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="flex items-center justify-between px-6 py-5 text-[15px] font-semibold text-slate-700 hover:bg-slate-50 border-b border-slate-50 transition-colors"
-            >
-              <span>{t("navPurpose")}</span>
-              <ChevronDown className="w-4 h-4 text-slate-300 -rotate-90" />
-            </Link>
-            <Link 
-              href="/contact" 
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="flex items-center justify-between px-6 py-5 text-[15px] font-semibold text-slate-700 hover:bg-slate-50 border-b border-slate-50 transition-colors"
-            >
-              <span>{t("navContact")}</span>
-              <ChevronDown className="w-4 h-4 text-slate-300 -rotate-90" />
-            </Link>
+          <nav className="flex flex-col" aria-label="Mobile Navigation">
+            {VISIBLE_NAV_ITEMS.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                data-nav-item={item.labelKey}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center justify-between px-6 py-5 text-[15px] font-semibold text-slate-700 hover:bg-slate-50 border-b border-slate-50 transition-colors"
+              >
+                <span>{t(item.labelKey)}</span>
+                <ChevronDown className="w-4 h-4 text-slate-300 -rotate-90" />
+              </Link>
+            ))}
           </nav>
         </div>
 
         {/* Corporate CTA Footer */}
         <div className="p-6 bg-slate-50 border-t border-gray-100 shrink-0">
-          <Link 
+          <Link
             href="/download"
             onClick={() => setIsMobileMenuOpen(false)}
-            className="flex items-center justify-center gap-2 bg-[#FF6F00] text-[#0B1220] font-bold rounded-xl px-6 py-4 text-sm transition-all hover:bg-[#E65F00] shadow-lg shadow-orange-500/10 active:scale-[0.98]"
+            className="flex items-center justify-center gap-2 bg-tuggi-secondary text-tuggi-dark font-bold rounded-xl px-6 py-4 text-sm transition-all hover:bg-[#E65F00] shadow-lg shadow-orange-500/10 active:scale-[0.98]"
           >
             <Smartphone className="w-4 h-4" />
             {t("downloadApp")}

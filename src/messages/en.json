@@ -30,15 +30,13 @@
     }
   },
   "Header": {
-    "navPlatform": "Platform",
-    "navCityOs": "City OS",
-    "navFleets": "Fleets",
+    "navPartners": "Partners",
+    "navDestinations": "Destinations",
     "navTech": "Technology",
-    "navPurpose": "Our Purpose",
-    "navB2c": "Plans",
-    "navContact": "Contact",
-    "downloadApp": "Download App",
-    "navTours": "Audio Tours"
+    "navPlans": "Plans",
+    "navAudioGuides": "Audio Guides",
+    "navPurpose": "Purpose",
+    "downloadApp": "Download App"
   },
   "Footer": {
     "tagline": "Connecting people to the context of the physical world",
@@ -46,7 +44,7 @@
     "appDownload": "App Download",
     "plans": "Plans",
     "enterprise": "Enterprise (B2B/B2G)",
-    "cityOs": "City OS",
+    "destinations": "Destinations",
     "fleets": "Fleets",
     "technology": "Technology",
     "institutional": "Institutional",
