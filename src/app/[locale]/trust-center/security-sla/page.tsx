@@ -41,8 +41,6 @@ export default async function SecuritySLAPage({ params }: { params: Promise<{ lo
         <h2>{t("s1Title")}</h2>
         <p>{t("s1Intro")}</p>
         <ul>
-          <li>{t.rich("s1Item1", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
-          <li>{t.rich("s1Item2", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
           <li>{t.rich("s1Item3", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
         </ul>
       </section>
@@ -51,7 +49,6 @@ export default async function SecuritySLAPage({ params }: { params: Promise<{ lo
         <h2>{t("s2Title")}</h2>
         <ul>
           <li>{t.rich("s2Item1", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
-          <li>{t.rich("s2Item2", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
         </ul>
       </section>
 
@@ -60,7 +57,6 @@ export default async function SecuritySLAPage({ params }: { params: Promise<{ lo
         <p>{t("s3Intro")}</p>
         <ul>
           <li>{t.rich("s3Item1", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
-          <li>{t.rich("s3Item2", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
           <li>{t.rich("s3Item3", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
         </ul>
       </section>

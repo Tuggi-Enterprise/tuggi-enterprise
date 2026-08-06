@@ -2,7 +2,6 @@ import { FleetsHero } from "@/components/blocks/FleetsHero";
 import { FleetsFinancial } from "@/components/blocks/FleetsFinancial";
 import { FleetsRisk } from "@/components/blocks/FleetsRisk";
 import { FleetsNPS } from "@/components/blocks/FleetsNPS";
-import { FleetsBrand } from "@/components/blocks/FleetsBrand";
 import { FleetsESG } from "@/components/blocks/FleetsESG";
 
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -57,7 +56,6 @@ export default async function FleetsPage({
       <FleetsFinancial />
       <FleetsRisk />
       <FleetsNPS />
-      <FleetsBrand />
       <FleetsESG />
     </article>
   );

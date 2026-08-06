@@ -223,10 +223,6 @@
       "title": "La Guerra dell'NPS: Dal Metallo all'Esperienza.",
       "desc": "In un mercato commoditizzato, vince chi offre il viaggio migliore. TUGGI trasforma l'auto a noleggio in una guida locale privata, facendo esplodere la soddisfazione del cliente e la fedeltà al marchio."
     },
-    "Brand": {
-      "title": "Il Tuo Marchio, il Nostro Motore.",
-      "desc": "Offri un'esperienza unica senza i vincoli dell'esclusività tecnologica. Forniamo interfacce White-Label e Co-branded. Personalizza la voce, i colori dell'app e crea persino 'Percorsi Premium Esclusivi' sponsorizzati dal tuo marchio di noleggio per differenziarti dalla concorrenza."
-    },
     "ESG": {
       "title": "Distribuzione Digitale Senza Frizioni",
       "desc": "Il tuo unico investimento è l'attivazione digitale e la segnaletica in loco (display QR), che tipicamente raggiunge il ROI già dal primo giorno di noleggio. Coltiva i tuoi obiettivi ESG sostenendo l'economia creativa locale e decomprimendo l'overtourism con percorsi guidati.",
@@ -560,16 +556,12 @@
       "intro": "L'architettura di TUGGI è stata progettata per garantire che i racconti culturali siano forniti con precisione, sicurezza e sovranità. Operiamo un modello di governance ibrido che protegge l'integrità delle informazioni su scala globale e locale.",
       "s1Title": "1. Sovranità dei Dati e Gestione delle Zone (Per B2G e B2B)",
       "s1Intro": "TUGGI opera secondo un modello di \"Sovranità Delegata\". Questo garantisce che il controllo narrativo sia sempre nelle mani giuste:",
-      "s1Item1": "<strong>Zone Governative (City OS):</strong> Quando un comune acquisisce City OS, assume la \"Custodia della Narrazione\" sul proprio territorio. Il comune ha il controllo pieno ed esclusivo per creare, modificare e approvare POI e trigger nella propria giurisdizione, garantendo fedeltà storica e istituzionale.",
-      "s1Item2": "<strong>Zone Aziendali (Enterprise/Flotte):</strong> Per le società di noleggio auto e le flotte, garantiamo che le informazioni di supporto e i percorsi esclusivi siano visibili solo ai loro utenti, mantenendo il totale isolamento dei dati e delle configurazioni aziendali.",
       "s1Item3": "<strong>Curatela Globale TUGGI:</strong> Nelle aree in cui non c'è una gestione locale attiva, TUGGI mantiene la sua curatela standard tramite CMS, usando fonti verificate e intelligenza artificiale per garantire che il turista non resti mai in silenzio.",
       "s2Title": "2. Audit Log e Integrità (Sicurezza Istituzionale)",
       "s2Item1": "<strong>Custodia delle Informazioni:</strong> TUGGI agisce come custode tecnico della piattaforma. Ogni modifica a un trigger audio, sia fatta da TUGGI sia da un partner governativo, viene registrata in audit log immutabili (RBAC), rendendo possibile tracciare chi, quando e dove una narrazione è stata modificata.",
-      "s2Item2": "<strong>Coerenza dei Dati:</strong> Garantiamo che nessuna informazione di terze parti interferisca con le zone ufficiali contrattate da città o aziende.",
       "s3Title": "3. Affidabilità e Prestazioni (Per l'Utente B2C)",
       "s3Intro": "Per il viaggiatore in strada, la nostra promessa SLA si traduce in continuità e sicurezza:",
       "s3Item1": "<strong>Disponibilità Offline-First:</strong> Abbiamo progettato TUGGI per non dipendere dal cloud nel momento dell'attivazione. Una volta scaricato il pacchetto di viaggio, l'attivazione dell'audio è locale e immediata, immune ai guasti di connessione nelle aree remote.",
-      "s3Item2": "<strong>Resilienza dell'Infrastruttura:</strong> Manteniamo uno SLA del 99,9% di uptime sui nostri servizi di autenticazione e sincronizzazione, garantendo che il tuo travel pass sia sempre attivo quando ne hai bisogno.",
       "s3Item3": "<strong>Sicurezza a Mani Libere:</strong> Il nostro impegno numero uno è la tua sicurezza fisica. Il software è verificato per garantire che nessuna interazione visiva sia richiesta durante la guida, consentendo la totale concentrazione sulla strada.",
       "s4Title": "4. Infrastruttura Globale",
       "s4Desc": "I nostri dati sono ospitati in data center di livello mondiale con crittografia AES-256 a riposo e TLS 1.3 in transito. Usiamo Supabase per la gestione dell'identità e Google Cloud per l'elaborazione audio, garantendo che TUGGI segua gli stessi standard di sicurezza delle più grandi aziende tecnologiche al mondo."
@@ -643,10 +635,6 @@
     "homeDescription": "TUGGI ti racconta la storia di ogni luogo ad alta voce mentre passi, comunque tu viaggi. Un'audioguida di viaggio autoguidata, offline e nella tua lingua. Inizia gratis.",
     "driveTitle": "Piani e Prezzi - Pass di Viaggio",
     "driveDescription": "Inizia gratis con 24h di audio illimitato. Pass di 7 o 30 giorni a pagamento unico, senza rinnovo automatico, e piano annuale. Prezzo locale su App Store e Google Play.",
-    "cityOsTitle": "City OS: Governance Territoriale e Audio a Mani Libere",
-    "cityOsDescription": "Porta le storie della tua destinazione a ogni visitatore, nella sua lingua, mentre esplora. Accessibile in tutto il territorio, e il controllo resta tuo.",
-    "fleetsTitle": "Flotte | Ricavi Accessori per Noleggi Auto",
-    "fleetsDescription": "Dai a ogni passeggero una guida locale nella sua lingua. TUGGI trasforma un transfer o un noleggio in un viaggio pieno di storie, con una licenza mensile per veicolo.",
     "techTitle": "Come Funziona TUGGI - Audio Attivato dal GPS, Offline",
     "techDescription": "Dentro TUGGI: come il GPS attiva ogni storia, come capisce da che lato stai passando e come continua a suonare offline su iOS e Android.",
     "purposeTitle": "Il Nostro Scopo",

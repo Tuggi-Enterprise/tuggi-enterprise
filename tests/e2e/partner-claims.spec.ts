@@ -4,14 +4,22 @@ import path from "node:path";
 
 /**
  * BR-B2B-007 — "O que a oferta publicada ao parceiro pode afirmar".
+ * BR-B2B-009 — "A venda de pacote ao parceiro existe como possibilidade e
+ *               não se divulga".
  *
- * The rule closes the list of what partner-facing copy may state as existing
- * (partner brand in the CMS he operates, data scope, QR/fingerprint
+ * BR-B2B-007 closes the list of what partner-facing copy may state as
+ * existing (partner brand in the CMS he operates, data scope, QR/fingerprint
  * attribution, revenue share). Everything else is forbidden until a new
  * decision exists, and the claims below were all published on
- * /enterprise/fleets, /enterprise/city-os and /technology until they were
- * removed. This spec is the tripwire: it fails if any of them comes back,
- * in source or in what the server actually renders.
+ * /enterprise/fleets, /enterprise/city-os, /technology and
+ * /trust-center/security-sla until they were removed. This spec is the
+ * tripwire: it fails if any of them comes back, in source or in what the
+ * server actually renders.
+ *
+ * BR-B2B-009 is the mirror image: wholesale — packages, lots, volume
+ * discounts — was never published, and its absence is a decision, not a gap.
+ * Nothing to remove there, so what this spec guards is that nobody
+ * "completes" the page with it later.
  *
  * Three scopes, because three different kinds of string were removed:
  *
@@ -21,9 +29,8 @@ import path from "node:path";
  *   "partner"    — the same words are true elsewhere and only the partner
  *                  claim was forbidden. "24 hours" is the free trial window
  *                  (BR-MONETIZACAO-013) on consumer pages but a deployment
- *                  SLA on /enterprise/fleets; "99.9%" still lives in the
- *                  traveller-facing trust center, which this removal did not
- *                  cover. Scanned only over the partner surfaces.
+ *                  SLA on /enterprise/fleets. Scanned only over the partner
+ *                  surfaces.
  *   "code"       — the claim was cut out of everything a human or a crawler
  *                  reads *outside* the consumer message files: components,
  *                  route handlers, lib constants, plus the partner
@@ -176,9 +183,14 @@ const FORBIDDEN_CLAIMS: ForbiddenClaim[] = [
     scope: "everywhere",
   },
   {
+    // Was "partner" scope while the same figure survived in the traveller
+    // facing trust center (Legal.Security.s3Item2). That copy is gone too, so
+    // the number now has no home on the site and the scope widens with it.
+    // No vigent rule states an availability target; until one does, quoting a
+    // figure is a promise nothing backs.
     claim: "99.9% uptime SLA",
     terms: ["99,9%", "99.9%"],
-    scope: "partner",
+    scope: "everywhere",
   },
   {
     claim: "Military-grade governance",
@@ -234,6 +246,114 @@ const FORBIDDEN_CLAIMS: ForbiddenClaim[] = [
     scope: "code",
     except: [FATFOOTER_EXCEPTION],
   },
+
+  // ---------------------------------------------------------------------
+  // Second wave: what BR-B2B-007 forbids on /enterprise/fleets and on
+  // /trust-center/security-sla, plus the wholesale BR-B2B-009 keeps unsaid.
+  // ---------------------------------------------------------------------
+
+  {
+    // BR-B2B-007 item 5. The whole Fleets.Brand block promised the rental
+    // company its identity inside the *traveller's app* — its voice, its
+    // colours — and the three cards said it in hard-coded English, outside
+    // i18n (CLAUDE.md §8). BR-CMS-001 keeps the Tuggi brand in front of the
+    // end user, so the block came out with its component.
+    //
+    // The bare word "white-label" is deliberately NOT in this list: the rule
+    // fixes its *object*, not the word. "Your brand on the panel you operate"
+    // is item 1 of the allowed list and is true. Every term below names the
+    // app, not the CMS.
+    claim: "Partner branding applied to the traveller's app (voice, colours, identity)",
+    terms: [
+      "White-Label UI",
+      "your own visual identity",
+      "Custom Voice",
+      "tailored audio guides",
+      "Personalize a voz",
+      "Customize the app's voice",
+      "Personaliza la voz",
+      "Personalizza la voce",
+    ],
+    scope: "everywhere",
+  },
+  {
+    // BR-B2B-007 item 6. No rule creates per-partner content scope in the
+    // app, and "sponsored" presupposes item 7 on top of it. Published in two
+    // places at once: the Fleets.Brand copy sold the sponsored premium route,
+    // and the trust center promised routes "visible only to your users".
+    claim: "Sponsored or exclusive routes reserved to a partner's users",
+    terms: [
+      "Rotas Premium Exclusivas",
+      "Exclusive Premium Routes",
+      "Rutas Premium Exclusivas",
+      "Percorsi Premium Esclusivi",
+      "Exclusive Routes",
+      "Sponsor unique private routes",
+      "rotas exclusivas",
+      "exclusive routes",
+      "rutas exclusivas",
+      "percorsi esclusivi",
+    ],
+    scope: "everywhere",
+  },
+  {
+    // BR-B2B-007 item 7, on a trust center page: the money was described as
+    // walking *into* Tuggi, which BR-B2B-004 items 2 and 3 say it never does.
+    claim: "City OS acquired by a municipality",
+    terms: ["adquire o City OS", "acquires City OS", "adquiere City OS", "acquisisce City OS"],
+    scope: "everywhere",
+  },
+  {
+    // BR-B2B-007 item 7, same page: "official zones contracted by cities or
+    // companies" states a purchase and a per-buyer content scope at once.
+    claim: "Official zones contracted by cities or companies",
+    terms: [
+      "zonas oficiais contratadas",
+      "official zones contracted",
+      "zonas oficiales contratadas",
+      "zone ufficiali contrattate",
+    ],
+    scope: "everywhere",
+  },
+  {
+    // BR-B2B-007 item 7, in page metadata rather than on screen: the orphaned
+    // Metadata.fleetsDescription still offered the fleet "a simple monthly
+    // license per vehicle". A licence the partner buys is exactly what
+    // BR-B2B-004 item 2 rules out.
+    claim: "Monthly per-vehicle license sold to the fleet",
+    terms: [
+      "licença mensal por veículo",
+      "monthly license per vehicle",
+      "licencia mensual por vehículo",
+      "licenza mensile per veicolo",
+    ],
+    scope: "everywhere",
+  },
+  {
+    // BR-B2B-009 items 1 and 2. Wholesale never went live — the copy was
+    // caught before publication — so this entry guards an absence, not a
+    // removal. The operator chose not to publish instead of revoking
+    // BR-B2B-004, and item 2 says whoever notices the gap must not "complete"
+    // the page. The bare word "pacote" is not here on purpose: it is the
+    // offline city download in three consumer strings (BR-B2B-009, edge
+    // cases), and only the buying phrasings are forbidden.
+    claim: "Partner buying a package, lot or volume discount (BR-B2B-009)",
+    terms: [
+      "pacotes de dias",
+      "lote de acessos",
+      "desconto de volume",
+      "packages of days",
+      "batch of accesses",
+      "volume discount",
+      "paquetes de días",
+      "lote de accesos",
+      "descuento por volumen",
+      "pacchetti di giorni",
+      "lotto di accessi",
+      "sconto sul volume",
+    ],
+    scope: "everywhere",
+  },
 ];
 
 const REPO_ROOT = path.resolve(__dirname, "../..");
@@ -259,6 +379,32 @@ const LOCALES = fs
 const PARTNER_NAMESPACES = ["Fleets", "CityOS", "Technology", "SEO_FLEETS", "SEO_CITY_OS"];
 
 const PARTNER_PAGES = ["/enterprise/fleets", "/enterprise/city-os", "/technology"];
+
+interface RenderedPage {
+  path: string;
+  /** Which claim scopes are asserted against what this page serves. */
+  scopes: Scope[];
+}
+
+/**
+ * The pages whose served output is checked, and against which scopes.
+ *
+ * /trust-center/security-sla carried three BR-B2B-007 violations and the SLA
+ * figure, so it has to be checked — but it is traveller-facing copy, and the
+ * "partner" and "code" scopes exist precisely to leave consumer strings
+ * alone. Both would fire here for the wrong reason: its own audit-log heading
+ * is "Registros de Auditoría" in Spanish, and its hands-free safety item is
+ * consumer copy the previous removal deliberately kept. "everywhere" is the
+ * scope that means "no legitimate use anywhere on the site", so it is the one
+ * that applies to this page.
+ */
+const RENDERED_PAGES: RenderedPage[] = [
+  ...PARTNER_PAGES.map((path) => ({
+    path,
+    scopes: ["everywhere", "partner", "code"] as Scope[],
+  })),
+  { path: "/trust-center/security-sla", scopes: ["everywhere"] as Scope[] },
+];
 
 interface Haystack {
   label: string;
@@ -407,7 +553,7 @@ test.describe("BR-B2B-007 — partner-facing copy states only what a vigent rule
   });
 
   for (const locale of LOCALES) {
-    for (const pagePath of PARTNER_PAGES) {
+    for (const { path: pagePath, scopes } of RENDERED_PAGES) {
       test(`BR-B2B-007: /${locale}${pagePath} renders and serves no forbidden claim`, async ({
         page,
       }) => {
@@ -420,7 +566,8 @@ test.describe("BR-B2B-007 — partner-facing copy states only what a vigent rule
         const served: Haystack[] = [
           { label: `/${locale}${pagePath}`, text: await publishedText(page) },
         ];
-        for (const { claim, terms } of FORBIDDEN_CLAIMS) {
+        for (const { claim, terms, scope } of FORBIDDEN_CLAIMS) {
+          if (!scopes.includes(scope)) continue;
           expect(findHits(served, terms), claim).toEqual([]);
         }
       });
