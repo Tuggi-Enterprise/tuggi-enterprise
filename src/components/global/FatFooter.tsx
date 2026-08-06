@@ -17,14 +17,14 @@ export function FatFooter() {
             <Link href="/" className="inline-block focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-sm w-max">
               <Image
                 src="/images/logo_tuggi_full_white.png"
-                alt="TUGGI Logo White"
+                alt="TUGGI"
                 width={98}
                 height={32}
                 className="h-8 w-auto"
               />
             </Link>
             <p className="text-sm text-slate-400 max-w-xs leading-relaxed">
-              The Cultural Copilot for Drivers. 100% Hands-Free Contextual Routing.
+              {t("tagline")}
             </p>
           </div>
 

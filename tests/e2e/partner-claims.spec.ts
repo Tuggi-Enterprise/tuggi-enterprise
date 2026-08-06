@@ -7,6 +7,7 @@ import path from "node:path";
  * BR-B2B-004 — "O parceiro distribui; quem paga é o usuário final".
  * BR-B2B-009 — "A venda de pacote ao parceiro existe como possibilidade e
  *               não se divulga".
+ * BR-MAPA-005 — "Roteirização é de terceiro: o Tuggi não roteiriza".
  *
  * BR-B2B-007 closes the list of what partner-facing copy may state as
  * existing (partner brand in the CMS he operates, data scope, QR/fingerprint
@@ -42,13 +43,20 @@ import path from "node:path";
  * The "100% hands-free" claim is the one "code" scope exists for. It was
  * removed from the partner surfaces, from /llms.txt and from the
  * SoftwareApplication feature list, because those said it as an unbacked
- * absolute and no vigent rule backs it. It stays, for now, in the ~30
- * consumer strings of src/messages (Drive, Tours, FAQ, trust center) and in
- * FatFooter.tsx, whose tagline — "The Cultural Copilot for Drivers. 100%
- * Hands-Free Contextual Routing." — is a separate card with new copy in four
- * languages (issue #147). FATFOOTER_EXCEPTION and stripFooter() below exist
- * only for that; both come out when that card lands, and then this claim
- * moves to "everywhere".
+ * absolute and no vigent rule backs it. It stays, for now, in the consumer
+ * strings of src/messages (Home, Drive, Tours, FAQ), which are outside this
+ * scope on purpose — replacing them is a copy card, not a deletion. The
+ * FatFooter waiver this claim used to carry is gone: issue #147 landed, the
+ * tagline moved to Footer.tagline in four languages, and the footer is now
+ * scanned like any other component and read like any other rendered text.
+ *
+ * Some claims here have no rule behind them in either direction — not
+ * "forbidden by BR-B2B-007", but "asserted with nothing to assert it from".
+ * Liability reduction, physical safety, a software audit and delegated
+ * governance were all published as fact and no BR-* authorizes any of them.
+ * They are guarded the same way, and the reason is written on each entry: it
+ * is what tells whoever wants the wording back that it needs a rule first,
+ * not a better sentence.
  *
  * src/data/ is excluded from the source scan: those are generated route and
  * coverage snapshots (`npm run update-routes`), not copy, and their POI ids
@@ -63,16 +71,7 @@ interface ForbiddenClaim {
   /** The literal strings, in every language the claim was published in. */
   terms: string[];
   scope: Scope;
-  /** Source files this claim is knowingly still allowed in, with the reason. */
-  except?: string[];
 }
-
-/**
- * The one file allowed to keep "100% Hands-Free": the footer tagline, whose
- * replacement needs new copy in four languages and has its own issue (#147).
- * Delete this constant when that card lands — it is not a general waiver.
- */
-const FATFOOTER_EXCEPTION = "src/components/global/FatFooter.tsx";
 
 const FORBIDDEN_CLAIMS: ForbiddenClaim[] = [
   {
@@ -245,7 +244,6 @@ const FORBIDDEN_CLAIMS: ForbiddenClaim[] = [
       "Mãos Livres",
     ],
     scope: "code",
-    except: [FATFOOTER_EXCEPTION],
   },
 
   // ---------------------------------------------------------------------
@@ -460,6 +458,133 @@ const FORBIDDEN_CLAIMS: ForbiddenClaim[] = [
     ],
     scope: "everywhere",
   },
+
+  // ---------------------------------------------------------------------
+  // Fourth wave. The first three entries are a different border from
+  // everything above: they were not removed because BR-B2B-007 forbids
+  // them, but because no vigent BR-* asserts them at all. Searching
+  // docs/business-rules/ for risk reduction, driver distraction, physical
+  // safety, software audit or delegated governance returns no rule, in
+  // either direction. That is the reason each one is here, and it is also
+  // the condition for coming back: a rule, not a rewrite. Whoever wants the
+  // argument on the page again asks `produto` for the BR-* first.
+  //
+  // The last two do have a rule: the near-zero cost of entry is BR-B2B-007
+  // item 7 again, and the footer tagline claimed contextual routing, which
+  // is exactly what BR-MAPA-005 denies.
+  // ---------------------------------------------------------------------
+
+  {
+    // No rule authorizes it. The whole FleetsRisk block existed to argue that
+    // Tuggi lowers the fleet's risk and liability: "Minimize Liability" as a
+    // heading, third-party crash statistics with no source in the body, and a
+    // "High Risk" badge over screen-based apps in hard-coded English (CLAUDE.md
+    // §8). The component went with its copy. The nearest thing to a rule here
+    // is BR-AUDIO-019 — Tuggi coexists with the apps already playing — and it
+    // says nothing about safety outcomes.
+    claim: "Liability and crash-risk reduction promised to the fleet (no rule authorizes it)",
+    terms: [
+      "Minimize a Responsabilidade",
+      "Minimize Liability",
+      "Minimiza la Responsabilidad",
+      "Minimizza la Responsabilità",
+      "A distração do motorista",
+      "Driver distraction",
+      "La distracción del conductor",
+      "La distrazione del conducente",
+      "olhos do motorista na estrada",
+      "Eyes on the Road",
+      "ojos del conductor en la carretera",
+      "occhi del conducente sulla strada",
+      "Visual Distraction",
+      "Screen-based Apps",
+      "High Risk",
+      "Risk Management",
+    ],
+    scope: "everywhere",
+  },
+  {
+    // No rule authorizes it, and the second half asserts a fact about the
+    // world: Legal.Security.s3Item3 told the traveller that his physical
+    // safety is our "number one commitment" and that "the software is
+    // audited". Nobody here knows of an audit, and an audit claim on a trust
+    // center page is the kind a buyer checks. The item went; the offline one
+    // next to it stayed, because BR-AUDIO-007 backs it.
+    claim: "Audited software and physical safety as a number-one commitment (no rule authorizes it)",
+    terms: [
+      "O software é auditado",
+      "The software is audited",
+      "El software está auditado",
+      "Il software è verificato",
+      "compromisso número um",
+      "number one commitment",
+      "compromiso número uno",
+      "impegno numero uno",
+      "sua segurança física",
+      "your physical safety",
+      "su seguridad física",
+      "la tua sicurezza fisica",
+    ],
+    scope: "everywhere",
+  },
+  {
+    // No rule authorizes it, and it is the frame the third wave left standing.
+    // "Delegated Sovereignty" and "Zone Management" came out as headings, but
+    // the page kept saying the same thing in prose: a "hybrid governance
+    // model" for "Citizens, Governments and Enterprises", and a curation
+    // clause that only makes sense if somewhere else has active local
+    // management. That is items 6 and 7 of BR-B2B-007 by other words, and
+    // nothing describes a zone delegated to a city or a company.
+    claim: "Hybrid governance with zones delegated to a city or company (no rule authorizes it)",
+    terms: [
+      "governança híbrida",
+      "hybrid governance",
+      "gobernanza híbrida",
+      "governance ibrido",
+      "Em áreas onde não há uma gestão local ativa",
+      "In areas where there is no active local management",
+      "En áreas donde no hay gestión local activa",
+      "Nelle aree in cui non c'è una gestione locale attiva",
+      "Cidadãos, Governos e Empresas",
+      "Citizens, Governments, and Enterprises",
+      "Ciudadanos, Gobiernos y Empresas",
+      "Cittadini, Governi e Aziende",
+    ],
+    scope: "everywhere",
+  },
+  {
+    // BR-B2B-007 item 7, the same class as the "near-zero infrastructure
+    // costs" removed from the fleet hero in the third wave. A cost floor is
+    // only meaningful to someone who is deploying the product, and no partner
+    // or municipality deploys, contracts or pays for anything. What was true
+    // underneath — no specialized hardware, no government infrastructure to
+    // run — stayed; the price of entry went.
+    claim: "Near-zero cost of entry offered to a partner or a government",
+    terms: [
+      "Custo de Entrada Quase Nulo",
+      "Near-Zero Entry Cost",
+      "Costo de Entrada Casi Nulo",
+      "Costo d'ingresso quasi nullo",
+      "sem custos de infraestrutura para governos",
+      "without government infrastructure costs",
+      "sin costos de infraestructura gubernamental",
+      "senza costi di infrastruttura per il governo",
+    ],
+    scope: "everywhere",
+  },
+  {
+    // BR-MAPA-005: routing is a third party's job and "Contextual Routing" is
+    // the exact thing the rule denies, published in English on every page of
+    // the site because the footer tagline was hard-coded in the component.
+    // Issue #147 replaced it with Footer.tagline in four languages.
+    claim: "Contextual routing claimed in the footer tagline (BR-MAPA-005, issue #147)",
+    terms: [
+      "Contextual Routing",
+      "The Cultural Copilot for Drivers",
+      "Cultural Copilot",
+    ],
+    scope: "everywhere",
+  },
 ];
 
 const REPO_ROOT = path.resolve(__dirname, "../..");
@@ -538,11 +663,17 @@ function allSourceFiles(): Haystack[] {
   }));
 }
 
+type MessageFile = Record<string, Record<string, unknown>>;
+
+function messagesFor(locale: string): MessageFile {
+  const file = path.join(MESSAGES_DIR, `${locale}.json`);
+  return JSON.parse(fs.readFileSync(file, "utf8")) as MessageFile;
+}
+
 /** Only the partner namespaces of each message file, as one haystack per locale. */
 function partnerMessages(): Haystack[] {
   return LOCALES.map((locale) => {
-    const file = path.join(MESSAGES_DIR, `${locale}.json`);
-    const messages = JSON.parse(fs.readFileSync(file, "utf8")) as Record<string, unknown>;
+    const messages = messagesFor(locale);
     const partnerOnly = Object.fromEntries(
       PARTNER_NAMESPACES.filter((ns) => ns in messages).map((ns) => [ns, messages[ns]]),
     );
@@ -592,10 +723,9 @@ function partnerSourceFiles(): Haystack[] {
   return sources;
 }
 
-function findHits(haystacks: Haystack[], terms: string[], except: string[] = []): string[] {
+function findHits(haystacks: Haystack[], terms: string[]): string[] {
   const hits: string[] = [];
   for (const { label, text } of haystacks) {
-    if (except.includes(label)) continue;
     for (const term of terms) {
       if (text.includes(term)) hits.push(`${label} — "${term}"`);
     }
@@ -609,13 +739,14 @@ function findHits(haystacks: Haystack[], terms: string[], except: string[] = [])
  *
  * Not page.content(): next-intl ships the whole message file down in the RSC
  * payload, so raw HTML matches every consumer string on every page and says
- * nothing about what this page claims. The footer is dropped for the same
- * reason it is waived in the source scan — FATFOOTER_EXCEPTION.
+ * nothing about what this page claims. The footer is part of what the page
+ * publishes and is read with it — it stopped being an exception when #147
+ * moved its tagline into i18n.
  */
 async function publishedText(page: Page): Promise<string> {
   return page.evaluate(() => {
     const body = document.body.cloneNode(true) as HTMLElement;
-    body.querySelectorAll("footer, script, template, noscript").forEach((node) => node.remove());
+    body.querySelectorAll("script, template, noscript").forEach((node) => node.remove());
 
     const meta = [...document.querySelectorAll("meta")]
       .map((tag) => tag.getAttribute("content") ?? "")
@@ -633,33 +764,23 @@ test.describe("BR-B2B-007 — partner-facing copy states only what a vigent rule
   const partnerOnly = FORBIDDEN_CLAIMS.filter((c) => c.scope === "partner");
   const codeOnly = FORBIDDEN_CLAIMS.filter((c) => c.scope === "code");
 
-  for (const { claim, terms, except } of everywhere) {
+  for (const { claim, terms } of everywhere) {
     test(`BR-B2B-007: "${claim}" is gone from src/`, () => {
-      expect(findHits(allSourceFiles(), terms, except)).toEqual([]);
+      expect(findHits(allSourceFiles(), terms)).toEqual([]);
     });
   }
 
-  for (const { claim, terms, except } of partnerOnly) {
+  for (const { claim, terms } of partnerOnly) {
     test(`BR-B2B-007: "${claim}" is gone from the partner surfaces`, () => {
-      expect(findHits(partnerSourceFiles(), terms, except)).toEqual([]);
+      expect(findHits(partnerSourceFiles(), terms)).toEqual([]);
     });
   }
 
-  for (const { claim, terms, except } of codeOnly) {
+  for (const { claim, terms } of codeOnly) {
     test(`BR-B2B-007: "${claim}" is gone from components, routes and partner messages`, () => {
-      expect(findHits(codeSourceFiles(), terms, except)).toEqual([]);
+      expect(findHits(codeSourceFiles(), terms)).toEqual([]);
     });
   }
-
-  // A waiver that outlives its reason silences the guard it belongs to. This
-  // one fails the day issue #147 replaces the footer tagline, which is the
-  // day FATFOOTER_EXCEPTION, stripFooter() and the "code" scope come out.
-  test("BR-B2B-007: the FatFooter waiver still has a reason to exist", () => {
-    const footer = fs.readFileSync(path.join(REPO_ROOT, FATFOOTER_EXCEPTION), "utf8");
-    expect(footer, "the tagline is gone — drop the exception").toContain(
-      "100% Hands-Free Contextual Routing",
-    );
-  });
 
   for (const locale of LOCALES) {
     for (const { path: pagePath, scopes } of RENDERED_PAGES) {
@@ -699,4 +820,52 @@ test.describe("BR-B2B-007 — partner-facing copy states only what a vigent rule
       expect(source, `${name} renders stars`).not.toMatch(/\bStar\b/);
     }
   });
+
+  // Issue #147. The removed tagline was the only string on the site published
+  // in English to every visitor, on every page, and it claimed contextual
+  // routing (BR-MAPA-005). Its replacement has to exist in all four languages
+  // — a key present in one file only would render the fallback and put us
+  // back where we started.
+  test("BR-MAPA-005: Footer.tagline exists in every language (issue #147)", () => {
+    for (const locale of LOCALES) {
+      const tagline = messagesFor(locale).Footer?.tagline;
+      expect(tagline, `Footer.tagline is missing in ${locale}.json`).toBeTruthy();
+      expect(String(tagline).trim().length, `Footer.tagline is empty in ${locale}.json`)
+        .toBeGreaterThan(0);
+    }
+  });
+
+  for (const locale of LOCALES) {
+    test(`BR-MAPA-005: /${locale} serves the footer tagline from i18n (issue #147)`, async ({
+      page,
+    }) => {
+      const tagline = String(messagesFor(locale).Footer.tagline);
+      await page.goto(`/${locale}`);
+
+      const footer = page.locator("footer");
+      await expect(footer).toContainText(tagline);
+      // The logo link is the way back home, and its accessible name is the
+      // brand — not the file it points at (WCAG 2.2 AA 1.1.1).
+      await expect(footer.getByRole("link", { name: "TUGGI", exact: true })).toBeVisible();
+    });
+  }
+
+  // CLAUDE.md §8: text a human reads is never hard-coded in a component, and
+  // og:image:alt is read out loud by the same crawlers and readers as the
+  // rest. It was the last string on /enterprise/fleets living in the route
+  // file, in English for all four locales.
+  for (const locale of LOCALES) {
+    test(`CLAUDE.md §8: /${locale}/enterprise/fleets serves og:image:alt from i18n`, async ({
+      page,
+    }) => {
+      const expected = String(messagesFor(locale).SEO_FLEETS.ogImageAlt);
+      await page.goto(`/${locale}/enterprise/fleets`);
+
+      const alt = await page
+        .locator('meta[property="og:image:alt"]')
+        .first()
+        .getAttribute("content");
+      expect(alt).toBe(expected);
+    });
+  }
 });

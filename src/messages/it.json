@@ -41,6 +41,7 @@
     "navTours": "Audioguide"
   },
   "Footer": {
+    "tagline": "Connettiamo le persone al contesto del mondo fisico",
     "driveB2c": "TUGGI (B2C)",
     "appDownload": "Scarica l'App",
     "plans": "Piani",
@@ -210,14 +211,12 @@
       "cta": "Diventa Partner di TUGGI"
     },
     "Financial": {
-      "col1Title": "INVESTIMENTO HARDWARE MINIMO",
-      "col1Desc": "Costo d'ingresso quasi nullo: nessun hardware specializzato da acquistare o mantenere. Il modello è 100% BYOD (Bring Your Own Device), eliminando i cambi di batteria e il deprezzamento delle apparecchiature.",
+      "col1Title": "Investimento Hardware Minimo",
+      "col1Desc": "Nessun hardware specializzato da acquistare o mantenere. Il modello è 100% BYOD (Bring Your Own Device), eliminando i cambi di batteria e il deprezzamento delle apparecchiature.",
       "col2Title": "Scalabilità Istantanea",
-      "col2Desc": "Distribuisci sull'intera flotta nazionale tramite l'integrazione con codice QR al banco."
-    },
-    "Risk": {
-      "title": "Massimizza l'Operatività. Minimizza la Responsabilità.",
-      "desc": "La distrazione del conducente è una delle principali cause di danni alla flotta. I trigger solo audio di TUGGI tengono gli occhi del conducente sulla strada."
+      "col2Desc": "Distribuisci sull'intera flotta nazionale tramite l'integrazione con codice QR al banco.",
+      "col3Title": "Partecipazione ai Ricavi",
+      "col3Desc": "Il turista che scarica Tuggi con il tuo QR Code viene attribuito a te. Gli acquisti che effettua entrano nel calcolo della tua partecipazione ai ricavi, con la percentuale definita nell'accordo commerciale."
     },
     "NPS": {
       "title": "La Guerra dell'NPS: Dal Metallo all'Esperienza.",
@@ -249,7 +248,7 @@
       "col1Title": "Telemetria 100% Anonimizzata.",
       "col1Desc": "Stretta aderenza alle leggi europee (GDPR) e sudamericane (LGPD) sulla protezione dei dati. Tracciamo i flussi, non gli individui.",
       "col2Title": "Serverless e Pronta per i Grandi Eventi.",
-      "col2Desc": "Supportata da CDN globali e da un'architettura di edge computing, pronta a gestire enormi picchi di traffico durante eventi come i Mondiali o le Olimpiadi senza costi di infrastruttura per il governo."
+      "col2Desc": "Supportata da CDN globali e da un'architettura di edge computing, pronta a gestire enormi picchi di traffico durante eventi come i Mondiali o le Olimpiadi."
     }
   },
   "Drive": {
@@ -546,16 +545,15 @@
     },
     "Security": {
       "title": "Governance, Sicurezza e Disponibilità",
-      "subtitle": "Un Impegno di Fiducia per Cittadini, Governi e Aziende.",
-      "intro": "L'architettura di TUGGI è stata progettata per garantire che i racconti culturali siano forniti con precisione, sicurezza e sovranità. Operiamo un modello di governance ibrido che protegge l'integrità delle informazioni su scala globale e locale.",
+      "subtitle": "Un Impegno di Fiducia.",
+      "intro": "L'architettura di TUGGI è stata progettata per garantire che i racconti culturali siano forniti con precisione e sicurezza.",
       "s1Title": "1. Curatela Globale TUGGI",
-      "s1Desc": "Nelle aree in cui non c'è una gestione locale attiva, TUGGI mantiene la sua curatela standard tramite CMS, usando fonti verificate e intelligenza artificiale per garantire che il turista non resti mai in silenzio.",
+      "s1Desc": "TUGGI mantiene la sua curatela standard tramite CMS, usando fonti verificate e intelligenza artificiale per garantire che il turista non resti mai in silenzio.",
       "s2Title": "2. Audit Log e Integrità (Sicurezza Istituzionale)",
       "s2Item1": "<strong>Custodia delle Informazioni:</strong> TUGGI agisce come custode tecnico della piattaforma. Ogni modifica a un trigger audio, sia fatta da TUGGI sia da un partner governativo, viene registrata in audit log immutabili (RBAC), rendendo possibile tracciare chi, quando e dove una narrazione è stata modificata.",
       "s3Title": "3. Affidabilità e Prestazioni (Per l'Utente B2C)",
-      "s3Intro": "Per il viaggiatore in strada, la nostra promessa SLA si traduce in continuità e sicurezza:",
+      "s3Intro": "Per il viaggiatore, l'affidabilità si misura nell'uso. Con i contenuti già scaricati, l'audio parte da solo, anche dove il segnale non arriva:",
       "s3Item1": "<strong>Disponibilità Offline-First:</strong> Abbiamo progettato TUGGI per non dipendere dal cloud nel momento dell'attivazione. Una volta scaricato il pacchetto di viaggio, l'attivazione dell'audio è locale e immediata, immune ai guasti di connessione nelle aree remote.",
-      "s3Item3": "<strong>Sicurezza a Mani Libere:</strong> Il nostro impegno numero uno è la tua sicurezza fisica. Il software è verificato per garantire che nessuna interazione visiva sia richiesta durante la guida, consentendo la totale concentrazione sulla strada.",
       "s4Title": "4. Infrastruttura Globale",
       "s4Desc": "I nostri dati sono ospitati in data center di livello mondiale con crittografia AES-256 a riposo e TLS 1.3 in transito. Usiamo Supabase per la gestione dell'identità e Google Cloud per l'elaborazione audio, garantendo che TUGGI segua gli stessi standard di sicurezza delle più grandi aziende tecnologiche al mondo."
     },
@@ -655,7 +653,8 @@
   "SEO_FLEETS": {
     "title": "Audioguide a Bordo per Flotte di Noleggio e Transfer",
     "description": "Trasforma noleggi e transfer in un viaggio da ricordare. Il passeggero ascolta una guida locale nella sua lingua, tu aumenti ricavi e NPS, senza installare nulla.",
-    "ogTitle": "TUGGI Flotte: Un'Audioguida per Ogni Passeggero"
+    "ogTitle": "TUGGI Flotte: Un'Audioguida per Ogni Passeggero",
+    "ogImageAlt": "TUGGI Flotte: partecipazione ai ricavi per autonoleggi e transfer"
   },
   "SEO_PURPOSE": {
     "title": "Il Nostro Scopo — Perché Ogni Luogo Merita di Essere Ascoltato",

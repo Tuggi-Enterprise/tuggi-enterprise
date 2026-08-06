@@ -1,6 +1,5 @@
 import { FleetsHero } from "@/components/blocks/FleetsHero";
 import { FleetsFinancial } from "@/components/blocks/FleetsFinancial";
-import { FleetsRisk } from "@/components/blocks/FleetsRisk";
 import { FleetsNPS } from "@/components/blocks/FleetsNPS";
 import { FleetsESG } from "@/components/blocks/FleetsESG";
 
@@ -32,7 +31,7 @@ export async function generateMetadata({
       pagePath: "enterprise/fleets",
       siteName: "TUGGI Enterprise",
       image: "/images/og-image-fleets.jpg",
-      imageAlt: "TUGGI Fleets - Ancillary Revenue for Car Rentals",
+      imageAlt: t("ogImageAlt"),
     }),
     twitter: buildTwitterCard({
       title: ogTitle,
@@ -54,7 +53,6 @@ export default async function FleetsPage({
     <article className="min-h-screen">
       <FleetsHero />
       <FleetsFinancial />
-      <FleetsRisk />
       <FleetsNPS />
       <FleetsESG />
     </article>
