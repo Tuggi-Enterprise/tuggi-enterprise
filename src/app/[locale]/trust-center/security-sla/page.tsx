@@ -39,10 +39,7 @@ export default async function SecuritySLAPage({ params }: { params: Promise<{ lo
 
       <section>
         <h2>{t("s1Title")}</h2>
-        <p>{t("s1Intro")}</p>
-        <ul>
-          <li>{t.rich("s1Item3", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
-        </ul>
+        <p>{t("s1Desc")}</p>
       </section>
 
       <section>

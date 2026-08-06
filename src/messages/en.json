@@ -206,7 +206,7 @@
   "Fleets": {
     "Hero": {
       "title": "De-commoditize Your Fleet.",
-      "subtitle": "Transform a standard vehicle rental into a Premium Cultural Experience. Generate massive ancillary revenue with minimal hardware investment and near-zero infrastructure costs.",
+      "subtitle": "Transform a standard vehicle rental into a Premium Cultural Experience.",
       "cta": "Partner with TUGGI"
     },
     "Financial": {
@@ -244,10 +244,6 @@
     "Offline": {
       "title": "Zero Connectivity Reliance.",
       "desc": "IT departments fear dead zones. TUGGI utilizes aggressive offline-first caching. The entire narrative package of a city is pre-fetched locally on the device (via Wi-Fi at the hotel or rental desk), guaranteeing zero playback failures on remote highways."
-    },
-    "API": {
-      "title": "Seamless ERP & Booking Integration.",
-      "desc": "Designed for Car Rental IT. TUGGI is API-first. Instantly provision licenses and sync user access the moment a customer pays for their vehicle reservation online."
     },
     "Data": {
       "col1Title": "100% Anonymized Telemetry.",
@@ -542,8 +538,6 @@
       "s1Item1": "Your account profile and login credentials are permanently removed from our Auth provider.",
       "s1Item2": "All device identifiers linked to your previous sessions are scrubbed from our telemetry database.",
       "s1Item3": "Any anonymized flow data previously generated remains in the aggregate, but can never be re-associated with your identity.",
-      "s2Title": "Enterprise and City OS Data",
-      "s2Desc": "If your account was provisioned through a City OS government portal or a Fleet Enterprise license, some records may be subject to statutory retention periods required by municipal law or B2B contracts. TUGGI will handle these requests in coordination with the relevant authority.",
       "Form": {
         "placeholder": "your@email.com",
         "submit": "Request Data Deletion",
@@ -554,9 +548,8 @@
       "title": "Governance, Security, and Availability",
       "subtitle": "A Commitment of Trust for Citizens, Governments, and Enterprises.",
       "intro": "TUGGI's architecture was designed to ensure that cultural narratives are delivered with precision, security, and sovereignty. We operate a hybrid governance model that protects information integrity on a global and local scale.",
-      "s1Title": "1. Data Sovereignty and Zone Management (For B2G and B2B)",
-      "s1Intro": "TUGGI operates under a \"Delegated Sovereignty\" model. This ensures that narrative control is always in the right hands:",
-      "s1Item3": "<strong>Global TUGGI Curation:</strong> In areas where there is no active local management, TUGGI maintains its standard curation via CMS, using verified sources and artificial intelligence to ensure the tourist is never left in silence.",
+      "s1Title": "1. Global TUGGI Curation",
+      "s1Desc": "In areas where there is no active local management, TUGGI maintains its standard curation via CMS, using verified sources and artificial intelligence to ensure the tourist is never left in silence.",
       "s2Title": "2. Audit Logs and Integrity (Institutional Security)",
       "s2Item1": "<strong>Information Custody:</strong> TUGGI acts as the technical custodian of the platform. Every change to an audio trigger, whether made by TUGGI or a government partner, is recorded in immutable audit logs (RBAC), making it possible to track who, when, and where a narrative was altered.",
       "s3Title": "3. Reliability and Performance (For the B2C User)",

@@ -4,6 +4,7 @@ import path from "node:path";
 
 /**
  * BR-B2B-007 — "O que a oferta publicada ao parceiro pode afirmar".
+ * BR-B2B-004 — "O parceiro distribui; quem paga é o usuário final".
  * BR-B2B-009 — "A venda de pacote ao parceiro existe como possibilidade e
  *               não se divulga".
  *
@@ -11,10 +12,10 @@ import path from "node:path";
  * existing (partner brand in the CMS he operates, data scope, QR/fingerprint
  * attribution, revenue share). Everything else is forbidden until a new
  * decision exists, and the claims below were all published on
- * /enterprise/fleets, /enterprise/city-os, /technology and
- * /trust-center/security-sla until they were removed. This spec is the
- * tripwire: it fails if any of them comes back, in source or in what the
- * server actually renders.
+ * /enterprise/fleets, /enterprise/city-os, /technology,
+ * /trust-center/security-sla and /trust-center/data-deletion until they were
+ * removed. This spec is the tripwire: it fails if any of them comes back, in
+ * source or in what the server actually renders.
  *
  * BR-B2B-009 is the mirror image: wholesale — packages, lots, volume
  * discounts — was never published, and its absence is a decision, not a gap.
@@ -354,6 +355,111 @@ const FORBIDDEN_CLAIMS: ForbiddenClaim[] = [
     ],
     scope: "everywhere",
   },
+
+  // ---------------------------------------------------------------------
+  // Third wave: the licence-provisioning API on /technology, the
+  // provisioning path invoked on /trust-center/data-deletion, the revenue
+  // outcome on /enterprise/fleets and the delegated-zone frame left over on
+  // /trust-center/security-sla.
+  // ---------------------------------------------------------------------
+
+  {
+    // BR-B2B-007 item 7 and BR-B2B-004 item 3, sold as an integration: the
+    // whole Technology.API block existed to say a rental company's booking
+    // system provisions a paid licence when the traveller pays for the car.
+    // No account is ever paid for by a third party, so the block came out
+    // with its component.
+    claim: "Licenses provisioned through the partner's booking flow (BR-B2B-004)",
+    terms: [
+      "Provisione licenças",
+      "Instantly provision licenses",
+      "Aprovisiona licencias",
+      "Attiva istantaneamente le licenze",
+    ],
+    scope: "everywhere",
+  },
+  {
+    // Same block, second layer: the request mockup stated the same thing in
+    // a form a technical buyer would try. api.tuggi.io does not resolve
+    // (NXDOMAIN, checked 2026-08-06) and /api/v1/licenses/provision never
+    // existed — a fabricated endpoint for a capability the rule forbids.
+    // brandProfile is item 5 on top of it: the partner's identity inside the
+    // traveller's app.
+    claim: "REST mockup with a dead host and a fabricated provisioning endpoint",
+    terms: [
+      "api.tuggi.io",
+      "licenses/provision",
+      "sk_live_fleet",
+      "bookingRef",
+      "renterEmail",
+      "brandProfile",
+    ],
+    scope: "everywhere",
+  },
+  {
+    // BR-B2B-007 item 7 and BR-B2B-004 item 3 on the data deletion page,
+    // which is the worst place for them: the copy told the data subject his
+    // erasure could be held back by a City OS portal or a Fleets corporate
+    // licence — a provisioning path that does not exist, and a contract
+    // nobody signs. The section was only that premise, so it went whole. The
+    // page still states what happens to the data in section 1; the retention
+    // that is real (BR-USUARIO-022, BR-USUARIO-023) was never on this page
+    // and is copy for the design agent, not something a removal invents.
+    claim: "Account provisioned by a City OS portal or a Fleets corporate license (BR-B2B-004)",
+    terms: [
+      "portal governamental City OS",
+      "City OS government portal",
+      "portal gubernamental City OS",
+      "portale governativo City OS",
+      "licença corporativa de Frotas",
+      "Fleet Enterprise license",
+      "licencia corporativa de Flotas",
+      "licenza Fleet Enterprise",
+      "contratos B2B",
+      "B2B contracts",
+      "contratti B2B",
+    ],
+    scope: "everywhere",
+  },
+  {
+    // Same class as RevPA, removed in the first wave: BR-B2B-007 item 4
+    // backs a share of the revenue the partner attributes, never a promised
+    // gain and never an adjective sizing it. The fleet hero promised both
+    // the gain and its size, plus a cost floor nothing backs.
+    claim: "Massive ancillary revenue at near-zero cost promised to the fleet",
+    terms: [
+      "receitas auxiliares massivas",
+      "massive ancillary revenue",
+      "ingresos auxiliares masivos",
+      "enormi ricavi accessori",
+      "custos de infraestrutura quase nulos",
+      "near-zero infrastructure costs",
+      "costos de infraestructura casi nulos",
+      "costi di infrastruttura quasi nulli",
+    ],
+    scope: "everywhere",
+  },
+  {
+    // BR-B2B-007 items 6 and 7. After the second wave the security page kept
+    // a frame wider than what was left inside it: a "Delegated Sovereignty"
+    // model and a heading about zone management for B2G and B2B, both of
+    // which presuppose a zone handed to a city or a company — the same thing
+    // "contracted zones" was removed for. The surviving item says the
+    // opposite (Tuggi curates where there is no local management), so it
+    // became the section and the frame went.
+    claim: "Delegated sovereignty over a zone handed to a city or company",
+    terms: [
+      "Soberania Delegada",
+      "Delegated Sovereignty",
+      "Soberanía Delegada",
+      "Sovranità Delegata",
+      "Gestão de Zonas",
+      "Zone Management",
+      "Gestión de Zonas",
+      "Gestione delle Zone",
+    ],
+    scope: "everywhere",
+  },
 ];
 
 const REPO_ROOT = path.resolve(__dirname, "../..");
@@ -389,14 +495,16 @@ interface RenderedPage {
 /**
  * The pages whose served output is checked, and against which scopes.
  *
- * /trust-center/security-sla carried three BR-B2B-007 violations and the SLA
- * figure, so it has to be checked — but it is traveller-facing copy, and the
- * "partner" and "code" scopes exist precisely to leave consumer strings
- * alone. Both would fire here for the wrong reason: its own audit-log heading
- * is "Registros de Auditoría" in Spanish, and its hands-free safety item is
+ * The two trust center pages carried BR-B2B-007 violations of their own —
+ * security-sla the delegated-zone frame and the SLA figure,
+ * data-deletion the City OS / Fleets provisioning path — so both have to be
+ * checked. But they are traveller-facing copy, and the "partner" and "code"
+ * scopes exist precisely to leave consumer strings alone. Both would fire
+ * here for the wrong reason: security-sla's own audit-log heading is
+ * "Registros de Auditoría" in Spanish, and its hands-free safety item is
  * consumer copy the previous removal deliberately kept. "everywhere" is the
  * scope that means "no legitimate use anywhere on the site", so it is the one
- * that applies to this page.
+ * that applies to these pages.
  */
 const RENDERED_PAGES: RenderedPage[] = [
   ...PARTNER_PAGES.map((path) => ({
@@ -404,6 +512,7 @@ const RENDERED_PAGES: RenderedPage[] = [
     scopes: ["everywhere", "partner", "code"] as Scope[],
   })),
   { path: "/trust-center/security-sla", scopes: ["everywhere"] as Scope[] },
+  { path: "/trust-center/data-deletion", scopes: ["everywhere"] as Scope[] },
 ];
 
 interface Haystack {

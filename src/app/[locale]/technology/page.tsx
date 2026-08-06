@@ -3,7 +3,6 @@ import { Metadata } from "next";
 import { TechHero } from "@/components/blocks/TechHero";
 import { TechEngine } from "@/components/blocks/TechEngine";
 import { TechOffline } from "@/components/blocks/TechOffline";
-import { TechAPI } from "@/components/blocks/TechAPI";
 import { TechData } from "@/components/blocks/TechData";
 import { buildAlternates, buildOpenGraph, buildTwitterCard, defaultRobots } from "@/lib/seo";
 
@@ -41,7 +40,6 @@ export default async function TechnologyPage({
       <TechHero />
       <TechEngine />
       <TechOffline />
-      <TechAPI />
       <TechData />
     </article>
   );

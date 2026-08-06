@@ -53,11 +53,6 @@ export default async function DataDeletionPage({ params }: { params: Promise<{ l
           <li>{t("s1Item3")}</li>
         </ul>
       </section>
-
-      <section>
-        <h2>{t("s2Title")}</h2>
-        <p>{t("s2Desc")}</p>
-      </section>
     </article>
   );
 }

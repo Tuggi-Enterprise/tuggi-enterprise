@@ -206,7 +206,7 @@
   "Fleets": {
     "Hero": {
       "title": "Descomoditiza tu Flota.",
-      "subtitle": "Transforma el alquiler de un vehículo estándar en una Experiencia Cultural Premium. Genera ingresos auxiliares masivos con mínima inversión en hardware y costos de infraestructura casi nulos.",
+      "subtitle": "Transforma el alquiler de un vehículo estándar en una Experiencia Cultural Premium.",
       "cta": "Asóciate con TUGGI"
     },
     "Financial": {
@@ -244,10 +244,6 @@
     "Offline": {
       "title": "Dependencia Cero de Conectividad.",
       "desc": "Los departamentos de TI temen las zonas muertas. TUGGI utiliza un almacenamiento en caché agresivo offline-first. Todo el paquete narrativo de una ciudad se descarga localmente en el dispositivo (vía Wi-Fi en el hotel o mostrador de alquiler), garantizando cero fallos de reproducción en carreteras remotas."
-    },
-    "API": {
-      "title": "Integración Perfecta con ERP y Reservas.",
-      "desc": "Diseñado para TI de Alquiler de Coches. TUGGI es API-first. Aprovisiona licencias instantáneamente y sincroniza el acceso de los usuarios en el momento en que un cliente paga su reserva de vehículo online."
     },
     "Data": {
       "col1Title": "Telemetría 100% Anonimizada.",
@@ -542,8 +538,6 @@
       "s1Item1": "Su perfil de cuenta y credenciales de inicio de sesión se eliminan permanentemente de nuestro proveedor de Autenticación.",
       "s1Item2": "Todos los identificadores de dispositivo vinculados a sus sesiones anteriores se borran de nuestra base de datos de telemetría.",
       "s1Item3": "Cualquier dato de flujo anonimizado generado anteriormente permanece en el agregado, pero nunca podrá volver a asociarse con su identidad.",
-      "s2Title": "Datos Corporativos y City OS",
-      "s2Desc": "Si su cuenta fue provisionada a través de un portal gubernamental City OS o una licencia corporativa de Flotas, algunos registros pueden estar sujetos a períodos de retención legal requeridos por la legislación municipal o contratos B2B. TUGGI procesará estas solicitudes en coordinación con la autoridad responsable.",
       "Form": {
         "placeholder": "su@email.com",
         "submit": "Solicitar Eliminación de Datos",
@@ -554,9 +548,8 @@
       "title": "Gobernanza, Seguridad y Disponibilidad",
       "subtitle": "Compromiso de Confianza para Ciudadanos, Gobiernos y Empresas.",
       "intro": "La arquitectura de TUGGI fue diseñada para garantizar que la narrativa cultural se entregue con precisión, seguridad y soberanía. Operamos un modelo de gobernanza híbrida que protege la integridad de la información a escala global y local.",
-      "s1Title": "1. Soberanía de Datos y Gestión de Zonas (Para B2G y B2B)",
-      "s1Intro": "TUGGI opera bajo un modelo de \"Soberanía Delegada\". Esto garantiza que el control de la narrativa esté siempre en las manos correctas:",
-      "s1Item3": "<strong>Curación Global TUGGI:</strong> En áreas donde no hay gestión local activa, TUGGI mantiene su curación predeterminada a través de CMS, utilizando fuentes verificadas e inteligencia artificial para garantizar que el turista nunca se quede en silencio.",
+      "s1Title": "1. Curación Global TUGGI",
+      "s1Desc": "En áreas donde no hay gestión local activa, TUGGI mantiene su curación predeterminada a través de CMS, utilizando fuentes verificadas e inteligencia artificial para garantizar que el turista nunca se quede en silencio.",
       "s2Title": "2. Registros de Auditoría e Integridad (Seguridad Institucional)",
       "s2Item1": "<strong>Custodia de la Información:</strong> TUGGI actúa como el custodio técnico de la plataforma. Cada cambio en un activador de audio, ya sea realizado por TUGGI o por un socio gubernamental, se registra en logs de auditoría inmutables (RBAC), lo que permite rastrear quién, cuándo y dónde se alteró una narrativa.",
       "s3Title": "3. Fiabilidad y Rendimiento (Para el Usuario B2C)",
