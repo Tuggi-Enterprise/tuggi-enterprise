@@ -1,4 +1,5 @@
-// Standalone PostgREST double for the /d/<slug> partner flow.
+// Standalone Supabase double: PostgREST for the /d/<slug> partner flow, plus
+// the one Edge Function the site invokes (simple-deletion-request).
 //
 // Why a mock server instead of hitting the real project: the festival's
 // core.clients.avatar_url is NULL in production today (the CMS backend used to
@@ -81,6 +82,26 @@ const CLIENTS_BY_SLUG = {
  */
 const fingerprintsByPartner = new Map();
 
+/**
+ * Every row the app offered to `campaign.inbound_leads`, keyed by address and
+ * readable back over `GET /__leads?email=...`.
+ *
+ * The contact form legitimately writes here (`/api/leads`). What may never
+ * write here is `/api/data-deletion`: BR-USUARIO-024 item 4 says a request to
+ * be erased never becomes a marketing contact, and the route used to insert one
+ * on every failure of the Edge Function. Counting by address is what makes that
+ * observable, and it is also what keeps the check safe under parallel workers —
+ * one shared double, four browsers.
+ */
+const leadsByEmail = new Map();
+
+/**
+ * Address that makes the `simple-deletion-request` double answer a failure.
+ * Keyed off the request body rather than a mode flag for the same reason:
+ * global state in this server is shared by every worker at once.
+ */
+const EF_FAILURE_EMAIL = "ef-failure@example.com";
+
 function sendJson(res, status, body) {
   const json = JSON.stringify(body);
   res.writeHead(status, { "Content-Type": "application/json" });
@@ -125,9 +146,55 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  if (url.pathname === "/rest/v1/inbound_leads" && req.method === "POST") {
+    readBody(req).then((raw) => {
+      try {
+        const rows = JSON.parse(raw);
+        for (const row of Array.isArray(rows) ? rows : [rows]) {
+          const seen = leadsByEmail.get(row?.email) ?? [];
+          seen.push(row);
+          leadsByEmail.set(row?.email, seen);
+        }
+      } catch {
+        // Malformed body is the app's problem — record nothing, still answer.
+      }
+      sendJson(res, 201, { success: true });
+    });
+    return;
+  }
+
+  if (url.pathname === "/functions/v1/simple-deletion-request" && req.method === "POST") {
+    readBody(req).then((raw) => {
+      let email = null;
+      try {
+        ({ email = null } = JSON.parse(raw));
+      } catch {
+        // Falls through to the failure answer below, which is what the real
+        // function does with a body it cannot read.
+      }
+
+      if (!email || email === EF_FAILURE_EMAIL) {
+        sendJson(res, 500, { error: "internal_error" });
+        return;
+      }
+
+      // The one accepted answer of BR-USUARIO-024 item 3. The real function
+      // gives the same body to an address with an account and to one without,
+      // so this double has no reason to know the difference either.
+      sendJson(res, 200, { success: true });
+    });
+    return;
+  }
+
   // Drain the request body so clients that stream a POST payload (the rpc
   // call below) don't hang waiting on us to read it.
   req.resume();
+
+  if (url.pathname === "/__leads" && req.method === "GET") {
+    const email = url.searchParams.get("email");
+    sendJson(res, 200, { rows: (email && leadsByEmail.get(email)) || [] });
+    return;
+  }
 
   if (url.pathname === "/__fingerprints" && req.method === "GET") {
     const partnerId = url.searchParams.get("partner_id");
