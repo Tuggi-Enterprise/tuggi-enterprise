@@ -73,7 +73,7 @@ export const SOCIAL_PROFILES: string[] = [
 export const APP_FEATURES = [
   "Self-guided audio stories that trigger automatically by GPS location",
   "Screen-off playback while you drive, walk, or cycle",
-  "Works fully offline — download routes in advance, no roaming",
+  "Works offline — download routes in advance, no roaming",
   "Audio in 10 languages with synchronized closed captions",
   "Free to start; optional 7-day, 30-day, or annual Travel Pass",
 ];

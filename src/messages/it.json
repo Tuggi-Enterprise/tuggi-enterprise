@@ -64,11 +64,11 @@
     "FAQ": {
       "title": "Domande Frequenti",
       "q1": "Qual è la migliore app per audioguide autoguidate?",
-      "a1": "TUGGI è un'audioguida di viaggio autoguidata per iOS e Android. Riproduce automaticamente racconti audio sui luoghi intorno a te, attivati dal GPS — a mani libere e a schermo spento — mentre guidi, cammini o pedali. Funziona completamente offline, supporta 10 lingue con sottotitoli ed è gratis per iniziare.",
+      "a1": "TUGGI è un'audioguida di viaggio autoguidata per iOS e Android. Riproduce automaticamente racconti audio sui luoghi intorno a te, attivati dal GPS — a mani libere e a schermo spento — mentre guidi, cammini o pedali. Funziona offline, supporta 10 lingue con sottotitoli ed è gratis per iniziare.",
       "q2": "Esiste un'app di audioguida di viaggio gratuita?",
       "a2": "Sì. TUGGI è gratis da scaricare e puoi iniziare ad ascoltare con racconti quotidiani. Per ascoltare senza limiti puoi sbloccare un Travel Pass (7 giorni o 30 giorni, pagamento unico) o un piano annuale. Vedrai il prezzo locale esatto nell'App Store o su Google Play.",
       "q3": "Qual è una buona app di viaggio per un on the road?",
-      "a3": "TUGGI è stata creata per i viaggi in auto: funziona insieme al tuo navigatore e alla tua musica e racconta automaticamente i monumenti, le città e la storia che incontri — senza schermo, senza cercare. Scarica il percorso in anticipo per usarlo completamente offline senza costi di roaming.",
+      "a3": "TUGGI è stata creata per i viaggi in auto: funziona insieme al tuo navigatore e alla tua musica e racconta automaticamente i monumenti, le città e la storia che incontri — senza schermo, senza cercare. Scarica il percorso in anticipo per usarlo offline senza costi di roaming.",
       "q4": "Posso esplorare una città senza una guida turistica?",
       "a4": "Sì. TUGGI funziona come un'audioguida autoguidata, così puoi esplorare al tuo ritmo senza prenotare una guida umana o un tour fisso. I racconti partono automaticamente quando raggiungi ogni punto di interesse, a piedi o in auto.",
       "q5": "TUGGI funziona offline e nella mia lingua?",
@@ -89,7 +89,7 @@
     },
     "Simulator": {
       "tag": "Demo Tecnologia Core",
-      "title": "Attivazione Contestuale 100% a Mani Libere",
+      "title": "Attivazione Contestuale a Mani Libere",
       "subtitle": "Il nostro motore City OS usa la logica di direzione (bearing) e la cache offline per attivare i racconti esattamente al monumento giusto, senza che il conducente guardi mai lo schermo.",
       "playing": "In riproduzione: Monumento Storico",
       "approaching": "Avvicinamento al Geofence...",
@@ -106,13 +106,13 @@
     },
     "EnterpriseFork": {
       "b2cTitle": "Per Turisti e Viaggiatori",
-      "b2cDesc": "Scarica l'app e trasforma il tuo prossimo viaggio in un'immersione culturale guidata dal GPS, 100% a mani libere.",
+      "b2cDesc": "Scarica l'app e trasforma il tuo prossimo viaggio in un'immersione culturale guidata dal GPS, a mani libere.",
       "b2cLinkLabel": "Esplora l'App",
       "b2gTitle": "Per Destinazioni Intelligenti (DTI)",
-      "b2gDesc": "Trasforma il tuo comune con City OS. Garantisci sovranità narrativa, conformità legale e intelligenza dei dati con un CAPEX minimo.",
+      "b2gDesc": "Trasforma il tuo comune con City OS.",
       "b2gLinkLabel": "Esplora City OS",
       "b2bTitle": "Per Flotte e Noleggi",
-      "b2bDesc": "De-commoditizza la tua flotta e aumenta il tuo NPS. Opera come una guida locale automatizzata.",
+      "b2bDesc": "De-commoditizza la tua flotta. Opera come una guida locale automatizzata.",
       "b2bLinkLabel": "Soluzioni per Flotte"
     },
     "HowItWorks": {
@@ -190,18 +190,12 @@
       "defaultPoiName": "Monumento Principale"
     },
     "Accessibility": {
-      "tag": "Accelera il Punteggio di Accessibilità della tua DTI",
       "title": "Accessibilità Universale",
       "desc": "L'Accessibilità Universale è il pilastro DTI più difficile. TUGGI risolve le barriere sensoriali all'istante: navigazione audio-first per i turisti ipovedenti e sottotitoli geolocalizzati per i passeggeri con difficoltà uditive. Conforme a WCAG 2.1 AA."
     },
     "Intelligence": {
       "title": "Intelligenza Turistica Basata sui Dati",
       "desc": "I governi sono di solito ciechi rispetto al flusso turistico. TUGGI fornisce telemetria anonimizzata: scopri esattamente quali percorsi vengono seguiti, a che ora e in quali lingue, abilitando campagne di marketing internazionale iper-mirate."
-    },
-    "Mandate": {
-      "title": "Distribuzione a CAPEX Minimo e Pronta per i Grandi Eventi",
-      "desc": "Distribuisci l'OS senza spese di marketing digitale: codici QR su parchimetri ufficiali, caselli autostradali e totem di accesso storici. Pronto all'uso plug-and-play istantaneo per afflussi massicci come i Giochi Invernali 2026 o i Mondiali.",
-      "cta": "Richiedi una Demo di City OS"
     }
   },
   "Fleets": {
@@ -211,42 +205,29 @@
       "cta": "Diventa Partner di TUGGI"
     },
     "Financial": {
-      "col1Title": "Investimento Hardware Minimo",
-      "col1Desc": "Nessun hardware specializzato da acquistare o mantenere. Il modello è 100% BYOD (Bring Your Own Device), eliminando i cambi di batteria e il deprezzamento delle apparecchiature.",
       "col2Title": "Scalabilità Istantanea",
       "col2Desc": "Distribuisci sull'intera flotta nazionale tramite l'integrazione con codice QR al banco.",
       "col3Title": "Partecipazione ai Ricavi",
       "col3Desc": "Il turista che scarica Tuggi con il tuo QR Code viene attribuito a te. Gli acquisti che effettua entrano nel calcolo della tua partecipazione ai ricavi, con la percentuale definita nell'accordo commerciale."
     },
-    "NPS": {
-      "title": "La Guerra dell'NPS: Dal Metallo all'Esperienza.",
-      "desc": "In un mercato commoditizzato, vince chi offre il viaggio migliore. TUGGI trasforma l'auto a noleggio in una guida locale privata, facendo esplodere la soddisfazione del cliente e la fedeltà al marchio."
-    },
     "ESG": {
       "title": "Distribuzione Digitale Senza Frizioni",
-      "desc": "Il tuo unico investimento è l'attivazione digitale e la segnaletica in loco (display QR), che tipicamente raggiunge il ROI già dal primo giorno di noleggio. Coltiva i tuoi obiettivi ESG sostenendo l'economia creativa locale e decomprimendo l'overtourism con percorsi guidati.",
-      "cta": "Richiedi una Demo B2B",
-      "cacDeployment": "Distribuzione a Basso CAC"
+      "desc": "Coltiva i tuoi obiettivi ESG sostenendo l'economia creativa locale e decomprimendo l'overtourism con percorsi guidati.",
+      "cta": "Richiedi una Demo B2B"
     }
   },
   "Technology": {
     "Hero": {
       "title": "Infrastruttura di Audio Spaziale di Livello Enterprise.",
-      "subtitle": "Costruita per scalabilità, resilienza e sicurezza assoluta. Scopri l'architettura che alimenta il motore di routing contestuale."
+      "subtitle": "Costruita per scalabilità e resilienza."
     },
     "Engine": {
       "title": "Geofencing di Precisione e Filtraggio Vettoriale.",
-      "desc": "Il GPS standard crea falsi positivi. TUGGI usa la logica direzionale (bearing) per garantire che i racconti partano SOLO quando il veicolo è fisicamente rivolto verso il POI.",
+      "desc": "Il GPS standard crea falsi positivi. TUGGI usa la logica direzionale (bearing).",
       "inputLabel": "Telemetria Grezza dei Sensori",
       "outputLabel": "Payload Audio Contestuale"
     },
-    "Offline": {
-      "title": "Zero Dipendenza dalla Connettività.",
-      "desc": "I reparti IT temono le zone morte. TUGGI utilizza una cache offline-first aggressiva. L'intero pacchetto narrativo di una città viene pre-caricato localmente sul dispositivo (tramite Wi-Fi in hotel o al banco del noleggio), garantendo zero interruzioni di riproduzione sulle autostrade remote."
-    },
     "Data": {
-      "col1Title": "Telemetria 100% Anonimizzata.",
-      "col1Desc": "Stretta aderenza alle leggi europee (GDPR) e sudamericane (LGPD) sulla protezione dei dati. Tracciamo i flussi, non gli individui.",
       "col2Title": "Serverless e Pronta per i Grandi Eventi.",
       "col2Desc": "Supportata da CDN globali e da un'architettura di edge computing, pronta a gestire enormi picchi di traffico durante eventi come i Mondiali o le Olimpiadi."
     }
@@ -283,7 +264,6 @@
       "sample2Loc": "San Paolo, Brasile",
       "sample3Title": "Ponte di Rialto",
       "sample3Loc": "Venezia, Italia",
-      "socialProof": "Oltre 50.000 storie riprodotte da viaggiatori di tutto il mondo.",
       "directional": "Direzionale",
       "story": "Racconto",
       "play": "Riproduci",
@@ -546,16 +526,15 @@
     "Security": {
       "title": "Governance, Sicurezza e Disponibilità",
       "subtitle": "Un Impegno di Fiducia.",
-      "intro": "L'architettura di TUGGI è stata progettata per garantire che i racconti culturali siano forniti con precisione e sicurezza.",
       "s1Title": "1. Curatela Globale TUGGI",
-      "s1Desc": "TUGGI mantiene la sua curatela standard tramite CMS, usando fonti verificate e intelligenza artificiale per garantire che il turista non resti mai in silenzio.",
+      "s1Desc": "TUGGI mantiene la sua curatela standard tramite CMS, usando fonti verificate e intelligenza artificiale.",
       "s2Title": "2. Audit Log e Integrità (Sicurezza Istituzionale)",
       "s2Item1": "<strong>Custodia delle Informazioni:</strong> TUGGI agisce come custode tecnico della piattaforma. Ogni modifica a un trigger audio, sia fatta da TUGGI sia da un partner governativo, viene registrata in audit log immutabili (RBAC), rendendo possibile tracciare chi, quando e dove una narrazione è stata modificata.",
       "s3Title": "3. Affidabilità e Prestazioni (Per l'Utente B2C)",
       "s3Intro": "Per il viaggiatore, l'affidabilità si misura nell'uso. Con i contenuti già scaricati, l'audio parte da solo, anche dove il segnale non arriva:",
-      "s3Item1": "<strong>Disponibilità Offline-First:</strong> Abbiamo progettato TUGGI per non dipendere dal cloud nel momento dell'attivazione. Una volta scaricato il pacchetto di viaggio, l'attivazione dell'audio è locale e immediata, immune ai guasti di connessione nelle aree remote.",
+      "s3Item1": "<strong>Disponibilità Offline-First:</strong> Abbiamo progettato TUGGI per non dipendere dal cloud nel momento dell'attivazione. Una volta scaricato il pacchetto di viaggio, l'attivazione dell'audio è locale e immediata.",
       "s4Title": "4. Infrastruttura Globale",
-      "s4Desc": "I nostri dati sono ospitati in data center di livello mondiale con crittografia AES-256 a riposo e TLS 1.3 in transito. Usiamo Supabase per la gestione dell'identità e Google Cloud per l'elaborazione audio, garantendo che TUGGI segua gli stessi standard di sicurezza delle più grandi aziende tecnologiche al mondo."
+      "s4Desc": "I nostri dati sono ospitati in data center di livello mondiale con crittografia AES-256 a riposo e TLS 1.3 in transito. Usiamo Supabase per la gestione dell'identità e Google Cloud per l'elaborazione audio."
     },
     "Accessibility": {
       "title": "Accessibilità e Inclusione",
@@ -593,16 +572,10 @@
       "title": "La Libertà di Esplorare.",
       "body": "Il turismo è rimasto intrappolato in orari rigidi, autobus affollati e barriere linguistiche. Crediamo che l'esplorazione debba essere libertà assoluta. Non dovresti aspettare una guida turistica o tenere gli occhi incollati a un'app di mappe. Con TUGGI, guidi, cammini o pedali al tuo ritmo. I racconti ti trovano nell'esatto momento geografico in cui contano."
     },
-    "Sovereignty": {
-      "title": "Riprendersi la Storia.",
-      "body": "Le città hanno storicamente esternalizzato i propri ricordi. Le narrazioni si perdono nella traduzione, vengono alterate da guide umane non verificate o restano intrappolate in libri obsoleti. Esistiamo per dare alle destinazioni il potere di riappropriarsi della propria storia. Un'infrastruttura digitale dove la vera voce della città è preservata, curata e distribuita globalmente, esattamente come è accaduta."
-    },
     "Values": {
       "title": "Le Fondamenta",
-      "v1Title": "La Sicurezza Prima di Tutto.",
-      "v1Desc": "Esperienza 100% a mani libere. Non competiamo mai con l'attenzione del conducente.",
       "v2Title": "Semplicità Operativa.",
-      "v2Desc": "Zero frizioni. Avvia il percorso e l'app pensa al resto.",
+      "v2Desc": "Avvia il percorso e l'app pensa al resto.",
       "v3Title": "Rispetto Contestuale.",
       "v3Desc": "Racconti profondamente connessi al percorso fisico e alla coerenza narrativa.",
       "v4Title": "Precisione e Affidabilità.",
@@ -643,28 +616,32 @@
     "securityTitle": "SLA di Sicurezza",
     "securityDescription": "I nostri impegni sulla sicurezza",
     "accessibilityTitle": "Accessibilità e Inclusione",
-    "accessibilityDescription": "Politiche di accessibilità"
+    "accessibilityDescription": "Politiche di accessibilità",
+    "homeOgImageAlt": "TUGGI: audioguida di viaggio autoguidata"
   },
   "SEO_CITY_OS": {
     "title": "Audioguide Multilingue per Destinazioni Intelligenti",
-    "description": "Ogni visitatore ascolta le storie della tua destinazione, nella sua lingua, mentre esplora. Accessibile, in tutto il territorio, e decidi tu cosa raccontare.",
-    "ogTitle": "TUGGI City OS: La Tua Destinazione, Narrata per Ogni Visitatore"
+    "description": "Ogni visitatore ascolta le storie della tua destinazione, nella sua lingua, mentre esplora. Accessibile, in tutto il territorio.",
+    "ogTitle": "TUGGI City OS: La Tua Destinazione, Narrata per Ogni Visitatore",
+    "ogImageAlt": "TUGGI City OS: infrastruttura per destinazioni turistiche intelligenti"
   },
   "SEO_FLEETS": {
     "title": "Audioguide a Bordo per Flotte di Noleggio e Transfer",
-    "description": "Trasforma noleggi e transfer in un viaggio da ricordare. Il passeggero ascolta una guida locale nella sua lingua, tu aumenti ricavi e NPS, senza installare nulla.",
+    "description": "Trasforma noleggi e transfer in un viaggio da ricordare. Il passeggero ascolta una guida locale nella sua lingua, senza installare nulla.",
     "ogTitle": "TUGGI Flotte: Un'Audioguida per Ogni Passeggero",
     "ogImageAlt": "TUGGI Flotte: partecipazione ai ricavi per autonoleggi e transfer"
   },
   "SEO_PURPOSE": {
     "title": "Il Nostro Scopo — Perché Ogni Luogo Merita di Essere Ascoltato",
     "description": "Abbiamo creato TUGGI con un'idea sola: ogni luogo ha una storia che vale la pena ascoltare, e tutti dovrebbero poterlo fare, nella propria lingua e senza mani.",
-    "ogTitle": "TUGGI: Perché Ogni Luogo Merita di Essere Ascoltato"
+    "ogTitle": "TUGGI: Perché Ogni Luogo Merita di Essere Ascoltato",
+    "ogImageAlt": "TUGGI: il manifesto dell'audio"
   },
   "SEO_COVERAGE": {
     "title": "Destinazioni Attive — Scegli Dove Esplorare",
     "description": "TUGGI è attivo in {count}+ punti di interesse in Italia, Spagna, Portogallo, Brasile, Cile, USA e altro ancora. I racconti audio partono automaticamente nel momento in cui inizi a esplorare.",
-    "ogTitle": "TUGGI è Attivo in {countries} Paesi — {count}+ Racconti Audio Pronti"
+    "ogTitle": "TUGGI è Attivo in {countries} Paesi — {count}+ Racconti Audio Pronti",
+    "ogImageAlt": "Mappa di copertura globale di TUGGI: storie audio in tutto il mondo"
   },
   "Coverage": {
     "Hero": {

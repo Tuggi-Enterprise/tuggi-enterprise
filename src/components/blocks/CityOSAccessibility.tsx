@@ -1,5 +1,5 @@
 import { useTranslations } from "next-intl";
-import { Ear, EyeOff, Captions, ShieldCheck } from "lucide-react";
+import { Ear, EyeOff, Captions } from "lucide-react";
 
 export function CityOSAccessibility() {
   const t = useTranslations("CityOS.Accessibility");
@@ -9,11 +9,11 @@ export function CityOSAccessibility() {
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-16 items-center">
         
         {/* Copy Focus */}
+        {/* The eyebrow badge above this heading promised the municipality a
+            lift in its accessibility rating — an outcome, the same class as the
+            revenue and satisfaction lifts BR-B2B-007 item 4 rules out. It went;
+            the heading is the first thing in the column now. */}
         <div className="flex-1 space-y-8 text-center lg:text-left">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 border border-tuggi-primary/20 rounded-full text-tuggi-primary-text font-semibold text-sm">
-             <ShieldCheck className="w-4 h-4" aria-hidden="true" />
-             {t("tag")}
-          </div>
           <h2 className="text-3xl lg:text-4xl font-bold tracking-tight text-tuggi-dark">
             {t("title")}
           </h2>

@@ -34,27 +34,3 @@ export function FreedomAnimation() {
     </div>
   );
 }
-
-export function SovereigntyAnimation() {
-  const bars = [1, 2, 3, 4, 5, 6];
-  return (
-    <div className="hidden lg:flex order-2 lg:order-1 items-center justify-center h-full">
-      <div className="w-80 h-80 relative flex items-center justify-center gap-2 opacity-50">
-        {bars.map((i) => (
-          <motion.div
-            key={i}
-            className="w-1 bg-tuggi-dark rounded-full"
-            initial={{ height: "20%" }}
-            animate={{ height: ["20%", `${Math.random() * 60 + 40}%`, "20%"] }}
-            transition={{
-              duration: 3 + Math.random() * 2,
-              ease: "easeInOut",
-              repeat: Infinity,
-              delay: i * 0.2
-            }}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}

@@ -34,7 +34,7 @@ export async function generateMetadata({
       description,
       locale,
       pagePath: "",
-      imageAlt: "TUGGI - Self-Guided Audio Travel Guide",
+      imageAlt: t("homeOgImageAlt"),
     }),
     twitter: buildTwitterCard({ title, description }),
   };

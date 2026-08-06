@@ -1,7 +1,6 @@
 import { CityOSHero } from "@/components/blocks/CityOSHero";
 import { CityOSAccessibility } from "@/components/blocks/CityOSAccessibility";
 import { CityOSIntelligence } from "@/components/blocks/CityOSIntelligence";
-import { CityOSMandate } from "@/components/blocks/CityOSMandate";
 
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Metadata } from "next";
@@ -31,7 +30,7 @@ export async function generateMetadata({
       pagePath: "enterprise/city-os",
       siteName: "TUGGI City OS",
       image: "/images/og-image-city-os.jpg",
-      imageAlt: "TUGGI City OS - Smart Tourism Destination Infrastructure",
+      imageAlt: t("ogImageAlt"),
     }),
     twitter: buildTwitterCard({
       title: ogTitle,
@@ -54,7 +53,6 @@ export default async function CityOSPage({
       <CityOSHero />
       <CityOSAccessibility />
       <CityOSIntelligence />
-      <CityOSMandate />
     </article>
   );
 }

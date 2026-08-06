@@ -2,7 +2,6 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Metadata } from "next";
 import { TechHero } from "@/components/blocks/TechHero";
 import { TechEngine } from "@/components/blocks/TechEngine";
-import { TechOffline } from "@/components/blocks/TechOffline";
 import { TechData } from "@/components/blocks/TechData";
 import { buildAlternates, buildOpenGraph, buildTwitterCard, defaultRobots } from "@/lib/seo";
 
@@ -39,7 +38,6 @@ export default async function TechnologyPage({
     <article className="min-h-screen">
       <TechHero />
       <TechEngine />
-      <TechOffline />
       <TechData />
     </article>
   );

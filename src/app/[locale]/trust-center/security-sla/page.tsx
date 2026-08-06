@@ -35,7 +35,12 @@ export default async function SecuritySLAPage({ params }: { params: Promise<{ lo
         {t("subtitle")}
       </p>
 
-      <p>{t("intro")}</p>
+      {/* The intro guaranteed that the architecture delivers the cultural
+          narrative accurately. Legal.Terms.s3Item2 says the opposite in the
+          contract — the narration is AI-assisted and carries no warranty of
+          accuracy — and no rule backs a delivery guarantee. Two published texts
+          cannot disagree about the same fact; the one with no rule is the one
+          that goes. */}
 
       <section>
         <h2>{t("s1Title")}</h2>

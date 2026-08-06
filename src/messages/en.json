@@ -64,11 +64,11 @@
     "FAQ": {
       "title": "Frequently Asked Questions",
       "q1": "What is the best app for self-guided audio tours?",
-      "a1": "TUGGI is a self-guided audio travel guide for iOS and Android. It plays audio stories about the places around you automatically, triggered by GPS — hands-free and screen-off — while you drive, walk, or cycle. It works fully offline, supports 10 languages with closed captions, and is free to start.",
+      "a1": "TUGGI is a self-guided audio travel guide for iOS and Android. It plays audio stories about the places around you automatically, triggered by GPS — hands-free and screen-off — while you drive, walk, or cycle. It works offline, supports 10 languages with closed captions, and is free to start.",
       "q2": "Is there a free audio travel guide app?",
       "a2": "Yes. TUGGI is free to download and start listening with daily stories. To listen without limits you can unlock a Travel Pass (7-day or 30-day, one-time payment) or an annual plan. You'll see your exact local price in the App Store or Google Play.",
       "q3": "What's a good travel app for a road trip?",
-      "a3": "TUGGI was built for road trips: it runs alongside your navigation and music and narrates the landmarks, towns, and history you pass automatically — no screen, no searching. Download your route in advance to use it fully offline with no roaming charges.",
+      "a3": "TUGGI was built for road trips: it runs alongside your navigation and music and narrates the landmarks, towns, and history you pass automatically — no screen, no searching. Download your route in advance to use it offline with no roaming charges.",
       "q4": "Can I explore a city without a tour guide?",
       "a4": "Yes. TUGGI acts as a self-guided audio guide, so you can explore at your own pace without booking a human guide or a fixed tour. Stories play automatically as you reach each point of interest, on foot or by car.",
       "q5": "Does TUGGI work offline and in my language?",
@@ -89,7 +89,7 @@
     },
     "Simulator": {
       "tag": "Core Tech Demo",
-      "title": "100% Hands-Free Contextual Triggering",
+      "title": "Hands-Free Contextual Triggering",
       "subtitle": "Our City OS engine uses bearing-logic and offline caching to trigger narratives exactly at the right monument, without the driver ever looking at a screen.",
       "playing": "Playing: Historical Monument",
       "approaching": "Approaching Geofence...",
@@ -106,13 +106,13 @@
     },
     "EnterpriseFork": {
       "b2cTitle": "For Tourists & Travelers",
-      "b2cDesc": "Download the app and transform your next road trip into a GPS-guided cultural immersion that is 100% hands-free.",
+      "b2cDesc": "Download the app and transform your next road trip into a GPS-guided cultural immersion that is hands-free.",
       "b2cLinkLabel": "Explore the App",
       "b2gTitle": "For Smart Destinations (DTI)",
-      "b2gDesc": "Transform your municipality with City OS. Ensure narrative sovereignty, legal compliance, and data intelligence with minimal CAPEX.",
+      "b2gDesc": "Transform your municipality with City OS.",
       "b2gLinkLabel": "Explore City OS",
       "b2bTitle": "For Fleets & Rentals",
-      "b2bDesc": "De-commoditize your fleet and boost your NPS. Operate as an automated local guide.",
+      "b2bDesc": "De-commoditize your fleet. Operate as an automated local guide.",
       "b2bLinkLabel": "Fleet Solutions"
     },
     "HowItWorks": {
@@ -190,18 +190,12 @@
       "defaultPoiName": "Main Monument"
     },
     "Accessibility": {
-      "tag": "Fast-Track Your DTI Accessibility Score",
       "title": "Universal Accessibility",
       "desc": "Universal Accessibility is the hardest DTI pillar. TUGGI solves sensory barriers instantly: Audio-first navigation for visually impaired tourists, and geolocated Closed Captions for hearing-impaired passengers. WCAG 2.1 AA compliant."
     },
     "Intelligence": {
       "title": "Data-Driven Tourism Intelligence",
       "desc": "Governments are usually blind to tourist flow. TUGGI delivers anonymized telemetry: know exactly which routes are taken, at what times, and in which languages, enabling hyper-targeted international marketing campaigns."
-    },
-    "Mandate": {
-      "title": "Minimal CAPEX Deployment & Mega-Event Readiness",
-      "desc": "Distribute the OS without digital marketing spend: QR codes on official parking meters, highway toll booths, and historical access totems. Instant plug-and-play readiness for massive influxes like the 2026 Winter Games or World Cup.",
-      "cta": "Request City OS Demo"
     }
   },
   "Fleets": {
@@ -211,42 +205,29 @@
       "cta": "Partner with TUGGI"
     },
     "Financial": {
-      "col1Title": "Minimal Hardware Investment",
-      "col1Desc": "No specialized hardware to buy or maintain. The model is 100% BYOD (Bring Your Own Device), eliminating battery swaps and equipment depreciation.",
       "col2Title": "Instant Scalability",
       "col2Desc": "Deploy across your entire national fleet via QR Code integration at the counter.",
       "col3Title": "Revenue Share",
       "col3Desc": "A tourist who downloads Tuggi through your QR Code is attributed to you. Any purchase they make enters the calculation of your revenue share, at a percentage set in the commercial agreement."
     },
-    "NPS": {
-      "title": "The War on NPS: From Metal to Experience.",
-      "desc": "In a commoditized market, the winner is the one who provides the best journey. TUGGI turns the rental car into a private local guide, exploding customer satisfaction and brand loyalty."
-    },
     "ESG": {
       "title": "Seamless Digital Deployment",
-      "desc": "Your only investment is in digital activation and on-site signage (QR displays), which typically ROI on day one of rentals. Cultivate your ESG targets by fostering the local creative economy and decompressing overtourism through guided routes.",
-      "cta": "Request B2B Demo",
-      "cacDeployment": "Low-CAC Distribution"
+      "desc": "Cultivate your ESG targets by fostering the local creative economy and decompressing overtourism through guided routes.",
+      "cta": "Request B2B Demo"
     }
   },
   "Technology": {
     "Hero": {
       "title": "Enterprise-Grade Spatial Audio Infrastructure.",
-      "subtitle": "Built for scale, resilience, and absolute security. Discover the architecture powering the contextual routing engine."
+      "subtitle": "Built for scale and resilience."
     },
     "Engine": {
       "title": "Precision Geofencing & Vector Filtering.",
-      "desc": "Standard GPS creates false positives. TUGGI uses directional bearing-logic to ensure narratives trigger ONLY when the vehicle is physically facing the POI.",
+      "desc": "Standard GPS creates false positives. TUGGI uses directional bearing-logic.",
       "inputLabel": "Raw Sensor Telemetry",
       "outputLabel": "Contextual Audio Payload"
     },
-    "Offline": {
-      "title": "Zero Connectivity Reliance.",
-      "desc": "IT departments fear dead zones. TUGGI utilizes aggressive offline-first caching. The entire narrative package of a city is pre-fetched locally on the device (via Wi-Fi at the hotel or rental desk), guaranteeing zero playback failures on remote highways."
-    },
     "Data": {
-      "col1Title": "100% Anonymized Telemetry.",
-      "col1Desc": "Strict adherence to European (GDPR) and South American (LGPD) data protection laws. We track flow, not individuals.",
       "col2Title": "Serverless & Mega-Event Ready.",
       "col2Desc": "Backed by global CDNs and an edge-computing architecture, ready to handle massive traffic spikes during events like the World Cup or Olympics."
     }
@@ -283,7 +264,6 @@
       "sample2Loc": "São Paulo, Brazil",
       "sample3Title": "Rialto Bridge",
       "sample3Loc": "Venice, Italy",
-      "socialProof": "Over 50,000 stories played by global travelers.",
       "directional": "Directional",
       "story": "Story",
       "play": "Play",
@@ -546,16 +526,15 @@
     "Security": {
       "title": "Governance, Security, and Availability",
       "subtitle": "A Commitment of Trust.",
-      "intro": "TUGGI's architecture was designed to ensure that cultural narratives are delivered with precision and security.",
       "s1Title": "1. Global TUGGI Curation",
-      "s1Desc": "TUGGI maintains its standard curation via CMS, using verified sources and artificial intelligence to ensure the tourist is never left in silence.",
+      "s1Desc": "TUGGI maintains its standard curation via CMS, using verified sources and artificial intelligence.",
       "s2Title": "2. Audit Logs and Integrity (Institutional Security)",
       "s2Item1": "<strong>Information Custody:</strong> TUGGI acts as the technical custodian of the platform. Every change to an audio trigger, whether made by TUGGI or a government partner, is recorded in immutable audit logs (RBAC), making it possible to track who, when, and where a narrative was altered.",
       "s3Title": "3. Reliability and Performance (For the B2C User)",
       "s3Intro": "For the traveler, reliability is measured in use. With the content already downloaded, the audio starts on its own, even where there is no signal:",
-      "s3Item1": "<strong>Offline-First Availability:</strong> We designed TUGGI not to rely on the cloud at the moment of triggering. Once the travel package is downloaded, audio activation is local and immediate, immune to connection failures in remote areas.",
+      "s3Item1": "<strong>Offline-First Availability:</strong> We designed TUGGI not to rely on the cloud at the moment of triggering. Once the travel package is downloaded, audio activation is local and immediate.",
       "s4Title": "4. Global Infrastructure",
-      "s4Desc": "Our data is hosted in world-class data centers with AES-256 encryption at rest and TLS 1.3 in transit. We use Supabase for identity management and Google Cloud for audio processing, ensuring TUGGI follows the same security standards as the world's largest technology companies."
+      "s4Desc": "Our data is hosted in world-class data centers with AES-256 encryption at rest and TLS 1.3 in transit. We use Supabase for identity management and Google Cloud for audio processing."
     },
     "Accessibility": {
       "title": "Accessibility & Inclusion",
@@ -593,16 +572,10 @@
       "title": "The Freedom to Explore.",
       "body": "Tourism has been trapped in rigid schedules, crowded buses, and language barriers. We believe exploration should be absolute freedom. You shouldn't have to wait for a tour guide or keep your eyes glued to a map app. With TUGGI, you drive, walk, or ride at your own pace. The stories find you at the exact geographical moment they matter."
     },
-    "Sovereignty": {
-      "title": "Reclaiming the Story.",
-      "body": "Cities have historically outsourced their memories. Narratives get lost in translation, altered by unverified human guides, or trapped in outdated books. We exist to give destinations the power to reclaim their history. A digital infrastructure where the city's true voice is preserved, curated, and delivered globally, exactly as it happened."
-    },
     "Values": {
       "title": "The Foundation",
-      "v1Title": "Safety First.",
-      "v1Desc": "100% hands-free experience. We never compete with the driver's attention.",
       "v2Title": "Operational Simplicity.",
-      "v2Desc": "Zero friction. Just start the route and the app takes care of the rest.",
+      "v2Desc": "Just start the route and the app takes care of the rest.",
       "v3Title": "Contextual Respect.",
       "v3Desc": "Stories deeply connected to the physical route and narrative coherence.",
       "v4Title": "Precision & Reliability.",
@@ -643,28 +616,32 @@
     "securityTitle": "Security SLA",
     "securityDescription": "Our security commitments",
     "accessibilityTitle": "Accessibility & Inclusion",
-    "accessibilityDescription": "Accessibility policies"
+    "accessibilityDescription": "Accessibility policies",
+    "homeOgImageAlt": "TUGGI: self-guided audio travel guide"
   },
   "SEO_CITY_OS": {
     "title": "Multilingual Audio Guides for Smart Destinations",
-    "description": "Every visitor hears your destination's own stories, in their language, as they explore. Accessible, territory-wide, and you stay in control of what's told.",
-    "ogTitle": "TUGGI City OS: Your Destination, Narrated for Every Visitor"
+    "description": "Every visitor hears your destination's own stories, in their language, as they explore. Accessible, territory-wide.",
+    "ogTitle": "TUGGI City OS: Your Destination, Narrated for Every Visitor",
+    "ogImageAlt": "TUGGI City OS: infrastructure for smart tourism destinations"
   },
   "SEO_FLEETS": {
     "title": "In-Car Audio Guides for Rental & Transfer Fleets",
-    "description": "Turn rentals and transfers into a ride worth remembering. Passengers hear a local guide in their language; you add revenue and lift NPS, nothing to install.",
+    "description": "Turn rentals and transfers into a ride worth remembering. Passengers hear a local guide in their language; nothing to install.",
     "ogTitle": "TUGGI Fleets: An Audio Guide for Every Passenger",
     "ogImageAlt": "TUGGI Fleets: revenue share for car rental and transfer companies"
   },
   "SEO_PURPOSE": {
     "title": "Our Purpose — Why Every Place Deserves to Be Heard",
     "description": "We built TUGGI on one idea: every place has a story worth hearing, and everyone should be able to listen, in their own language and hands-free.",
-    "ogTitle": "TUGGI: Why Every Place Deserves to Be Heard"
+    "ogTitle": "TUGGI: Why Every Place Deserves to Be Heard",
+    "ogImageAlt": "TUGGI: the audio manifesto"
   },
   "SEO_COVERAGE": {
     "title": "Live Destinations — Choose Where You Explore",
     "description": "TUGGI is live across {count}+ points of interest in Italy, Spain, Portugal, Brazil, Chile, the USA and more. Audio stories play automatically the moment you start exploring.",
-    "ogTitle": "TUGGI is Live in {countries} Countries — {count}+ Audio Stories Ready"
+    "ogTitle": "TUGGI is Live in {countries} Countries — {count}+ Audio Stories Ready",
+    "ogImageAlt": "TUGGI global coverage map: audio stories around the world"
   },
   "Coverage": {
     "Hero": {

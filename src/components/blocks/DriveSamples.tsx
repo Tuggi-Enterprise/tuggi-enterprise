@@ -155,11 +155,11 @@ export function DriveSamples() {
           />
         </div>
 
-        {/* TODO(Leandro): confirm 50k plays stat is accurate; if not confirmed, delete this line */}
-        <p className="text-center text-slate-500 text-sm font-medium">
-          {t("socialProof")}
-        </p>
-
+        {/* A social-proof line with a five-figure play count lived here, next
+            to a TODO asking whether it was accurate. It is not: BR-COMUNICACAO-003
+            item 3 — drive.poi_visits held 1,653 raw plays, 201 of them from 7
+            external users. Item 4 says no rounding fixes a figure with no source,
+            and item 5 says nothing takes its place until question 72 closes. */}
       </div>
     </section>
   );

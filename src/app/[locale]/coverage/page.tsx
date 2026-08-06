@@ -49,7 +49,7 @@ export async function generateMetadata({
       description,
       locale,
       pagePath: "coverage",
-      imageAlt: "TUGGI Global Coverage Map — Audio Stories Across the World",
+      imageAlt: t("ogImageAlt"),
     }),
     twitter: buildTwitterCard({ title: ogTitle, description }),
   };

@@ -1,12 +1,16 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
-import { Leaf, QrCode } from "lucide-react";
+import { Leaf } from "lucide-react";
 
 export function FleetsESG() {
   const t = useTranslations("Fleets.ESG");
 
+  // bg-white, not bg-tuggi-bg: a dark section used to sit between this one and
+  // FleetsFinancial (also bg-tuggi-bg) and carried the alternation. It went out
+  // with the satisfaction metric it promised (BR-B2B-007 item 4), so the
+  // alternation moves here.
   return (
-    <section className="w-full py-24 bg-tuggi-bg border-b border-gray-200 px-4 sm:px-6 lg:px-8 flex flex-col items-center">
+    <section className="w-full py-24 bg-white border-b border-gray-200 px-4 sm:px-6 lg:px-8 flex flex-col items-center">
       <div className="max-w-4xl mx-auto bg-white rounded-md shadow-sm border border-gray-200 p-12 text-center relative overflow-hidden flex flex-col items-center">
         
         {/* Abstract vector shape */}
@@ -31,13 +35,6 @@ export function FleetsESG() {
           >
             {t("cta")}
           </Link>
-        </div>
-
-        {/* QR Code Graphic Hint */}
-        <div className="mt-16 flex flex-col items-center pt-8 border-t border-gray-100 w-full">
-           <div className="flex items-center gap-3 text-sm font-semibold uppercase tracking-wider text-tuggi-slate">
-             <QrCode className="w-5 h-5 text-tuggi-primary" /> {t("cacDeployment")}
-           </div>
         </div>
 
       </div>

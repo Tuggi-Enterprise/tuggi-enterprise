@@ -61,6 +61,35 @@ import path from "node:path";
  * src/data/ is excluded from the source scan: those are generated route and
  * coverage snapshots (`npm run update-routes`), not copy, and their POI ids
  * collide with the bare numbers below.
+ *
+ * ---------------------------------------------------------------------------
+ * The two halves of this file, and why the second one exists
+ * ---------------------------------------------------------------------------
+ *
+ * Everything above is the first half: a list of wordings that were published
+ * and removed. It is exact and it is retrospective, and four sweeps in a row
+ * proved what that costs — each one turned up the next one's material, because
+ * a list can only catch the sentence somebody already wrote.
+ *
+ * CLAIM_FAMILIES, further down, is the second half. It carries the five classes
+ * those sweeps decided — a gain promised to the partner, an absolute with
+ * nothing behind it, a priced entry, safety sold as a benefit, governance held
+ * by a third party — as patterns rather than literals, matched against every
+ * message string in four languages, against what the partner and trust-center
+ * pages actually serve, and against /llms.txt.
+ *
+ * A family is not a banned word. It is a word *with nobody behind it*, so every
+ * survivor is waived by message key with its reason written next to it. That
+ * waiver list is the honest inventory of what still stands and why: the
+ * contract's own liability disclaimer, the price and plan copy this sweep was
+ * scoped out of, two claims reported to `produto` rather than cut. Adding to it
+ * is a deliberate act with a sentence attached — and a waiver whose only reason
+ * is "the test was red" is the failure mode this whole file exists against.
+ *
+ * The specific claims a rule already settled are cited by ID on each entry:
+ * BR-COMUNICACAO-002 item 6 (nothing earlier than 2025 is publishable),
+ * BR-COMUNICACAO-003 (a usage figure needs instrumentation on the day it is
+ * published, and no rounding repairs one that has none).
  */
 
 type Scope = "everywhere" | "partner" | "code";
@@ -585,6 +614,506 @@ const FORBIDDEN_CLAIMS: ForbiddenClaim[] = [
     ],
     scope: "everywhere",
   },
+
+  // ---------------------------------------------------------------------
+  // Fifth wave. Four waves of named lists each turned up the next wave's
+  // material, so this one was a sweep rather than a list: every string the
+  // site publishes, read against five families of claim that the four
+  // commits before it already decided (see CLAIM_FAMILIES below). The
+  // entries here are the literal wordings that came out; the family scan is
+  // what stops the sixth wave from existing.
+  // ---------------------------------------------------------------------
+
+  {
+    // BR-B2B-007 item 4 backs a share of the revenue the partner attributed,
+    // never the gain and never a satisfaction metric. This was published in
+    // three places at once: the fleets page meta description (so it reached
+    // the search snippet and the social card), the home fork card, and a
+    // whole section built on the metric — "the war on it", won by "exploding
+    // customer satisfaction". Same class as RevPA in the first wave.
+    claim: "Revenue and satisfaction-metric gains promised to the fleet (BR-B2B-007 item 4)",
+    terms: [
+      "NPS",
+      "RevPA",
+      "ROI",
+      "você ganha receita",
+      "you add revenue",
+      "tú sumas ingresos",
+      "tu aumenti ricavi",
+      "explodindo a satisfação",
+      "exploding customer satisfaction",
+      "disparando la satisfacción",
+      "facendo esplodere la soddisfazione",
+    ],
+    scope: "everywhere",
+  },
+  {
+    // BR-B2B-007 item 7 and BR-B2B-004 items 2 and 3: the money walks out of
+    // Tuggi to the partner, never in, so there is no entry price to call
+    // small. Three separate cost floors were still published — the fleet's
+    // hardware investment and "bring your own device" model, its cost of
+    // acquisition, its "only investment" with a payback horizon — plus the
+    // municipality's minimal capital expenditure. The fourth wave removed one
+    // of these from the same card ("near-zero entry cost") and left the
+    // heading above it saying the same thing.
+    claim: "A priced entry — capex, hardware investment, acquisition cost, payback (BR-B2B-007 item 7)",
+    terms: [
+      "CAPEX",
+      "BYOD",
+      "Baixo CAC",
+      "Low-CAC",
+      "Bajo CAC",
+      "Basso CAC",
+      "Investimento Mínimo em Hardware",
+      "Minimal Hardware Investment",
+      "Inversión Mínima en Hardware",
+      "Investimento Hardware Minimo",
+      "Seu único investimento",
+      "Your only investment",
+      "Tu única inversión",
+      "Il tuo unico investimento",
+    ],
+    scope: "everywhere",
+  },
+  {
+    // BR-B2B-007 item 7. The municipality does not stand the product up and
+    // does not pay to hand it out: "distribute the OS without digital
+    // marketing spend" is both halves at once, and the heading above it
+    // priced the rollout. The section was only that premise, so it went with
+    // its component (CityOSMandate.tsx).
+    claim: "A municipality deploying and distributing the OS (BR-B2B-007 item 7)",
+    terms: [
+      "Distribua o OS",
+      "Distribute the OS",
+      "Distribuya el OS",
+      "Distribuisci l'OS",
+      "sem gastos com marketing digital",
+      "without digital marketing spend",
+      "sin gasto en marketing digital",
+      "senza spese di marketing digitale",
+    ],
+    scope: "everywhere",
+  },
+  {
+    // Narrative control handed to a third party: BR-B2B-007 items 6 and 7,
+    // the same ground "Delegated Sovereignty" was cleared from in the third
+    // wave. Published in three registers — the home fork sold it to the
+    // municipality, the city-os meta description promised the destination
+    // decides what gets told, and the purpose page made it the company's
+    // third act. Nothing in docs/business-rules/ hands a narrative, a zone or
+    // a curation decision to anyone outside Tuggi.
+    claim: "Narrative sovereignty or narrative control granted to a third party (BR-B2B-007 items 6, 7)",
+    terms: [
+      "soberania narrativa",
+      "narrative sovereignty",
+      "soberanía narrativa",
+      "sovranità narrativa",
+      "você decide o que é contado",
+      "you stay in control of what's told",
+      "tú decides qué se cuenta",
+      "decidi tu cosa raccontare",
+      "Retomando a Narrativa",
+      "Reclaiming the Story",
+      "Recuperando la Narrativa",
+      "Riprendersi la Storia",
+      "poder de retomar sua história",
+      "power to reclaim their history",
+      "poder de recuperar su historia",
+      "potere di riappropriarsi della propria storia",
+    ],
+    scope: "everywhere",
+  },
+  {
+    // No rule authorizes it, and it is an assertion about personal data,
+    // which is the worst kind to leave unbacked. The /technology page stated
+    // telemetry was anonymized in full and that adherence to GDPR and LGPD
+    // was strict. Searching docs/business-rules/ for what the site telemetry
+    // collects returns nothing: BR-USUARIO-017 and 018 define anonymization
+    // *on account deletion*, a different fact about a different pipeline.
+    // The column went whole rather than softened — an adverb is not what was
+    // wrong with it.
+    claim: "Telemetry stated as fully anonymized and strictly compliant (no rule authorizes it)",
+    terms: [
+      "Telemetria 100% Anonimizada",
+      "100% Anonymized Telemetry",
+      "Telemetría 100% Anonimizada",
+      "Telemetria 100% Anonimizzata",
+      "Adesão estrita às leis",
+      "Strict adherence to European",
+      "Estricto cumplimiento de las leyes",
+      "Stretta aderenza alle leggi",
+    ],
+    scope: "everywhere",
+  },
+  {
+    // Absolutes with nothing behind them, on /technology and on the trust
+    // center. "Zero connectivity reliance" is contradicted two sentences
+    // later by its own copy, which requires a download first; "absolute
+    // security", "guaranteeing zero playback failures", "immune to connection
+    // failures" and "the same security standards as the world's largest
+    // technology companies" state outcomes no rule and no measurement backs.
+    claim: "Reliability and security stated as absolutes (no rule authorizes them)",
+    terms: [
+      "Dependência Zero de Conectividade",
+      "Zero Connectivity Reliance",
+      "Dependencia Cero de Conectividad",
+      "Zero Dipendenza dalla Connettività",
+      "zero falhas de reprodução",
+      "zero playback failures",
+      "cero fallos de reproducción",
+      "zero interruzioni di riproduzione",
+      "segurança absoluta",
+      "absolute security",
+      "seguridad absoluta",
+      "sicurezza assoluta",
+      "imune a falhas de conexão",
+      "immune to connection failures",
+      "inmune a fallos de conexión",
+      "immune ai guasti di connessione",
+      "mesmos padrões de segurança das maiores empresas",
+      "same security standards as the world's largest",
+      "mismos estándares de seguridad que las empresas de tecnología más grandes",
+      "stessi standard di sicurezza delle più grandi aziende",
+    ],
+    scope: "everywhere",
+  },
+  {
+    // Two guarantees about what the product will do, on surfaces where the
+    // contract says the opposite. Legal.Terms.s3Item1 declines to warrant
+    // trigger precision in shadowed areas and s3Item2 declines to warrant the
+    // narration's accuracy — while /technology promised triggering ONLY when
+    // facing the POI and the trust center promised delivery "with precision"
+    // and that the tourist is never left in silence. Two published texts
+    // cannot disagree about the same fact; the one with no rule is the one
+    // that goes.
+    claim: "Trigger precision and delivery guaranteed against the contract's own disclaimer",
+    terms: [
+      "acionadas APENAS quando",
+      "trigger ONLY when",
+      "se activen SOLO cuando",
+      "partano SOLO quando",
+      "nunca fique em silêncio",
+      "never left in silence",
+      "nunca se quede en silencio",
+      "non resti mai in silenzio",
+      "entregue com precisão e segurança",
+      "delivered with precision and security",
+      "se entregue con precisión y seguridad",
+      "forniti con precisione e sicurezza",
+    ],
+    scope: "everywhere",
+  },
+  {
+    // No rule authorizes it, in either direction — the same border the fourth
+    // wave crossed when it removed the liability block and the physical-safety
+    // pledge. Safety was still the first of the company's stated values, and
+    // it carried an absolute and a pledge about the driver's attention with
+    // it. BR-AUDIO-019 is about coexisting with the audio already playing and
+    // says nothing about safety outcomes.
+    // The bare heading is deliberately not a term here: Legal.Terms.s2Title
+    // uses the same words to name the traffic-liability *disclaimer*, which is
+    // the opposite claim and belongs on that page. The pledge below it is
+    // unambiguous, so that is what is guarded.
+    claim: "Safety sold as a value, with a pledge about the driver's attention (no rule authorizes it)",
+    terms: [
+      "Segurança Primeiro.",
+      "Seguridad Primero.",
+      "Nunca competimos pela atenção do motorista",
+      "We never compete with the driver's attention",
+      "Nunca competimos con la atención del conductor",
+      "Non competiamo mai con l'attenzione del conducente",
+    ],
+    scope: "everywhere",
+  },
+  {
+    // BR-B2B-007 item 4 again, in the shape a public buyer recognizes: an
+    // eyebrow badge offering to fast-track the municipality's accessibility
+    // rating. A score is an outcome, and nothing produces it on our side.
+    claim: "A lift in the municipality's accessibility rating (BR-B2B-007 item 4)",
+    terms: [
+      "Pontuação de Acessibilidade DTI",
+      "DTI Accessibility Score",
+      "Puntuación de Accesibilidad DTI",
+      "Punteggio di Accessibilità",
+    ],
+    scope: "everywhere",
+  },
+  {
+    // BR-COMUNICACAO-003, items 3, 4 and 5. A five-figure play count was
+    // published in four languages with a TODO next to it asking whether it
+    // was true. It is not — 1,653 raw plays, 201 from 7 external users,
+    // measured 2026-08-06 — and item 4 says no rounding repairs a figure with
+    // no source. Item 5 holds the space empty until question 72 is answered,
+    // so this entry guards an absence as much as a removal.
+    claim: "Play-count social proof with no instrumentation behind it (BR-COMUNICACAO-003)",
+    terms: [
+      "50.000 histórias",
+      "50,000 stories",
+      "50.000 historias",
+      "50.000 storie",
+      "50k plays",
+    ],
+    scope: "everywhere",
+  },
+  {
+    // BR-COMUNICACAO-002 item 6: the first row in auth.users is 2025-07-01,
+    // and nothing earlier than 2025 is publishable under any reading. The
+    // purpose page signed its manifesto with an earlier year, hard-coded in
+    // English on every locale.
+    claim: "An operating-since date earlier than the rule allows (BR-COMUNICACAO-002 item 6)",
+    terms: ["Since 2024", "desde 2024", "dal 2024", "Since 2023", "desde 2023"],
+    scope: "everywhere",
+  },
+  {
+    // BR-MAPA-005, the localized half of what issue #147 removed from the
+    // footer in English. /technology invited the reader to discover the
+    // architecture behind "the contextual routing engine" in all four
+    // languages. Tuggi does not route: "how do I get there" leaves for Google
+    // Maps, Waze or Apple Maps, which are partners.
+    claim: "A contextual routing engine, in the four site languages (BR-MAPA-005)",
+    terms: [
+      "motor de roteamento contextual",
+      "contextual routing engine",
+      "motor de enrutamiento contextual",
+      "motore di routing contestuale",
+    ],
+    scope: "everywhere",
+  },
+];
+
+/* ---------------------------------------------------------------------------
+ * Claim families.
+ *
+ * Everything above is a list of wordings that were removed, and a list only
+ * catches the sentence that was already written. Four waves of named lists each
+ * turned up the fifth wave's material, which is the evidence that the method
+ * runs out: the next sentence of the same class is not on any list yet.
+ *
+ * These five families are the classes themselves, each one already decided by
+ * the commits above, each one matched by pattern rather than by literal. A
+ * sentence of a known class now fails the day it is written instead of being
+ * found in the next sweep.
+ *
+ * A family is not a ban on a word. It is a ban on a word *with nobody behind
+ * it* — so every survivor is waived by key, with the reason written next to it,
+ * and the waiver list is the honest record of what is still standing and why.
+ * Adding a waiver is a deliberate act with a sentence attached; that is the
+ * point. What must never happen is a waiver whose reason is "the test was red".
+ * ------------------------------------------------------------------------- */
+
+interface Waiver {
+  /** Message keys, or key prefixes: "Legal.Terms" waives that whole namespace. */
+  keys: string[];
+  why: string;
+}
+
+interface ClaimFamily {
+  id: string;
+  /** What decided this family — a rule, or the absence of one. */
+  rule: string;
+  patterns: RegExp[];
+  waivers: Waiver[];
+}
+
+const CLAIM_FAMILIES: ClaimFamily[] = [
+  {
+    id: "gain promised to the partner",
+    rule:
+      "BR-B2B-007 item 4 — what the partner gets is a share of the revenue he " +
+      "attributed. Never the gain, never a metric, never an adjective sizing it.",
+    patterns: [
+      /\bNPS\b/,
+      /\bRevPA\b/,
+      /\bROI\b/,
+      /\bupsell/i,
+      /\bmaximiz/i,
+      /\bticket m[eé]dio\b|\baverage ticket\b|\bticket medio\b/i,
+      /\bocupa[cç][aã]o\b|\boccupancy\b|\bocupaci[oó]n\b|\boccupazione\b/i,
+      /(receitas?|ingresos|ricavi|revenue)[^.]{0,30}(auxiliar|ancillary|accessori)/i,
+    ],
+    waivers: [],
+  },
+  {
+    id: "absolute with nothing behind it",
+    rule:
+      "No BR-* backs an absolute about availability, precision, anonymization " +
+      "or safety. The fourth wave removed the availability figure for this " +
+      "reason; the fifth removed the anonymization and reliability absolutes.",
+    patterns: [
+      /100\s?%/,
+      /\b(zero|cero)\b/i,
+      /\bgarant\w*/i,
+      /\bguarante\w*/i,
+      /\bensur\w*/i,
+      /\b(sempre|siempre|always)\b/i,
+      /\bnunca\b|\bnever\b/i,
+      /\b(certificad\w*|certified)\b/i,
+      /\b(absolut\w*|assolut\w*)\b/i,
+      /\b(fully|totalmente|completamente)\b/i,
+      /\btotal\b/i,
+    ],
+    waivers: [
+      {
+        keys: ["Legal.Terms"],
+        why:
+          "The contract, and the words point the other way there: s3Item1 declines " +
+          "to warrant trigger precision in shadowed areas, s3Item2 declines to " +
+          "warrant the narration's accuracy, s8Item3 is Apple's and Google's " +
+          "statutory warranty clause and s1Item2 is the driver warranting his own " +
+          "licence. Its owner is legal counsel, not `design`.",
+      },
+      {
+        keys: ["Legal.Privacy", "Legal.Accessibility"],
+        why:
+          "Policy pages. The absolutes left are about the data subject's rights " +
+          '("total control over your data") and about WCAG conformance, both of ' +
+          "which are claims about personal data and about compliance — reported to " +
+          "`produto`, not cut by `dev` on its own reading.",
+      },
+      {
+        keys: ["Legal.DataDeletion"],
+        why: "Issue #167 owns this page; the fifth wave was told to leave it alone.",
+      },
+      {
+        keys: ["Drive"],
+        why:
+          "Price, plan and billing (BR-MONETIZACAO), which the fifth wave was " +
+          'scoped out of: the offline absolutes on the passes ("100% offline", ' +
+          '"zero roaming charges", "always") describe what a pass includes and the ' +
+          "site has to agree with the store. Reported, not cut.",
+      },
+      {
+        keys: ["NotFound.subtitle"],
+        why:
+          "404 copy about the traveller's freedom to go anywhere, not a capability " +
+          "of the product.",
+      },
+      {
+        keys: ["Purpose.Freedom.body"],
+        why:
+          'A belief, and it says so ("we believe exploration should be…"). It ' +
+          "asserts nothing the product does.",
+      },
+      {
+        keys: ["Home.Simulator.subtitle"],
+        why:
+          'The en and es strings say the driver never has to look at a screen — ' +
+          "the hands-free wording the fourth wave deliberately left in consumer " +
+          "copy as a copy card, not an absolute of its own.",
+      },
+    ],
+  },
+  {
+    id: "acquisition, deployment, licence, contract or invoice by a partner",
+    rule:
+      "BR-B2B-007 item 7 and BR-B2B-004 items 2 and 3 — the money walks from the " +
+      "partner outwards. Nobody buys, licences, provisions or is invoiced, so no " +
+      "cost of entry exists to be called small. BR-B2B-009 adds that the wholesale " +
+      "we could sell is deliberately unpublished: its absence is a decision.",
+    patterns: [
+      /\bCAPEX\b/i,
+      /\bBYOD\b/i,
+      /\blicen[cçs]\w*|\blicenz\w*/i,
+      /\badquir\w*|\bacquire\w*|\bacquisisc\w*|\bacquist\w*/i,
+      /\bcontratad\w*|\bcontracted\b|\bcontrattat\w*/i,
+      /\bfatura\w*|\binvoic\w*|\bfattura\w*/i,
+      /\bimplanta\w*|\bimplementa\w*|\bdeploy\w*|\bdespleg\w*/i,
+      /\binvestiment\w*|\binversi[oó]n\b|\binvestment\b/i,
+      /custo de entrada|entry cost|costo de entrada|costo d'ingresso/i,
+      /pacotes? de dias|lote de acessos|desconto de volume|volume discount/i,
+    ],
+    waivers: [
+      {
+        keys: ["Legal.Terms"],
+        why:
+          "s1Item2 is the driver's own driving licence, not a product licence — " +
+          "the only hit in the contract.",
+      },
+      {
+        keys: ["Fleets.Financial.col2Desc"],
+        why:
+          "Rolling QR displays out across the counter network is BR-B2B-010 item 1 " +
+          "and BR-B2B-001: the establishment becomes a distribution point. Nothing " +
+          "is acquired, licensed or paid for.",
+      },
+      {
+        keys: ["Fleets.ESG.title"],
+        why:
+          "Reported, not removed. It says the rollout is frictionless and asserts " +
+          "no purchase, no licence and no figure, and it is the section's only " +
+          "heading — cutting it needs copy from `design`, which is the one thing a " +
+          "removal must not invent.",
+      },
+      {
+        keys: ["CityOS.Animator.deployButton"],
+        why:
+          "A CMS mock-up button: the Tuggi operator publishing a POI to the grid, " +
+          "not a partner standing anything up.",
+      },
+      {
+        keys: ["Fleets.Financial.col3Desc"],
+        why:
+          'The Italian "acquisti" there is the *traveller\'s* purchases feeding the ' +
+          "partner's revenue share — BR-B2B-007 item 4 and BR-B2B-005, the one " +
+          "money flow the rules do back, and it runs outwards.",
+      },
+    ],
+  },
+  {
+    id: "safety, risk, liability or distraction as a benefit",
+    rule:
+      "No BR-* authorizes any of them, in either direction — searched in the " +
+      "fourth wave and again in the fifth. BR-AUDIO-019 is about coexisting with " +
+      "the audio already playing and says nothing about safety outcomes.",
+    patterns: [
+      /\bdistra\w*/i,
+      /segurança física|physical safety|seguridad física|sicurezza fisica/i,
+      /\brisco\b|\brisk\b|\briesgo\b|\brischio\b/i,
+      /\bresponsabilidad\w*|\bliabilit\w*|\bresponsabilit\w*/i,
+      /\bcolis\w*|\bcollision\w*/i,
+      /safety first|segurança primeiro|seguridad primero|sicurezza prima/i,
+    ],
+    waivers: [
+      {
+        keys: ["Legal.Terms"],
+        why:
+          "The liability section is a disclaimer, which is the opposite claim: the " +
+          "user is solely responsible for driving and TUGGI is not liable. s8Item4 " +
+          "is Apple's and Google's product-liability clause.",
+      },
+    ],
+  },
+  {
+    id: "governance, sovereignty, a zone or narrative control held by a third party",
+    rule:
+      "BR-B2B-007 items 6 and 7 — no rule creates per-partner content scope, a " +
+      "delegated zone or a narrative anyone outside Tuggi decides. The third and " +
+      "fourth waves cleared the trust center of it; the fifth cleared the home " +
+      "fork, the city-os meta description and the purpose page.",
+    patterns: [
+      /\bsoberan\w*|\bsovereignt\w*|\bsovranit\w*/i,
+      /\bgovernan\w*|\bgobernanza\b/i,
+      /gest[ãa]o de zonas|gesti[oó]n de zonas|gestione delle zone|zone management/i,
+      /zonas? (oficiais|oficiales|contratad\w*)|official zones/i,
+      /curadoria local|local curation|curaci[oó]n local|curatela locale/i,
+      /(controle|control|controllo)[^.]{0,25}(narrativ|hist[oó]ri|stor)/i,
+    ],
+    waivers: [
+      {
+        keys: ["CityOS.Hero.subtitle"],
+        why:
+          "Reported, not removed. It claims the product lines up with an external " +
+          "framework's pillars (technology, sustainability, accessibility, data), " +
+          "which is positioning — not a zone, a narrative or a curation decision " +
+          "handed to the city. Cutting it needs a new sentence, so it goes to " +
+          "`produto` instead of being rewritten here.",
+      },
+      {
+        keys: ["Legal.Security.title"],
+        why: "The page's own heading, about Tuggi's governance of Tuggi.",
+      },
+    ],
+  },
 ];
 
 const REPO_ROOT = path.resolve(__dirname, "../..");
@@ -723,6 +1252,57 @@ function partnerSourceFiles(): Haystack[] {
   return sources;
 }
 
+/** Every leaf string of a message file, by dotted key. */
+function flatMessages(locale: string): Map<string, string> {
+  const out = new Map<string, string>();
+  const walk = (node: unknown, prefix: string) => {
+    if (typeof node === "string") {
+      out.set(prefix, node);
+    } else if (node && typeof node === "object") {
+      for (const [key, value] of Object.entries(node)) {
+        walk(value, prefix ? `${prefix}.${key}` : key);
+      }
+    }
+  };
+  walk(messagesFor(locale), "");
+  return out;
+}
+
+/** A waiver covers the exact key and everything under it. */
+function isWaived(family: ClaimFamily, key: string): Waiver | undefined {
+  return family.waivers.find((waiver) =>
+    waiver.keys.some((waived) => key === waived || key.startsWith(`${waived}.`)),
+  );
+}
+
+/**
+ * The message strings this family waives, as they appear on screen.
+ *
+ * Used to subtract the known survivors from a rendered page before scanning it:
+ * a waiver written once, by key, then holds for both the source scan and the
+ * served scan. `<strong>` markup is stripped because innerText has none.
+ */
+function waivedStrings(family: ClaimFamily): string[] {
+  const out: string[] = [];
+  for (const locale of LOCALES) {
+    for (const [key, value] of flatMessages(locale)) {
+      if (isWaived(family, key)) out.push(value.replace(/<[^>]+>/g, ""));
+    }
+  }
+  // Longest first: a short waived string must not be subtracted out of the
+  // middle of a longer one before the longer one gets its turn.
+  return out.sort((a, b) => b.length - a.length);
+}
+
+function familyHits(family: ClaimFamily, text: string): string[] {
+  const hits: string[] = [];
+  for (const pattern of family.patterns) {
+    const match = text.match(pattern);
+    if (match) hits.push(match[0]);
+  }
+  return hits;
+}
+
 function findHits(haystacks: Haystack[], terms: string[]): string[] {
   const hits: string[] = [];
   for (const { label, text } of haystacks) {
@@ -813,7 +1393,12 @@ test.describe("BR-B2B-007 — partner-facing copy states only what a vigent rule
     }
   });
 
-  test("BR-B2B-007: the fleets NPS section shows no star rating", () => {
+  // BR-COMUNICACAO-003 item 1: no peça publishes a usage figure that does not
+  // come out of instrumentation, and a star rating is that figure drawn. The
+  // section this used to guard is gone with the satisfaction metric it
+  // promised; the guard stays, because the next fleets block would draw the
+  // same stars.
+  test("BR-COMUNICACAO-003: no fleets block renders a star rating", () => {
     const blocks = path.join(SRC, "components/blocks");
     for (const name of fs.readdirSync(blocks).filter((f) => f.startsWith("Fleets"))) {
       const source = fs.readFileSync(path.join(blocks, name), "utf8");
@@ -854,18 +1439,99 @@ test.describe("BR-B2B-007 — partner-facing copy states only what a vigent rule
   // og:image:alt is read out loud by the same crawlers and readers as the
   // rest. It was the last string on /enterprise/fleets living in the route
   // file, in English for all four locales.
-  for (const locale of LOCALES) {
-    test(`CLAUDE.md §8: /${locale}/enterprise/fleets serves og:image:alt from i18n`, async ({
-      page,
-    }) => {
-      const expected = String(messagesFor(locale).SEO_FLEETS.ogImageAlt);
-      await page.goto(`/${locale}/enterprise/fleets`);
+  const OG_ALT_PAGES: { path: string; key: string }[] = [
+    { path: "", key: "Metadata.homeOgImageAlt" },
+    { path: "/enterprise/fleets", key: "SEO_FLEETS.ogImageAlt" },
+    { path: "/enterprise/city-os", key: "SEO_CITY_OS.ogImageAlt" },
+    { path: "/purpose", key: "SEO_PURPOSE.ogImageAlt" },
+    { path: "/coverage", key: "SEO_COVERAGE.ogImageAlt" },
+  ];
 
-      const alt = await page
-        .locator('meta[property="og:image:alt"]')
-        .first()
-        .getAttribute("content");
-      expect(alt).toBe(expected);
+  for (const locale of LOCALES) {
+    for (const { path: pagePath, key } of OG_ALT_PAGES) {
+      test(`CLAUDE.md §8: /${locale}${pagePath} serves og:image:alt from i18n`, async ({
+        page,
+      }) => {
+        const expected = flatMessages(locale).get(key);
+        expect(expected, `${key} is missing in ${locale}.json`).toBeTruthy();
+
+        await page.goto(`/${locale}${pagePath}`);
+        const alt = await page
+          .locator('meta[property="og:image:alt"]')
+          .first()
+          .getAttribute("content");
+        expect(alt).toBe(expected);
+      });
+    }
+  }
+});
+
+/* ---------------------------------------------------------------------------
+ * The family scan.
+ *
+ * This is the half of the spec that is not about anything already written. It
+ * reads every published string against the five classes above, so that the next
+ * sentence of a decided class is red the day it is typed — which is the only
+ * way the sixth sweep does not happen.
+ * ------------------------------------------------------------------------- */
+test.describe("Claim families — a decided class does not come back in new words", () => {
+  for (const family of CLAIM_FAMILIES) {
+    for (const locale of LOCALES) {
+      test(`family "${family.id}" is absent from ${locale}.json`, () => {
+        const offenders: string[] = [];
+        for (const [key, value] of flatMessages(locale)) {
+          if (isWaived(family, key)) continue;
+          for (const hit of familyHits(family, value)) {
+            offenders.push(`${key} — "${hit}" in "${value}"`);
+          }
+        }
+        expect(offenders, family.rule).toEqual([]);
+      });
+    }
+
+    // The same patterns against what the partner and trust-center pages
+    // actually serve, which is where a claim hard-coded in a component shows up
+    // — those never reach src/messages and so never reach the scan above.
+    for (const locale of LOCALES) {
+      for (const { path: pagePath } of RENDERED_PAGES) {
+        test(`family "${family.id}" is absent from what /${locale}${pagePath} serves`, async ({
+          page,
+        }) => {
+          const response = await page.goto(`/${locale}${pagePath}`);
+          expect(response?.status()).toBe(200);
+
+          let text = await publishedText(page);
+          // Subtract the survivors this family already waived by key, so the
+          // reason lives in one place instead of being repeated per page.
+          for (const waived of waivedStrings(family)) {
+            if (waived.length > 3) text = text.split(waived).join(" ");
+          }
+          expect(familyHits(family, text), family.rule).toEqual([]);
+        });
+      }
+    }
+
+    test(`family "${family.id}" is absent from /llms.txt`, async ({ request }) => {
+      const response = await request.get("/llms.txt");
+      expect(response.status()).toBe(200);
+      expect(familyHits(family, await response.text()), family.rule).toEqual([]);
     });
   }
+
+  // A waiver with no reason is how a family scan turns into a formality: the
+  // next person silences a red test by adding a key and moves on. The reason is
+  // the part that has to be written, so it is the part that is checked.
+  test("every waiver carries a reason, and every waived key still exists", () => {
+    const known = new Set(flatMessages("pt").keys());
+    for (const family of CLAIM_FAMILIES) {
+      for (const waiver of family.waivers) {
+        expect(waiver.why.trim().length, `${family.id}: waiver with no reason`)
+          .toBeGreaterThan(40);
+        for (const key of waiver.keys) {
+          const exists = known.has(key) || [...known].some((k) => k.startsWith(`${key}.`));
+          expect(exists, `${family.id}: waiver for "${key}", which no longer exists`).toBe(true);
+        }
+      }
+    }
+  });
 });

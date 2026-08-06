@@ -72,7 +72,7 @@ function routesSection(): string {
 export function GET() {
   const body = `# TUGGI
 
-> TUGGI is a self-guided audio travel guide app (iOS & Android). Audio stories about the places around you trigger automatically by GPS as you drive, walk, or cycle — screen-off and fully offline. Free to start, available in 10 languages with synchronized closed captions.
+> TUGGI is a self-guided audio travel guide app (iOS & Android). Audio stories about the places around you trigger automatically by GPS as you drive, walk, or cycle — screen-off and offline. Free to start, available in 10 languages with synchronized closed captions.
 
 Key facts:
 - Category: travel app / self-guided audio tours / cultural audio guide

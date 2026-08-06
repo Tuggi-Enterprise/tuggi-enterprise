@@ -1,7 +1,7 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Metadata } from "next";
-import { ShieldCheck, Zap, Crosshair, Diamond, Globe, Accessibility } from "lucide-react";
-import { FreedomAnimation, SovereigntyAnimation } from "@/components/blocks/PurposeAnimations";
+import { Zap, Crosshair, Diamond, Globe, Accessibility } from "lucide-react";
+import { FreedomAnimation } from "@/components/blocks/PurposeAnimations";
 import { buildAlternates, buildOpenGraph, buildTwitterCard, defaultRobots } from "@/lib/seo";
 
 export async function generateMetadata({
@@ -27,7 +27,7 @@ export async function generateMetadata({
       locale,
       pagePath: "purpose",
       image: "/images/og-image-purpose.jpg",
-      imageAlt: "TUGGI - The Audio Manifesto",
+      imageAlt: t("ogImageAlt"),
     }),
     twitter: buildTwitterCard({
       title: ogTitle,
@@ -81,20 +81,13 @@ export default async function PurposePage({
         </div>
       </section>
 
-      {/* 3. THE SOVEREIGNTY OF THE NARRATIVE */}
-      <section className="py-24 md:py-32 px-4 bg-white">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-          <SovereigntyAnimation />
-          <div className="max-w-xl order-1 lg:order-2">
-            <h2 className="text-4xl md:text-6xl font-bold tracking-tight mb-8">
-              {t("Sovereignty.title")}
-            </h2>
-            <p className="text-lg md:text-xl text-slate-600 leading-relaxed font-medium">
-              {t("Sovereignty.body")}
-            </p>
-          </div>
-        </div>
-      </section>
+      {/* A third act used to sit here, promising destinations the power to take
+          their own story back, curated and delivered exactly as it happened.
+          That is narrative control handed to a third party — BR-B2B-007 items 6
+          and 7, the same ground the trust center was cleared of — and the closing
+          absolute contradicts Legal.Terms.s3Item2, which says the narration is
+          AI-assisted and carries no warranty of accuracy. The section went whole:
+          it only survived with words nobody had a rule for. */}
 
       {/* 4. THE FOUNDATION (VALUES) */}
       <section className="py-24 md:py-32 px-4">
@@ -108,11 +101,12 @@ export default async function PurposePage({
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 lg:gap-16">
             
-            <div className="space-y-4">
-              <ShieldCheck className="w-10 h-10 text-tuggi-dark stroke-1" />
-              <h3 className="text-xl font-bold">{t("Values.v1Title")}</h3>
-              <p className="text-slate-600 leading-relaxed">{t("Values.v1Desc")}</p>
-            </div>
+            {/* The first value here sold safety: an experience stated as
+                absolutely screen-free, and a pledge about the driver's
+                attention. Safety as a
+                benefit has no BR-* behind it in either direction, which is why
+                the liability block and the physical-safety pledge came out before
+                it. Five values, three columns. */}
 
             <div className="space-y-4">
               <Zap className="w-10 h-10 text-tuggi-dark stroke-1" />
@@ -154,7 +148,7 @@ export default async function PurposePage({
           &quot;The world is better when we stop looking at it through a window, and start hearing it breathe.&quot;
         </blockquote>
         <p className="text-sm font-bold uppercase tracking-widest text-tuggi-dark">
-          TUGGI Manifesto — Since 2024
+          TUGGI Manifesto
         </p>
       </footer>
 
