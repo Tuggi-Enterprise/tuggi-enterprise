@@ -1,6 +1,4 @@
 import { CityOSHero } from "@/components/blocks/CityOSHero";
-import { CityOSRegulatory } from "@/components/blocks/CityOSRegulatory";
-import { CityOSSustainability } from "@/components/blocks/CityOSSustainability";
 import { CityOSAccessibility } from "@/components/blocks/CityOSAccessibility";
 import { CityOSIntelligence } from "@/components/blocks/CityOSIntelligence";
 import { CityOSMandate } from "@/components/blocks/CityOSMandate";
@@ -54,8 +52,6 @@ export default async function CityOSPage({
   return (
     <article className="min-h-screen">
       <CityOSHero />
-      <CityOSRegulatory />
-      <CityOSSustainability />
       <CityOSAccessibility />
       <CityOSIntelligence />
       <CityOSMandate />

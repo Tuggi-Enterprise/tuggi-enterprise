@@ -5,7 +5,6 @@ import { TechEngine } from "@/components/blocks/TechEngine";
 import { TechOffline } from "@/components/blocks/TechOffline";
 import { TechAPI } from "@/components/blocks/TechAPI";
 import { TechData } from "@/components/blocks/TechData";
-import { TechGovernance } from "@/components/blocks/TechGovernance";
 import { buildAlternates, buildOpenGraph, buildTwitterCard, defaultRobots } from "@/lib/seo";
 
 export async function generateMetadata({
@@ -44,7 +43,6 @@ export default async function TechnologyPage({
       <TechOffline />
       <TechAPI />
       <TechData />
-      <TechGovernance />
     </article>
   );
 }

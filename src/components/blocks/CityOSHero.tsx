@@ -2,7 +2,6 @@
 
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
-import { BadgeCheck } from "lucide-react";
 import { CityOSHeroAnimator } from "./CityOSHeroAnimator";
 import { useEffect, useState } from "react";
 
@@ -26,10 +25,6 @@ export function CityOSHero() {
         
         {/* Copy */}
         <div className="flex-1 text-center lg:text-left flex flex-col items-center lg:items-start space-y-8">
-          <div className="inline-flex items-center gap-2 border border-tuggi-primary/30 bg-tuggi-primary/10 px-4 py-2 rounded-full text-sm font-semibold text-tuggi-primary uppercase tracking-wider">
-            <BadgeCheck className="w-5 h-5" />
-            DTI Compliance Engine
-          </div>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-tuggi-dark leading-tight">
             {t("title")}
           </h1>
@@ -44,7 +39,7 @@ export function CityOSHero() {
           </Link>
         </div>
 
-        {/* Dashboard UI & DTI Badge Mockup */}
+        {/* Dashboard UI Mockup */}
         <div className="flex-1 w-full max-w-2xl relative">
           <div className="absolute -top-10 -right-10 w-48 h-48 bg-tuggi-primary/20 blur-3xl rounded-full"></div>
           

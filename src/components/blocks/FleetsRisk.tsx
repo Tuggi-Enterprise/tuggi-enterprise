@@ -47,7 +47,7 @@ export function FleetsRisk() {
             </div>
 
             {/* Audio Safe Graphic */}
-            <div className="w-full bg-green-50 border border-green-200 p-4 rounded-md flex items-center justify-between shadow-sm transform scale-105 z-10 relative">
+            <div className="w-full bg-green-50 border border-green-200 p-4 rounded-md flex items-center shadow-sm transform scale-105 z-10 relative">
               <div className="flex items-center gap-4">
                 <div className="p-3 bg-green-100 rounded-full relative">
                   <div className="absolute inset-0 bg-green-400 rounded-full animate-ping opacity-20"></div>
@@ -57,10 +57,8 @@ export function FleetsRisk() {
                   <h4 className="font-bold text-green-800 text-sm flex items-center gap-2">
                     <Eye className="w-4 h-4" /> Eyes on the Road
                   </h4>
-                  <p className="text-xs text-green-600 font-semibold">100% Hands-Free Engine</p>
                 </div>
               </div>
-              <span className="bg-green-600 text-white px-3 py-1 text-xs font-bold uppercase rounded-sm tracking-wider">Zero Risk</span>
             </div>
 
           </div>

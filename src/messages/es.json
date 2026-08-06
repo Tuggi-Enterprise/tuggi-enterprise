@@ -111,7 +111,7 @@
       "b2gDesc": "Transforme su municipio con City OS. Garantice soberanía narrativa, cumplimiento legal e inteligencia de datos con CAPEX mínimo.",
       "b2gLinkLabel": "Conocer City OS",
       "b2bTitle": "Para Flotas y Alquileres",
-      "b2bDesc": "Descomoditiza tu flota y dispara tu NPS. Opera como un guía local automatizado y genera nuevas líneas de RevPA.",
+      "b2bDesc": "Descomoditiza tu flota y dispara tu NPS. Opera como un guía local automatizado.",
       "b2bLinkLabel": "Soluciones para Flotas"
     },
     "HowItWorks": {
@@ -175,7 +175,7 @@
   "CityOS": {
     "Hero": {
       "title": "La Infraestructura Definitiva para Destinos Turísticos Inteligentes (DTI).",
-      "subtitle": "Transforme su ciudad en un Destino Inteligente certificado. TUGGI City OS alinea su gobernanza territorial con los pilares globales de Tecnología, Sostenibilidad, Accesibilidad y Datos.",
+      "subtitle": "TUGGI City OS alinea su gobernanza territorial con los pilares globales de Tecnología, Sostenibilidad, Accesibilidad y Datos.",
       "cta": "Solicitar Demostración de City OS"
     },
     "Animator": {
@@ -188,18 +188,6 @@
       "deployButton": "Publicar en el Grid",
       "defaultPoiName": "Monumento Central"
     },
-    "Regulatory": {
-      "title": "100% Legal y Sin Riesgos.",
-      "desc": "Respaldar aplicaciones de turismo basadas en pantallas expone al municipio a responsabilidades por infracciones de tránsito. La arquitectura 100% hands-free nativa de TUGGI garantiza el cumplimiento legal, protegiendo la gestión del Alcalde y a los ciudadanos."
-    },
-    "Sustainability": {
-      "title": "Sostenibilidad y Utilidad Pública",
-      "desc": "Redirija el tráfico y comuníquese eficientemente sin barreras de pantalla.",
-      "feat1Title": "Rutas de Descompresión Económica",
-      "feat1Desc": "Utilice desencadenadores de IA para redirigir activamente a los turistas de centros históricos saturados a zonas económicas periféricas.",
-      "feat2Title": "Utilidad Pública y Emergencias",
-      "feat2Desc": "Despliegue geocercas de audio dinámicas para cierres de carreteras, eventos o alertas climáticas severas, comunicándose con conductores extranjeros en su idioma nativo sin usar las manos."
-    },
     "Accessibility": {
       "tag": "Acelere su Puntuación de Accesibilidad DTI",
       "title": "Accesibilidad Universal",
@@ -207,11 +195,7 @@
     },
     "Intelligence": {
       "title": "Inteligencia Turística Basada en Datos",
-      "desc": "Los gobiernos suelen estar ciegos al flujo turístico. TUGGI ofrece telemetría anonimizada: sepa exactamente qué rutas se toman, en qué horarios y en qué idiomas, permitiendo campañas de marketing internacional hiperdirigidas.",
-      "heatmaps": "Mapas de Calor Predictivos",
-      "heatmapsDesc": "Gráficos de densidad en tiempo real para cualquier ruta activa.",
-      "demographics": "Demografía Lingüística",
-      "demographicsDesc": "Conozca la demografía exacta a través de streams de audio activos."
+      "desc": "Los gobiernos suelen estar ciegos al flujo turístico. TUGGI ofrece telemetría anonimizada: sepa exactamente qué rutas se toman, en qué horarios y en qué idiomas, permitiendo campañas de marketing internacional hiperdirigidas."
     },
     "Mandate": {
       "title": "Implementación con CAPEX Mínimo y Preparación para Megaeventos",
@@ -221,21 +205,19 @@
   },
   "Fleets": {
     "Hero": {
-      "title": "Descomoditiza tu Flota. Aumenta tu RevPA.",
+      "title": "Descomoditiza tu Flota.",
       "subtitle": "Transforma el alquiler de un vehículo estándar en una Experiencia Cultural Premium. Genera ingresos auxiliares masivos con mínima inversión en hardware y costos de infraestructura casi nulos.",
       "cta": "Asóciate con TUGGI"
     },
     "Financial": {
-      "col1Title": "RevPA Maximizado",
-      "col1Desc": "Reemplaza los ingresos muertos de alquiler de GPS por un generador de margen de software como servicio escalable.",
-      "col2Title": "INVERSIÓN MÍNIMA EN HARDWARE",
-      "col2Desc": "Costo de Entrada Casi Nulo: Sin hardware especializado que comprar o mantener. El modelo es 100% BYOD (Bring Your Own Device), eliminando cambios de batería y depreciación de equipos.",
-      "col3Title": "Escalabilidad Instantánea",
-      "col3Desc": "Implementa en toda tu flota nacional en 24 horas a través de la integración de códigos QR en el mostrador."
+      "col1Title": "INVERSIÓN MÍNIMA EN HARDWARE",
+      "col1Desc": "Costo de Entrada Casi Nulo: Sin hardware especializado que comprar o mantener. El modelo es 100% BYOD (Bring Your Own Device), eliminando cambios de batería y depreciación de equipos.",
+      "col2Title": "Escalabilidad Instantánea",
+      "col2Desc": "Implementa en toda tu flota nacional a través de la integración de códigos QR en el mostrador."
     },
     "Risk": {
       "title": "Maximiza el Tiempo de Actividad. Minimiza la Responsabilidad.",
-      "desc": "La distracción del conductor es una de las principales causas de daños a la flota. Los activadores 100% manos libres y solo de audio de TUGGI mantienen los ojos del conductor en la carretera. Reduce las colisiones menores y el tiempo de inactividad de los vehículos en los talleres. La seguridad no es solo una característica; es un ahorro operativo."
+      "desc": "La distracción del conductor es una de las principales causas de daños a la flota. Los activadores solo de audio de TUGGI mantienen los ojos del conductor en la carretera."
     },
     "NPS": {
       "title": "La Guerra por el NPS: Del Metal a la Experiencia.",
@@ -255,7 +237,7 @@
   "Technology": {
     "Hero": {
       "title": "Infraestructura de Audio Espacial Enterprise-Grade.",
-      "subtitle": "Construida para escala, resiliencia y seguridad absoluta. Descubre la arquitectura que impulsa el primer motor de enrutamiento contextual 100% manos libres del mundo."
+      "subtitle": "Construida para escala, resiliencia y seguridad absoluta. Descubre la arquitectura que impulsa el motor de enrutamiento contextual."
     },
     "Engine": {
       "title": "Geofencing de Precisión y Filtrado de Vectores.",
@@ -275,11 +257,7 @@
       "col1Title": "Telemetría 100% Anonimizada.",
       "col1Desc": "Estricto cumplimiento de las leyes de protección de datos europeas (RGPD) y sudamericanas (LGPD). Rastreamos flujos, no individuos.",
       "col2Title": "Serverless y Listo para Mega Eventos.",
-      "col2Desc": "Respaldado por CDNs globales y una arquitectura edge-computing que garantiza un SLA de tiempo de actividad del 99.9%, listo para manejar picos masivos de tráfico durante eventos como la Copa del Mundo o los Juegos Olímpicos sin costos de infraestructura gubernamental."
-    },
-    "Governance": {
-      "title": "Gobernanza de Grado Militar y Registros de Auditoría.",
-      "desc": "Estricto Control de Acceso Basado en Roles (RBAC). El municipio o la flota tiene un registro inmutable de cada acción dentro de City OS."
+      "col2Desc": "Respaldado por CDNs globales y una arquitectura edge-computing, listo para manejar picos masivos de tráfico durante eventos como la Copa del Mundo o los Juegos Olímpicos sin costos de infraestructura gubernamental."
     }
   },
   "Drive": {

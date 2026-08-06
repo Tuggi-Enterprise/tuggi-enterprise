@@ -111,7 +111,7 @@
       "b2gDesc": "Transform your municipality with City OS. Ensure narrative sovereignty, legal compliance, and data intelligence with minimal CAPEX.",
       "b2gLinkLabel": "Explore City OS",
       "b2bTitle": "For Fleets & Rentals",
-      "b2bDesc": "De-commoditize your fleet and boost your NPS. Operate as an automated local guide and generate new RevPA streams.",
+      "b2bDesc": "De-commoditize your fleet and boost your NPS. Operate as an automated local guide.",
       "b2bLinkLabel": "Fleet Solutions"
     },
     "HowItWorks": {
@@ -175,7 +175,7 @@
   "CityOS": {
     "Hero": {
       "title": "The Definitive Infrastructure for Smart Tourism Destinations (DTI).",
-      "subtitle": "Transform your city into a certified Smart Destination. TUGGI City OS aligns your territorial governance with global pillars of Technology, Sustainability, Accessibility, and Data.",
+      "subtitle": "TUGGI City OS aligns your territorial governance with global pillars of Technology, Sustainability, Accessibility, and Data.",
       "cta": "Request City OS Demo"
     },
     "Animator": {
@@ -188,18 +188,6 @@
       "deployButton": "Deploy to Grid",
       "defaultPoiName": "Main Monument"
     },
-    "Regulatory": {
-      "title": "100% Street-Legal & Risk-Free.",
-      "desc": "Endorsing screen-based tourism apps exposes the municipality to traffic violation liabilities. TUGGI's native 100% hands-free architecture guarantees legal compliance, protecting the Mayor's management and the citizens."
-    },
-    "Sustainability": {
-      "title": "Sustainability & Public Utility",
-      "desc": "Redirect traffic and communicate efficiently without screen barriers.",
-      "feat1Title": "Economic Decompression routes",
-      "feat1Desc": "Use AI triggers to actively redirect tourists from saturated historical centers to peripheral economic zones.",
-      "feat2Title": "Public Utility & Emergencies",
-      "feat2Desc": "Deploy dynamic audio geofences for road closures, events, or severe weather alerts, communicating with foreign drivers in their native language hands-free."
-    },
     "Accessibility": {
       "tag": "Fast-Track Your DTI Accessibility Score",
       "title": "Universal Accessibility",
@@ -207,11 +195,7 @@
     },
     "Intelligence": {
       "title": "Data-Driven Tourism Intelligence",
-      "desc": "Governments are usually blind to tourist flow. TUGGI delivers anonymized telemetry: know exactly which routes are taken, at what times, and in which languages, enabling hyper-targeted international marketing campaigns.",
-      "heatmaps": "Predictive Heatmaps",
-      "heatmapsDesc": "Real-time density graphs for any active route.",
-      "demographics": "Language Demographics",
-      "demographicsDesc": "Know exact demographics via active audio streams."
+      "desc": "Governments are usually blind to tourist flow. TUGGI delivers anonymized telemetry: know exactly which routes are taken, at what times, and in which languages, enabling hyper-targeted international marketing campaigns."
     },
     "Mandate": {
       "title": "Minimal CAPEX Deployment & Mega-Event Readiness",
@@ -221,21 +205,19 @@
   },
   "Fleets": {
     "Hero": {
-      "title": "De-commoditize Your Fleet. Boost Your RevPA.",
+      "title": "De-commoditize Your Fleet.",
       "subtitle": "Transform a standard vehicle rental into a Premium Cultural Experience. Generate massive ancillary revenue with minimal hardware investment and near-zero infrastructure costs.",
       "cta": "Partner with TUGGI"
     },
     "Financial": {
-      "col1Title": "Maximized RevPA",
-      "col1Desc": "Replace dead GPS rental revenue with a scalable software-as-a-service margin driver.",
-      "col2Title": "MINIMAL HARDWARE INVESTMENT",
-      "col2Desc": "Near-Zero Entry Cost: No specialized hardware to buy or maintain. The model is 100% BYOD (Bring Your Own Device), eliminating battery swaps and equipment depreciation.",
-      "col3Title": "Instant Scalability",
-      "col3Desc": "Deploy across your entire national fleet in 24 hours via QR Code integration at the counter."
+      "col1Title": "MINIMAL HARDWARE INVESTMENT",
+      "col1Desc": "Near-Zero Entry Cost: No specialized hardware to buy or maintain. The model is 100% BYOD (Bring Your Own Device), eliminating battery swaps and equipment depreciation.",
+      "col2Title": "Instant Scalability",
+      "col2Desc": "Deploy across your entire national fleet via QR Code integration at the counter."
     },
     "Risk": {
       "title": "Maximize Uptime. Minimize Liability.",
-      "desc": "Driver distraction is a major cause of fleet damage. TUGGI's 100% hands-free, audio-only triggers keep the driver's eyes on the road. Reduce minor collisions and vehicle downtime in workshops. Safety is not just a feature; it's an operational saving."
+      "desc": "Driver distraction is a major cause of fleet damage. TUGGI's audio-only triggers keep the driver's eyes on the road."
     },
     "NPS": {
       "title": "The War on NPS: From Metal to Experience.",
@@ -255,7 +237,7 @@
   "Technology": {
     "Hero": {
       "title": "Enterprise-Grade Spatial Audio Infrastructure.",
-      "subtitle": "Built for scale, resilience, and absolute security. Discover the architecture powering the world's first 100% hands-free contextual routing engine."
+      "subtitle": "Built for scale, resilience, and absolute security. Discover the architecture powering the contextual routing engine."
     },
     "Engine": {
       "title": "Precision Geofencing & Vector Filtering.",
@@ -275,11 +257,7 @@
       "col1Title": "100% Anonymized Telemetry.",
       "col1Desc": "Strict adherence to European (GDPR) and South American (LGPD) data protection laws. We track flow, not individuals.",
       "col2Title": "Serverless & Mega-Event Ready.",
-      "col2Desc": "Backed by global CDNs and an edge-computing architecture ensuring a 99.9% uptime SLA, ready to handle massive traffic spikes during events like the World Cup or Olympics without government infrastructure costs."
-    },
-    "Governance": {
-      "title": "Military-Grade Governance & Audit Trails.",
-      "desc": "Strict Role-Based Access Control (RBAC). The municipality or fleet has an immutable record of every action inside the City OS."
+      "col2Desc": "Backed by global CDNs and an edge-computing architecture, ready to handle massive traffic spikes during events like the World Cup or Olympics without government infrastructure costs."
     }
   },
   "Drive": {
