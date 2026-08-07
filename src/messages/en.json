@@ -136,13 +136,7 @@
     },
     "AudioSample": {
       "title": "Hear TUGGI for yourself",
-      "subtitle": "Two short stories, just the way you'd hear them while exploring.",
-      "sample1Title": "Walt Disney World Resort",
-      "sample1Loc": "Orlando, USA",
-      "sample2Title": "Paulista Avenue",
-      "sample2Loc": "São Paulo, Brazil",
-      "play": "Play story",
-      "pause": "Pause story"
+      "subtitle": "Two short stories, just the way you'd hear them while exploring."
     },
     "Business": {
       "title": "TUGGI for your business",
@@ -164,6 +158,22 @@
       "more": "and {count} more countries around the world",
       "cta": "See full coverage"
     }
+  },
+  "AudioSample": {
+    "play": "Play the story of {name}",
+    "pause": "Pause the story of {name}",
+    "seek": "Seek within the story of {name}",
+    "transcriptShow": "Read the transcript",
+    "transcriptHide": "Close the transcript",
+    "tagDirectional": "Directional",
+    "tagStory": "Story",
+    "error": "This story could not play right now. Try again.",
+    "sample1Name": "Walt Disney World Resort",
+    "sample1City": "Orlando",
+    "sample2Name": "Paulista Avenue",
+    "sample2City": "São Paulo",
+    "sample3Name": "Rialto Bridge",
+    "sample3City": "Venice"
   },
   "CityOS": {
     "Hero": {
@@ -260,17 +270,7 @@
     "Samples": {
       "tag": "Premium Curation",
       "title": "Hear what you're unlocking",
-      "subtitle": "Every road trip, walking tour, or cycling route comes alive with stories you'd never find on your own. No fixed itineraries — your self-guided audio tour plays automatically, exactly at each landmark.",
-      "sample1Title": "Walt Disney World Resort",
-      "sample1Loc": "Orlando, USA",
-      "sample2Title": "Paulista Avenue",
-      "sample2Loc": "São Paulo, Brazil",
-      "sample3Title": "Rialto Bridge",
-      "sample3Loc": "Venice, Italy",
-      "directional": "Directional",
-      "story": "Story",
-      "play": "Play",
-      "pause": "Pause"
+      "subtitle": "Every road trip, walking tour, or cycling route comes alive with stories you'd never find on your own. No fixed itineraries — your self-guided audio tour plays automatically, exactly at each landmark."
     },
     "Features": {
       "title": "Included in every pass",
@@ -739,7 +739,6 @@
     "itineraryTitle": "What you'll see and hear",
     "itinerarySubtitle": "The stops on this route, in order — with audio previews where available.",
     "audioPreview": "Audio preview",
-    "audioPreviewFor": "Audio preview for {name}",
     "faqTitle": "Frequently asked questions",
     "faq": {
       "duration": {
@@ -811,8 +810,6 @@
     "stateSubtitle": "{count, plural, one {# curated route} other {# curated routes}} across {country}, each with a map, stops and real audio previews.",
     "viewAllInState": "View all {count}",
     "audioLanguages": "Audio languages",
-    "audioPause": "Pause preview",
-    "audioSeek": "Seek within the preview",
     "legendWithAudio": "With audio and story",
     "legendPassThrough": "Pass-through point",
     "stickyText": "Hear this route, hands-free",

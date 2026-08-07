@@ -136,13 +136,7 @@
     },
     "AudioSample": {
       "title": "Escucha TUGGI por ti mismo",
-      "subtitle": "Dos historias cortas, tal como las oirías mientras exploras.",
-      "sample1Title": "Walt Disney World Resort",
-      "sample1Loc": "Orlando, EE. UU.",
-      "sample2Title": "Avenida Paulista",
-      "sample2Loc": "São Paulo, Brasil",
-      "play": "Reproducir historia",
-      "pause": "Pausar historia"
+      "subtitle": "Dos historias cortas, tal como las oirías mientras exploras."
     },
     "Business": {
       "title": "TUGGI para tu negocio",
@@ -164,6 +158,22 @@
       "more": "y {count} países más por el mundo",
       "cta": "Ver cobertura completa"
     }
+  },
+  "AudioSample": {
+    "play": "Reproducir la historia de {name}",
+    "pause": "Pausar la historia de {name}",
+    "seek": "Avanzar en la historia de {name}",
+    "transcriptShow": "Leer la transcripción",
+    "transcriptHide": "Cerrar la transcripción",
+    "tagDirectional": "Direccional",
+    "tagStory": "Historia",
+    "error": "No se pudo reproducir esta historia ahora. Inténtalo de nuevo.",
+    "sample1Name": "Walt Disney World Resort",
+    "sample1City": "Orlando",
+    "sample2Name": "Avenida Paulista",
+    "sample2City": "São Paulo",
+    "sample3Name": "Ponte di Rialto",
+    "sample3City": "Venecia"
   },
   "CityOS": {
     "Hero": {
@@ -260,17 +270,7 @@
     "Samples": {
       "tag": "Curaduría Premium",
       "title": "Escucha lo que desbloqueas",
-      "subtitle": "Cada road trip, recorrido a pie o en bici cobra vida con historias que nunca encontrarías solo. Sin itinerarios fijos — tu audioguía autoguiada se activa automáticamente, exactamente en cada monumento.",
-      "sample1Title": "Walt Disney World Resort",
-      "sample1Loc": "Orlando, EE. UU.",
-      "sample2Title": "Avenida Paulista",
-      "sample2Loc": "São Paulo, Brasil",
-      "sample3Title": "Ponte di Rialto",
-      "sample3Loc": "Venecia, Italia",
-      "directional": "Direccional",
-      "story": "Historia",
-      "play": "Reproducir",
-      "pause": "Pausar"
+      "subtitle": "Cada road trip, recorrido a pie o en bici cobra vida con historias que nunca encontrarías solo. Sin itinerarios fijos — tu audioguía autoguiada se activa automáticamente, exactamente en cada monumento."
     },
     "Features": {
       "title": "Incluido en todos los pases",
@@ -739,7 +739,6 @@
     "itineraryTitle": "Lo que verás y escucharás",
     "itinerarySubtitle": "Las paradas de esta ruta, en orden — con vistas previas de audio cuando están disponibles.",
     "audioPreview": "Vista previa de audio",
-    "audioPreviewFor": "Vista previa de audio de {name}",
     "faqTitle": "Preguntas frecuentes",
     "faq": {
       "duration": {
@@ -811,8 +810,6 @@
     "stateSubtitle": "{count, plural, one {# ruta seleccionada} other {# rutas seleccionadas}} — {country}. Cada una con mapa, paradas y vistas previas de audio reales.",
     "viewAllInState": "Ver todas las {count}",
     "audioLanguages": "Idiomas del audio",
-    "audioPause": "Pausar la vista previa",
-    "audioSeek": "Avanzar en la vista previa",
     "legendWithAudio": "Con audio e historia",
     "legendPassThrough": "Punto de paso",
     "stickyText": "Escucha esta ruta sin usar las manos",
