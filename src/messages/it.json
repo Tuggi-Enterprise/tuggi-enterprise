@@ -214,11 +214,76 @@
       "cta": "Richiedi una Demo B2B"
     }
   },
+  "Partners": {
+    "hero": {
+      "title": "La tua attività diventa un punto di distribuzione di Tuggi",
+      "subtitle": "Il turista che scarica Tuggi con il tuo QR Code viene attribuito a te, e il tuo locale può comparire a chi usa l'app. Non ti costa nulla."
+    },
+    "grid": {
+      "title": "Scegli il tuo tipo di attività",
+      "actionOpen": "Scopri come funziona",
+      "actionContact": "Parla con noi"
+    },
+    "mechanism": {
+      "place": "il banco, la camera, l'auto"
+    },
+    "seo": {
+      "primaryTerm": "programma partner",
+      "title": "Programma partner per chi accoglie i turisti",
+      "description": "Autonoleggi, hotel, transfer, camper e ristoranti: esponi il QR Code di Tuggi e ricevi una partecipazione ai ricavi sugli acquisti del turista che porti."
+    }
+  },
   "Segments": {
     "commercial": {
       "title": "Come funziona la tua partecipazione ai ricavi",
       "lead": "Offri Tuggi al tuo cliente senza alcun costo. Quando si abbona, una parte della vendita torna a te. Nessun investimento iniziale e nessun rischio.",
       "note": "La percentuale è definita nell'accordo commerciale."
+    },
+    "steps": {
+      "title": "Come funziona la partnership",
+      "s1Title": "Ti registri e noi approviamo",
+      "s1Body": "La registrazione si fa nell'app Tuggi. Il nostro team verifica i dati e approva la partnership.",
+      "s2Title": "Esponi il tuo QR Code",
+      "s2Body": "Una volta approvato, ricevi il tuo QR Code e lo metti dove il turista si trova già: {place}. Chi scarica Tuggi con quel codice viene attribuito a te.",
+      "s3Title": "La tua partecipazione ai ricavi",
+      "s3Body": "Ogni acquisto fatto dal turista attribuito a te entra nel calcolo della tua partecipazione ai ricavi, con la percentuale definita nell'accordo commerciale.",
+      "s4Title": "Il tuo locale può entrare in Tuggi",
+      "s4Body": "Approvata la partnership, il nostro team decide se registrare il tuo locale come punto di interesse: è una decisione editoriale di Tuggi e non è automatica. Entrano i luoghi permanenti, aperti al pubblico e con una storia propria da raccontare; non serve essere famosi né antichi. Entro {partnerTriageHours} ore dall'approvazione hai l'esito: o il locale è già pubblicato, oppure ti diciamo che cosa è mancato, e puoi correggerlo e ripresentarlo. Pubblicato, si trova come qualsiasi altro punto e si ascolta nella lingua di chi arriva, in una qualsiasi delle {contentLanguages} lingue dell'app. Il tuo QR Code e la tua partecipazione ai ricavi non dipendono da questo."
+    },
+    "cta": {
+      "title": "Raccontaci come il turista arriva da te",
+      "body": "Ti rispondiamo con quello che la partnership fa nel tuo caso, senza impegno.",
+      "action": "Parla con Tuggi"
+    },
+    "car-rental": {
+      "hub": {
+        "cardTitle": "Autonoleggio",
+        "cardBody": "Il turista ritira l'auto e porta con sé la guida. Il QR Code sta al banco o dentro il veicolo."
+      }
+    },
+    "lodging": {
+      "hub": {
+        "cardTitle": "Strutture ricettive",
+        "cardBody": "L'ospite arriva senza sapere cosa fare in città. Il QR Code sta alla reception o in camera."
+      }
+    },
+    "transfer": {
+      "hub": {
+        "cardTitle": "Transfer e taxi",
+        "cardBody": "Dall'aeroporto all'hotel è la prima mezz'ora di viaggio. Il QR Code sta sullo schienale o sul finestrino."
+      }
+    },
+    "motorhome": {
+      "hub": {
+        "cardTitle": "Camper",
+        "cardBody": "Chi viaggia in camper passa la giornata in strada. Il QR Code va alla consegna del veicolo, insieme alle chiavi."
+      }
+    },
+    "restaurants": {
+      "hub": {
+        "cardTitle": "Ristoranti",
+        "cardBody": "Chi si siede a tavola ha tempo di ascoltare. Il QR Code sta sul menù o sul conto."
+      }
     }
   },
   "Technology": {

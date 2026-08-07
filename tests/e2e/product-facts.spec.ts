@@ -434,6 +434,12 @@ const PUBLISHED_ON: Record<string, string[]> = {
     "Drive.Comparison.langTuggi",
     "Drive.PlansExplainer.p3",
   ],
+  // The partner hub, mounted by #195. `Segments.steps.s4Body` is the only
+  // string of the partner copy fed by the module, and it is fed twice:
+  // `partnerTriageHours` (BR-B2B-010 item 4) and `contentLanguages`
+  // (BR-IDIOMA-001 item 2). The segment pages read the same key, so this entry
+  // grows a sibling when the first of them publishes.
+  "/partners": ["Segments.steps.s4Body"],
   "/download": ["Download.metaDesc"],
   "/trust-center/accessibility": [
     "Legal.Accessibility.s1Item1",

@@ -214,11 +214,76 @@
       "cta": "Request B2B Demo"
     }
   },
+  "Partners": {
+    "hero": {
+      "title": "Your business becomes a Tuggi distribution point",
+      "subtitle": "A traveller who downloads Tuggi through your QR Code is attributed to you, and your venue can show up for the people using the app. It costs you nothing."
+    },
+    "grid": {
+      "title": "Choose your type of business",
+      "actionOpen": "See how it works",
+      "actionContact": "Talk to us"
+    },
+    "mechanism": {
+      "place": "the counter, the room, the car"
+    },
+    "seo": {
+      "primaryTerm": "partner program",
+      "title": "Partner program for businesses that host travellers",
+      "description": "Car rental, hotels, transfers, motorhomes and restaurants: display the Tuggi QR Code and earn a revenue share on purchases by the travellers you bring."
+    }
+  },
   "Segments": {
     "commercial": {
       "title": "How your revenue share works",
       "lead": "You offer Tuggi to your customer at no cost at all. When they subscribe, part of the sale comes back to you. No upfront investment and no risk.",
       "note": "The percentage is set in the commercial agreement."
+    },
+    "steps": {
+      "title": "How the partnership works",
+      "s1Title": "You sign up and we approve",
+      "s1Body": "Registration happens in the Tuggi app. Our team checks your details and approves the partnership.",
+      "s2Title": "You display your QR Code",
+      "s2Body": "Once approved, you get your QR Code and put it where the traveller already is: {place}. Whoever downloads Tuggi through that code is attributed to you.",
+      "s3Title": "Your revenue share",
+      "s3Body": "Every purchase made by a traveller attributed to you enters the calculation of your revenue share, at a percentage set in the commercial agreement.",
+      "s4Title": "Your venue can join Tuggi",
+      "s4Body": "Once the partnership is approved, our team decides whether to add your venue as a point of interest: it is an editorial decision at Tuggi, and it is not automatic. Places that are permanent, open to the public and have a story of their own get in — they do not have to be famous or old. Within {partnerTriageHours} hours of approval you have the outcome: either the venue is already published, or we tell you what was missing, and you can fix it and apply again. Once published, it is found like any other point and is heard in the language of whoever arrives, in any of the {contentLanguages} languages of the app. Your QR Code and your revenue share do not depend on it."
+    },
+    "cta": {
+      "title": "Tell us how travellers reach you",
+      "body": "We will come back with what the partnership does in your case, with no commitment.",
+      "action": "Talk to Tuggi"
+    },
+    "car-rental": {
+      "hub": {
+        "cardTitle": "Car rental",
+        "cardBody": "The traveller picks up the car and takes the guide along. The QR Code goes on the counter or inside the vehicle."
+      }
+    },
+    "lodging": {
+      "hub": {
+        "cardTitle": "Hotels and lodging",
+        "cardBody": "Guests arrive without knowing what to do in the city. The QR Code goes at reception or in the room."
+      }
+    },
+    "transfer": {
+      "hub": {
+        "cardTitle": "Transfer and taxi",
+        "cardBody": "Airport to hotel is the first half hour of the trip. The QR Code goes on the seat back or on the window."
+      }
+    },
+    "motorhome": {
+      "hub": {
+        "cardTitle": "Motorhome",
+        "cardBody": "Motorhome travellers spend the day on the road. The QR Code goes with the keys at handover."
+      }
+    },
+    "restaurants": {
+      "hub": {
+        "cardTitle": "Restaurants",
+        "cardBody": "People sitting down to eat have time to listen. The QR Code goes on the menu or on the bill."
+      }
     }
   },
   "Technology": {

@@ -1057,6 +1057,18 @@ const CLAIM_FAMILIES: ClaimFamily[] = [
           "money flow the rules do back, and it runs outwards.",
       },
       {
+        keys: ["Segments.steps.s3Body", "Partners.seo.description"],
+        why:
+          "The same Italian word for the same fact, published by #195: " +
+          '"acquisto del turista" is what the *traveller* buys, and it is the ' +
+          "input of the partner's revenue share (BR-B2B-007 item 4, BR-B2B-005). " +
+          "The pattern reads the verb and not who pays, which is why " +
+          "Fleets.Financial.col3Desc is waived above for the same word — the " +
+          "vocabulary of the two is deliberately identical (copy doc §2, step " +
+          "three). Nothing here is bought, licensed or invoiced by the partner: " +
+          'the hub states the opposite in every locale ("it costs you nothing").',
+      },
+      {
         keys: ["Segments.commercial.lead"],
         why:
           '"No upfront investment" is the negation of the claim this family bans, ' +
@@ -1155,11 +1167,15 @@ const LOCALES = fs
   .map((name) => path.basename(name, ".json"))
   .sort();
 
-/** The message namespaces the three partner pages read from. */
+/** The message namespaces the partner pages read from. */
 const PARTNER_NAMESPACES = [
   "Fleets",
   "CityOS",
   "Technology",
+  // The hub's own copy (#195). `Segments` was here before it and covers the
+  // blocks the hub shares with the segment template; `Partners` is the half
+  // that only the hub reads, and it was outside every scope until now.
+  "Partners",
   "Segments",
   "SEO_FLEETS",
   "SEO_CITY_OS",
@@ -1172,7 +1188,15 @@ const PARTNER_NAMESPACES = [
  * written here: a test that hard-codes the old URL would still pass through
  * the 301 and stop checking the page it names.
  */
-const PARTNER_PAGES = ["/enterprise/fleets", "/destinations", "/technology"];
+const PARTNER_PAGES = [
+  // The hub, published by #195. It is the surface this whole file is about —
+  // the page a business owner reads before anything else — so it is read like
+  // the other three rather than trusted because its copy came reviewed.
+  "/partners",
+  "/enterprise/fleets",
+  "/destinations",
+  "/technology",
+];
 
 /** The public URL of an internal pathname, for one locale. */
 function localeUrl(locale: string, pagePath: string): string {

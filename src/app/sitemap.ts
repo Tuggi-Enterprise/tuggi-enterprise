@@ -30,18 +30,23 @@ import {
  * The static pages that are indexed, as **internal** pathnames.
  *
  * The list stays explicit because which pages we ask Google to index is an
- * editorial decision, not a consequence of a route existing — the route map
- * also holds `/partners`, whose page does not exist yet, and the trust-center
+ * editorial decision, not a consequence of a route existing — the reserved
+ * segment routes have their word decided and no page, and the trust-center
  * pages we deliberately do not all list. What is no longer written twice is
  * the URL: `buildUrl` and `buildSitemapAlternates` resolve the slug per locale
  * from src/i18n/pathnames.ts, so a translated slug reaches the sitemap without
  * anybody retyping it. The type makes a route that left the map a compile
  * error, and tests/e2e/routing.spec.ts asserts none of these 404.
+ *
+ * `/partners` joined with #195. It is the entrance for the audience that
+ * arrives from a search for a partner program rather than for a destination,
+ * and leaving a published page out of the sitemap is how it stays unfound.
  */
 const routes: StaticAppPathname[] = [
   "/",
   "/drive",
   "/destinations",
+  "/partners",
   "/enterprise/fleets",
   "/technology",
   "/purpose",

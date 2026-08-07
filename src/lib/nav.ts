@@ -19,16 +19,15 @@
 import type { StaticAppPathname } from "@/i18n/pathnames";
 
 /**
- * The partners hub (`/partners`) has no page yet — its copy has not arrived.
- * While this is false the menu item stays out, because an item that leads to a
- * 404 is worse than a missing item; the route word is already decided in the
- * map, so publishing later costs no URL change.
+ * The partners hub (`/partners`). True since #195: the page and its copy in
+ * the four locales landed together, and the item is the first of the menu.
  *
- * Flipping this to true and adding `src/app/[locale]/partners/page.tsx` is one
- * change, not two: tests/e2e/routing.spec.ts fails if the flag and the page
- * file disagree, in either direction.
+ * The flag stays because it is half of a pair. `src/app/[locale]/partners/
+ * page.tsx` is the other half, and tests/e2e/routing.spec.ts fails if the two
+ * disagree in either direction: the flag alone puts a 404 in the menu, the
+ * page alone leaves a published page nobody can navigate to.
  */
-export const PARTNERS_HUB_PUBLISHED = false;
+export const PARTNERS_HUB_PUBLISHED = true;
 
 export type NavItem = {
   /** Key inside the `Header` i18n namespace. */

@@ -259,6 +259,23 @@ export const AUDIO_GUIDES_FLOOR = 16_000;
  */
 export const A11Y_SITE_AUDIT_DATE = "2026-08-06";
 
+/**
+ * Hours to a decided outcome on the partner venue triage — **BR-B2B-010 item 4**.
+ *
+ * Calendar hours, counted from the approval of the *partnership* (the
+ * `core.clients.status` transition to 'approved'), not from the partner's
+ * registration. Weekends and holidays do not stop the clock: the operator
+ * published the deadline and chose to state it in hours.
+ *
+ * What is promised is the **outcome**, not the entry — item 3 admits a refusal,
+ * so copy reading "the venue goes live in 72 hours" is the defect this
+ * constant does not fix by itself.
+ *
+ * No measured series backs it: nobody instruments the queue today, and the
+ * rule says so. The value is the operator's decision, not a measurement.
+ */
+export const PARTNER_TRIAGE_HOURS = 72;
+
 // ── Decided not to be published ─────────────────────────────────────────────
 
 /**
@@ -359,4 +376,5 @@ export const PRODUCT_FACTS = {
   coverageCountries: COVERAGE_COUNTRIES,
   audioGuidesFloor: AUDIO_GUIDES_FLOOR,
   a11ySiteAuditDate: A11Y_SITE_AUDIT_DATE,
+  partnerTriageHours: PARTNER_TRIAGE_HOURS,
 } as const;

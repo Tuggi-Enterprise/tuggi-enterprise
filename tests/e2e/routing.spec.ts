@@ -8,7 +8,12 @@ import {
   pathnames,
 } from "../../src/i18n/pathnames";
 import { LOCALES, DEFAULT_LOCALE, type SiteLocale } from "../../src/i18n/locales";
-import { PUBLISHABLE_MODELS, SEGMENTS, type Segment } from "../../src/lib/segments";
+import {
+  PUBLISHABLE_MODELS,
+  SEGMENTS,
+  segmentPathname,
+  type Segment,
+} from "../../src/lib/segments";
 import { NAV_ITEMS, PARTNERS_HUB_PUBLISHED, VISIBLE_NAV_ITEMS } from "../../src/lib/nav";
 
 /**
@@ -43,13 +48,37 @@ function hasPage(internalRoute: string): boolean {
 }
 
 const ROUTABLE = STATIC_ROUTES.filter(hasPage);
-/** Declared, but with no page: the word is decided and the URL does not exist. */
-const DECLARED_WITHOUT_PAGE = STATIC_ROUTES.filter((route) => !hasPage(route));
 
 function url(locale: string, internalRoute: string): string {
   const slug = localizedPathname(locale, internalRoute);
   return slug === "/" ? `/${locale}` : `/${locale}${slug}`;
 }
+
+/**
+ * Declared, but with no page: the word is decided and the URL does not exist.
+ *
+ * Two kinds, and the same rule answers for both. A route that sits in the map
+ * with no page file — `/partners` was that case until #195 built the hub — and
+ * a **reserved** segment (spec §1.2), whose four slugs are decided in
+ * `SEGMENTS` and which deliberately never enters the map. So `pathnames` alone
+ * cannot be where this list looks: it would have gone empty the day the hub
+ * landed, and the assertion below would have started passing over nothing.
+ *
+ * The reserved URL is built from the registry rather than from
+ * `localizedPathname`, which would resolve it through the `/partners` prefix
+ * and hand back `/pt/parcerias/restaurants` — an address nobody declared, so a
+ * 404 for the wrong reason.
+ */
+const DECLARED_WITHOUT_PAGE: { route: string; urlFor: (locale: SiteLocale) => string }[] = [
+  ...STATIC_ROUTES.filter((route) => !hasPage(route)).map((route) => ({
+    route,
+    urlFor: (locale: SiteLocale) => url(locale, route),
+  })),
+  ...SEGMENTS.filter((segment) => !segment.published).map((segment) => ({
+    route: segmentPathname(segment.key),
+    urlFor: (locale: SiteLocale) => `/${locale}/${segment.slugs[locale]}`,
+  })),
+];
 
 test.describe("route map", () => {
   test("the map covers every page under src/app/[locale]", () => {
@@ -124,13 +153,16 @@ test.describe("route map", () => {
   });
 
   test("a declared route with no page answers 404, and does not redirect", async ({ request }) => {
-    // /partners is the case today: the word is decided, the hub is not built.
-    // A redirect here would hide the fact that the page does not exist.
+    // The reserved segments are the case today: the words are decided, the
+    // pages are not planned. A redirect here would hide the fact that the page
+    // does not exist — and would turn a typo into a silent success for whoever
+    // is testing.
     expect(DECLARED_WITHOUT_PAGE.length).toBeGreaterThan(0);
-    for (const route of DECLARED_WITHOUT_PAGE) {
+    for (const { route, urlFor } of DECLARED_WITHOUT_PAGE) {
       for (const locale of LOCALES) {
-        const response = await request.get(url(locale, route), { maxRedirects: 0 });
-        expect(response.status(), url(locale, route)).toBe(404);
+        const target = urlFor(locale);
+        const response = await request.get(target, { maxRedirects: 0 });
+        expect(response.status(), `${target} (internal ${route})`).toBe(404);
       }
     }
   });
@@ -367,15 +399,34 @@ test.describe("main menu", () => {
   });
 
   test("an item whose destination has no page stays out of the menu", async ({ page }) => {
-    // Partners is that item today. A menu entry that leads to a 404 is worse
-    // than a missing entry.
+    // Partners was that item until #195 built the hub, and the rule it proved
+    // is not about Partners: a menu entry that leads to a 404 is worse than a
+    // missing entry. So the assertion is the invariant rather than the
+    // snapshot — every item's `published` flag has to agree with whether a
+    // page file exists, in both directions, and the menu has to show exactly
+    // the ones that do. Listing the hidden hrefs by hand is what would have
+    // gone quietly true-because-empty the day the list emptied.
+    for (const item of NAV_ITEMS) {
+      expect(item.published, `${item.href}: published flag vs. its page file`).toBe(
+        hasPage(item.href)
+      );
+    }
+
     const hidden = NAV_ITEMS.filter((item) => !item.published);
-    expect(hidden.map((item) => item.href)).toEqual(["/partners"]);
 
     for (const locale of LOCALES) {
       await page.goto(`/${locale}`);
       const header = page.locator('nav[aria-label="Main Navigation"]');
-      await expect(header.locator(`a[href="${url(locale, "/partners")}"]`)).toHaveCount(0);
+      for (const item of hidden) {
+        await expect(header.locator(`a[href="${url(locale, item.href)}"]`)).toHaveCount(0);
+      }
+      // The other half, and it is what keeps the loop above from proving
+      // nothing while `hidden` is empty: what is published is on screen.
+      for (const item of VISIBLE_NAV_ITEMS) {
+        await expect(
+          header.locator(`a[data-nav-item][href="${url(locale, item.href)}"]`)
+        ).toHaveCount(1);
+      }
     }
   });
 
