@@ -83,6 +83,33 @@ const TRAVELLER_PATH = "M60 60 L82 70 L60 80 L66 70 Z";
 
 const SVG_CLASS = "w-full h-auto";
 
+/**
+ * The ink of the shared coordinate space — the reach and the five places —
+ * drawn identically in both columns, because they *are* the same objects.
+ * They were not: the reach was `stroke-tuggi-slate` in A and `stroke-slate-200`
+ * in B (5.98:1 against 1.23:1 on white), and the places were `fill-tuggi-slate`
+ * in A against `fill-slate-300` in B (5.46:1 against 1.49:1). The premise the
+ * caption states — same traveller, same five places, same reach — was legible
+ * in one column only, which is card #212.
+ *
+ * The neutral ink is `--color-tuggi-slate` at 80%, which composites to 3.82:1
+ * on the section's white: above the 3:1 SC 1.4.11 asks of a graphical object
+ * that carries meaning, and far enough below the cone's 4.85:1 that B reads as
+ * the stronger drawing — which is the relative ruler spec §4.2 sets. The full
+ * token is 5.98:1 and wins against the cone; the next step down in the neutral
+ * scale, `slate-400`, is 2.63:1 and fails 1.4.11, so the softened token is
+ * what fits between the two bounds.
+ */
+const SHARED_STROKE = "stroke-tuggi-slate/80";
+const SHARED_FILL = "fill-tuggi-slate/80";
+
+/**
+ * `data-part` names each shape. The drawings are `aria-hidden` and have no
+ * accessible name by design, so this is the only handle the contrast check has
+ * on them — and locating a shape by the colour under test is how a check goes
+ * green against an empty locator.
+ */
+
 function RadiusDrawing() {
   return (
     <svg
@@ -93,25 +120,30 @@ function RadiusDrawing() {
       focusable="false"
     >
       {/* Neutral throughout, and deliberately so: if the industry column looks
-          as good as ours, the comparison communicated nothing (spec §4.6). */}
+          as good as ours, the comparison communicated nothing (spec §4.6). The
+          disc this circle used to be filled with (`fill-slate-100`) is what
+          made the neutral column the heaviest object on the page — an outline
+          says the same thing and says it more quietly. */}
       <circle
+        data-part="reach"
         cx={TRAVELLER.x}
         cy={TRAVELLER.y}
         r={REACH}
-        className="fill-slate-100 stroke-tuggi-slate"
+        className={`fill-none ${SHARED_STROKE}`}
         strokeWidth={1.5}
         strokeDasharray="5 4"
       />
       {PLACES.map((place) => (
         <circle
           key={`${place.x}-${place.y}`}
+          data-part="place"
           cx={place.x}
           cy={place.y}
           r={4.5}
-          className="fill-tuggi-slate"
+          className={SHARED_FILL}
         />
       ))}
-      <path d={TRAVELLER_PATH} className="fill-tuggi-slate" />
+      <path data-part="traveller" d={TRAVELLER_PATH} className={SHARED_FILL} />
     </svg>
   );
 }
@@ -125,36 +157,57 @@ function ConeDrawing() {
       aria-hidden="true"
       focusable="false"
     >
-      {/* The same reach as column A, kept faint: without it the wedge has no
-          scale to be compared against. */}
+      {/* The same reach as column A, drawn the same way: without it the wedge
+          has no scale to be compared against, and drawn fainter than A's it
+          says the two reaches differ, which is the opposite of the caption. */}
       <circle
+        data-part="reach"
         cx={TRAVELLER.x}
         cy={TRAVELLER.y}
         r={REACH}
-        className="fill-none stroke-slate-200"
+        className={`fill-none ${SHARED_STROKE}`}
         strokeWidth={1.5}
         strokeDasharray="5 4"
       />
-      <path d={CONE_PATH} className="fill-tuggi-primary/15 stroke-tuggi-primary" strokeWidth={1.5} />
+      {/* The stroke is `--color-tuggi-primary-text`, not `--color-tuggi-primary`
+          — spec §4.2, corrected 2026-08-07. Brand cyan on white is 2.70:1: it
+          fails SC 1.4.11 and, worse here, loses to the neutral column, so the
+          drawing argues against its own caption. #007aa5 is 4.85:1, and it is
+          the same token, for the same reason, that the player's seek bar uses
+          as `accent-color`. Brand cyan stays as the low-opacity *fill* of the
+          wedge, which is an area and not the object that carries the meaning. */}
+      <path
+        data-part="cone"
+        d={CONE_PATH}
+        className="fill-tuggi-primary/15 stroke-tuggi-primary-text"
+        strokeWidth={1.5}
+      />
       <line
+        data-part="sight"
         x1={TRAVELLER.x}
         y1={TRAVELLER.y}
         x2={SIGHT_END.x}
         y2={SIGHT_END.y}
-        className="stroke-tuggi-primary"
+        className="stroke-tuggi-primary-text"
         strokeWidth={1.5}
         strokeDasharray="3 3"
       />
       {PLACES.filter((place) => !place.inCone).map((place) => (
         <circle
           key={`${place.x}-${place.y}`}
+          data-part="place"
           cx={place.x}
           cy={place.y}
           r={4.5}
-          className="fill-slate-300"
+          className={SHARED_FILL}
         />
       ))}
+      {/* What separates the kept place from the other four is form — a ring
+          and a darker disc — not a contrast so low the four disappear
+          (DS-A11Y-003). Five places have to be visible for one of them to
+          read as chosen. */}
       <circle
+        data-part="highlight"
         cx={HIGHLIGHT.x}
         cy={HIGHLIGHT.y}
         r={11}
@@ -162,7 +215,7 @@ function ConeDrawing() {
         strokeWidth={1.5}
       />
       <circle cx={HIGHLIGHT.x} cy={HIGHLIGHT.y} r={7} className="fill-tuggi-dark" />
-      <path d={TRAVELLER_PATH} className="fill-tuggi-dark" />
+      <path data-part="traveller" d={TRAVELLER_PATH} className="fill-tuggi-dark" />
     </svg>
   );
 }
@@ -186,7 +239,21 @@ export function TriggerComparison() {
             same height when one label wraps to two lines in Italian: a
             comparison whose halves do not line up stops reading as one. Height
             comes from the grid, never from a min-height (DS-A11Y-005). */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-12">
+        <div className="relative grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-12">
+          {/* Side by side, the divider is its own line hung in the gap, and it
+              is absolutely positioned so it is not a grid item and takes width
+              from neither column. It used to be a left border plus `md:pl-12`
+              on column B, and that padding came out of B's coordinate space:
+              the same viewBox rendered 8-15% narrower there, so A's radius drew
+              larger than B's reach — the picture said the two reaches differ,
+              which is the one thing the block exists to deny — and the two
+              <h3> landed 34 px out of line (card #212). Stacked, the rule is
+              still a border on B: at 360 px there is no gap to hang it in. */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-y-0 left-1/2 hidden w-px -translate-x-1/2 bg-slate-200 md:block"
+          />
+
           <article className="flex flex-col gap-6">
             <RadiusDrawing />
             <div>
@@ -195,12 +262,7 @@ export function TriggerComparison() {
             </div>
           </article>
 
-          {/* The separator is a border on the second column, not an element of
-              its own: stacked it is the horizontal rule the spec asks for
-              (§4.4 — without it the two columns read as a feature list rather
-              than a contrast), and side by side it is the divider between
-              them. One declaration, two layouts. */}
-          <article className="flex flex-col gap-6 border-t border-slate-200 pt-10 md:border-t-0 md:border-l md:pt-0 md:pl-12">
+          <article className="flex flex-col gap-6 border-t border-slate-200 pt-10 md:border-t-0 md:pt-0">
             <ConeDrawing />
             <div>
               <h3 className="text-xl font-bold text-tuggi-dark mb-2">{t("coneLabel")}</h3>

@@ -196,6 +196,38 @@ test.describe("spec §4.4 — the contrast survives 360 px", () => {
     }
   });
 
+  /**
+   * Card #212, item 1. The two <article>s were already the same width — the
+   * grid gives them that, and the assertion below has always passed — while
+   * the *drawings* inside them were not: `md:pl-12` on column B came out of
+   * B's own box, so the same viewBox rendered 8-15% narrower there and the two
+   * <h3> landed 34.3 px out of line. Same coordinate space is the block's whole
+   * argument, so the drawing is what gets measured, not its container.
+   */
+  test("spec §4.2: side by side, the two drawings render at the same size", async ({ page }) => {
+    await page.goto(`/it${localizedPathname("it", "/technology")}`);
+
+    const drawings = page.locator("section article svg[aria-hidden='true']");
+    const headings = page.locator("section article h3");
+    await expect(drawings).toHaveCount(2);
+    await expect(headings).toHaveCount(2);
+
+    for (const width of [768, 1024, 1440]) {
+      await page.setViewportSize({ width, height: 900 });
+      const [radius, cone] = [
+        (await drawings.nth(0).boundingBox())!,
+        (await drawings.nth(1).boundingBox())!,
+      ];
+      const [radiusLabel, coneLabel] = [
+        (await headings.nth(0).boundingBox())!,
+        (await headings.nth(1).boundingBox())!,
+      ];
+
+      expect(Math.abs(cone.width - radius.width), `@${width}px: drawing width`).toBeLessThanOrEqual(1);
+      expect(Math.abs(coneLabel.y - radiusLabel.y), `@${width}px: label baseline`).toBeLessThanOrEqual(2);
+    }
+  });
+
   test("spec §4.3: side by side, the two columns keep the same height", async ({ page }) => {
     const messages = messagesFor("it");
     await page.setViewportSize({ width: 1280, height: 900 });
@@ -209,5 +241,167 @@ test.describe("spec §4.4 — the contrast survives 360 px", () => {
     // ...and the same height, from the grid and not from a min-height
     // (DS-A11Y-005): a comparison whose halves do not line up stops being one.
     expect(Math.abs(coneBox.height - radiusBox.height)).toBeLessThan(2);
+  });
+});
+
+/* -------------------------------------------------------------------------- */
+
+/** WCAG 2.2, relative luminance and contrast ratio, on sRGB channels. */
+function luminance([r, g, b]: number[]): number {
+  const channel = (value: number) => {
+    const c = value / 255;
+    return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+  };
+  return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b);
+}
+
+function contrast(ink: number[], background: number[]): number {
+  const [a, b] = [luminance(ink), luminance(background)].sort((x, y) => y - x);
+  return (a + 0.05) / (b + 0.05);
+}
+
+type Shape = {
+  column: "radius" | "cone";
+  part: string;
+  stroke: number[] | null;
+  fill: number[] | null;
+};
+
+/**
+ * Every named shape of both drawings, with its ink already composited over the
+ * section's own background.
+ *
+ * The compositing happens in a 1×1 canvas rather than by parsing the computed
+ * value, and that is not indirection: Tailwind v4 declares the neutral scale in
+ * `oklch`, Chrome hands `getComputedStyle().stroke` back as `lab(48.08 -2.03
+ * -16.58)`, and a check that reads `rgb(r, g, b)` out of that string gets three
+ * numbers that are not channels — it would report a contrast that is not real,
+ * in either direction. Canvas gives the browser's own sRGB, alpha included,
+ * which is what the eye receives.
+ */
+async function shapesOf(page: import("@playwright/test").Page): Promise<{
+  background: number[];
+  shapes: Shape[];
+}> {
+  return page.evaluate(() => {
+    const srgb = (color: string, background: string) => {
+      const canvas = document.createElement("canvas");
+      canvas.width = canvas.height = 1;
+      const ctx = canvas.getContext("2d")!;
+      ctx.fillStyle = background;
+      ctx.fillRect(0, 0, 1, 1);
+      ctx.fillStyle = color;
+      ctx.fillRect(0, 0, 1, 1);
+      return [...ctx.getImageData(0, 0, 1, 1).data].slice(0, 3);
+    };
+
+    const columns = [...document.querySelectorAll("section article")].filter((article) =>
+      article.querySelector("svg[aria-hidden='true']"),
+    );
+    const background = getComputedStyle(columns[0].closest("section")!).backgroundColor;
+
+    return {
+      background: srgb(background, "rgb(255, 255, 255)"),
+      shapes: columns.flatMap((article, index) =>
+        [...article.querySelectorAll("[data-part]")].map((shape) => {
+          const style = getComputedStyle(shape);
+          return {
+            column: index === 0 ? ("radius" as const) : ("cone" as const),
+            part: shape.getAttribute("data-part") ?? "",
+            stroke: style.stroke === "none" ? null : srgb(style.stroke, background),
+            fill: style.fill === "none" ? null : srgb(style.fill, background),
+          };
+        }),
+      ),
+    };
+  });
+}
+
+/**
+ * Spec §4.2 and §4.6, card #212 item 2 — the drawing has to argue what the
+ * caption argues.
+ *
+ * It argued the opposite: the cone was `--color-tuggi-primary`, 2.70:1 on
+ * white, against a neutral radius at 5.98:1 sitting on a filled disc. The
+ * column labelled "what the industry does" was the strongest object on the
+ * page, and the five identical places — the premise of the whole comparison —
+ * were legible in one column only (`fill-slate-300`, 1.49:1).
+ *
+ * The ruler here is deliberately relative, because that is what the spec sets:
+ * an absolute floor would have passed the version that shipped.
+ */
+test.describe("spec §4.2 and §4.6 — the drawing says what the caption says", () => {
+  const MINIMUM = 3; // SC 1.4.11, graphical object. Not 4.5:1 — that is text.
+
+  test("SC 1.4.11: the cone outweighs the radius, and no mark falls under 3:1", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto(`/en${localizedPathname("en", "/technology")}`);
+
+    const { background, shapes } = await shapesOf(page);
+    // Named locators over an aria-hidden drawing: if the geometry is ever
+    // rewritten and the names go with it, this goes red rather than green
+    // against nothing.
+    expect(shapes.map((shape) => `${shape.column}.${shape.part}`)).toEqual(
+      expect.arrayContaining([
+        "radius.reach",
+        "radius.place",
+        "radius.traveller",
+        "cone.reach",
+        "cone.cone",
+        "cone.sight",
+        "cone.place",
+        "cone.highlight",
+      ]),
+    );
+
+    const find = (column: string, part: string) =>
+      shapes.find((shape) => shape.column === column && shape.part === part)!;
+
+    const cone = contrast(find("cone", "cone").stroke!, background);
+    const radius = contrast(find("radius", "reach").stroke!, background);
+
+    // The comparison reads the right way round only if our mark is the strong
+    // one. This is the assertion the shipped version failed: 2.70 against 5.98.
+    expect(cone, `cone ${cone.toFixed(2)}:1 vs radius ${radius.toFixed(2)}:1`).toBeGreaterThan(radius);
+    expect(cone).toBeGreaterThanOrEqual(MINIMUM);
+
+    // And nothing that carries meaning drops out of sight while we are at it.
+    // The wedge's fill is an area, not a mark, and is not in this list: it is
+    // `--color-tuggi-primary/15` on purpose.
+    for (const shape of shapes) {
+      if (shape.stroke) {
+        const ratio = contrast(shape.stroke, background);
+        expect(ratio, `${shape.column}.${shape.part} stroke: ${ratio.toFixed(2)}:1`).toBeGreaterThanOrEqual(MINIMUM);
+      }
+    }
+    for (const place of shapes.filter((shape) => shape.part === "place")) {
+      const ratio = contrast(place.fill!, background);
+      expect(ratio, `${place.column}.place fill: ${ratio.toFixed(2)}:1`).toBeGreaterThanOrEqual(MINIMUM);
+    }
+  });
+
+  /**
+   * "Same traveller, same five places, same reach" is the sentence the file's
+   * header opens with, and it was true of the coordinates and false of the ink:
+   * the reach was drawn at 5.98:1 in A and 1.23:1 in B, the places at 5.46:1
+   * against 1.49:1. What differs between the columns is what the trigger
+   * *decides*, never what it is deciding about.
+   */
+  test("spec §4.2: the shared coordinate space is drawn with the same ink in both columns", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto(`/en${localizedPathname("en", "/technology")}`);
+
+    const { shapes } = await shapesOf(page);
+    for (const part of ["reach", "place"] as const) {
+      const [a, b] = ["radius", "cone"].map(
+        (column) => shapes.find((shape) => shape.column === column && shape.part === part)!,
+      );
+      expect(a, `radius.${part}`).toBeDefined();
+      expect(b, `cone.${part}`).toBeDefined();
+      expect(b.stroke, `${part}: stroke`).toEqual(a.stroke);
+      expect(b.fill, `${part}: fill`).toEqual(a.fill);
+    }
   });
 });
