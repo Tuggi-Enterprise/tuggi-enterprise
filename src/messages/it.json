@@ -892,6 +892,9 @@
   "A11y": {
     "openMenu": "Apri il menu",
     "closeMenu": "Chiudi il menu",
+    "menu": "Menu",
+    "mainMenu": "Menu principale",
+    "sitePages": "Pagine del sito",
     "breadcrumb": "Percorso di navigazione",
     "routeMap": "Mappa interattiva dell'itinerario",
     "toggleCaptions": "Attiva o disattiva i sottotitoli",

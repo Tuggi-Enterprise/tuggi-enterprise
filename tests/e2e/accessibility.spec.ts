@@ -30,10 +30,12 @@ import { localizedPathname } from "../../src/i18n/pathnames";
  *   - Transcripts for the three audio players (SC 1.2.1, finding 6). Missing
  *     content, not missing markup — there is nothing to assert until the text
  *     exists.
- *   - The header dropdown's missing `Escape` (1.4.13) and the mobile drawer's
- *     missing modal semantics (2.4.3 / 2.4.7). Both live in the menu, which
- *     this card was told not to touch; asserting them here would be a red test
- *     nobody is allowed to fix.
+ *
+ * The third half, added by #198, is the menu: findings 7 and 8 were carved out
+ * of the first pass because the header was being rewritten, and they are the
+ * two the audit could only describe as behaviour — dismissing a panel and
+ * escaping a drawer are keystrokes, not attributes, and a keystroke with no
+ * test disappears at the next refactor.
  */
 
 // ───────────────────────────────────────────────────────────────────────────
@@ -265,4 +267,177 @@ test.describe("Document structure and language", () => {
       });
     }
   }
+});
+
+// ───────────────────────────────────────────────────────────────────────────
+// Half 3 — the menu, findings 7 and 8
+// ───────────────────────────────────────────────────────────────────────────
+
+/**
+ * Both surfaces are located by `data-*`, never by their accessible name. The
+ * names are copy now (A11y namespace, #198): asserting against them would pin
+ * a test to a Portuguese string and break the day a translator improves it —
+ * which is the exact coupling that kept these two names in English for months.
+ *
+ * And they are copy in the full sense: the moment they left the JSX for
+ * src/messages, non-objective-sweep.spec.ts started reading them, and
+ * "Navegação principal" failed BR-COMUNICACAO-004 item 1 on the spot. The names
+ * that shipped say "menu", not "navigation".
+ */
+const LOCALE_TRIGGER = "[data-locale-trigger]";
+const LOCALE_PANEL = "[data-locale-panel]";
+const MENU_TRIGGER = "[data-menu-trigger]";
+const DRAWER = '[role="dialog"][aria-modal="true"]';
+
+test.describe("Locale dropdown is dismissible from the keyboard (SC 1.4.13)", () => {
+  test("Escape closes the panel and hands the focus back to its trigger", async ({ page }) => {
+    // SC 1.4.13 asks three things of additional content: hoverable, persistent
+    // and dismissible. The first two were already true; the third had no
+    // implementation at all — the only way out of this panel was the pointer.
+    await page.goto(localeUrl("pt", ""));
+
+    const trigger = page.locator(LOCALE_TRIGGER);
+    const panel = page.locator(LOCALE_PANEL);
+
+    await trigger.click();
+    await expect(panel).toBeVisible();
+    await expect(trigger).toHaveAttribute("aria-expanded", "true");
+
+    await page.keyboard.press("Escape");
+
+    await expect(panel).not.toBeVisible();
+    await expect(trigger).toHaveAttribute("aria-expanded", "false");
+    // Dismissing by dropping the focus to <body> trades SC 1.4.13 for SC 2.4.3.
+    await expect(trigger).toBeFocused();
+  });
+
+  test("the closed panel keeps its four links out of the tab order", async ({ page }) => {
+    // `visibility: hidden` is what does this, and the audit flagged it as the
+    // one thing already right about this dropdown. It is asserted so that
+    // swapping `invisible` for an opacity fade — which looks identical — fails
+    // here instead of adding four phantom tab stops to every page.
+    await page.goto(localeUrl("pt", ""));
+
+    const reachable = await page.locator(`${LOCALE_PANEL} a`).evaluateAll((nodes) =>
+      nodes.filter((node) => node.checkVisibility({ visibilityProperty: true })).length,
+    );
+    expect(reachable, "focusable links inside the closed locale panel").toBe(0);
+  });
+});
+
+test.describe("Mobile drawer is a modal (SC 2.4.3, SC 2.4.7)", () => {
+  // The drawer only exists below `lg:`. On the suite's desktop viewport it is
+  // `display: none`, and every assertion below would pass without meaning.
+  test.use({ viewport: { width: 390, height: 844 } });
+
+  test("the drawer declares itself a modal dialog with a localized name", async ({ page }) => {
+    await page.goto(localeUrl("pt", ""));
+
+    const drawer = page.locator(DRAWER);
+    await expect(drawer).toHaveCount(1);
+
+    // A dialog with no accessible name is an unnamed region to a screen
+    // reader, and next-intl renders the key path itself when a key is missing —
+    // in production, silently. So the assertion reads the expected value out of
+    // the message file rather than repeating it: the name is copy, and copy has
+    // one owner.
+    const messages = JSON.parse(
+      fs.readFileSync(path.join(SRC, "messages", "pt.json"), "utf8"),
+    ) as { A11y: Record<string, string> };
+    await expect(drawer).toHaveAttribute("aria-label", messages.A11y.menu);
+  });
+
+  test("the closed drawer is out of the tab order", async ({ page }) => {
+    // Finding 8's quiet half. The panel never leaves the DOM — it slides out
+    // with `-translate-x-full`, which does not touch focusability. Before
+    // `inert`, tabbing from the top of any page at mobile width walked through
+    // the whole hidden menu before reaching the page content.
+    await page.goto(localeUrl("pt", ""));
+
+    await expect(page.locator(DRAWER)).toHaveAttribute("inert", "");
+
+    const landed: string[] = [];
+    for (let i = 0; i < 25; i += 1) {
+      await page.keyboard.press("Tab");
+      const where = await page.evaluate((selector) => {
+        const el = document.activeElement;
+        return el?.closest(selector) ? (el.textContent ?? el.tagName).trim().slice(0, 40) : null;
+      }, DRAWER);
+      if (where) landed.push(`Tab #${i + 1} → ${where}`);
+    }
+
+    expect(landed, "focus reached the closed drawer").toEqual([]);
+  });
+
+  test("opening moves the focus in, and Tab never leaves the dialog", async ({ page }) => {
+    // The measurable consequence in the audit: with the drawer open, Tab
+    // reached links the backdrop covers, so the focus ring was invisible
+    // (SC 2.4.7) and the order stopped matching the page (SC 2.4.3).
+    // `aria-modal` alone does not do this — it hides the background from
+    // assistive technology and leaves the tab order untouched.
+    await page.goto(localeUrl("pt", ""));
+    await page.locator(MENU_TRIGGER).click();
+
+    const drawer = page.locator(DRAWER);
+    await expect(drawer).not.toHaveAttribute("inert", "");
+
+    const inside = async () =>
+      page.evaluate(
+        (selector) => !!document.activeElement?.closest(selector),
+        DRAWER,
+      );
+
+    expect(await inside(), "focus after opening the drawer").toBe(true);
+
+    const escaped: number[] = [];
+    for (let i = 0; i < 20; i += 1) {
+      await page.keyboard.press("Tab");
+      if (!(await inside())) escaped.push(i + 1);
+    }
+    expect(escaped, "Tab left the modal dialog").toEqual([]);
+
+    // Shift+Tab has its own edge, and a trap that only holds one way is not a
+    // trap: the first stop wraps backwards to the last.
+    for (let i = 0; i < 20; i += 1) {
+      await page.keyboard.press("Shift+Tab");
+      if (!(await inside())) escaped.push(-(i + 1));
+    }
+    expect(escaped, "Shift+Tab left the modal dialog").toEqual([]);
+  });
+
+  test("Escape closes the drawer and returns the focus to the button that opened it", async ({
+    page,
+  }) => {
+    await page.goto(localeUrl("pt", ""));
+
+    const trigger = page.locator(MENU_TRIGGER);
+    const drawer = page.locator(DRAWER);
+
+    await trigger.click();
+    await expect(drawer).not.toHaveAttribute("inert", "");
+    await expect(trigger).toHaveAttribute("aria-expanded", "true");
+
+    await page.keyboard.press("Escape");
+
+    await expect(drawer).toHaveAttribute("inert", "");
+    await expect(trigger).toHaveAttribute("aria-expanded", "false");
+    // Without this the focus falls to <body> under the now-inert drawer and the
+    // next Tab restarts at the top of the document.
+    await expect(trigger).toBeFocused();
+  });
+
+  test("the close button inside the drawer returns the focus the same way", async ({ page }) => {
+    // Same contract, second exit. The X sits inside the subtree that goes
+    // `inert` on close, so it is the exit that loses the focus if nobody
+    // catches it.
+    await page.goto(localeUrl("pt", ""));
+
+    const trigger = page.locator(MENU_TRIGGER);
+    await trigger.click();
+
+    await page.locator(`${DRAWER} button`).first().click();
+
+    await expect(page.locator(DRAWER)).toHaveAttribute("inert", "");
+    await expect(trigger).toBeFocused();
+  });
 });

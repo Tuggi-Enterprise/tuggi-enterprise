@@ -383,16 +383,27 @@ test.describe("main menu", () => {
 
       const expectedHrefs = VISIBLE_NAV_ITEMS.map((item) => url(locale, item.href));
 
-      const desktop = await page
-        .locator('nav[aria-label="Main Navigation"] a[data-nav-item]')
+      // `data-nav-scope`, not the landmark name: the names are copy now
+      // (A11y.mainNavigation / A11y.mobileNavigation, #198) and change with the
+      // locale, while this loop runs over four of them. Asserting the hook
+      // resolves before reading it is what keeps a renamed attribute from
+      // arriving here as an empty list instead of a failure.
+      const desktopNav = page.locator('nav[data-nav-scope="desktop"]');
+      await expect(desktopNav, `desktop nav in ${locale}`).toHaveCount(1);
+
+      const desktop = await desktopNav
+        .locator("a[data-nav-item]")
         .evaluateAll((nodes) => nodes.map((node) => node.getAttribute("href")));
       expect(desktop, `desktop menu in ${locale}`).toEqual(expectedHrefs);
 
       // The panel used to carry a different set of items than the row above —
       // including one (Contact) the desktop never had. One registry, two
       // presentations.
-      const mobile = await page
-        .locator('nav[aria-label="Mobile Navigation"] a[data-nav-item]')
+      const mobileNav = page.locator('nav[data-nav-scope="mobile"]');
+      await expect(mobileNav, `mobile nav in ${locale}`).toHaveCount(1);
+
+      const mobile = await mobileNav
+        .locator("a[data-nav-item]")
         .evaluateAll((nodes) => nodes.map((node) => node.getAttribute("href")));
       expect(mobile, `mobile panel in ${locale}`).toEqual(expectedHrefs);
     }
@@ -416,7 +427,14 @@ test.describe("main menu", () => {
 
     for (const locale of LOCALES) {
       await page.goto(`/${locale}`);
-      const header = page.locator('nav[aria-label="Main Navigation"]');
+      const header = page.locator('nav[data-nav-scope="desktop"]');
+      // The loop below asserts absences, and an absence inside a locator that
+      // matched nothing is free. So the locator itself is asserted first: a
+      // renamed or dropped `data-nav-scope` fails here rather than turning the
+      // whole test green-because-empty. (The same reason the second loop
+      // exists — one guards the locator, the other guards the emptiness of
+      // `hidden`.)
+      await expect(header, `desktop nav in ${locale}`).toHaveCount(1);
       for (const item of hidden) {
         await expect(header.locator(`a[href="${url(locale, item.href)}"]`)).toHaveCount(0);
       }

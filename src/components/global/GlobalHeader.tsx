@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useCallback, useState, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { Link, usePathname } from "@/i18n/routing";
@@ -8,6 +8,13 @@ import Image from "next/image";
 import { ChevronDown, Menu, X, Smartphone } from "lucide-react";
 import { VISIBLE_NAV_ITEMS } from "@/lib/nav";
 import type { SiteLocale } from "@/i18n/locales";
+
+/**
+ * The stops a focus trap has to cycle through. Deliberately narrow: everything
+ * the drawer renders is a link or a button, and a wider selector would start
+ * catching things whose focusability depends on state we do not control.
+ */
+const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
 export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
   const t = useTranslations("Header");
@@ -22,6 +29,23 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
   const params = useParams();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLocaleOpen, setIsLocaleOpen] = useState(false);
+  const localeButtonRef = useRef<HTMLButtonElement>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const drawerRef = useRef<HTMLDivElement>(null);
+
+  /**
+   * Closing the drawer from inside it — the X, the backdrop, Escape — has to
+   * hand the focus back to the control that opened it. Without this the drawer
+   * goes `inert` under the focused element and the focus falls to <body>, so
+   * the next Tab restarts at the top of the document (SC 2.4.3).
+   *
+   * A navigation is the one close that must NOT do it: the visitor is leaving
+   * the page, and those call setIsMobileMenuOpen directly.
+   */
+  const closeMobileMenu = useCallback(() => {
+    setIsMobileMenuOpen(false);
+    menuButtonRef.current?.focus();
+  }, []);
 
   const locales: { code: SiteLocale; label: string }[] = [
     { code: "en", label: "EN" },
@@ -52,27 +76,105 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
     };
   }, [isLocaleOpen]);
 
+  /**
+   * SC 1.4.13, "dismissible": additional content that appears over the page has
+   * to go away without moving the pointer, and Escape is the mechanism the
+   * criterion names. The panel closes and the focus returns to its trigger —
+   * dismissing it by dropping the focus to <body> would trade one failure for
+   * another (SC 2.4.3).
+   */
+  useEffect(() => {
+    if (!isLocaleOpen) return;
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+      setIsLocaleOpen(false);
+      localeButtonRef.current?.focus();
+    };
+
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [isLocaleOpen]);
+
+  /**
+   * The drawer is a modal dialog, and this is the half of that promise the
+   * markup cannot make on its own (audit finding 8, SC 2.4.3 and SC 2.4.7).
+   *
+   * `aria-modal` tells assistive technology to ignore what is behind the
+   * dialog, but it does nothing to the Tab order: without a trap, Tab walks out
+   * of the drawer into the links the backdrop covers, where the focus ring is
+   * invisible. So: focus in on open, cycle at both edges, Escape closes, and
+   * `inert` on the closed drawer keeps the off-screen copy of the menu out of
+   * the Tab order at mobile widths — `-translate-x-full` never removed it.
+   */
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+    const drawer = drawerRef.current;
+    if (!drawer) return;
+
+    const stops = () => Array.from(drawer.querySelectorAll<HTMLElement>(FOCUSABLE));
+    stops()[0]?.focus();
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeMobileMenu();
+        return;
+      }
+      if (event.key !== "Tab") return;
+
+      const list = stops();
+      if (list.length === 0) return;
+      const first = list[0];
+      const last = list[list.length - 1];
+      const active = document.activeElement;
+      const outside = !(active instanceof HTMLElement) || !drawer.contains(active);
+
+      if (event.shiftKey ? active === first || outside : active === last || outside) {
+        event.preventDefault();
+        (event.shiftKey ? last : first).focus();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isMobileMenuOpen, closeMobileMenu]);
+
   return (
     <>
       <header className="sticky top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
-        {/* These two landmark names are still English literals, and that is a known
-            open finding (SC 3.1.2), not an oversight. tests/e2e/routing.spec.ts
-            locates the desktop row and the mobile panel by
-            `nav[aria-label="Main Navigation"]` / `"Mobile Navigation"` to assert
-            they list the same destinations; translating them turns one of those
-            assertions red and — worse — makes the "no unpublished item in the
-            menu" one pass against an empty locator. Moving that spec to a
-            data-* hook is `qa`'s call, and the translated names go in with it.
-            The icon-only controls below do not have that coupling and are
-            already translated. */}
-        <nav className="page-shell h-20 flex items-center justify-between" aria-label="Main Navigation">
+        {/* `data-nav-scope` is the locator tests/e2e/routing.spec.ts uses to tell
+            the desktop row from the mobile panel. It used to key off the two
+            landmark names, which is why they stayed English literals long after
+            the rest of the header was translated: a translated name turned one
+            assertion red and made another pass against an empty locator. The
+            hook is invariant across locales, so the names are free to be copy
+            again — and the spec asserts the hook resolves to exactly one nav,
+            which is what keeps "empty locator" from reading as "nothing to
+            find".
+
+            Neither name says "navigation". BR-COMUNICACAO-004 item 1 forbids
+            that word as something Tuggi delivers (BR-MAPA-005), and the sweep
+            in non-objective-sweep.spec.ts reads src/messages — so the English
+            literals were invisible to it and the translated ones were not. The
+            landmark role is announced anyway; the name does not have to repeat
+            it. */}
+        <nav
+          data-nav-scope="desktop"
+          className="page-shell h-20 flex items-center justify-between"
+          aria-label={tA11y("mainMenu")}
+        >
 
           {/* Left: Logo */}
           <div className="flex items-center gap-4">
             <button
+              ref={menuButtonRef}
+              data-menu-trigger
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="lg:hidden p-2 text-slate-600 hover:text-tuggi-primary-text transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text rounded-lg"
               aria-label={isMobileMenuOpen ? tA11y("closeMenu") : tA11y("openMenu")}
+              aria-expanded={isMobileMenuOpen}
             >
               {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -109,6 +211,8 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
             {/* Locale Dropdown */}
             <div className="relative">
               <button
+                ref={localeButtonRef}
+                data-locale-trigger
                 onClick={() => setIsLocaleOpen(!isLocaleOpen)}
                 className="text-sm font-bold text-slate-500 hover:text-tuggi-primary-text uppercase flex items-center gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text rounded-lg px-2 py-1.5 transition-colors"
                 aria-expanded={isLocaleOpen}
@@ -116,7 +220,13 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
                 <span>{currentLocale.toUpperCase()}</span>
                 <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${isLocaleOpen ? 'rotate-180 text-tuggi-primary' : ''}`} />
               </button>
-              <div className={`absolute right-0 mt-3 w-36 bg-white border border-gray-100 rounded-2xl shadow-2xl transition-all duration-200 z-50 overflow-hidden ${isLocaleOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible translate-y-1'}`}>
+              {/* `invisible` when closed is what keeps these four links out of
+                  the Tab order, and the audit checked it on purpose — it is the
+                  one thing about this dropdown that was already right. */}
+              <div
+                data-locale-panel
+                className={`absolute right-0 mt-3 w-36 bg-white border border-gray-100 rounded-2xl shadow-2xl transition-all duration-200 z-50 overflow-hidden ${isLocaleOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible translate-y-1'}`}
+              >
                 <div className="p-1">
                   {locales.map((loc) => (
                     <Link
@@ -164,16 +274,27 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
         </nav>
       </header>
 
-      {/* Mobile Menu Backdrop */}
+      {/* Mobile Menu Backdrop — decorative. Its click is a shortcut, not the
+          keyboard path out: that is Escape and the close button below. */}
       {isMobileMenuOpen && (
         <div
+          aria-hidden="true"
           className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] transition-opacity duration-300 lg:hidden"
-          onClick={() => setIsMobileMenuOpen(false)}
+          onClick={closeMobileMenu}
         />
       )}
 
       {/* Mobile Menu Panel */}
       <div
+        ref={drawerRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label={tA11y("menu")}
+        // The panel never leaves the DOM — it slides. `inert` is what makes the
+        // closed, off-screen copy stop being tabbable at mobile widths, where
+        // `lg:hidden` does not apply; `-translate-x-full` alone kept every link
+        // in the Tab order behind the page.
+        inert={!isMobileMenuOpen}
         className={`fixed inset-y-0 left-0 w-[85%] max-w-[320px] bg-white z-[110] shadow-2xl transition-transform duration-300 ease-in-out lg:hidden flex flex-col h-full ${
           isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
@@ -191,8 +312,8 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
             />
           </Link>
           <button
-            onClick={() => setIsMobileMenuOpen(false)}
-            className="p-2 text-slate-400 hover:text-slate-900 transition-colors rounded-lg"
+            onClick={closeMobileMenu}
+            className="p-2 text-slate-400 hover:text-slate-900 transition-colors rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text"
             aria-label={tA11y("closeMenu")}
           >
             <X className="w-6 h-6" />
@@ -201,7 +322,7 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
 
         {/* Navigation Links */}
         <div className="flex-1 overflow-y-auto bg-white py-4">
-          <nav className="flex flex-col" aria-label="Mobile Navigation">
+          <nav data-nav-scope="mobile" className="flex flex-col" aria-label={tA11y("sitePages")}>
             {VISIBLE_NAV_ITEMS.map((item) => (
               <Link
                 key={item.href}

@@ -892,6 +892,9 @@
   "A11y": {
     "openMenu": "Abrir menu",
     "closeMenu": "Fechar menu",
+    "menu": "Menu",
+    "mainMenu": "Menu principal",
+    "sitePages": "Páginas do site",
     "breadcrumb": "Trilha de navegação",
     "routeMap": "Mapa interativo do roteiro",
     "toggleCaptions": "Ativar ou desativar legendas",

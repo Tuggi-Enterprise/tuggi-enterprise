@@ -171,11 +171,6 @@ const SCENE =
   "Content of an illustration, not prose: a painted street name, a coordinate, a radius. It reads " +
   "the same in the four locales and has no sentence to translate.";
 
-const PENDING_NAV_LOCATOR =
-  "Coupled to tests/e2e/routing.spec.ts, which locates the desktop row and the mobile panel by " +
-  "these exact names; translating them makes one assertion pass against an empty locator. The " +
-  "note in GlobalHeader.tsx has the detail — moving that spec to a data-* hook is `qa`'s call.";
-
 const WAIVED: Waiver[] = [
   // ── Brand marks and legal identifiers ────────────────────────────────────
   { file: "app/[locale]/d/[slug]/opengraph-image.tsx", texts: ["TUGGI"], reason: BRAND },
@@ -219,12 +214,11 @@ const WAIVED: Waiver[] = [
   // ── Known debt, each with the card that closes it ────────────────────────
   // TechEngine's seven English strings were here until #193 deleted the
   // component: the waiver goes with the file, which is what the second test
-  // below enforces.
-  {
-    file: "components/global/GlobalHeader.tsx",
-    texts: ["Main Navigation", "Mobile Navigation"],
-    reason: PENDING_NAV_LOCATOR,
-  },
+  // below enforces. GlobalHeader's "Main Navigation" / "Mobile Navigation" left
+  // the same way in #198 — the routing spec that pinned them now locates the
+  // two navs by `data-nav-scope`, so the names became copy (A11y namespace).
+  // This section is empty on purpose: no English literal in src/ is waiting on
+  // a card any more. The three above it are permanent exemptions, not debt.
 ];
 
 function isWaived(finding: Finding): boolean {
