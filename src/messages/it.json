@@ -175,6 +175,11 @@
     "sample3Name": "Ponte di Rialto",
     "sample3City": "Venezia"
   },
+  "Proof": {
+    "points": "<strong>Oltre {mappedPointMillions} milioni</strong> di punti mappati, in {coverageCountries} paesi.",
+    "guides": "<strong>Oltre {audioGuidesFloor, number}</strong> audioguide prodotte, con audio in {contentLanguages} lingue.",
+    "since": "In attività dal {operatingSince}."
+  },
   "CityOS": {
     "Hero": {
       "title": "L'Infrastruttura Definitiva per le Destinazioni Turistiche Intelligenti (DTI).",

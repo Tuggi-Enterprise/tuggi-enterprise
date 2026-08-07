@@ -4,6 +4,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { LoaderCircle, Navigation, Pause, Play, Volume2 } from "lucide-react";
 import { sendGAEvent } from "@next/third-parties/google";
+import type { Surface } from "./surface";
 
 /**
  * The site's audio player. There is one, and this is it — spec §1 of
@@ -105,8 +106,6 @@ function formatTime(seconds: number): string {
   const total = Math.floor(seconds);
   return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, "0")}`;
 }
-
-type Surface = "light" | "dark";
 
 type AudioSampleCardProps = {
   sample: AudioSample;

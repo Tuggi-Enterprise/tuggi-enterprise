@@ -396,11 +396,13 @@ test.describe("BR-COMUNICACAO-002 / BR-COMUNICACAO-003 — a decision and its co
 /**
  * The sentences the module feeds, and the page each one reaches the visitor on.
  *
- * Every string the module feeds is in this map. It used to carry one written
- * exception — `Drive.Behavior.step1Desc`, fed by a component nothing imported,
- * so the sentence reached no page. The component and its message block are
- * gone (#196), and so is the exception: a waiver that outlives what it excused
- * is a waiver with no owner.
+ * Every string the module feeds is in this map, or in NOT_MOUNTED_YET below —
+ * and until now that was a claim in a comment rather than a check. It is a
+ * check as of #193: the exhaustiveness test at the end of this section walks
+ * every message that interpolates a module value and demands one of the two.
+ * The exception it replaces was `Drive.Behavior.step1Desc`, fed by a component
+ * nothing imported, so the sentence reached no page; the component and its
+ * message block went with #196.
  */
 const PUBLISHED_ON: Record<string, string[]> = {
   "/": [
@@ -429,6 +431,23 @@ const PUBLISHED_ON: Record<string, string[]> = {
     "Legal.Accessibility.s1Item1",
     "Legal.Accessibility.s2Item3",
   ],
+};
+
+/**
+ * Message keys whose component exists and is not on a route yet, with the card
+ * that mounts it.
+ *
+ * A component delivered before it is placed is the ordinary shape of this
+ * repo's work — the spec is one card and the reordering is another — and the
+ * honest way to carry it is a named, dated exception rather than a silent hole
+ * in the map above. The entry dies when the card lands: the moment the block
+ * renders, the rendered half below is where its sentences have to appear.
+ */
+const NOT_MOUNTED_YET: Record<string, string> = {
+  Proof:
+    "ProofBlock (card #193, component 4.2) is built and deliberately not " +
+    "placed: the home reordering is #194. When #194 mounts it, Proof.points, " +
+    "Proof.guides and Proof.since move into PUBLISHED_ON under '/'.",
 };
 
 function localeUrl(locale: string, pagePath: string): string {
@@ -463,16 +482,55 @@ async function publishedText(page: Page): Promise<string> {
   });
 }
 
-/** The sentence as a visitor should read it: markup stripped, values filled. */
-function resolved(message: string): string {
+/**
+ * The sentence as a visitor should read it: markup stripped, values filled.
+ *
+ * Two ICU shapes, because the module carries two kinds of figure. A bare
+ * `{name}` is rendered by formatjs as `String(value)` — which is why "2
+ * milhões" is spelled out around a `2` and never around a formatted number.
+ * `{name, number}` is the locale's own formatting, and the four-digit figures
+ * need it: 16,000 in en, 16.000 in pt, and a bare slot there would publish
+ * "16000" in every language.
+ */
+function resolved(message: string, locale: string): string {
   let out = message.replace(/<[^>]+>/g, "");
   for (const [name, value] of Object.entries(PRODUCT_FACTS)) {
     out = out.replaceAll(`{${name}}`, String(value));
+    if (typeof value === "number") {
+      out = out.replace(
+        new RegExp(`\\{\\s*${name}\\s*,\\s*number\\s*\\}`, "g"),
+        value.toLocaleString(locale),
+      );
+    }
   }
   return out;
 }
 
 test.describe("DS-COPY-005 — the figure reaches the page, in every language", () => {
+  // The map above is only worth what its coverage is. A sentence that reads a
+  // module value and appears in neither list is a figure nobody checks the
+  // rendering of — which is how `Drive.Behavior.step1Desc` published to no one
+  // for months.
+  test("DS-COPY-005: every sentence fed by the module is placed, or named as not placed", () => {
+    const placed = new Set(Object.values(PUBLISHED_ON).flat());
+    const names = Object.keys(PRODUCT_FACTS);
+    const unaccounted: string[] = [];
+
+    for (const [key, value] of flatMessages("pt")) {
+      if (!placeholdersIn(value).some((name) => names.includes(name))) continue;
+      if (placed.has(key)) continue;
+      if (NOT_MOUNTED_YET[key.split(".")[0]]) continue;
+      unaccounted.push(key);
+    }
+
+    expect(
+      unaccounted,
+      "These sentences interpolate a product figure and no page claims them. " +
+        "Either add the key to PUBLISHED_ON under the route that serves it, or " +
+        "add its namespace to NOT_MOUNTED_YET with the card that will mount it.",
+    ).toEqual([]);
+  });
+
   for (const locale of LOCALES) {
     for (const [pagePath, keys] of Object.entries(PUBLISHED_ON)) {
       test(`DS-COPY-005: /${locale}${pagePath} serves every product figure resolved`, async ({
@@ -493,7 +551,7 @@ test.describe("DS-COPY-005 — the figure reaches the page, in every language", 
           // the module does not know stays in the text as braces — both fail
           // here rather than in front of a visitor.
           expect(served, `${key} is not served resolved on /${locale}${pagePath}`).toContain(
-            resolved(message!),
+            resolved(message!, locale),
           );
         }
 

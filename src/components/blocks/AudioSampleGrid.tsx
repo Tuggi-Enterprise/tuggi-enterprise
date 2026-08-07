@@ -1,4 +1,5 @@
 import { AudioSampleCard, type AudioSample } from "./AudioSampleCard";
+import type { Surface } from "./surface";
 
 /**
  * The layout around the player — spec §1.3 and §1.6 of
@@ -16,7 +17,7 @@ type AudioSampleGridProps = {
    * (Hick's law, *Laws of UX*).
    */
   samples: readonly AudioSample[];
-  surface?: "light" | "dark";
+  surface?: Surface;
   /** `"none"` for a page that renders many of these — see AudioSampleCard. */
   preload?: "none" | "metadata";
 };

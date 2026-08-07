@@ -175,6 +175,11 @@
     "sample3Name": "Rialto Bridge",
     "sample3City": "Venice"
   },
+  "Proof": {
+    "points": "<strong>More than {mappedPointMillions} million</strong> mapped points, across {coverageCountries} countries.",
+    "guides": "<strong>More than {audioGuidesFloor, number}</strong> audio guides produced, with audio in {contentLanguages} languages.",
+    "since": "Operating since {operatingSince}."
+  },
   "CityOS": {
     "Hero": {
       "title": "The Definitive Infrastructure for Smart Tourism Destinations (DTI).",

@@ -110,8 +110,8 @@ export const SITE_INTERFACE_LANGUAGES = LOCALES.length;
  * travellers since" are different dates: the first play by an external user is
  * 2026-01-08.
  *
- * No peça publishes it today. The field exists so that the first one to do it
- * reads the year from here instead of picking one.
+ * `ProofBlock` is what publishes it — the third line of the proof block, and
+ * the only claim on the site that is about time rather than about size.
  */
 export const OPERATING_SINCE = 2025;
 
@@ -194,6 +194,34 @@ export const COVERAGE_COUNTRIES = 48;
  * fail here with nothing to fix.
  */
 export const COVERAGE_REGIONS_FLOOR = 900;
+
+/**
+ * Audio guides produced, published as a floor — **BR-COMUNICACAO-002, item 2**,
+ * measured at **16,910** in production on 2026-08-06
+ * (`docs/dev/medicao-constantes-site-2026-08.md`).
+ *
+ * **This is the content figure, and it is two orders of magnitude below the
+ * archive** — 16,910 guides against 2,042,796 mapped points, 0.83%. Item 2
+ * exists because the two get mixed: the archive number may never carry a
+ * content noun, and this one is the only one that may. So "2 milhões de
+ * histórias" is false and "16 mil áudio-guias" is true, and no sentence gets
+ * to borrow the bigger figure for the better noun.
+ *
+ * **The floor is the thousand**, not the million of item 8, and the reason is
+ * the direction of travel rather than a rounding preference: the archive moves
+ * both ways (it shrank 48,120 rows in 24 days), while produced guides only
+ * accumulate — the pipeline does not un-produce a guide. A thousand-floor here
+ * does not depend on how fresh the last measurement is.
+ *
+ * **What it may not be paired with.** Item 3: 48 countries and 900 regions are
+ * *presence*, and a content noun next to either of them claims narration where
+ * there is none — France, Canada and Ireland are 27% of the map with zero
+ * guides. The country figure that may carry a content noun is 14, and the
+ * region figure is 79; neither is published today. What this figure is paired
+ * with in the copy is the language catalogue (BR-IDIOMA-001 item 2), which is
+ * a fact about the guides themselves.
+ */
+export const AUDIO_GUIDES_FLOOR = 16_000;
 
 // ── Accessibility measurement — BR-COMUNICACAO-006 ──────────────────────────
 
@@ -285,6 +313,18 @@ export const DECIDED_FACTS: readonly DecidedFact[] = [
     rule: "BR-COMUNICACAO-002 item 9",
   },
   {
+    name: "AUDIO_GUIDES_FLOOR",
+    value: AUDIO_GUIDES_FLOOR,
+    placeholder: "audioGuidesFloor",
+    rule: "BR-COMUNICACAO-002 item 2",
+  },
+  {
+    name: "OPERATING_SINCE",
+    value: OPERATING_SINCE,
+    placeholder: "operatingSince",
+    rule: "BR-COMUNICACAO-002 item 6",
+  },
+  {
     name: "A11Y_SITE_AUDIT_DATE",
     value: A11Y_SITE_AUDIT_DATE,
     placeholder: "a11ySiteAuditDate",
@@ -317,5 +357,6 @@ export const PRODUCT_FACTS = {
   operatingSince: OPERATING_SINCE,
   mappedPointMillions: MAPPED_POINT_MILLIONS,
   coverageCountries: COVERAGE_COUNTRIES,
+  audioGuidesFloor: AUDIO_GUIDES_FLOOR,
   a11ySiteAuditDate: A11Y_SITE_AUDIT_DATE,
 } as const;
