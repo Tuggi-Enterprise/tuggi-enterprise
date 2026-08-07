@@ -96,23 +96,6 @@
       "phoneAlt": "TUGGI map showing nearby audio stories, events and trails",
       "nowPlaying": "On your left: Slave's Grotto"
     },
-    "Simulator": {
-      "tag": "Core Tech Demo",
-      "title": "Hands-Free Contextual Triggering",
-      "subtitle": "Our City OS engine uses bearing-logic and offline caching to trigger narratives exactly at the right monument, without the driver ever looking at a screen.",
-      "playing": "Playing: Historical Monument",
-      "approaching": "Approaching Geofence...",
-      "poiName": "National Museum",
-      "playingLabel": "Playing",
-      "playingText": "On your left: National Museum",
-      "ccLabel": "Caption",
-      "ccTranscriptTitle": "Active Captions (WCAG 2.1 AA)",
-      "ccTranscriptText": "To your left, National Museum, observe the preserved architecture of this monument erected in the 18th century, which represents a fundamental historical landmark for the region and symbolizes cultural resistance from the colonial period...",
-      "navigating": "Navigating",
-      "liveDemo": "LIVE DEMO",
-      "mainStreet": "MAIN STREET",
-      "historicAve": "HISTORIC AVE"
-    },
     "EnterpriseFork": {
       "b2cTitle": "For Tourists & Travelers",
       "b2cDesc": "Download the app and transform your next road trip into a GPS-guided cultural immersion that is hands-free.",
@@ -241,11 +224,13 @@
       "title": "Enterprise-Grade Spatial Audio Infrastructure.",
       "subtitle": "Built for scale and resilience."
     },
-    "Engine": {
-      "title": "Precision Geofencing & Vector Filtering.",
-      "desc": "Standard GPS creates false positives. TUGGI uses directional bearing-logic.",
-      "inputLabel": "Raw Sensor Telemetry",
-      "outputLabel": "Contextual Audio Payload"
+    "Comparison": {
+      "title": "Being nearby is not having it in front of you",
+      "subtitle": "Two ways of deciding when the story starts. The difference is the direction you are moving in.",
+      "radiusLabel": "Proximity radius",
+      "radiusBody": "This is the industry standard. Everything inside the radius counts the same, including what you have already left behind. What comes out is a list of what exists around you.",
+      "coneLabel": "Direction of movement",
+      "coneBody": "This is what Tuggi does. The direction you are moving in picks a single place: the one in front of your eyes. That is the story you hear, at the moment it comes into view."
     },
     "Data": {
       "col2Title": "Serverless & Mega-Event Ready.",

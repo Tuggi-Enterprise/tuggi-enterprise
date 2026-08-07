@@ -10,7 +10,9 @@ const ROAD_X = 150;
 const CAR_START_Y = 520;
 const CAR_END_Y = 80;
 const POI_Y = 335;
-// 30s countdown at end (same as InteractiveSimulator on home page)
+// 30s countdown at end. It used to say "same as InteractiveSimulator on home
+// page"; that component was an orphan and left with card #193, and nothing on
+// the home page paces itself against this number any more.
 const WAIT_STEPS = 30000 / 40;
 const SHRINK_PER_STEP = (CAR_START_Y - CAR_END_Y) / WAIT_STEPS;
 

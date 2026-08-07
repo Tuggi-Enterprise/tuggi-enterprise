@@ -96,23 +96,6 @@
       "phoneAlt": "Mappa di TUGGI con storie audio, eventi e itinerari nelle vicinanze",
       "nowPlaying": "Alla tua sinistra: Grotta degli Schiavi"
     },
-    "Simulator": {
-      "tag": "Demo Tecnologia Core",
-      "title": "Attivazione Contestuale a Mani Libere",
-      "subtitle": "Il nostro motore City OS usa la logica di direzione (bearing) e la cache offline per attivare i racconti esattamente al monumento giusto, senza che il conducente guardi mai lo schermo.",
-      "playing": "In riproduzione: Monumento Storico",
-      "approaching": "Avvicinamento al Geofence...",
-      "poiName": "Museo Nazionale",
-      "playingLabel": "In riproduzione",
-      "playingText": "Alla tua sinistra: Museo Nazionale",
-      "ccLabel": "Sottotitolo",
-      "ccTranscriptTitle": "Sottotitoli Attivi (WCAG 2.1 AA)",
-      "ccTranscriptText": "Alla tua sinistra, il Museo Nazionale: osserva l'architettura conservata di questo monumento eretto nel XVIII secolo, che rappresenta un punto di riferimento storico fondamentale per la regione e simboleggia la resistenza culturale dell'epoca coloniale...",
-      "navigating": "Navigazione",
-      "liveDemo": "DEMO LIVE",
-      "mainStreet": "VIA PRINCIPALE",
-      "historicAve": "VIALE STORICO"
-    },
     "EnterpriseFork": {
       "b2cTitle": "Per Turisti e Viaggiatori",
       "b2cDesc": "Scarica l'app e trasforma il tuo prossimo viaggio in un'immersione culturale guidata dal GPS, a mani libere.",
@@ -241,11 +224,13 @@
       "title": "Infrastruttura di Audio Spaziale di Livello Enterprise.",
       "subtitle": "Costruita per scalabilità e resilienza."
     },
-    "Engine": {
-      "title": "Geofencing di Precisione e Filtraggio Vettoriale.",
-      "desc": "Il GPS standard crea falsi positivi. TUGGI usa la logica direzionale (bearing).",
-      "inputLabel": "Telemetria Grezza dei Sensori",
-      "outputLabel": "Payload Audio Contestuale"
+    "Comparison": {
+      "title": "Essere vicino non è averlo davanti",
+      "subtitle": "Due modi di decidere quando comincia la storia. La differenza sta nella direzione in cui ti muovi.",
+      "radiusLabel": "Raggio di prossimità",
+      "radiusBody": "È lo standard del settore. Tutto ciò che rientra nel raggio conta allo stesso modo, compreso quello che ti sei già lasciato alle spalle. Il risultato è un elenco di ciò che esiste intorno a te.",
+      "coneLabel": "Direzione del movimento",
+      "coneBody": "È quello che fa Tuggi. La direzione in cui ti muovi sceglie un solo luogo: quello che hai davanti agli occhi. È la sua storia che ascolti, nel momento in cui compare."
     },
     "Data": {
       "col2Title": "Serverless e Pronta per i Grandi Eventi.",

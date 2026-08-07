@@ -171,10 +171,6 @@ const SCENE =
   "Content of an illustration, not prose: a painted street name, a coordinate, a radius. It reads " +
   "the same in the four locales and has no sentence to translate.";
 
-const PENDING_193 =
-  "Card #193 replaces this component. Translating condemned text is pure cost — if #193 leaves " +
-  "the cycle, /technology is a new card, not a retrofit of this one.";
-
 const PENDING_NAV_LOCATOR =
   "Coupled to tests/e2e/routing.spec.ts, which locates the desktop row and the mobile panel by " +
   "these exact names; translating them makes one assertion pass against an empty locator. The " +
@@ -221,11 +217,9 @@ const WAIVED: Waiver[] = [
   { file: "components/blocks/TechHero.tsx", texts: ["geofence_trigger.json"], reason: SCENE },
 
   // ── Known debt, each with the card that closes it ────────────────────────
-  {
-    file: "components/blocks/TechEngine.tsx",
-    texts: ["THE BLACK BOX", "lat, lng", "heading", "speed", "TUGGI Engine", "Audio.play()", "200 OK"],
-    reason: PENDING_193,
-  },
+  // TechEngine's seven English strings were here until #193 deleted the
+  // component: the waiver goes with the file, which is what the second test
+  // below enforces.
   {
     file: "components/global/GlobalHeader.tsx",
     texts: ["Main Navigation", "Mobile Navigation"],

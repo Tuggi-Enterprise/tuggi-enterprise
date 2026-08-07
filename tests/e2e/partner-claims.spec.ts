@@ -995,13 +995,11 @@ const CLAIM_FAMILIES: ClaimFamily[] = [
           'A belief, and it says so ("we believe exploration should be…"). It ' +
           "asserts nothing the product does.",
       },
-      {
-        keys: ["Home.Simulator.subtitle"],
-        why:
-          'The en and es strings say the driver never has to look at a screen — ' +
-          "the hands-free wording the fourth wave deliberately left in consumer " +
-          "copy as a copy card, not an absolute of its own.",
-      },
+      // Home.Simulator.subtitle was waived here for the hands-free absolute in
+      // its en and es strings. #193 deleted the block: both components that
+      // read it (TriggerSimulator, InteractiveSimulator) were orphans, and
+      // orphan copy goes with them. The waiver dies with the string it covered
+      // — the "every waived key still exists" test below is what says so.
     ],
   },
   {

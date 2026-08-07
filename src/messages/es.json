@@ -96,23 +96,6 @@
       "phoneAlt": "Mapa de TUGGI que muestra historias en audio, eventos y rutas cercanas",
       "nowPlaying": "A tu izquierda: Gruta de los Esclavos"
     },
-    "Simulator": {
-      "tag": "Demostración Tecnológica",
-      "title": "Activación Contextual Hands-Free",
-      "subtitle": "Nuestro motor City OS utiliza lógica de rumbo y caché offline para activar narrativas exactamente en el monumento correcto, sin que el conductor tenga que mirar nunca una pantalla.",
-      "playing": "Reproduciendo: Monumento Histórico",
-      "approaching": "Acercándose a la Geocerca...",
-      "poiName": "Museo Nacional",
-      "playingLabel": "Reproduciendo",
-      "playingText": "A su izquierda: Museo Nacional",
-      "ccLabel": "Subtítulos",
-      "ccTranscriptTitle": "Subtítulos Activos (WCAG 2.1 AA)",
-      "ccTranscriptText": "A su izquierda, Museo Nacional, observe la arquitectura preservada de este monumento erigido en el siglo XVIII, que representa un hito histórico fundamental para la región y simboliza la resistencia cultural del período colonial...",
-      "navigating": "Navegando",
-      "liveDemo": "DEMO EN VIVO",
-      "mainStreet": "CALLE PRINCIPAL",
-      "historicAve": "AV. HISTÓRICA"
-    },
     "EnterpriseFork": {
       "b2cTitle": "Para Turistas y Viajeros",
       "b2cDesc": "Descarga la aplicación y transforma tu próximo viaje en coche en una inmersión cultural guiada por GPS y hands-free.",
@@ -241,11 +224,13 @@
       "title": "Infraestructura de Audio Espacial Enterprise-Grade.",
       "subtitle": "Construida para escala y resiliencia."
     },
-    "Engine": {
-      "title": "Geofencing de Precisión y Filtrado de Vectores.",
-      "desc": "El GPS estándar crea falsos positivos. TUGGI utiliza lógica direccional de rumbo.",
-      "inputLabel": "Telemetría Bruta de Sensores",
-      "outputLabel": "Payload de Audio Contextual"
+    "Comparison": {
+      "title": "Estar cerca no es tenerlo delante",
+      "subtitle": "Dos maneras de decidir cuándo empieza la historia. La diferencia está en la dirección en la que te mueves.",
+      "radiusLabel": "Radio de proximidad",
+      "radiusBody": "Es el estándar del sector. Todo lo que está dentro del radio cuenta igual, incluso lo que ya has dejado atrás. El resultado es una lista de lo que existe a tu alrededor.",
+      "coneLabel": "Dirección del movimiento",
+      "coneBody": "Es lo que hace Tuggi. La dirección en la que te mueves elige un solo lugar: el que tienes delante de los ojos. Es su historia la que escuchas, en el momento en que aparece."
     },
     "Data": {
       "col2Title": "Serverless y Listo para Mega Eventos.",

@@ -96,23 +96,6 @@
       "phoneAlt": "Mapa do TUGGI mostrando histórias em áudio, eventos e trilhas por perto",
       "nowPlaying": "À sua esquerda: Gruta dos Escravos"
     },
-    "Simulator": {
-      "tag": "Demonstração Tecnológica",
-      "title": "Gatilhos Contextuais Hands-Free",
-      "subtitle": "Nosso motor City OS usa lógica direcional e cache offline para acionar narrativas exatamente no monumento certo, sem que o motorista precise olhar para uma tela.",
-      "playing": "Reproduzindo: Monumento Histórico",
-      "approaching": "Aproximando da Cerca Geográfica...",
-      "poiName": "Museu Nacional",
-      "playingLabel": "Reproduzindo",
-      "playingText": "À sua esquerda: Museu Nacional",
-      "ccLabel": "Legenda",
-      "ccTranscriptTitle": "Legendas Ativas (WCAG 2.1 AA)",
-      "ccTranscriptText": "À sua esquerda, Museu Nacional, observe a arquitetura preservada deste monumento erguido no século XVIII, que representa um marco histórico fundamental para a região e simboliza a resistência cultural do período colonial...",
-      "navigating": "Navegando",
-      "liveDemo": "DEMO AO VIVO",
-      "mainStreet": "RUA PRINCIPAL",
-      "historicAve": "AV. HISTÓRICA"
-    },
     "EnterpriseFork": {
       "b2cTitle": "Para Turistas e Viajantes",
       "b2cDesc": "Baixe o aplicativo e transforme sua próxima viagem de carro em uma imersão cultural guiada por GPS e hands-free.",
@@ -241,11 +224,13 @@
       "title": "Infraestrutura de Áudio Espacial Enterprise-Grade.",
       "subtitle": "Construída para escala e resiliência."
     },
-    "Engine": {
-      "title": "Geofencing de Precisão e Filtragem de Vetores.",
-      "desc": "O GPS padrão cria falsos positivos. O TUGGI usa lógica de direcionamento vetorial.",
-      "inputLabel": "Telemetria Bruta de Sensores",
-      "outputLabel": "Payload de Áudio Contextual"
+    "Comparison": {
+      "title": "Estar perto não é estar de frente",
+      "subtitle": "Dois jeitos de decidir quando a história começa. A diferença está na direção em que você se move.",
+      "radiusLabel": "Raio de proximidade",
+      "radiusBody": "É o padrão do mercado. Tudo o que está dentro do raio conta igual, inclusive o que já ficou para trás. O resultado é uma lista do que existe ao seu redor.",
+      "coneLabel": "Direção do movimento",
+      "coneBody": "É o que o Tuggi faz. A direção em que você se move escolhe um lugar só: o que está diante dos seus olhos. É a história dele que você ouve, na hora em que ele aparece."
     },
     "Data": {
       "col2Title": "Serverless e Pronto para Mega-Eventos.",
