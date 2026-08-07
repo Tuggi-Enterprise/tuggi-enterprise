@@ -4,10 +4,10 @@
  * Dynamic Open Graph image for the /coverage page.
  * Generated at build time (SSG) using Next.js Satori integration.
  *
- * The two figures the rule owns — mapped points and countries — come from
- * lib/product-facts, not from the snapshot (BR-COMUNICACAO-002 items 8 and 9).
- * The country ranking and the region count still come from the snapshot and
- * refresh with `npm run update-coverage`.
+ * The three figures the rule owns — mapped points, countries and the region
+ * floor — come from lib/product-facts, not from the snapshot
+ * (BR-COMUNICACAO-002 items 8, 9 and 10). Only the country ranking still comes
+ * from the snapshot, and it refreshes with `npm run update-coverage`.
  *
  * Preview: https://www.tuggi.app/coverage (shared on WhatsApp, Slack, Twitter, LinkedIn)
  *
@@ -22,7 +22,11 @@
 import { ImageResponse } from "next/og";
 import { getTranslations } from "next-intl/server";
 import { getCoverageData } from "@/lib/coverage";
-import { COVERAGE_COUNTRIES, MAPPED_POINT_MILLIONS } from "@/lib/product-facts";
+import {
+  COVERAGE_COUNTRIES,
+  MAPPED_POINT_MILLIONS,
+  COVERAGE_REGIONS_FLOOR,
+} from "@/lib/product-facts";
 import { getCountryDisplayName } from "@/lib/countryNames";
 import enMessages from "@/messages/en.json";
 
@@ -197,8 +201,11 @@ export default async function Image({
               SEO_COVERAGE.ogHeadline, in the locale of the card. */}
           <div style={{ display: "flex", gap: 16 }}>
             {[
-              { label: t("ogStatCountries"), value: String(COVERAGE_COUNTRIES)          },
-              { label: t("ogStatRegions"),   value: String(coverage.totalActiveRegions) },
+              { label: t("ogStatCountries"), value: String(COVERAGE_COUNTRIES)               },
+              // The floor, "+" and all — item 10's own exception to item 4's
+              // exact-with-date escape. `coverage.totalActiveRegions` (980)
+              // is the map's post-threshold count, not this figure.
+              { label: t("ogStatRegions"),   value: `${fmt(COVERAGE_REGIONS_FLOOR, locale)}+` },
             ].map(stat => (
               <div
                 key={stat.label}

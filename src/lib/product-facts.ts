@@ -163,6 +163,38 @@ export const MAPPED_POINT_MILLIONS = 2;
  */
 export const COVERAGE_COUNTRIES = 48;
 
+/**
+ * Country+state pairs with at least one approved POI, published as a floor —
+ * **BR-COMUNICACAO-002, item 10**, measured against `core.attractions`
+ * (`approved`, `entity_kind = 'poi'`, non-empty `state`) in production on
+ * 2026-08-06: 927 (`docs/dev/medicao-constantes-site-2026-08.md` §2).
+ *
+ * **Always a floor, never exact — item 10's own exception to item 4.** Item 4
+ * would allow an exact figure if the copy carried the measurement date; item
+ * 10 forbids that escape for this number specifically, because the map on
+ * the same page counts regions by a different rule right below this card,
+ * and an exact figure here would read as directly comparable to what the map
+ * draws. It is not: 927 is pre-threshold, the map is post-threshold.
+ *
+ * **The floor is the hundred, not the item-8 pattern of the million** — 900
+ * is close enough to 927 to survive the count moving the way the archive
+ * moves, without inventing a rounding rule new to this constant.
+ *
+ * **This counts presence, not content.** The label may only name a presence
+ * noun — "região coberta", "região com ponto mapeado" — never a content noun.
+ * 79 is the count of regions with at least one produced audio guide (item 3),
+ * and it is the only region figure that may carry a content noun.
+ *
+ * **Not in `DECIDED_FACTS`.** Items 8 and 9 are there because a sentence
+ * elsewhere on the site interpolates them (`SEO_COVERAGE.description`,
+ * `Coverage.Hero.subtitle`); nothing does that for this figure; it only
+ * reaches the stat card and the Open Graph chip, both markup, not
+ * ICU-interpolated copy. `tests/e2e/product-facts.spec.ts` guards those two
+ * surfaces directly instead — the mechanism `DECIDED_FACTS` runs would only
+ * fail here with nothing to fix.
+ */
+export const COVERAGE_REGIONS_FLOOR = 900;
+
 // ── Decided not to be published ─────────────────────────────────────────────
 
 /**

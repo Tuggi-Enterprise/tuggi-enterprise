@@ -6,32 +6,27 @@ import { MapPin, Globe, Star } from "lucide-react";
 import {
   COVERAGE_COUNTRIES,
   MAPPED_POINT_MILLIONS,
+  COVERAGE_REGIONS_FLOOR,
   PRODUCT_FACTS,
 } from "@/lib/product-facts";
 
-interface CoverageHeroProps {
-  /**
-   * Regions the map draws, off the snapshot. The only figure on this page that
-   * still comes from there: it is a presence count with a presence noun, and
-   * it is not one of the two the rule owns.
-   */
-  totalActiveRegions: number;
-}
-
-export function CoverageHero({ totalActiveRegions }: CoverageHeroProps) {
+export function CoverageHero() {
   const t = useTranslations("Coverage");
   const locale = useLocale();
   const fmt = (n: number) => n.toLocaleString(locale);
 
   /**
-   * The two figures the rule owns come from lib/product-facts, not from the
-   * props: the page used to hand this component `totalActiveCountries` (39,
-   * the map's rendering threshold) and `totalActiveRaw` (an exact archive
-   * count off a snapshot frozen weeks earlier) — BR-COMUNICACAO-002 items 8
-   * and 9.
+   * All three figures come from lib/product-facts, not from props or the
+   * snapshot: the page used to hand this component `totalActiveCountries`
+   * (39, the map's rendering threshold), `totalActiveRaw` (an exact archive
+   * count off a snapshot frozen weeks earlier) and `totalActiveRegions` (980,
+   * the same rendering threshold applied to regions) — BR-COMUNICACAO-002
+   * items 8, 9 and 10.
    *
-   * The "+" on the points card is the "mais de" of item 4: the value is a
-   * floor, and a floor rendered bare reads as an exact number.
+   * The "+" on the points and regions cards is the "mais de" of item 4 (and,
+   * for regions, item 10's own floor that item 4's exact-with-date exception
+   * does not reach): the value is a floor, and a floor rendered bare reads as
+   * an exact number.
    *
    * `data-fact` is what tests/e2e/product-facts.spec.ts asserts against — the
    * label is uppercased by CSS and the value is locale-formatted, so matching
@@ -40,7 +35,7 @@ export function CoverageHero({ totalActiveRegions }: CoverageHeroProps) {
   const stats = [
     { fact: "countries", label: t("Stats.countries"), value: fmt(COVERAGE_COUNTRIES),                     icon: Globe,  color: "text-tuggi-primary" },
     { fact: "points",    label: t("Stats.points"),    value: `${fmt(MAPPED_POINT_MILLIONS * 1_000_000)}+`, icon: Star,   color: "text-tuggi-primary" },
-    { fact: "regions",   label: t("Stats.regions"),   value: fmt(totalActiveRegions),                     icon: MapPin, color: "text-tuggi-primary" },
+    { fact: "regions",   label: t("Stats.regions"),   value: `${fmt(COVERAGE_REGIONS_FLOOR)}+`,             icon: MapPin, color: "text-tuggi-primary" },
   ];
 
   return (

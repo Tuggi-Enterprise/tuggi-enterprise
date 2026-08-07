@@ -147,7 +147,7 @@ export default async function CoveragePage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <CoverageHero totalActiveRegions={coverageData.totalActiveRegions} />
+      <CoverageHero />
 
       <CoverageMap states={coverageData.states} />
 

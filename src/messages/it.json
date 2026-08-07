@@ -677,7 +677,7 @@
       "active": "Attivo",
       "sectionTitle": "Esplora per Destinazione",
       "sectionSubtitle": "Ogni regione evidenziata è attiva. Passa il mouse su uno stato per vedere cosa ti aspetta.",
-      "tooltipAttractions": "Racconti in Attesa",
+      "tooltipAttractions": "Punti Mappati",
       "filterAll": "Tutti i Paesi",
       "noResults": "Nessun risultato per questo paese.",
       "countryRegions": "regioni coperte"
@@ -687,7 +687,7 @@
       "sectionSubtitle": "Scegli un paese e scopri esattamente dove viaggerai con TUGGI. L'audio parte automaticamente mentre esplori ogni regione.",
       "statesLabel": "regioni",
       "toursLabel": "Audioguide",
-      "attractionsLabel": "racconti"
+      "attractionsLabel": "punti"
     },
     "CTA": {
       "title": "Porta TUGGI nella tua città.",

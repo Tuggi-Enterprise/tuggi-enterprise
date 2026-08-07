@@ -677,7 +677,7 @@
       "active": "Active",
       "sectionTitle": "Explore by Destination",
       "sectionSubtitle": "Every highlighted region is live. Hover over a state to see what's waiting for you.",
-      "tooltipAttractions": "Stories Waiting",
+      "tooltipAttractions": "Mapped Points",
       "filterAll": "All Countries",
       "noResults": "No results for this country.",
       "countryRegions": "regions covered"
@@ -686,7 +686,7 @@
       "sectionTitle": "Choose Your Destination",
       "sectionSubtitle": "Pick a country and see exactly where you'll travel with TUGGI. Audio plays automatically as you explore each region.",
       "statesLabel": "regions",
-      "attractionsLabel": "stories",
+      "attractionsLabel": "points",
       "toursLabel": "Audio tours"
     },
     "CTA": {

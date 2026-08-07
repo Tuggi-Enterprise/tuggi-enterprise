@@ -10,6 +10,7 @@ import {
   OPERATING_SINCE,
   COVERAGE_COUNTRIES,
   MAPPED_POINT_MILLIONS,
+  COVERAGE_REGIONS_FLOOR,
   STORIES_PLAYED,
   DECIDED_FACTS,
   PRODUCT_FACTS,
@@ -301,6 +302,27 @@ test.describe("BR-COMUNICACAO-002 items 8 and 9 — the two figures the rule dec
         "the product is live in.",
     ).not.toBe(data.totalActiveCountries);
   });
+
+  test("BR-COMUNICACAO-002 item 10: the region floor is below the measurement, and never the map's threshold", async () => {
+    const data = await getCoverageData();
+
+    // 927 regions measured in production on 2026-08-06 (core.attractions,
+    // approved, entity_kind = 'poi', non-empty state) —
+    // docs/dev/medicao-constantes-site-2026-08.md §2. A floor that is not
+    // strictly below the measurement is not a floor.
+    expect(COVERAGE_REGIONS_FLOOR).toBeLessThan(927);
+    expect(COVERAGE_REGIONS_FLOOR).toBeGreaterThanOrEqual(900);
+
+    // 980 (`data.totalActiveRegions`) is `states.length` after
+    // `STATE_MIN_COUNT = 50` — the map's rendering threshold, counted after
+    // the map applies it. Publishing it as coverage is the same mistake item
+    // 9 already closed for country, aimed at region instead.
+    expect(
+      COVERAGE_REGIONS_FLOOR,
+      "The published region floor went back to the snapshot's post-threshold " +
+        "count, which is what the map draws, not what item 10 measured.",
+    ).not.toBe(data.totalActiveRegions);
+  });
 });
 
 /* ---------------------------------------------------------------------------
@@ -495,9 +517,9 @@ test.describe("DS-COPY-005 — the figure reaches the page, in every language", 
  * would rot, so `CoverageHero` marks the values with `data-fact` and this
  * reads those.
  */
-test.describe("BR-COMUNICACAO-002 items 8 and 9 — what the coverage page shows without a sentence", () => {
+test.describe("BR-COMUNICACAO-002 items 8, 9 and 10 — what the coverage page shows without a sentence", () => {
   for (const locale of LOCALES) {
-    test(`BR-COMUNICACAO-002 items 8 and 9: /${locale}/coverage publishes the measured country count and the million floor`, async ({
+    test(`BR-COMUNICACAO-002 items 8, 9 and 10: /${locale}/coverage publishes the measured country count and the two floors`, async ({
       page,
     }) => {
       const response = await page.goto(localeUrl(locale, "/coverage"));
@@ -513,11 +535,20 @@ test.describe("BR-COMUNICACAO-002 items 8 and 9 — what the coverage page shows
         `${(MAPPED_POINT_MILLIONS * 1_000_000).toLocaleString(locale)}+`,
       );
 
-      // The threshold that used to be here, named so the next person who
-      // wires this card back to the snapshot sees why it fails.
-      const threshold = (await getCoverageData()).totalActiveCountries;
+      // Item 10: same "+" treatment, and never the exact figure — item 10
+      // forbids the exact-with-date escape item 4 would otherwise allow.
+      await expect(page.locator("[data-fact=regions]")).toHaveText(
+        `${COVERAGE_REGIONS_FLOOR.toLocaleString(locale)}+`,
+      );
+
+      // The thresholds that used to be here, named so the next person who
+      // wires either card back to the snapshot sees why it fails.
+      const data = await getCoverageData();
       await expect(page.locator("[data-fact=countries]")).not.toHaveText(
-        threshold.toLocaleString(locale),
+        data.totalActiveCountries.toLocaleString(locale),
+      );
+      await expect(page.locator("[data-fact=regions]")).not.toHaveText(
+        data.totalActiveRegions.toLocaleString(locale),
       );
     });
   }
