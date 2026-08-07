@@ -26,7 +26,7 @@ export function HomeBusinessBand() {
             <Link
               href="/enterprise/fleets"
               onClick={() => sendGAEvent({ event: "click_enterprise_fork", value: "b2b_fleets" })}
-              className="group inline-flex items-center gap-2 font-semibold text-tuggi-primary-text hover:text-tuggi-primary transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary focus-visible:ring-offset-2 rounded"
+              className="group inline-flex items-center gap-2 font-semibold text-tuggi-primary-text hover:text-tuggi-primary transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text focus-visible:ring-offset-2 rounded"
             >
               <span>{t("fleetsLink")}</span>
               <ArrowRight
@@ -38,7 +38,7 @@ export function HomeBusinessBand() {
             <Link
               href="/destinations"
               onClick={() => sendGAEvent({ event: "click_enterprise_fork", value: "b2g_city_os" })}
-              className="group inline-flex items-center gap-2 font-semibold text-tuggi-primary-text hover:text-tuggi-primary transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary focus-visible:ring-offset-2 rounded"
+              className="group inline-flex items-center gap-2 font-semibold text-tuggi-primary-text hover:text-tuggi-primary transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text focus-visible:ring-offset-2 rounded"
             >
               <span>{t("cityOsLink")}</span>
               <ArrowRight

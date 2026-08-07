@@ -16,6 +16,7 @@ const SHRINK_PER_STEP = (CAR_START_Y - CAR_END_Y) / WAIT_STEPS;
 
 export function DriveHeroAnimator() {
   const t = useTranslations("Drive.Hero");
+  const tA11y = useTranslations("A11y");
 
   const [progress, setProgress] = useState(0);
   const [isTriggered, setIsTriggered] = useState(false);
@@ -220,10 +221,10 @@ export function DriveHeroAnimator() {
               <motion.button
                 onClick={() => setShowCC((v) => !v)}
                 className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 transition-colors ${
-                  showCC ? "bg-[#00A8E8] text-white" : "bg-gray-100 text-gray-400"
+                  showCC ? "bg-tuggi-primary text-tuggi-dark" : "bg-gray-100 text-gray-400"
                 }`}
                 whileTap={{ scale: 0.88 }}
-                aria-label="Toggle Captions"
+                aria-label={tA11y("toggleCaptions")}
               >
                 <Subtitles className="w-4 h-4" />
               </motion.button>

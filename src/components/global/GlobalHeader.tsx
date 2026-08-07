@@ -11,6 +11,10 @@ import type { SiteLocale } from "@/i18n/locales";
 
 export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
   const t = useTranslations("Header");
+  // Accessible names for the landmarks and the icon-only controls below.
+  // They used to be English string literals inside pt, es and it documents —
+  // a screen reader announced them with the page's voice (SC 3.1.2).
+  const tA11y = useTranslations("A11y");
   // With `pathnames` declared, this is the INTERNAL pathname ("/destinations"),
   // not the URL the visitor sees — which is exactly what the locale switcher
   // needs: `<Link locale>` re-resolves the slug for the target language.
@@ -51,19 +55,29 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
   return (
     <>
       <header className="sticky top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
+        {/* These two landmark names are still English literals, and that is a known
+            open finding (SC 3.1.2), not an oversight. tests/e2e/routing.spec.ts
+            locates the desktop row and the mobile panel by
+            `nav[aria-label="Main Navigation"]` / `"Mobile Navigation"` to assert
+            they list the same destinations; translating them turns one of those
+            assertions red and — worse — makes the "no unpublished item in the
+            menu" one pass against an empty locator. Moving that spec to a
+            data-* hook is `qa`'s call, and the translated names go in with it.
+            The icon-only controls below do not have that coupling and are
+            already translated. */}
         <nav className="page-shell h-20 flex items-center justify-between" aria-label="Main Navigation">
 
           {/* Left: Logo */}
           <div className="flex items-center gap-4">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 text-slate-600 hover:text-tuggi-primary-text transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-lg"
-              aria-label="Toggle Menu"
+              className="lg:hidden p-2 text-slate-600 hover:text-tuggi-primary-text transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text rounded-lg"
+              aria-label={isMobileMenuOpen ? tA11y("closeMenu") : tA11y("openMenu")}
             >
               {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
 
-            <Link href="/" className="focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-sm flex items-center transform transition-transform active:scale-95">
+            <Link href="/" className="focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text rounded-sm flex items-center transform transition-transform active:scale-95">
               <Image
                 src="/images/logo_tuggi_full.png"
                 alt="TUGGI Logo"
@@ -83,7 +97,7 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
                 key={item.href}
                 href={item.href}
                 data-nav-item={item.labelKey}
-                className="text-sm font-semibold text-slate-600 hover:text-tuggi-primary-text transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-sm py-2 whitespace-nowrap"
+                className="text-sm font-semibold text-slate-600 hover:text-tuggi-primary-text transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text rounded-sm py-2 whitespace-nowrap"
               >
                 {t(item.labelKey)}
               </Link>
@@ -96,7 +110,7 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
             <div className="relative">
               <button
                 onClick={() => setIsLocaleOpen(!isLocaleOpen)}
-                className="text-sm font-bold text-slate-500 hover:text-tuggi-primary-text uppercase flex items-center gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-lg px-2 py-1.5 transition-colors"
+                className="text-sm font-bold text-slate-500 hover:text-tuggi-primary-text uppercase flex items-center gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text rounded-lg px-2 py-1.5 transition-colors"
                 aria-expanded={isLocaleOpen}
               >
                 <span>{currentLocale.toUpperCase()}</span>
@@ -134,14 +148,14 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
 
             <Link
               href="/download"
-              className="hidden sm:block bg-tuggi-secondary text-tuggi-dark font-bold rounded-xl px-7 py-3 hover:bg-[#E65F00] transition-all shadow-md hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-secondary focus:ring-offset-2 active:scale-95"
+              className="hidden sm:block bg-tuggi-secondary text-tuggi-dark font-bold rounded-xl px-7 py-3 hover:bg-tuggi-secondary-hover transition-all shadow-md hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-dark focus-visible:ring-offset-2 active:scale-95"
             >
               {t("downloadApp")}
             </Link>
 
             <Link
               href="/download"
-              className="sm:hidden bg-tuggi-secondary text-tuggi-dark p-3 rounded-xl hover:bg-[#E65F00] transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-secondary active:scale-95"
+              className="sm:hidden bg-tuggi-secondary text-tuggi-dark p-3 rounded-xl hover:bg-tuggi-secondary-hover transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-dark active:scale-95"
               aria-label={t("downloadApp")}
             >
               <Smartphone className="w-5 h-5" />
@@ -179,7 +193,7 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
           <button
             onClick={() => setIsMobileMenuOpen(false)}
             className="p-2 text-slate-400 hover:text-slate-900 transition-colors rounded-lg"
-            aria-label="Close Menu"
+            aria-label={tA11y("closeMenu")}
           >
             <X className="w-6 h-6" />
           </button>
@@ -208,7 +222,7 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
           <Link
             href="/download"
             onClick={() => setIsMobileMenuOpen(false)}
-            className="flex items-center justify-center gap-2 bg-tuggi-secondary text-tuggi-dark font-bold rounded-xl px-6 py-4 text-sm transition-all hover:bg-[#E65F00] shadow-lg shadow-orange-500/10 active:scale-[0.98]"
+            className="flex items-center justify-center gap-2 bg-tuggi-secondary text-tuggi-dark font-bold rounded-xl px-6 py-4 text-sm transition-all hover:bg-tuggi-secondary-hover shadow-lg shadow-orange-500/10 active:scale-[0.98]"
           >
             <Smartphone className="w-4 h-4" />
             {t("downloadApp")}

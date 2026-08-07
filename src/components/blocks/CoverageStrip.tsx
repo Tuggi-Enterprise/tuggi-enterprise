@@ -61,7 +61,7 @@ export async function CoverageStrip() {
         <p className="mt-10 text-sm text-tuggi-slate">{t("more", { count: countries.value - SHOWN })}</p>
         <Link
           href="/coverage"
-          className="mt-3 inline-flex items-center gap-2 font-semibold text-tuggi-primary-text hover:text-tuggi-primary transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary focus-visible:ring-offset-2 rounded"
+          className="mt-3 inline-flex items-center gap-2 font-semibold text-tuggi-primary-text hover:text-tuggi-primary transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text focus-visible:ring-offset-2 rounded"
         >
           {t("cta")}
           <ArrowRight className="w-4 h-4" aria-hidden="true" />

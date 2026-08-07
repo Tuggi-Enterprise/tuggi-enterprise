@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useTranslations } from "next-intl";
 import type { Map as LeafletMap, Marker, Point } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { toLatLngs } from "@/lib/tourFormat";
@@ -104,6 +105,10 @@ export function RouteMap({
   onSelectStop,
   className,
 }: RouteMapProps) {
+  // The accessible name of a role="application" region is the only thing a
+  // screen reader has to go on here. It was an English literal served inside
+  // pt, es and it documents (SC 3.1.2).
+  const t = useTranslations("A11y");
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<LeafletMap | null>(null);
   const stopsRef = useRef<LabelledStop[]>([]);
@@ -315,7 +320,7 @@ export function RouteMap({
       className={className}
       style={{ width: "100%", height: "100%", minHeight: 320 }}
       role="application"
-      aria-label="Interactive route map"
+      aria-label={t("routeMap")}
     />
   );
 }

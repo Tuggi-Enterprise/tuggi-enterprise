@@ -562,7 +562,7 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
     >
       <button
         onClick={handleRedirect}
-        className="w-full max-w-sm mx-auto flex items-center justify-center gap-2 py-4 bg-tuggi-primary text-white font-black text-base rounded-2xl shadow-[0_8px_32px_rgba(0,168,232,0.3)] hover:shadow-[0_8px_40px_rgba(0,168,232,0.45)] hover:scale-[1.02] active:scale-95 transition-all pointer-events-auto"
+        className="w-full max-w-sm mx-auto flex items-center justify-center gap-2 py-4 bg-tuggi-primary text-tuggi-dark font-black text-base rounded-2xl shadow-[0_8px_32px_rgba(0,168,232,0.3)] hover:shadow-[0_8px_40px_rgba(0,168,232,0.45)] hover:scale-[1.02] active:scale-95 transition-all pointer-events-auto"
       >
         {isRedirecting ? (
           <>
@@ -786,7 +786,7 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
 
                   <button
                     onClick={handleRedeemTap}
-                    className="w-full mt-2 flex items-center justify-center gap-2 py-3.5 bg-tuggi-secondary text-white font-extrabold text-sm rounded-xl shadow-[0_6px_24px_rgba(255,111,0,0.28)] hover:shadow-[0_6px_28px_rgba(255,111,0,0.4)] hover:scale-[1.01] active:scale-95 transition-all"
+                    className="w-full mt-2 flex items-center justify-center gap-2 py-3.5 bg-tuggi-secondary text-tuggi-dark font-extrabold text-sm rounded-xl shadow-[0_6px_24px_rgba(255,111,0,0.28)] hover:shadow-[0_6px_28px_rgba(255,111,0,0.4)] hover:scale-[1.01] active:scale-95 transition-all"
                   >
                     {tCoupon("open_app")}
                     <ArrowRight size={16} />

@@ -31,7 +31,7 @@ export default async function SecuritySLAPage({ params }: { params: Promise<{ lo
   return (
     <article className="prose prose-slate max-w-none prose-headings:text-tuggi-dark prose-p:text-slate-600 prose-li:text-slate-600 prose-strong:text-tuggi-dark">
       <h1>{t("title")}</h1>
-      <p className="text-sm font-semibold tracking-wider uppercase text-slate-400 !mb-8 border-b border-gray-100 pb-4">
+      <p className="text-sm font-semibold tracking-wider uppercase text-tuggi-slate !mb-8 border-b border-gray-100 pb-4">
         {t("subtitle")}
       </p>
 
@@ -47,19 +47,21 @@ export default async function SecuritySLAPage({ params }: { params: Promise<{ lo
         <p>{t("s1Desc")}</p>
       </section>
 
+      {/* Both of these used to be a <ul> holding a single <li>. The other
+          items were removed with the claims behind them; what survived is one
+          statement, and a list marker next to one item announces that
+          something used to be there. A single item is a paragraph — the
+          <strong> lead survives inline. (SC 1.3.1: the markup now says what
+          the content is.) */}
       <section>
         <h2>{t("s2Title")}</h2>
-        <ul>
-          <li>{t.rich("s2Item1", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
-        </ul>
+        <p>{t.rich("s2Item1", { strong: (chunks) => <strong>{chunks}</strong> })}</p>
       </section>
 
       <section>
         <h2>{t("s3Title")}</h2>
         <p>{t("s3Intro")}</p>
-        <ul>
-          <li>{t.rich("s3Item1", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
-        </ul>
+        <p>{t.rich("s3Item1", { strong: (chunks) => <strong>{chunks}</strong> })}</p>
       </section>
 
       <section>

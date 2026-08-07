@@ -106,6 +106,7 @@ export default async function CountryHubPage({
 
   const countryLabel = countryName(routes[0], locale);
   const t = await getTranslations({ locale, namespace: "Tours" });
+  const tA11y = await getTranslations({ locale, namespace: "A11y" });
   const inCountry = countryInPhrase(t, country, countryLabel);
   const pageUrl = buildUrl(locale, `tours/${country}`);
   const vms = routes.map((r) => toRouteCardVM(r, locale));
@@ -152,7 +153,7 @@ export default async function CountryHubPage({
 
       <section className="pt-10 lg:pt-28 pb-10 bg-white">
         <div className="page-shell">
-          <nav aria-label="Breadcrumb" className="text-sm text-tuggi-slate flex gap-2 mb-6">
+          <nav aria-label={tA11y("breadcrumb")} className="text-sm text-tuggi-slate flex gap-2 mb-6">
             <Link href={`/${locale}/tours`} className="hover:text-tuggi-primary-text">
               {t("breadcrumbTours")}
             </Link>

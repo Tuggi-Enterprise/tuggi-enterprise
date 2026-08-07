@@ -815,5 +815,12 @@
       "Mandarin",
       "Korean"
     ]
+  },
+  "A11y": {
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "breadcrumb": "Breadcrumb",
+    "routeMap": "Interactive route map",
+    "toggleCaptions": "Turn captions on or off"
   }
 }

@@ -4,8 +4,12 @@ import { Ear, EyeOff, Captions } from "lucide-react";
 export function CityOSAccessibility() {
   const t = useTranslations("CityOS.Accessibility");
 
+  // bg-tuggi-bg, not white: the hero above this section is white, and the two
+  // sections that used to alternate between them were removed — the two whites
+  // ended up touching, separated by a single border. Inverting this pair with
+  // CityOSIntelligence restores white → light → white.
   return (
-    <section className="w-full py-24 bg-white px-4 sm:px-6 lg:px-8 border-b border-gray-200">
+    <section className="w-full py-24 bg-tuggi-bg px-4 sm:px-6 lg:px-8 border-b border-gray-200">
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-16 items-center">
         
         {/* Copy Focus */}

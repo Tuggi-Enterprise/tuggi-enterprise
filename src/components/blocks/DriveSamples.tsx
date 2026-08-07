@@ -20,10 +20,10 @@ interface AudioCardProps {
 function Equalizer() {
   return (
     <span className="flex items-end gap-[3px] h-5" aria-hidden="true">
-      <span className="tuggi-eq-bar w-1 h-full rounded-full bg-white" />
-      <span className="tuggi-eq-bar w-1 h-full rounded-full bg-white" />
-      <span className="tuggi-eq-bar w-1 h-full rounded-full bg-white" />
-      <span className="tuggi-eq-bar w-1 h-full rounded-full bg-white" />
+      <span className="tuggi-eq-bar w-1 h-full rounded-full bg-tuggi-dark" />
+      <span className="tuggi-eq-bar w-1 h-full rounded-full bg-tuggi-dark" />
+      <span className="tuggi-eq-bar w-1 h-full rounded-full bg-tuggi-dark" />
+      <span className="tuggi-eq-bar w-1 h-full rounded-full bg-tuggi-dark" />
     </span>
   );
 }
@@ -69,32 +69,48 @@ function AudioCard({
     <div className="bg-[#121a28] border border-slate-800 p-6 rounded-2xl flex flex-col gap-6 hover:border-tuggi-primary/50 transition-colors shadow-lg">
       <div className="flex items-start justify-between">
         <div>
-          <h4 className="text-lg font-bold text-white mb-1">{title}</h4>
+          <h3 className="text-lg font-bold text-white mb-1">{title}</h3>
           <p className="text-sm text-slate-400 flex items-center gap-1">
             {location}
           </p>
         </div>
         <button 
           onClick={handlePlayPause}
-          className="w-12 h-12 rounded-full bg-tuggi-primary text-white flex items-center justify-center hover:bg-blue-500 transition-colors flex-shrink-0 shadow-[0_0_15px_rgba(0,168,232,0.3)] focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-tuggi-dark"
+          className="w-12 h-12 rounded-full bg-tuggi-primary text-tuggi-dark flex items-center justify-center hover:bg-tuggi-primary-text transition-colors flex-shrink-0 shadow-[0_0_15px_rgba(0,168,232,0.3)] focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-tuggi-dark"
           aria-label={isPlaying ? pauseLabel : playLabel}
         >
           {isPlaying ? <Equalizer /> : <Play className="w-5 h-5 ml-1" aria-hidden="true" />}
         </button>
       </div>
 
-      {/* Visual Indicator of what is playing */}
+      {/* Which of the two chained clips is playing.
+          It used to be colour and nothing else, and the second clip starts on
+          its own when the first ends (handleDirEnded) — so a screen-reader user
+          got no signal that anything had changed (SC 1.3.1 / 4.1.2).
+          `aria-current` carries the state into the accessibility tree, and the
+          live region below announces the switch when it happens. The inactive
+          chip moved from text-slate-500 (3.07:1 on slate-800, under 4.5:1 at
+          12px) to text-slate-400 (5.56:1) — SC 1.4.3. */}
       <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-wider">
-        <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-colors ${activePart === 1 ? 'bg-tuggi-primary/20 text-tuggi-primary' : 'bg-slate-800 text-slate-500'}`}>
+        <div
+          aria-current={activePart === 1 ? "true" : undefined}
+          className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-colors ${activePart === 1 ? 'bg-tuggi-primary/20 text-tuggi-primary' : 'bg-slate-800 text-slate-400'}`}
+        >
           <Navigation className="w-3 h-3" aria-hidden="true" />
           <span>{directionalLabel}</span>
         </div>
         <div className="w-4 h-px bg-slate-700" aria-hidden="true"></div>
-        <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-colors ${activePart === 2 ? 'bg-tuggi-secondary/20 text-tuggi-secondary' : 'bg-slate-800 text-slate-500'}`}>
+        <div
+          aria-current={activePart === 2 ? "true" : undefined}
+          className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-colors ${activePart === 2 ? 'bg-tuggi-secondary/20 text-tuggi-secondary' : 'bg-slate-800 text-slate-400'}`}
+        >
           <Volume2 className="w-3 h-3" aria-hidden="true" />
           <span>{storyLabel}</span>
         </div>
       </div>
+      <span role="status" className="sr-only">
+        {isPlaying ? (activePart === 1 ? directionalLabel : storyLabel) : ""}
+      </span>
 
       {/* Audio Elements (Hidden) */}
       <audio ref={dirAudioRef} src={dirSrc} onEnded={handleDirEnded} />

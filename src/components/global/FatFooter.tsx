@@ -14,7 +14,7 @@ export function FatFooter() {
           
           {/* Logo & Manifesto column */}
           <div className="lg:col-span-4 flex flex-col space-y-6 lg:pr-8">
-            <Link href="/" className="inline-block focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-sm w-max">
+            <Link href="/" className="inline-block focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text rounded-sm w-max">
               <Image
                 src="/images/logo_tuggi_full_white.png"
                 alt="TUGGI"
@@ -33,13 +33,13 @@ export function FatFooter() {
             <h3 className="text-xs font-bold tracking-widest text-white uppercase mb-6">
               {t("driveB2c")}
             </h3>
-            <Link href="/download" className="text-sm text-slate-400 hover:text-white transition-colors duration-200 block mb-3 focus-visible:ring-2 focus-visible:ring-tuggi-primary focus:outline-none rounded-sm w-max">
+            <Link href="/download" className="text-sm text-slate-400 hover:text-white transition-colors duration-200 block mb-3 focus-visible:ring-2 focus-visible:ring-tuggi-primary-text focus:outline-none rounded-sm w-max">
               {t("appDownload")}
             </Link>
-            <Link href="/drive" className="text-sm text-slate-400 hover:text-white transition-colors duration-200 block mb-3 focus-visible:ring-2 focus-visible:ring-tuggi-primary focus:outline-none rounded-sm w-max">
+            <Link href="/drive" className="text-sm text-slate-400 hover:text-white transition-colors duration-200 block mb-3 focus-visible:ring-2 focus-visible:ring-tuggi-primary-text focus:outline-none rounded-sm w-max">
               {t("plans")}
             </Link>
-            <Link href="/tours" className="text-sm text-slate-400 hover:text-white transition-colors duration-200 block mb-3 focus-visible:ring-2 focus-visible:ring-tuggi-primary focus:outline-none rounded-sm w-max">
+            <Link href="/tours" className="text-sm text-slate-400 hover:text-white transition-colors duration-200 block mb-3 focus-visible:ring-2 focus-visible:ring-tuggi-primary-text focus:outline-none rounded-sm w-max">
               {t("audioTours")}
             </Link>
             <FooterStoreBadges />
@@ -50,13 +50,13 @@ export function FatFooter() {
             <h3 className="text-xs font-bold tracking-widest text-white uppercase mb-6">
               {t("enterprise")}
             </h3>
-            <Link href="/destinations" className="text-sm text-slate-400 hover:text-white transition-colors duration-200 block mb-3 focus-visible:ring-2 focus-visible:ring-tuggi-primary focus:outline-none rounded-sm w-max">
+            <Link href="/destinations" className="text-sm text-slate-400 hover:text-white transition-colors duration-200 block mb-3 focus-visible:ring-2 focus-visible:ring-tuggi-primary-text focus:outline-none rounded-sm w-max">
               {t("destinations")}
             </Link>
-            <Link href="/enterprise/fleets" className="text-sm text-slate-400 hover:text-white transition-colors duration-200 block mb-3 focus-visible:ring-2 focus-visible:ring-tuggi-primary focus:outline-none rounded-sm w-max">
+            <Link href="/enterprise/fleets" className="text-sm text-slate-400 hover:text-white transition-colors duration-200 block mb-3 focus-visible:ring-2 focus-visible:ring-tuggi-primary-text focus:outline-none rounded-sm w-max">
               {t("fleets")}
             </Link>
-            <Link href="/technology" className="text-sm text-slate-400 hover:text-white transition-colors duration-200 block mb-3 focus-visible:ring-2 focus-visible:ring-tuggi-primary focus:outline-none rounded-sm w-max">
+            <Link href="/technology" className="text-sm text-slate-400 hover:text-white transition-colors duration-200 block mb-3 focus-visible:ring-2 focus-visible:ring-tuggi-primary-text focus:outline-none rounded-sm w-max">
               {t("technology")}
             </Link>
           </div>
@@ -66,13 +66,13 @@ export function FatFooter() {
             <h3 className="text-xs font-bold tracking-widest text-white uppercase mb-6">
               {t("institutional")}
             </h3>
-            <Link href="/purpose" className="text-sm text-slate-400 hover:text-white transition-colors duration-200 block mb-3 focus-visible:ring-2 focus-visible:ring-tuggi-primary focus:outline-none rounded-sm w-max">
+            <Link href="/purpose" className="text-sm text-slate-400 hover:text-white transition-colors duration-200 block mb-3 focus-visible:ring-2 focus-visible:ring-tuggi-primary-text focus:outline-none rounded-sm w-max">
               {t("ourPurpose")}
             </Link>
-            <Link href="/contact" className="text-sm text-slate-400 hover:text-white transition-colors duration-200 block mb-3 focus-visible:ring-2 focus-visible:ring-tuggi-primary focus:outline-none rounded-sm w-max">
+            <Link href="/contact" className="text-sm text-slate-400 hover:text-white transition-colors duration-200 block mb-3 focus-visible:ring-2 focus-visible:ring-tuggi-primary-text focus:outline-none rounded-sm w-max">
               {t("contact")}
             </Link>
-            <Link href="/coverage" className="text-sm text-slate-400 hover:text-white transition-colors duration-200 block mb-3 focus-visible:ring-2 focus-visible:ring-tuggi-primary focus:outline-none rounded-sm w-max">
+            <Link href="/coverage" className="text-sm text-slate-400 hover:text-white transition-colors duration-200 block mb-3 focus-visible:ring-2 focus-visible:ring-tuggi-primary-text focus:outline-none rounded-sm w-max">
               {t("coverage")}
             </Link>
           </div>
@@ -82,16 +82,16 @@ export function FatFooter() {
             <h3 className="text-xs font-bold tracking-widest text-white uppercase mb-6">
               {t("trustCenter")}
             </h3>
-            <Link href="/trust-center/terms-of-use" className="text-sm text-slate-400 hover:text-white transition-colors duration-200 block mb-3 focus-visible:ring-2 focus-visible:ring-tuggi-primary focus:outline-none rounded-sm w-max">
+            <Link href="/trust-center/terms-of-use" className="text-sm text-slate-400 hover:text-white transition-colors duration-200 block mb-3 focus-visible:ring-2 focus-visible:ring-tuggi-primary-text focus:outline-none rounded-sm w-max">
               {t("terms")}
             </Link>
-            <Link href="/trust-center/privacy-policy" className="text-sm text-slate-400 hover:text-white transition-colors duration-200 block mb-3 focus-visible:ring-2 focus-visible:ring-tuggi-primary focus:outline-none rounded-sm w-max">
+            <Link href="/trust-center/privacy-policy" className="text-sm text-slate-400 hover:text-white transition-colors duration-200 block mb-3 focus-visible:ring-2 focus-visible:ring-tuggi-primary-text focus:outline-none rounded-sm w-max">
               {t("privacy")}
             </Link>
-            <Link href="/trust-center/accessibility" className="text-sm text-slate-400 hover:text-white transition-colors duration-200 block mb-3 focus-visible:ring-2 focus-visible:ring-tuggi-primary focus:outline-none rounded-sm w-max">
+            <Link href="/trust-center/accessibility" className="text-sm text-slate-400 hover:text-white transition-colors duration-200 block mb-3 focus-visible:ring-2 focus-visible:ring-tuggi-primary-text focus:outline-none rounded-sm w-max">
               {t("accessibility")}
             </Link>
-            <Link href="/trust-center/security-sla" className="text-sm text-slate-400 hover:text-white transition-colors duration-200 block mb-3 focus-visible:ring-2 focus-visible:ring-tuggi-primary focus:outline-none rounded-sm w-max">
+            <Link href="/trust-center/security-sla" className="text-sm text-slate-400 hover:text-white transition-colors duration-200 block mb-3 focus-visible:ring-2 focus-visible:ring-tuggi-primary-text focus:outline-none rounded-sm w-max">
               {t("security")}
             </Link>
           </div>

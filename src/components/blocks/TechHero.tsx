@@ -26,19 +26,31 @@ export function TechHero() {
             <div className="w-3 h-3 rounded-full bg-slate-700"></div>
             <div className="w-3 h-3 rounded-full bg-slate-700"></div>
             <div className="w-3 h-3 rounded-full bg-slate-700"></div>
-            <div className="ml-4 text-xs font-mono text-slate-500">geofence_trigger.json</div>
+            <div id="tech-hero-payload-name" className="ml-4 text-xs font-mono text-slate-400">geofence_trigger.json</div>
           </div>
-          <div className="p-6 overflow-x-auto text-sm sm:text-base">
+          {/* The payload scrolls horizontally and holds nothing focusable, so a
+              keyboard user could not reach it at all (SC 2.1.1 / 2.1.3;
+              axe: scrollable-region-focusable). tabIndex + role="region" put it
+              in the tab order, and the filename above already names it — no new
+              string needed for the accessible name.
+              text-slate-400 replaces text-slate-500 throughout: #62748e on
+              #0f172a is 3.75:1, under 4.5:1 (SC 1.4.3). */}
+          <div
+            className="p-6 overflow-x-auto text-sm sm:text-base"
+            tabIndex={0}
+            role="region"
+            aria-labelledby="tech-hero-payload-name"
+          >
             <pre className="font-mono text-slate-300">
               <code>
-<span className="text-slate-500">{`// Captured at 80km/h on strict heading`}</span>
+<span className="text-slate-400">{`// Captured at 80km/h on strict heading`}</span>
 {`{
   "`}<span className="text-rose-400">event_id</span>{`": "tgg-78a9c2",
   "`}<span className="text-rose-400">timestamp</span>{`": "2026-02-20T14:02:11Z",
   "`}<span className="text-rose-400">telemetry</span>{`": {
     "`}<span className="text-indigo-300">lat</span>{`": 41.8902,
     "`}<span className="text-indigo-300">lng</span>{`": 12.4922,
-    "`}<span className="text-indigo-300">heading</span>{`": 284.5, `}<span className="text-slate-500">{`// Directional vector filtering active`}</span>
+    "`}<span className="text-indigo-300">heading</span>{`": 284.5, `}<span className="text-slate-400">{`// Directional vector filtering active`}</span>
     {`"`}<span className="text-indigo-300">speed_kmh</span>{`": 42.1
   },
   "`}<span className="text-rose-400">payload</span>{`": {

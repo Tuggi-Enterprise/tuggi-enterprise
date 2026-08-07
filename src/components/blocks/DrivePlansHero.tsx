@@ -8,7 +8,7 @@ import { APP_STORE_URL, PLAY_STORE_URL } from "@/lib/app-meta";
 const BADGE_LINK =
   "hover:-translate-y-0.5 hover:opacity-90 active:scale-[0.97] transition-[transform,opacity] duration-150 " +
   "motion-reduce:hover:translate-y-0 motion-reduce:active:scale-100 " +
-  "focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary focus-visible:ring-offset-2 rounded-xl shrink-0";
+  "focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text focus-visible:ring-offset-2 rounded-xl shrink-0";
 
 /**
  * Compact hero for the Plans & Pricing page. No product pitch (the home does

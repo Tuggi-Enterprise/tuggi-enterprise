@@ -113,6 +113,7 @@ export default async function StateHubPage({ params }: { params: Promise<Params>
   const stateLabel = summary?.state ?? routes[0].state ?? state;
   const countryLabel = countryName(routes[0], locale);
   const t = await getTranslations({ locale, namespace: "Tours" });
+  const tA11y = await getTranslations({ locale, namespace: "A11y" });
   const pageUrl = buildUrl(locale, `tours/${country}/state/${state}`);
   const vms = routes.map((r) => toRouteCardVM(r, locale));
 
@@ -170,7 +171,7 @@ export default async function StateHubPage({ params }: { params: Promise<Params>
       <section className="pt-10 lg:pt-28 pb-10 bg-white">
         <div className="page-shell">
           <nav
-            aria-label="Breadcrumb"
+            aria-label={tA11y("breadcrumb")}
             className="text-sm text-tuggi-slate flex flex-wrap gap-2 mb-6"
           >
             <Link href={`/${locale}/tours`} className="hover:text-tuggi-primary-text">

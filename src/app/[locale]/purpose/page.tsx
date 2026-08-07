@@ -47,7 +47,7 @@ export default async function PurposePage({
   const t = await getTranslations("Purpose");
 
   return (
-    <article className="bg-tuggi-bg text-tuggi-dark selection:bg-tuggi-primary selection:text-white">
+    <article className="bg-tuggi-bg text-tuggi-dark selection:bg-tuggi-primary selection:text-tuggi-dark">
       
       {/* 1. THE PRIMAL INSTINCT (HERO MANIFESTO) */}
       <section className="min-h-[90vh] flex flex-col items-center justify-center px-4 py-32 text-center">
@@ -89,8 +89,11 @@ export default async function PurposePage({
           AI-assisted and carries no warranty of accuracy. The section went whole:
           it only survived with words nobody had a rule for. */}
 
-      {/* 4. THE FOUNDATION (VALUES) */}
-      <section className="py-24 md:py-32 px-4">
+      {/* 4. THE FOUNDATION (VALUES).
+          bg-white carries the alternation the removed "Soberania" section used
+          to carry — it was the only white in the file, and without it the page
+          was 3211px of one uninterrupted surface at 1440. */}
+      <section className="py-24 md:py-32 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="mb-20">
             <h2 className="text-4xl md:text-6xl font-black tracking-tight mb-4">
@@ -144,7 +147,13 @@ export default async function PurposePage({
 
       {/* Manifesto Footer */}
       <footer className="py-32 px-4 text-center border-t border-slate-100">
-        <blockquote className="max-w-3xl mx-auto italic text-2xl md:text-3xl text-slate-500 font-serif mb-8">
+        {/* lang="en" because the quote is served in English inside pt, es and
+            it documents: without it a screen reader pronounces English words
+            with the page's voice (SC 3.1.2). This declares what is true today;
+            it is not the fix. The translated line is `design`'s to write, and
+            when it lands the quote moves to Purpose.Manifesto.quote and this
+            attribute goes with it. */}
+        <blockquote lang="en" className="max-w-3xl mx-auto italic text-2xl md:text-3xl text-slate-500 font-serif mb-8">
           &quot;The world is better when we stop looking at it through a window, and start hearing it breathe.&quot;
         </blockquote>
         <p className="text-sm font-bold uppercase tracking-widest text-tuggi-dark">

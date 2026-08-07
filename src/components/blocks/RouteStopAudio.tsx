@@ -144,7 +144,7 @@ function AudioPlayer({ src, stopName }: { src: string; stopName: string }) {
         type="button"
         onClick={toggle}
         aria-label={playing ? t("audioPause") : t("audioPreviewFor", { name: stopName })}
-        className="shrink-0 grid place-items-center w-10 h-10 rounded-full bg-tuggi-primary text-tuggi-dark shadow-sm transition-transform hover:scale-105 active:scale-95 motion-reduce:transition-none motion-reduce:hover:scale-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary focus-visible:ring-offset-2"
+        className="shrink-0 grid place-items-center w-10 h-10 rounded-full bg-tuggi-primary text-tuggi-dark shadow-sm transition-transform hover:scale-105 active:scale-95 motion-reduce:transition-none motion-reduce:hover:scale-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text focus-visible:ring-offset-2"
       >
         {playing ? (
           <Pause className="w-4 h-4 fill-current" />
@@ -169,7 +169,11 @@ function AudioPlayer({ src, stopName }: { src: string; stopName: string }) {
           }}
           aria-label={t("audioSeek")}
           aria-valuetext={formatTime(time)}
-          className="w-full h-6 accent-tuggi-primary cursor-pointer disabled:cursor-default"
+          // accent-tuggi-primary-text, not -primary: the thumb and the filled
+          // part of the track are the only visual carrier of this control's
+          // value, and brand cyan on the white track is 2.70:1, under the 3:1
+          // SC 1.4.11 asks of a non-text component. #007aa5 is 4.85:1.
+          className="w-full h-6 accent-tuggi-primary-text cursor-pointer disabled:cursor-default"
         />
         <div className="flex justify-between text-[11px] font-semibold tabular-nums text-tuggi-slate">
           <span>{formatTime(time)}</span>

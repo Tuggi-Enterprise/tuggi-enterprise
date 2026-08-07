@@ -17,7 +17,7 @@ const EASE: [number, number, number, number] = [0.21, 0.47, 0.32, 0.98];
 const BADGE_LINK =
   "hover:-translate-y-0.5 hover:opacity-90 active:scale-[0.97] transition-[transform,opacity] duration-150 " +
   "motion-reduce:hover:translate-y-0 motion-reduce:active:scale-100 " +
-  "focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary focus-visible:ring-offset-2 rounded-xl shrink-0";
+  "focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text focus-visible:ring-offset-2 rounded-xl shrink-0";
 
 /**
  * B2C homepage hero: copy on the left, the real app map screenshot in a phone
@@ -139,7 +139,7 @@ export function HomeHero() {
                   className="absolute left-1/2 top-[18%] w-[84%] -translate-x-1/2"
                 >
                   <div className="flex items-center gap-3 rounded-2xl bg-white/85 px-4 py-3 shadow-lg ring-1 ring-black/5 backdrop-blur">
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-tuggi-primary text-white">
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-tuggi-primary text-tuggi-dark">
                       <ArrowLeft className="h-4 w-4" aria-hidden="true" />
                     </span>
                     <span className="text-sm font-semibold leading-snug text-tuggi-dark">

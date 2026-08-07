@@ -13,7 +13,7 @@ export function FooterStoreBadges() {
         target="_blank"
         rel="noopener noreferrer"
         onClick={() => sendGAEvent({ event: "click_store", placement: "footer", store: "app_store" })}
-        className="hover:opacity-80 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-lg w-max"
+        className="hover:opacity-80 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text rounded-lg w-max"
       >
         <Image
           src="/images/badges/app-store-badge.svg"
@@ -28,7 +28,7 @@ export function FooterStoreBadges() {
         target="_blank"
         rel="noopener noreferrer"
         onClick={() => sendGAEvent({ event: "click_store", placement: "footer", store: "play_store" })}
-        className="hover:opacity-80 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-lg w-max"
+        className="hover:opacity-80 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text rounded-lg w-max"
       >
         <Image
           src="/images/badges/google-play-badge.svg"

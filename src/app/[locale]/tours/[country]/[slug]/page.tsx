@@ -113,6 +113,7 @@ export default async function RouteDetailPage({
   if (!route || !route.locales.includes(locale)) notFound();
 
   const t = await getTranslations({ locale, namespace: "Tours" });
+  const tA11y = await getTranslations({ locale, namespace: "A11y" });
   const content = pickLocaleContent(route, locale);
   const countryLabel = countryName(route, locale);
   const placeLabel = route.region || countryLabel;
@@ -288,7 +289,7 @@ export default async function RouteDetailPage({
       />
 
       {/* Breadcrumb */}
-      <nav aria-label="Breadcrumb" className="bg-white border-b border-gray-100">
+      <nav aria-label={tA11y("breadcrumb")} className="bg-white border-b border-gray-100">
         <div className="page-shell py-3 text-sm text-tuggi-slate flex flex-wrap gap-2">
           <Link href={`/${locale}/tours`} className="hover:text-tuggi-primary-text">
             {t("breadcrumbTours")}

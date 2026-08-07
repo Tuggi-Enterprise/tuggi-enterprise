@@ -13,14 +13,16 @@ interface SampleCardProps {
 }
 
 /** 4-bar CSS equalizer shown while a clip plays (freezes mid-height under
- *  reduced motion — see globals.css). White bars sit on the blue play button. */
+ *  reduced motion — see globals.css). Dark bars on the cyan play button: white
+ *  on --color-tuggi-primary is 2.70:1, and this is the only thing that says the
+ *  clip is running (SC 1.4.11, DS-COR-004). */
 function Equalizer() {
   return (
     <span className="flex items-end gap-[3px] h-5" aria-hidden="true">
-      <span className="tuggi-eq-bar w-1 h-full rounded-full bg-white" />
-      <span className="tuggi-eq-bar w-1 h-full rounded-full bg-white" />
-      <span className="tuggi-eq-bar w-1 h-full rounded-full bg-white" />
-      <span className="tuggi-eq-bar w-1 h-full rounded-full bg-white" />
+      <span className="tuggi-eq-bar w-1 h-full rounded-full bg-tuggi-dark" />
+      <span className="tuggi-eq-bar w-1 h-full rounded-full bg-tuggi-dark" />
+      <span className="tuggi-eq-bar w-1 h-full rounded-full bg-tuggi-dark" />
+      <span className="tuggi-eq-bar w-1 h-full rounded-full bg-tuggi-dark" />
     </span>
   );
 }
@@ -42,7 +44,7 @@ function SampleCard({ title, location, src, playLabel, pauseLabel }: SampleCardP
         type="button"
         onClick={toggle}
         aria-label={isPlaying ? pauseLabel : playLabel}
-        className="w-14 h-14 rounded-full bg-tuggi-primary text-white flex items-center justify-center hover:bg-[#0090c9] transition-[background-color,transform] duration-150 active:scale-95 motion-reduce:active:scale-100 shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary focus-visible:ring-offset-2"
+        className="w-14 h-14 rounded-full bg-tuggi-primary text-tuggi-dark flex items-center justify-center hover:bg-tuggi-primary-text transition-[background-color,transform] duration-150 active:scale-95 motion-reduce:active:scale-100 shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text focus-visible:ring-offset-2"
       >
         {isPlaying ? (
           <Equalizer />

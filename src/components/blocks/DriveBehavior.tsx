@@ -36,7 +36,7 @@ export function DriveBehavior() {
               className={`p-6 rounded-2xl border transition-all duration-300 ${activeStep === 0 ? "bg-tuggi-bg border-tuggi-primary/30 shadow-md" : "bg-white border-gray-100 opacity-60"}`}
             >
               <div className="flex items-center gap-4 mb-3">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${activeStep === 0 ? "bg-tuggi-primary text-white" : "bg-gray-100 text-slate-400"}`}>
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${activeStep === 0 ? "bg-tuggi-primary text-tuggi-dark" : "bg-gray-100 text-slate-400"}`}>
                   <Languages className="w-5 h-5" />
                 </div>
                 <h3 className="text-xl font-bold text-tuggi-dark">{t("step1Title")}</h3>

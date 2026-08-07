@@ -11,9 +11,15 @@ export function TechEngine() {
           
           {/* Text Content */}
           <div>
-            <div className="inline-flex items-center space-x-2 text-tuggi-primary font-semibold text-sm tracking-wider uppercase mb-4">
-              <Compass className="w-5 h-5" />
-              <span>THE BLACK BOX</span>
+            {/* text-tuggi-primary-text, not -primary: brand cyan as text on
+                white is 2.70:1 at 14px (SC 1.4.3). lang="en" because this
+                label is served in English inside the pt, es and it documents
+                and a screen reader would otherwise read it with the page's
+                voice (SC 3.1.2) — the translated label is `design`'s to write;
+                this states what is true today. */}
+            <div className="inline-flex items-center space-x-2 text-tuggi-primary-text font-semibold text-sm tracking-wider uppercase mb-4">
+              <Compass className="w-5 h-5" aria-hidden="true" />
+              <span lang="en">THE BLACK BOX</span>
             </div>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-tuggi-dark tracking-tight mb-6">
               {t("title")}
@@ -32,7 +38,7 @@ export function TechEngine() {
               
               {/* Inputs */}
               <div className="flex flex-col space-y-3 w-full md:w-auto">
-                <div className="text-xs font-bold text-slate-400 uppercase tracking-widest text-center md:text-left mb-2">{t("inputLabel")}</div>
+                <div className="text-xs font-bold text-tuggi-slate uppercase tracking-widest text-center md:text-left mb-2">{t("inputLabel")}</div>
                 <div className="bg-slate-50 border border-gray-200 p-3 rounded-lg text-sm font-mono text-slate-600 flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-blue-400"></span> lat, lng
                 </div>
@@ -62,10 +68,10 @@ export function TechEngine() {
 
               {/* Output */}
               <div className="flex flex-col space-y-3 w-full md:w-auto">
-                <div className="text-xs font-bold text-slate-400 uppercase tracking-widest text-center md:text-right mb-2">{t("outputLabel")}</div>
+                <div className="text-xs font-bold text-tuggi-slate uppercase tracking-widest text-center md:text-right mb-2">{t("outputLabel")}</div>
                 <div className="bg-tuggi-bg border border-tuggi-primary/20 p-4 rounded-lg flex items-center gap-3">
-                  <div className="bg-white p-2 rounded-full shadow-sm text-tuggi-primary">
-                    <Rss className="w-5 h-5" />
+                  <div className="bg-white p-2 rounded-full shadow-sm text-tuggi-primary-text">
+                    <Rss className="w-5 h-5" aria-hidden="true" />
                   </div>
                   <div className="flex flex-col">
                     <span className="text-xs font-bold text-tuggi-dark">Audio.play()</span>

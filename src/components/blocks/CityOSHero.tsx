@@ -33,7 +33,7 @@ export function CityOSHero() {
           </p>
           <Link
             href="/contact"
-            className="px-8 py-4 bg-tuggi-secondary text-white font-semibold rounded-md shadow-sm hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-tuggi-secondary focus:ring-offset-2 w-full sm:w-auto text-center"
+            className="px-8 py-4 bg-tuggi-secondary text-tuggi-dark font-semibold rounded-md shadow-sm hover:bg-tuggi-secondary-hover transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-dark focus-visible:ring-offset-2 w-full sm:w-auto text-center"
           >
             {t("cta")}
           </Link>
@@ -49,7 +49,7 @@ export function CityOSHero() {
               <div className="w-3 h-3 rounded-full bg-red-500/50"></div>
               <div className="w-3 h-3 rounded-full bg-yellow-500/50"></div>
               <div className="w-3 h-3 rounded-full bg-green-500/50"></div>
-              <div className="ml-4 text-[10px] font-mono text-gray-500 tracking-widest">Tuggi - CITY OS</div>
+              <div className="ml-4 text-[10px] font-mono text-gray-400 tracking-widest">Tuggi - CITY OS</div>
             </div>
             {/* Interface Body — CMS Animation */}
             <div className="relative overflow-hidden h-[520px]">

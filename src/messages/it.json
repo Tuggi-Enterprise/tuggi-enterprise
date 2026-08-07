@@ -815,5 +815,12 @@
       "Mandarino",
       "Coreano"
     ]
+  },
+  "A11y": {
+    "openMenu": "Apri il menu",
+    "closeMenu": "Chiudi il menu",
+    "breadcrumb": "Percorso di navigazione",
+    "routeMap": "Mappa interattiva dell'itinerario",
+    "toggleCaptions": "Attiva o disattiva i sottotitoli"
   }
 }

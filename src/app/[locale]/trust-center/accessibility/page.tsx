@@ -32,7 +32,7 @@ export default async function AccessibilityPage({ params }: { params: Promise<{ 
   return (
     <article className="prose prose-slate max-w-none prose-headings:text-tuggi-dark prose-p:text-slate-600">
       <h1>{t("title")}</h1>
-      <p className="text-sm font-semibold tracking-wider uppercase text-slate-400 !mb-8 border-b border-gray-100 pb-4">
+      <p className="text-sm font-semibold tracking-wider uppercase text-tuggi-slate !mb-8 border-b border-gray-100 pb-4">
         {t("subtitle")}
       </p>
 

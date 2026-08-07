@@ -71,7 +71,7 @@ export function DriveComparison() {
                 </th>
                 <th
                   scope="col"
-                  className="w-1/4 rounded-t-2xl border-x-2 border-t-2 border-tuggi-primary/30 bg-tuggi-primary/5 p-4 align-bottom text-base font-extrabold text-tuggi-primary-text"
+                  className="w-1/4 rounded-t-2xl border-x-2 border-t-2 border-tuggi-primary/30 bg-white p-4 align-bottom text-base font-extrabold text-tuggi-primary-text"
                 >
                   {t("colTuggi")}
                 </th>

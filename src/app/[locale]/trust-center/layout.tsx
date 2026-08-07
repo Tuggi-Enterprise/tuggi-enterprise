@@ -38,21 +38,34 @@ export default async function TrustCenterLayout({
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "Legal.Sidebar" });
 
+  // A <div>, not a <main>: the root layout already opens `<main
+  // id="main-content">` around every page, so this one nested a second
+  // landmark of the same role inside it — on the very page where the site
+  // declares WCAG conformance (SC 1.3.1).
+  //
+  // The sidebar label is a <p>, not an <h2>: as a heading it came before the
+  // page's own <h1> in document order, which put the heading tree out of
+  // sequence on all five legal pages (SC 1.3.1 / 2.4.6). `aria-labelledby`
+  // gives the nav its accessible name from the same, already translated
+  // string — the old aria-label was hardcoded English inside pt/es/it
+  // documents (SC 3.1.2).
+  const navLabelId = "trust-center-nav-label";
+
   return (
-    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 flex flex-col md:flex-row gap-10">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 flex flex-col md:flex-row gap-10">
       <aside className="w-full md:w-64 flex-shrink-0">
-        <nav className="sticky top-24 flex flex-col gap-2 p-4 bg-[#F7F9FC] rounded-md border border-gray-200 shadow-sm" aria-label="Legal Navigation">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-[#5B6472] mb-3">{t("title")}</h2>
-          <Link href="/trust-center/terms-of-use" className="text-[#0B1220] hover:text-[#00A8E8] block py-2 font-semibold transition-colors focus:ring-2 focus:ring-[#00A8E8] focus:outline-none rounded-sm">{t("terms")}</Link>
-          <Link href="/trust-center/privacy-policy" className="text-[#0B1220] hover:text-[#00A8E8] block py-2 font-semibold transition-colors focus:ring-2 focus:ring-[#00A8E8] focus:outline-none rounded-sm">{t("privacy")}</Link>
-          <Link href="/trust-center/data-deletion" className="text-[#0B1220] hover:text-[#00A8E8] block py-2 font-semibold transition-colors focus:ring-2 focus:ring-[#00A8E8] focus:outline-none rounded-sm">{t("deletion")}</Link>
-          <Link href="/trust-center/security-sla" className="text-[#0B1220] hover:text-[#00A8E8] block py-2 font-semibold transition-colors focus:ring-2 focus:ring-[#00A8E8] focus:outline-none rounded-sm">{t("security")}</Link>
-          <Link href="/trust-center/accessibility" className="text-[#0B1220] hover:text-[#00A8E8] block py-2 font-semibold transition-colors focus:ring-2 focus:ring-[#00A8E8] focus:outline-none rounded-sm">{t("accessibility")}</Link>
+        <nav className="sticky top-24 flex flex-col gap-2 p-4 bg-tuggi-bg rounded-md border border-gray-200 shadow-sm" aria-labelledby={navLabelId}>
+          <p id={navLabelId} className="text-xs font-bold uppercase tracking-wider text-tuggi-slate mb-3">{t("title")}</p>
+          <Link href="/trust-center/terms-of-use" className="text-tuggi-dark hover:text-tuggi-primary-text block py-2 font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text rounded-sm">{t("terms")}</Link>
+          <Link href="/trust-center/privacy-policy" className="text-tuggi-dark hover:text-tuggi-primary-text block py-2 font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text rounded-sm">{t("privacy")}</Link>
+          <Link href="/trust-center/data-deletion" className="text-tuggi-dark hover:text-tuggi-primary-text block py-2 font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text rounded-sm">{t("deletion")}</Link>
+          <Link href="/trust-center/security-sla" className="text-tuggi-dark hover:text-tuggi-primary-text block py-2 font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text rounded-sm">{t("security")}</Link>
+          <Link href="/trust-center/accessibility" className="text-tuggi-dark hover:text-tuggi-primary-text block py-2 font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text rounded-sm">{t("accessibility")}</Link>
         </nav>
       </aside>
-      <section className="flex-1 bg-white p-8 md:p-12 rounded-md shadow-sm border border-gray-200 text-[#0B1220]">
+      <section className="flex-1 bg-white p-8 md:p-12 rounded-md shadow-sm border border-gray-200 text-tuggi-dark">
         {children}
       </section>
-    </main>
+    </div>
   );
 }

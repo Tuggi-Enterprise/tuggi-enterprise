@@ -98,7 +98,7 @@ export function HomeHowItWorks() {
                   </div>
                   <motion.span
                     variants={badge}
-                    className="absolute z-20 -top-2 -right-2 w-7 h-7 rounded-full bg-tuggi-primary text-white text-sm font-bold flex items-center justify-center"
+                    className="absolute z-20 -top-2 -right-2 w-7 h-7 rounded-full bg-tuggi-primary text-tuggi-dark text-sm font-bold flex items-center justify-center"
                     aria-hidden="true"
                   >
                     {i + 1}

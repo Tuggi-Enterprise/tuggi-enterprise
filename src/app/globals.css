@@ -6,6 +6,13 @@
   --color-tuggi-primary: #00a8e8;
   --color-tuggi-primary-text: #007aa5;
   --color-tuggi-secondary: #ff6f00;
+  /* Hover of a filled secondary surface. Same value the header shipped as a
+     literal in three places; it lives here so it has an owner (DS-COR-001).
+     #e65f00 against --color-tuggi-dark is 5.35:1, so the pairing DS-COR-004
+     mandates still clears AA while the pointer is down. There is no cyan twin
+     because there is no cyan hover on the site — one gets added the day one
+     exists, not before. */
+  --color-tuggi-secondary-hover: #e65f00;
   --color-tuggi-dark: #0b1220;
   --color-tuggi-slate: #5b6472;
   --color-tuggi-bg: #f7f9fc;

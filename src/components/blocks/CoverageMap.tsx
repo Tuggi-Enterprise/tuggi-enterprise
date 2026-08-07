@@ -263,13 +263,17 @@ export function CoverageMap({ states }: { states: StateCoverage[] }) {
           </div>
         </div>
 
-        {/* Country Filter Pills */}
+        {/* Country Filter Pills.
+            aria-pressed because "which country is selected" was carried by
+            fill colour alone (SC 1.4.1 / 4.1.2) — these are the controls that
+            stay operable now that the map itself is out of the tab order. */}
         <div className="flex flex-wrap justify-center gap-2 mb-8">
           <button
             onClick={() => setSelectedCountry(null)}
+            aria-pressed={selectedCountry === null}
             className={`px-4 py-2 rounded-full text-sm font-bold tracking-wide transition-all ${
               selectedCountry === null
-                ? "bg-tuggi-primary text-white shadow-lg shadow-tuggi-primary/30"
+                ? "bg-tuggi-primary text-tuggi-dark shadow-lg shadow-tuggi-primary/30"
                 : "bg-white/5 text-gray-400 hover:bg-white/10 border border-white/10 cursor-pointer"
             }`}
           >
@@ -279,9 +283,10 @@ export function CoverageMap({ states }: { states: StateCoverage[] }) {
             <button
               key={country}
               onClick={() => setSelectedCountry(prev => prev === country ? null : country)}
+              aria-pressed={selectedCountry === country}
               className={`px-4 py-2 rounded-full text-sm font-bold tracking-wide transition-all ${
                 selectedCountry === country
-                  ? "bg-tuggi-primary text-white shadow-lg shadow-tuggi-primary/30"
+                  ? "bg-tuggi-primary text-tuggi-dark shadow-lg shadow-tuggi-primary/30"
                   : "bg-white/5 text-gray-400 hover:bg-white/10 border border-white/10 cursor-pointer"
               }`}
             >
@@ -296,11 +301,35 @@ export function CoverageMap({ states }: { states: StateCoverage[] }) {
           onMouseMove={handleMouseMove}
           className="relative aspect-[2/1] w-full bg-[#11161d] rounded-[40px] border border-white/5 overflow-hidden shadow-2xl"
         >
+          {/* The map is decorative for assistive technology, and deliberately
+              so.
+
+              react-simple-maps hardcodes tabIndex="0" on every <path> it
+              renders (Geography, dist/index.es.js) — it is not in our JSX,
+              which is why no grep here ever showed it. On /coverage that put
+              4,773 paths in the tab order: the first one landed on Tab #48 and
+              140 consecutive Tabs later the focus was still inside the map,
+              with no accessible name and outline:"none" in all three states.
+              That is SC 2.4.7, 2.4.3, 4.1.2 and 2.4.1 at once, and in practice
+              a keyboard trap.
+
+              restProps are spread after the library's own attributes, so
+              tabIndex={-1} below wins. With nothing focusable left inside,
+              aria-hidden on the <svg> is safe (and is what stops a screen
+              reader from walking 4,773 unnamed shapes).
+
+              The information itself is not lost: countries, regions and counts
+              are text in CoverageCountryList, immediately below this section,
+              and the filter pills above stay operable. What is still open is
+              DS-COMPONENTE-006 — that alternative has to be legible in the
+              served HTML, and today the list starts at opacity 0 waiting for an
+              IntersectionObserver. That is the no-JS card, not this one. */}
           {mounted ? (
             <ComposableMap
               projection="geoNaturalEarth1"
               projectionConfig={{ scale: 155, center: [0, 20] }}
               style={{ width: "100%", height: "100%" }}
+              aria-hidden="true"
             >
               {/* SVG filter for smoother polygon edges */}
               <defs>
@@ -319,6 +348,7 @@ export function CoverageMap({ states }: { states: StateCoverage[] }) {
                       <Geography
                         key={`country-${geo.rsmKey}`}
                         geography={geo}
+                        tabIndex={-1}
                         fill="#1A2030"
                         stroke="#252D3D"
                         strokeWidth={0.4}
@@ -352,6 +382,7 @@ export function CoverageMap({ states }: { states: StateCoverage[] }) {
                         <Geography
                           key={`state-${geo.rsmKey}`}
                           geography={geo}
+                          tabIndex={-1}
                           fill={fillColor}
                           filter={isActive && !isDimmed ? "url(#state-smooth)" : undefined}
                           stroke="none"

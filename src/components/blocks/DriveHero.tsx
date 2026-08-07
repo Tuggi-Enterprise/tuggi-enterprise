@@ -28,7 +28,7 @@ export function DriveHero() {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => sendGAEvent({ event: 'click_download', value: 'app_store' })}
-                className="hover:opacity-80 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-xl shrink-0"
+                className="hover:opacity-80 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text rounded-xl shrink-0"
               >
                 <Image 
                   src="/images/badges/app-store-badge.svg"
@@ -44,7 +44,7 @@ export function DriveHero() {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => sendGAEvent({ event: 'click_download', value: 'google_play' })}
-                className="hover:opacity-80 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary rounded-xl shrink-0"
+                className="hover:opacity-80 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text rounded-xl shrink-0"
               >
                 <Image 
                   src="/images/badges/google-play-badge.svg"

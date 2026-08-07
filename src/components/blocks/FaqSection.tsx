@@ -40,7 +40,7 @@ export function FaqSection({ namespace, count }: { namespace: string; count: num
                     aria-expanded={isOpen}
                     aria-controls={`faq-answer-${i}`}
                     onClick={() => setOpen(isOpen ? null : i)}
-                    className="w-full flex items-center justify-between gap-4 px-6 py-5 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary focus-visible:ring-offset-2 rounded-2xl"
+                    className="w-full flex items-center justify-between gap-4 px-6 py-5 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text focus-visible:ring-offset-2 rounded-2xl"
                   >
                     <span className="text-base font-bold text-tuggi-dark leading-snug">
                       {t(`q${i}`)}

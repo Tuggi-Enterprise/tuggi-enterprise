@@ -99,20 +99,20 @@ export function ContactRouter() {
           {/* Card 1: B2G */}
           <button 
             onClick={() => { setActiveState("B2G"); setSubmitted(false); setEmail(""); setEmailError(""); }}
-            className={`p-6 rounded-2xl border-2 text-left transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary/50 ${activeState === "B2G" ? "border-tuggi-primary bg-white shadow-xl scale-105" : "border-slate-200 bg-white hover:border-slate-300 hover:shadow-md"}`}
+            className={`p-6 rounded-2xl border-2 text-left transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text ${activeState === "B2G" ? "border-tuggi-primary bg-white shadow-xl scale-105" : "border-slate-200 bg-white hover:border-slate-300 hover:shadow-md"}`}
           >
             <Building2 className={`w-8 h-8 mb-4 ${activeState === "B2G" ? "text-tuggi-primary" : "text-slate-400"}`} aria-hidden="true" />
-            <h3 className="text-lg font-bold text-tuggi-dark mb-2">{t("Triage.card1Title")}</h3>
+            <h2 className="text-lg font-bold text-tuggi-dark mb-2">{t("Triage.card1Title")}</h2>
             <p className="text-sm text-slate-500">{t("Triage.card1Desc")}</p>
           </button>
 
           {/* Card 2: B2B */}
           <button 
              onClick={() => { setActiveState("B2B"); setSubmitted(false); setEmail(""); setEmailError(""); }}
-            className={`p-6 rounded-2xl border-2 text-left transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary/50 ${activeState === "B2B" ? "border-tuggi-primary bg-white shadow-xl scale-105" : "border-slate-200 bg-white hover:border-slate-300 hover:shadow-md"}`}
+            className={`p-6 rounded-2xl border-2 text-left transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text ${activeState === "B2B" ? "border-tuggi-primary bg-white shadow-xl scale-105" : "border-slate-200 bg-white hover:border-slate-300 hover:shadow-md"}`}
           >
             <Car className={`w-8 h-8 mb-4 ${activeState === "B2B" ? "text-tuggi-primary" : "text-slate-400"}`} aria-hidden="true" />
-            <h3 className="text-lg font-bold text-tuggi-dark mb-2">{t("Triage.card2Title")}</h3>
+            <h2 className="text-lg font-bold text-tuggi-dark mb-2">{t("Triage.card2Title")}</h2>
             <p className="text-sm text-slate-500">{t("Triage.card2Desc")}</p>
           </button>
 
@@ -122,7 +122,7 @@ export function ContactRouter() {
             className={`p-6 rounded-2xl border-2 text-left transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 ${activeState === "B2C" ? "border-emerald-500 bg-white shadow-xl scale-105" : "border-slate-200 bg-white hover:border-slate-300 hover:shadow-md"}`}
           >
             <UserCircle2 className={`w-8 h-8 mb-4 ${activeState === "B2C" ? "text-emerald-500" : "text-slate-400"}`} aria-hidden="true" />
-            <h3 className="text-lg font-bold text-tuggi-dark mb-2">{t("Triage.card3Title")}</h3>
+            <h2 className="text-lg font-bold text-tuggi-dark mb-2">{t("Triage.card3Title")}</h2>
             <p className="text-sm text-slate-500">{t("Triage.card3Desc")}</p>
           </button>
         </div>
@@ -145,7 +145,7 @@ export function ContactRouter() {
                   </p>
                   <button 
                     onClick={() => setSubmitted(false)}
-                    className="text-tuggi-primary-text font-semibold hover:underline mt-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary/50 rounded-sm"
+                    className="text-tuggi-primary-text font-semibold hover:underline mt-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text rounded-sm"
                   >
                     Send another message
                   </button>
@@ -163,7 +163,7 @@ export function ContactRouter() {
                             type="text" 
                             value={fullName}
                             onChange={(e) => setFullName(e.target.value)}
-                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-tuggi-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary/50" 
+                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-tuggi-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text" 
                             required 
                           />
                         </div>
@@ -174,7 +174,7 @@ export function ContactRouter() {
                             type="text" 
                             value={role}
                             onChange={(e) => setRole(e.target.value)}
-                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-tuggi-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary/50" 
+                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-tuggi-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text" 
                             required 
                           />
                         </div>
@@ -186,7 +186,7 @@ export function ContactRouter() {
                           type="text" 
                           value={city}
                           onChange={(e) => setCity(e.target.value)}
-                          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-tuggi-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary/50" 
+                          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-tuggi-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text" 
                           required 
                         />
                       </div>
@@ -197,7 +197,7 @@ export function ContactRouter() {
                           type="email" 
                           value={email}
                           onChange={(e) => handleEmailChange(e, "B2G")}
-                          className={`w-full bg-slate-50 border ${emailError ? 'border-red-400 focus:ring-red-400' : 'border-slate-200 focus:ring-tuggi-primary/50'} rounded-xl px-4 py-3 text-tuggi-dark focus:outline-none focus-visible:ring-2`} 
+                          className={`w-full bg-slate-50 border ${emailError ? 'border-red-400 focus:ring-red-400' : 'border-slate-200 focus:ring-tuggi-primary-text'} rounded-xl px-4 py-3 text-tuggi-dark focus:outline-none focus-visible:ring-2`} 
                           required 
                         />
                         {emailError && <p className="text-xs text-red-500 font-medium mt-1">{emailError}</p>}
@@ -206,7 +206,7 @@ export function ContactRouter() {
                       <button 
                         type="submit" 
                         disabled={!!emailError || !email || !fullName || isSubmitting}
-                        className="w-full bg-tuggi-dark text-white font-bold py-4 rounded-xl hover:bg-slate-800 transition-colors shadow-md disabled:bg-slate-300 disabled:cursor-not-allowed mt-4 flex items-center justify-center gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary/50">
+                        className="w-full bg-tuggi-dark text-white font-bold py-4 rounded-xl hover:bg-slate-800 transition-colors shadow-md disabled:bg-slate-300 disabled:cursor-not-allowed mt-4 flex items-center justify-center gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text">
                         {isSubmitting && <Loader2 className="w-5 h-5 animate-spin" aria-hidden="true" />}
                         {t("B2G.cta")}
                       </button>
@@ -224,7 +224,7 @@ export function ContactRouter() {
                             type="text" 
                             value={fullName}
                             onChange={(e) => setFullName(e.target.value)}
-                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-tuggi-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary/50" 
+                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-tuggi-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text" 
                             required 
                           />
                         </div>
@@ -235,7 +235,7 @@ export function ContactRouter() {
                             type="text" 
                             value={company}
                             onChange={(e) => setCompany(e.target.value)}
-                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-tuggi-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary/50" 
+                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-tuggi-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text" 
                             required 
                           />
                         </div>
@@ -246,7 +246,7 @@ export function ContactRouter() {
                           id="b2b-fleet"
                           value={fleetSize}
                           onChange={(e) => setFleetSize(e.target.value)}
-                          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-tuggi-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary/50 appearance-none" 
+                          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-tuggi-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text appearance-none" 
                           required
                         >
                           <option value="" disabled>{t("B2B.fleetTarget")}</option>
@@ -263,7 +263,7 @@ export function ContactRouter() {
                           type="email" 
                           value={email}
                           onChange={(e) => handleEmailChange(e, "B2B")}
-                          className={`w-full bg-slate-50 border ${emailError ? 'border-red-400 focus:ring-red-400' : 'border-slate-200 focus:ring-tuggi-primary/50'} rounded-xl px-4 py-3 text-tuggi-dark focus:outline-none focus-visible:ring-2`} 
+                          className={`w-full bg-slate-50 border ${emailError ? 'border-red-400 focus:ring-red-400' : 'border-slate-200 focus:ring-tuggi-primary-text'} rounded-xl px-4 py-3 text-tuggi-dark focus:outline-none focus-visible:ring-2`} 
                           required 
                         />
                         {emailError && <p className="text-xs text-red-500 font-medium mt-1">{emailError}</p>}
@@ -272,7 +272,7 @@ export function ContactRouter() {
                       <button 
                         type="submit" 
                         disabled={!!emailError || !email || !fullName || isSubmitting}
-                        className="w-full bg-tuggi-dark text-white font-bold py-4 rounded-xl hover:bg-slate-800 transition-colors shadow-md disabled:bg-slate-300 disabled:cursor-not-allowed mt-4 flex items-center justify-center gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary/50">
+                        className="w-full bg-tuggi-dark text-white font-bold py-4 rounded-xl hover:bg-slate-800 transition-colors shadow-md disabled:bg-slate-300 disabled:cursor-not-allowed mt-4 flex items-center justify-center gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text">
                         {isSubmitting && <Loader2 className="w-5 h-5 animate-spin" aria-hidden="true" />}
                         {t("B2B.cta")}
                       </button>
@@ -310,7 +310,7 @@ export function ContactRouter() {
                 <div className="w-10 h-10 bg-blue-50 text-tuggi-primary-text rounded-lg flex items-center justify-center mb-4">
                   <Building2 className="w-5 h-5" aria-hidden="true" />
                 </div>
-                <h4 className="text-sm font-bold text-tuggi-dark uppercase tracking-wider mb-1">{t("Sidebar.hqTitle")}</h4>
+                <h3 className="text-sm font-bold text-tuggi-dark uppercase tracking-wider mb-1">{t("Sidebar.hqTitle")}</h3>
                 <p className="text-slate-600">{t("Sidebar.hqValue")}</p>
               </div>
 
@@ -319,7 +319,7 @@ export function ContactRouter() {
                   <div className="w-10 h-10 bg-amber-50 text-amber-500 rounded-lg flex items-center justify-center mb-4">
                     <Info className="w-5 h-5" aria-hidden="true" />
                   </div>
-                  <h4 className="text-sm font-bold text-tuggi-dark uppercase tracking-wider mb-1">{t("Sidebar.slaTitle")}</h4>
+                  <h3 className="text-sm font-bold text-tuggi-dark uppercase tracking-wider mb-1">{t("Sidebar.slaTitle")}</h3>
                   <p className="text-slate-600">{t("Sidebar.slaValue")}</p>
                 </div>
               )}
@@ -328,8 +328,8 @@ export function ContactRouter() {
                 <div className="w-10 h-10 bg-slate-100 text-slate-500 rounded-lg flex items-center justify-center mb-4">
                   <Mail className="w-5 h-5" aria-hidden="true" />
                 </div>
-                <h4 className="text-sm font-bold text-tuggi-dark uppercase tracking-wider mb-1">{t("Sidebar.pressTitle")}</h4>
-                <a href={`mailto:${t("Sidebar.pressValue")}`} className="text-tuggi-primary-text font-medium hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary/50 rounded-sm">
+                <h3 className="text-sm font-bold text-tuggi-dark uppercase tracking-wider mb-1">{t("Sidebar.pressTitle")}</h3>
+                <a href={`mailto:${t("Sidebar.pressValue")}`} className="text-tuggi-primary-text font-medium hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text rounded-sm">
                   {t("Sidebar.pressValue")}
                 </a>
               </div>

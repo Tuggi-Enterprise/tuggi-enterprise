@@ -100,9 +100,14 @@ export function CoverageCountryList({ states, tourHubs = {} }: CoverageCountryLi
               transition={{ delay: Math.min(index * 0.04, 0.5) }}
               className="bg-tuggi-bg rounded-3xl border border-gray-100 p-6 hover:shadow-md transition-shadow"
             >
-              {/* Badge + Name */}
+              {/* Badge + Name.
+                  The badge and the "+N" pill below used to sit on
+                  bg-tuggi-primary/10, which composites to #def1fa over the
+                  card: #007aa5 on it is 4.18:1, under 4.5:1 at 11–12px
+                  (SC 1.4.3, 34 nodes). White with the cyan hairline is the
+                  treatment the region pills already use, and reads 4.85:1. */}
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-2xl bg-tuggi-primary/10 flex items-center justify-center shrink-0">
+                <div className="w-10 h-10 rounded-2xl bg-white border border-tuggi-primary/40 flex items-center justify-center shrink-0">
                   <span className="text-xs font-black text-tuggi-primary-text tracking-tight">
                     {getInitials(card.displayName)}
                   </span>
@@ -151,7 +156,7 @@ export function CoverageCountryList({ states, tourHubs = {} }: CoverageCountryLi
                   );
                 })}
                 {card.extraCount > 0 && (
-                  <span className="text-[11px] font-semibold bg-tuggi-primary/10 text-tuggi-primary-text px-2 py-0.5 rounded-full">
+                  <span className="text-[11px] font-semibold bg-white border border-tuggi-primary/40 text-tuggi-primary-text px-2 py-0.5 rounded-full">
                     +{card.extraCount} {t("CountryList.statesLabel")}
                   </span>
                 )}

@@ -815,5 +815,12 @@
       "Mandarín",
       "Coreano"
     ]
+  },
+  "A11y": {
+    "openMenu": "Abrir menú",
+    "closeMenu": "Cerrar menú",
+    "breadcrumb": "Ruta de navegación",
+    "routeMap": "Mapa interactivo de la ruta",
+    "toggleCaptions": "Activar o desactivar los subtítulos"
   }
 }

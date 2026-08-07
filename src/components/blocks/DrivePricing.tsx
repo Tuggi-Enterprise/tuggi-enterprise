@@ -26,7 +26,7 @@ const SPOTLIGHT_CARD =
   "w-full bg-white rounded-3xl p-8 border-2 border-tuggi-primary shadow-xl flex flex-col relative lg:scale-105 hover:shadow-2xl " +
   CARD_LIFT;
 const PRIMARY_OUTLINE =
-  "w-full text-center bg-white text-tuggi-primary-text font-bold py-4 rounded-xl border-2 border-tuggi-primary hover:bg-tuggi-primary/5 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary/50";
+  "w-full text-center bg-white text-tuggi-primary-text font-bold py-4 rounded-xl border-2 border-tuggi-primary hover:bg-tuggi-primary/5 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text";
 const PRIMARY_FILLED =
   "w-full text-center bg-tuggi-primary text-tuggi-dark font-bold py-4 rounded-xl hover:bg-blue-600 transition-colors shadow-lg shadow-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-tuggi-primary";
 const SECONDARY_LIGHT =
@@ -191,7 +191,7 @@ export function DrivePricing() {
           {/* ── 7-Day Pass (Spotlight) ── */}
           <motion.div variants={item} className="flex relative z-10">
             <div className={SPOTLIGHT_CARD}>
-              <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-tuggi-primary text-white font-bold text-[10px] uppercase tracking-widest py-1.5 px-6 rounded-full shadow-lg whitespace-nowrap">
+              <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-tuggi-primary text-tuggi-dark font-bold text-[10px] uppercase tracking-widest py-1.5 px-6 rounded-full shadow-lg whitespace-nowrap">
                 {t("mostPopular")}
               </div>
               <h3 className="text-xl font-bold text-tuggi-dark mb-2">{t("pass1Title")}</h3>
@@ -245,7 +245,7 @@ export function DrivePricing() {
         <p className="text-center text-sm text-tuggi-slate mt-8">{t("annualNote")}</p>
 
         {/* Store note — price source of truth */}
-        <p className="text-center text-slate-400 text-sm mt-4 flex items-center justify-center gap-1.5">
+        <p className="text-center text-tuggi-slate text-sm mt-4 flex items-center justify-center gap-1.5">
           <Store className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
           {t("storeNote")}
         </p>
