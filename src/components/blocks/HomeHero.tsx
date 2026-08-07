@@ -2,9 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft } from "lucide-react";
 import { sendGAEvent } from "@next/third-parties/google";
 import { APP_STORE_URL, PLAY_STORE_URL } from "@/lib/app-meta";
 import { PhoneFrame } from "./PhoneFrame";
@@ -20,22 +18,31 @@ const BADGE_LINK =
   "focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text focus-visible:ring-offset-2 rounded-xl shrink-0";
 
 /**
- * B2C homepage hero: copy on the left, the real app map screenshot in a phone
- * frame on the right. The hero "moment": the phone rises in, a GPS radar pulse
- * loops behind it, and ~1.8s in a simulated "now playing" pill drops in near the
- * top of the screen — communicating that stories trigger by location.
+ * B2C homepage hero: copy on the left, a real app screenshot in a phone frame
+ * on the right, with a GPS radar pulse looping behind it.
+ *
+ * **The screenshot is the point card, not the map** — spec §6.4, card #194. The
+ * card is *drawn over* the map, so the frame keeps the container and gains the
+ * product on top of it: the name of the place, the distance, the first
+ * paragraph of the story and the two actions, "Ouvir a história" and "Ler
+ * transcrição". The hero goes from "we have a map" to "this is what you get",
+ * and the same pair of actions is what the player two screens down repeats
+ * (Nielsen, consistency and standards).
+ *
+ * **The simulated "now playing" pill went with it.** It existed to say that a
+ * story arrives on its own, over a map that showed no point at all; over the
+ * card it reprinted the name of the place that is already printed in the
+ * screenshot, 200 px away in the same viewport. What it said is now said by the
+ * screenshot and by "Comece a ouvir em um minuto", which the new order puts
+ * directly below. The GPS rings stay: they carry the location trigger without
+ * text. Gone with it: a `useState` and a 1.8 s `setTimeout` in the fold that
+ * decides LCP and CLS.
  *
  * LCP is protected: the H1, subtitle, trust line and store badges are NOT
- * animation-gated (they paint immediately). Only the phone and the pill animate.
+ * animation-gated (they paint immediately). Only the phone animates.
  */
 export function HomeHero() {
   const t = useTranslations("Home.Hero");
-  const [showPill, setShowPill] = useState(false);
-
-  useEffect(() => {
-    const id = window.setTimeout(() => setShowPill(true), 1800);
-    return () => window.clearTimeout(id);
-  }, []);
 
   return (
     <section className="bg-tuggi-bg pt-28 pb-20 lg:pt-32 lg:pb-28 overflow-hidden">
@@ -92,8 +99,8 @@ export function HomeHero() {
             </p>
           </div>
 
-          {/* Phone + overlays. The wrapper is sized to the phone so the absolute
-              overlays (GPS rings, pill) align to it. */}
+          {/* Phone + overlays. The wrapper is sized to the phone so the
+              absolute GPS rings align to it. */}
           <div className="flex justify-center lg:justify-end">
             <div className="relative w-full max-w-[280px] sm:max-w-[300px] lg:max-w-[320px]">
               {/* GPS radar pings (CSS loop; hidden under reduced motion). The
@@ -119,38 +126,13 @@ export function HomeHero() {
                 className="relative"
               >
                 <PhoneFrame
-                  src="/images/app/home-map.jpg"
+                  src="/images/app/poi-story.jpg"
                   alt={t("phoneAlt")}
                   priority
                   sizes="(max-width: 1024px) 70vw, 320px"
                   className="max-w-none w-full"
                 />
               </motion.div>
-
-              {/* Simulated "now playing" trigger pill (visual demo → aria-hidden).
-                  Drops in from the top + one soft pulse; reduced motion just fades in. */}
-              {showPill && (
-                <motion.div
-                  aria-hidden="true"
-                  initial={{ opacity: 0, y: -14 }}
-                  animate={{ opacity: 1, y: 0, scale: [1, 1.02, 1] }}
-                  transition={{
-                    duration: 0.4,
-                    ease: EASE,
-                    scale: { delay: 0.4, duration: 0.45, ease: EASE },
-                  }}
-                  className="absolute left-1/2 top-[18%] w-[84%] -translate-x-1/2"
-                >
-                  <div className="flex items-center gap-3 rounded-2xl bg-white/85 px-4 py-3 shadow-lg ring-1 ring-black/5 backdrop-blur">
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-tuggi-primary text-tuggi-dark">
-                      <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-                    </span>
-                    <span className="text-sm font-semibold leading-snug text-tuggi-dark">
-                      {t("nowPlaying")}
-                    </span>
-                  </div>
-                </motion.div>
-              )}
             </div>
           </div>
         </div>

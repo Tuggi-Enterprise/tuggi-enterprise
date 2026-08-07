@@ -87,6 +87,15 @@ export type AudioSampleTag = "directional" | "story";
  * The pair `DriveSamples` used to draw, kept literally (spec §1.2): the icons
  * are Lucide (DS-COMPONENTE-004) and the labels come from i18n, so a tag can
  * never be a word typed into the component.
+ *
+ * `directional` is worth a note, because it reads like a defect and is not this
+ * file's to settle. The chip sits on a card whose button says *"Tocar a
+ * história de X"* and whose `<audio>` is `sampleN-desc.mp3`, while the clip the
+ * word names, `sampleN-dir.mp3`, is requested by no page of this site — the
+ * chaining that used to play it left with the global player (#193). Spec §1.2
+ * and §1.3 keep the pair anyway, and both halves of any fix have an owner
+ * elsewhere: the copy is the `design`'s, and what those files are is #213, open
+ * with the operator. Reported on #194; not decided by it.
  */
 const TAG = {
   directional: { icon: Navigation, label: "tagDirectional" },

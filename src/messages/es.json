@@ -93,19 +93,11 @@
       "trustLine": "Empieza gratis · Funciona sin conexión · Audio en {contentLanguages} idiomas",
       "appStoreAlt": "Descarga TUGGI en la App Store",
       "playStoreAlt": "Consigue TUGGI en Google Play",
-      "phoneAlt": "Mapa de TUGGI que muestra historias en audio, eventos y rutas cercanas",
-      "nowPlaying": "A tu izquierda: Gruta de los Esclavos"
+      "phoneAlt": "Ficha de un punto en la app TUGGI, abierta sobre el mapa: el nombre del lugar, la distancia, el inicio de la historia y los botones para escuchar la historia o leer la transcripción."
     },
-    "EnterpriseFork": {
-      "b2cTitle": "Para Turistas y Viajeros",
-      "b2cDesc": "Descarga la aplicación y transforma tu próximo viaje en coche en una inmersión cultural guiada por GPS y hands-free.",
-      "b2cLinkLabel": "Conocer la App",
-      "b2gTitle": "Para Destinos Inteligentes (DTI)",
-      "b2gDesc": "Transforme su municipio con City OS.",
-      "b2gLinkLabel": "Conocer City OS",
-      "b2bTitle": "Para Flotas y Alquileres",
-      "b2bDesc": "Descomoditiza tu flota. Opera como un guía local automatizado.",
-      "b2bLinkLabel": "Soluciones para Flotas"
+    "Scene": {
+      "lead": "Hoy pasaste por cuarenta historias.\nNo escuchaste ninguna.",
+      "body": "El fuerte a la entrada del pueblo, la iglesia del siglo XVIII, la sierra que tiene nombre y motivo. Todo pasó por la ventana en silencio, porque nadie se detiene en el arcén para buscar qué era lo que acaba de pasar."
     },
     "HowItWorks": {
       "title": "Empieza a escuchar en un minuto",
@@ -114,9 +106,6 @@
       "step3": "Las historias suenan solas a medida que pasas por cada lugar."
     },
     "Showcase": {
-      "feat1Title": "Dice el nombre antes de contar la historia",
-      "feat1Body": "En cuanto te acercas a un punto de interés, TUGGI dice el nombre del lugar y solo entonces empieza la historia. Sabes al instante qué tienes alrededor, sin parar a buscar. Y como cada historia trae subtítulos sincronizados, quien es sordo o escucha poco lo sigue todo en la pantalla.",
-      "feat1Alt": "Ficha de historia de TUGGI para un punto de interés, con botones para escuchar la historia y leer la transcripción",
       "feat2Title": "Quieto, te muestra. En movimiento, habla.",
       "feat2Body": "Cuando te detienes, abres el mapa y ves lo que tienes cerca: puntos de interés, eventos y rutas, cada uno con su distancia. Vuelves a moverte y TUGGI vuelve a narrar.",
       "feat2Alt": "Lista \"explora a tu alrededor\" de TUGGI con puntos de interés cercanos y sus distancias",
@@ -149,14 +138,6 @@
       "p1": "TUGGI es una guía de viaje de audio autoguiada para iPhone y Android. Usa el GPS para reconocer los lugares por donde pasas y cuenta la historia de cada uno en voz alta, en el momento justo, sin que busques nada en la pantalla. Funciona como viajas: a pie, en bici, en coche, en autobús o en metro.",
       "p2": "Las historias empiezan solas cuando te acercas a un punto de interés. Como todo funciona sin conexión, descargas la ciudad antes de salir y escuchas sin internet y sin gastar datos en roaming. Y como cada historia trae subtítulos sincronizados, los viajeros sordos o con problemas de audición la siguen en la pantalla.",
       "p3": "TUGGI no sustituye tu app de navegación: funciona junto a ella, sin estorbar el mapa ni la música, y solo añade la narración cultural del recorrido. Empieza gratis, elige entre {contentLanguages} idiomas y convierte cualquier trayecto en un viaje con historia."
-    },
-    "Coverage": {
-      "title": "Disponible en {coverageCountries} países",
-      "subtitle": "Historias ya esperando en tu destino.",
-      "americas": "Américas",
-      "europe": "Europa",
-      "more": "y {count} países más por el mundo",
-      "cta": "Ver cobertura completa"
     }
   },
   "AudioSample": {
@@ -688,6 +669,9 @@
       },
       "listTitle": "Todos los destinos, región por región",
       "listIntro": "La lista completa de lo que dibuja el mapa — y las regiones que quedan fuera del encuadre. Donde ya existe una ruta de audio, el nombre de la región lleva hasta ella.",
+      "countryListTitle": "Los países donde TUGGI ya está",
+      "countryListIntro": "La lista completa, región por región, está en la página de cobertura.",
+      "countryListCta": "Ver cobertura completa",
       "group": {
         "americas": "Américas",
         "europe": "Europa",

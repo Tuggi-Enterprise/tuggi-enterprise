@@ -41,22 +41,34 @@ export type AudioSampleFile = {
 };
 
 /**
- * The three clips, in the order they are published today.
+ * The three clips, in the order they are published — spec §6.5, card #194.
+ *
+ * **The order is this array, and the ids do not move with it.** §6.5 asked for
+ * the swap as a change of key content — `sample1` becoming Avenida Paulista,
+ * and the `/audio/sampleN-*.mp3` files renamed to follow. Two things that were
+ * not known when it was written say to do it here instead:
+ *
+ *  - the `id` is the value of the GA events (`play_audio_sample`), so renaming
+ *    it makes every reading taken before the swap mean a different place, in
+ *    the same series, with nothing in the data marking where it changed;
+ *  - the three `sampleN-dir.mp3` were matched byte for byte to objects in
+ *    Storage — `sample1-dir` en-US, `sample2-dir` pt-BR, `sample3-dir` it-IT —
+ *    which is the lineage of the pair each `sampleN` is. Renaming the files
+ *    scrambles the only established fact about them while their provenance is
+ *    still an open question with the operator.
+ *
+ * The rendered order is what the card asked for and what a test asserts; the
+ * numbering is a key, and a key that means one thing forever is worth more
+ * than a key that reads in order.
  *
  * The story half (`-desc`) is what a card plays. The directional half
- * (`-dir`, about three seconds: the cue that names the place) is what the
- * `directional` tag on /drive describes — the previous player chained the two
- * and started the second on its own, which is the SC 1.3.1 / 4.1.2 finding the
- * global player exists to remove.
+ * (`-dir`, about three seconds: the cue that names the place) is a second clip
+ * that no surface of this site plays: the player used to chain the two and
+ * start it on its own, which is the SC 1.3.1 / 4.1.2 finding the global player
+ * removed, and the `directional` chip that survived the chaining went with
+ * #194 — a label on a card names what that card plays.
  */
 export const AUDIO_SAMPLE_FILES = [
-  {
-    id: "sample1",
-    src: "/audio/sample1-desc.mp3",
-    countryCode: "US",
-    transcript: null,
-    audioLang: null,
-  },
   {
     id: "sample2",
     src: "/audio/sample2-desc.mp3",
@@ -68,6 +80,13 @@ export const AUDIO_SAMPLE_FILES = [
     id: "sample3",
     src: "/audio/sample3-desc.mp3",
     countryCode: "IT",
+    transcript: null,
+    audioLang: null,
+  },
+  {
+    id: "sample1",
+    src: "/audio/sample1-desc.mp3",
+    countryCode: "US",
     transcript: null,
     audioLang: null,
   },

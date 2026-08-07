@@ -1,7 +1,9 @@
 import { Fragment } from "react";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
+import { ArrowRight } from "lucide-react";
 
+import { Link as LocalizedLink } from "@/i18n/routing";
 import type { StateCoverage } from "@/lib/coverage";
 import { DENSITY_STEPS, DENSITY_STROKE, groupCoverage } from "@/lib/coverage-density";
 import { CoverageDensityCanvas } from "./CoverageDensityCanvas";
@@ -10,6 +12,23 @@ interface Props {
   states: StateCoverage[];
   /** "<country>|<region>" → route hub path, built on the server. */
   tourHubs?: Record<string, string>;
+  /**
+   * How far the served alternative goes — and it is one prop, not two, because
+   * the shortened list is only honest while it points at the complete one.
+   *
+   * `"regions"` is /coverage: every active region of every country, which is
+   * what makes the page worth indexing.
+   *
+   * `"countries"` is the home (#194). Every region of every country printed on
+   * the highest-traffic page of the site would be the whole of /coverage
+   * published twice — near-duplicate content between the two pages that most
+   * need to rank, and several thousand words between the cold visitor and the
+   * three blocks below, one of which is the only B2B entrance the site has. The
+   * question the home is asked is "is my destination in it?", and the country
+   * is the granularity that answers it: spec §3.9 item 1 asks the served HTML
+   * of the home for the names of the countries, and that is what this renders.
+   */
+  detail?: "regions" | "countries";
 }
 
 /**
@@ -34,7 +53,11 @@ interface Props {
  * block used to print are gone, and the density is an ordinal with a word next
  * to it. Published coverage figures live in `lib/product-facts.ts`.
  */
-export async function CoverageDensityMap({ states, tourHubs = {} }: Props) {
+export async function CoverageDensityMap({
+  states,
+  tourHubs = {},
+  detail = "regions",
+}: Props) {
   const t = await getTranslations("Coverage.Density");
   const groups = groupCoverage(states, tourHubs);
 
@@ -91,12 +114,47 @@ export async function CoverageDensityMap({ states, tourHubs = {} }: Props) {
         <div className="container mx-auto px-6">
           <div className="text-center mb-12">
             <h3 className="text-3xl md:text-4xl font-black text-tuggi-dark mb-4">
-              {t("listTitle")}
+              {t(detail === "countries" ? "countryListTitle" : "listTitle")}
             </h3>
-            <p className="text-tuggi-slate text-lg max-w-2xl mx-auto">{t("listIntro")}</p>
+            <p className="text-tuggi-slate text-lg max-w-2xl mx-auto">
+              {t(detail === "countries" ? "countryListIntro" : "listIntro")}
+            </p>
           </div>
 
-          {groups.map((group) => (
+          {detail === "countries" ? (
+            <>
+              {groups.map((group) => (
+                <div key={group.id} className="mb-10 last:mb-0">
+                  <h4 className="text-xs font-bold uppercase tracking-widest text-tuggi-slate mb-5 pb-2 border-b border-gray-200">
+                    {t(`group.${group.id}`)}
+                  </h4>
+                  {/* Plain text in the served HTML, like the long form: the
+                      names are the answer, and they may not wait for a bundle
+                      (DS-COMPONENTE-006). */}
+                  <ul className="flex flex-wrap gap-2">
+                    {group.countries.map((country) => (
+                      <li
+                        key={country.country}
+                        className="rounded-full border border-gray-200 bg-tuggi-bg px-4 py-2 text-sm font-semibold text-tuggi-dark"
+                      >
+                        {country.displayName}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+              <div className="mt-10 text-center">
+                <LocalizedLink
+                  href="/coverage"
+                  className="inline-flex items-center gap-2 font-semibold text-tuggi-primary-text hover:text-tuggi-primary transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text focus-visible:ring-offset-2 rounded"
+                >
+                  {t("countryListCta")}
+                  <ArrowRight className="w-4 h-4" aria-hidden="true" />
+                </LocalizedLink>
+              </div>
+            </>
+          ) : (
+            groups.map((group) => (
             <div key={group.id} className="mb-12 last:mb-0">
               <h4 className="text-xs font-bold uppercase tracking-widest text-tuggi-slate mb-5 pb-2 border-b border-gray-200">
                 {t(`group.${group.id}`)}
@@ -133,7 +191,8 @@ export async function CoverageDensityMap({ states, tourHubs = {} }: Props) {
                 ))}
               </ul>
             </div>
-          ))}
+            ))
+          )}
         </div>
       </section>
     </>

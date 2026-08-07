@@ -98,7 +98,7 @@ test.describe("SC 1.2.1 — the textual alternative, in the state the site is in
       await page.goto(`/${locale}`);
 
       const section = page.locator("section").filter({ has: page.locator("audio") });
-      await expect(section.locator("audio")).toHaveCount(2);
+      await expect(section.locator("audio")).toHaveCount(3);
       await expect(section.getByRole("button", { name: messages.transcriptShow })).toHaveCount(0);
       // Nor an empty region left behind by the button that is not there.
       await expect(section.locator("[aria-expanded]")).toHaveCount(0);
@@ -142,7 +142,7 @@ test.describe("spec §1.10 item 4 / SC 1.4.2 — one clip at a time, and never o
     // button stops matching "play" the moment it starts playing — which is the
     // point of SC 4.1.2 and would make a label locator lose the second card.
     const cards = page.locator("section article").filter({ has: page.locator("audio") });
-    await expect(cards).toHaveCount(2);
+    await expect(cards).toHaveCount(3);
 
     // Focus + Enter, not click: the cookie banner sits over the fold this
     // section lands on, and Playwright refuses to click through it. The key
@@ -283,9 +283,9 @@ test.describe("spec §1.6 and card #211 — the name owns the card at every widt
 
           const cards = page.locator("section article").filter({ has: page.locator("audio") });
           // An empty locator is the failure this assertion has to survive
-          // first: three cards on /drive, two on the home (spec §6.5 keeps the
-          // third one for #194).
-          await expect(cards, where).toHaveCount(surface === "drive" ? 3 : 2);
+          // first: three cards on both surfaces since #194 mounted the third
+          // one on the home (spec §6.5).
+          await expect(cards, where).toHaveCount(3);
 
           // The duration only joins the metadata line once the file's header
           // is in, and it is the part that makes the line long. Measuring
@@ -361,6 +361,101 @@ test.describe("spec §1.8 — the three events, or nothing about audio is decida
     const code = stripComments(fs.readFileSync(CARD, "utf8"));
     for (const event of ["play_audio_sample", "audio_sample_complete", "open_transcript"]) {
       expect(code, `AudioSampleCard.tsx does not emit ${event}`).toContain(event);
+    }
+  });
+});
+
+/**
+ * Card #194 — spec §6.5, the order of the samples, and what a chip may claim.
+ *
+ * Two separate promises live here because one is about which clip is served
+ * and the other is about what the card says the clip is.
+ */
+test.describe("spec §6.5 — the published order, and the file behind each name", () => {
+  /**
+   * The order the card asked for: Avenida Paulista and Ponte di Rialto before
+   * Walt Disney World Resort.
+   *
+   * The ids stay where they were, and asserting them is the point: §6.5 asked
+   * for the swap as a rename of key and file, and the delivery moved the array
+   * instead — the `id` is the GA event value and the `sampleN-dir.mp3` beside
+   * each `-desc` is the only file whose provenance is established. So the pair
+   * (position, file) is what this asserts, and a rename would be as red as a
+   * wrong order.
+   */
+  const PUBLISHED = ["sample2", "sample3", "sample1"] as const;
+
+  for (const locale of LOCALES) {
+    test(`spec §6.5: /${locale} plays Paulista, then Rialto, then Disney`, async ({ page }) => {
+      const messages = messagesFor(locale);
+      await page.goto(`/${locale}`);
+
+      const cards = page.locator("section article").filter({ has: page.locator("audio") });
+      await expect(cards).toHaveCount(3);
+
+      expect(await cards.locator("p.line-clamp-2").allInnerTexts()).toEqual(
+        PUBLISHED.map((id) => messages[`${id}Name`]),
+      );
+      expect(
+        await cards.locator("audio").evaluateAll((nodes) =>
+          nodes.map((el) => new URL((el as HTMLAudioElement).src).pathname),
+        ),
+      ).toEqual(PUBLISHED.map((id) => `/audio/${id}-desc.mp3`));
+    });
+  }
+});
+
+/**
+ * Spec §1.2 — the chips, and the reading of them this card did *not* settle.
+ *
+ * The pair is the spec's, reused literally: `Direcional` and `História`, both
+ * from i18n. It reads like a defect on a card that plays `sampleN-desc.mp3`
+ * behind a button saying "Tocar a história de X", while `sampleN-dir.mp3` is
+ * requested by no page of this site — the chaining that used to play it left
+ * with the global player (#193). That observation was reported on #194 and left
+ * to its owners: the copy is the `design`'s, and what those files are is #213,
+ * open with the operator.
+ *
+ * Which is why the shape is asserted rather than described. Someone reading the
+ * paragraph above will be tempted to delete the chip, or the files, on the way
+ * past — both turn this red, and red is the conversation.
+ */
+test.describe("spec §1.2 — the chips are the spec's pair, and they come from i18n", () => {
+  test("the home labels the story, and /drive draws both halves", async ({ page }) => {
+    for (const locale of LOCALES) {
+      const messages = messagesFor(locale);
+      const expected: Record<string, Set<string>> = {
+        "": new Set([messages.tagStory]),
+        [localizedPathname(locale, "/drive")]: new Set([
+          messages.tagDirectional,
+          messages.tagStory,
+        ]),
+      };
+
+      for (const [pathname, labels] of Object.entries(expected)) {
+        await page.goto(`/${locale}${pathname}`);
+        const where = `/${locale}${pathname}`;
+        const chips = page
+          .locator("section article")
+          .filter({ has: page.locator("audio") })
+          .locator("ul li");
+
+        const rendered = await chips.allInnerTexts();
+        // An empty locator is the failure this has to survive first: a chip
+        // list that stopped rendering satisfies any assertion about what it
+        // does *not* say.
+        expect(rendered.length, where).toBeGreaterThan(0);
+        expect(new Set(rendered.map((label) => label.trim())), where).toEqual(labels);
+      }
+    }
+  });
+
+  test("the directional clips stay on disk", () => {
+    for (const id of ["sample1", "sample2", "sample3"]) {
+      expect(
+        fs.existsSync(path.join(REPO_ROOT, "public/audio", `${id}-dir.mp3`)),
+        `public/audio/${id}-dir.mp3`,
+      ).toBe(true);
     }
   });
 });

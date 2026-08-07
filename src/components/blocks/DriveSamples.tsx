@@ -13,6 +13,10 @@ import { AUDIO_SAMPLE_FILES } from "@/lib/audio-samples";
  * 4.1.2, finding 16). The chaining is gone with the player: one card plays one
  * clip, started by the user, and the two chips survive as what they always
  * described — the two halves the product delivers at that point.
+ *
+ * That "Direcional" now sits on a card which plays only `sampleN-desc.mp3` is a
+ * real observation, and it is not this file's to act on: see the note on `TAG`
+ * in `AudioSampleCard.tsx`, and #194, where it was reported.
  */
 export function DriveSamples() {
   const t = useTranslations("Drive.Samples");

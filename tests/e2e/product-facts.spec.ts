@@ -411,7 +411,15 @@ const PUBLISHED_ON: Record<string, string[]> = {
     "Home.Context.p3",
     "Home.FAQ.a1",
     "Home.FAQ.a5",
-    "Home.Coverage.title",
+    // The proof block, mounted by #194. `Proof.since` is the third line and it
+    // is here for the same reason as the other two: the block drops a line
+    // whose value the module does not have, so a sentence that stops being
+    // served is a figure that went null — which is exactly what this map is
+    // for. `Home.Coverage.title` left with `CoverageStrip`, which the density
+    // map replaced; the country figure the home publishes is now `Proof.points`.
+    "Proof.points",
+    "Proof.guides",
+    "Proof.since",
     "Metadata.rootDescription",
   ],
   "/coverage": [
@@ -442,13 +450,13 @@ const PUBLISHED_ON: Record<string, string[]> = {
  * honest way to carry it is a named, dated exception rather than a silent hole
  * in the map above. The entry dies when the card lands: the moment the block
  * renders, the rendered half below is where its sentences have to appear.
+ *
+ * It is empty, and that is the state it is supposed to be in. `Proof` was the
+ * one entry, left here by #193 with #194 written next to it; #194 mounted the
+ * block, so the three sentences moved up into `PUBLISHED_ON` under "/" and the
+ * exception went with the card that opened it.
  */
-const NOT_MOUNTED_YET: Record<string, string> = {
-  Proof:
-    "ProofBlock (card #193, component 4.2) is built and deliberately not " +
-    "placed: the home reordering is #194. When #194 mounts it, Proof.points, " +
-    "Proof.guides and Proof.since move into PUBLISHED_ON under '/'.",
-};
+const NOT_MOUNTED_YET: Record<string, string> = {};
 
 function localeUrl(locale: string, pagePath: string): string {
   const slug = localizedPathname(locale, pagePath);

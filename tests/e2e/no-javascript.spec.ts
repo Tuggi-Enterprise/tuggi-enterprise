@@ -272,9 +272,11 @@ const JS_ONLY: Record<string, string> = {
   // `blocks/CoverageMap.tsx` estava aqui pelo tooltip dentro de AnimatePresence.
   // O #193 o substituiu por CoverageDensityMap/CoverageDensityCanvas, que não
   // usam framer-motion: não há `opacity: 0` nenhum, e por isso não há dispensa.
+  // `blocks/HomeHero.tsx` saiu pelo mesmo caminho no #194: a pílula "tocando
+  // agora" repetia, sobre a captura da ficha, o nome do lugar já impresso nela,
+  // e foi removida com o `useState` e o `setTimeout` que a montavam.
   "blocks/CityOSHeroAnimator.tsx": "demonstração animada, montada em etapas por estado de React",
   "blocks/DriveHeroAnimator.tsx": "demonstração animada, montada em etapas por estado de React",
-  "blocks/HomeHero.tsx": "pílula 'tocando agora', aria-hidden e renderizada só depois do mount",
   "global/CookieBanner.tsx": "só existe quando não há consentimento gravado, decidido no cliente",
 };
 

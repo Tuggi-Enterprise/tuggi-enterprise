@@ -11,15 +11,17 @@ import { AUDIO_SAMPLE_FILES } from "@/lib/audio-samples";
  * no progress bar, no duration and a `truncate` that cut place names in the
  * middle of a word.
  *
- * Two samples, in the order published today. The third one and the reordering
- * are §6.5 of the spec, which is the home card (#194) — a block that only
- * swapped its player has no business changing what the home says.
+ * **Three samples, and all three of them** (spec §1.3 and §6.5, card #194).
+ * Three is the ceiling where the choice is still instant on a page whose job is
+ * a decision (Hick's law), and it is also the whole catalogue: slicing it would
+ * mean this block deciding which clip the home does not get, which is exactly
+ * the decision `src/lib/audio-samples.ts` owns. The order is that file's.
  */
 export function HomeAudioSample() {
   const t = useTranslations("Home.AudioSample");
   const ts = useTranslations("AudioSample");
 
-  const samples: AudioSample[] = AUDIO_SAMPLE_FILES.slice(0, 2).map((file) => ({
+  const samples: AudioSample[] = AUDIO_SAMPLE_FILES.map((file) => ({
     ...file,
     placeName: ts(`${file.id}Name`),
     city: ts(`${file.id}City`),

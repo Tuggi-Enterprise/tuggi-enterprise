@@ -33,14 +33,13 @@ import {
  * What this guards, and what it cannot guard yet
  * ---------------------------------------------------------------------------
  *
- * The block is built and deliberately not mounted: the home reordering is
- * #194. So there is no page to read, and everything below is asserted against
- * the two things that exist — the message files in four languages and the pure
- * module that decides which lines may be drawn. `product-facts.spec.ts` holds
- * the other half by name: `NOT_MOUNTED_YET` there is what makes the omission
- * from `PUBLISHED_ON` an entry with a card on it rather than a hole, and the
- * day #194 lands the rendered assertions are that file's, not a second copy
- * here.
+ * Everything below is asserted against the two things that decide the block
+ * before any page renders it — the message files in four languages and the pure
+ * module that decides which lines may be drawn. The rendered half is
+ * `product-facts.spec.ts`, and it is not a second copy of this: #194 mounted
+ * the block on the home, so `Proof.points`, `Proof.guides` and `Proof.since`
+ * moved out of `NOT_MOUNTED_YET` there and into `PUBLISHED_ON` under "/", where
+ * every locale is read off the served page.
  *
  * ---------------------------------------------------------------------------
  * The claim this block exists to *not* make
