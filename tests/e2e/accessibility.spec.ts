@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { LOCALES } from "../../src/i18n/locales";
 import { localizedPathname } from "../../src/i18n/pathnames";
+import { measuredTextContrast } from "./support/contrast";
 
 /**
  * WCAG 2.1 AA regression net for the site, and the executable half of
@@ -31,11 +32,13 @@ import { localizedPathname } from "../../src/i18n/pathnames";
  *     content, not missing markup — there is nothing to assert until the text
  *     exists.
  *
- * The third half, added by #198, is the menu: findings 7 and 8 were carved out
- * of the first pass because the header was being rewritten, and they are the
- * two the audit could only describe as behaviour — dismissing a panel and
- * escaping a drawer are keystrokes, not attributes, and a keystroke with no
- * test disappears at the next refactor.
+ * The third half, added by #198 and #220, is the menu: findings 7 and 8 were
+ * carved out of the first pass because the header was being rewritten, and they
+ * are the two the audit could only describe as behaviour — dismissing a panel
+ * and escaping a drawer are keystrokes, not attributes, and a keystroke with no
+ * test disappears at the next refactor. The contrast of the locale dropdown
+ * closes it: the first half of this file greps source, and a ratio produced by
+ * compositing a 50 %-alpha wash is not something a grep can see.
  */
 
 // ───────────────────────────────────────────────────────────────────────────
@@ -439,5 +442,45 @@ test.describe("Mobile drawer is a modal (SC 2.4.3, SC 2.4.7)", () => {
 
     await expect(page.locator(DRAWER)).toHaveAttribute("inert", "");
     await expect(trigger).toBeFocused();
+  });
+});
+
+test.describe("Locale dropdown contrast (DS-COR-002, SC 1.4.3)", () => {
+  // The selected item is `text-sm font-bold` — 14 px. WCAG 2.2 calls text
+  // "large" at 24 px, or 18.66 px when bold, so this is normal text and the
+  // floor is 4.5:1, not 3:1. `text-tuggi-primary` on `bg-blue-50/50` measured
+  // 2.57:1 and shipped on every page of the site, because the header is global.
+  const AA_NORMAL_TEXT = 4.5;
+
+  for (const locale of LOCALES) {
+    test(`${locale}: the selected language reads at AA against the wash behind it`, async ({
+      page,
+    }) => {
+      await page.goto(localeUrl(locale, ""));
+      await page.locator(LOCALE_TRIGGER).click();
+
+      const selected = page.locator("[data-locale-selected]");
+      await expect(selected, "exactly one language is marked selected").toHaveCount(1);
+      await expect(selected).toBeVisible();
+
+      const ratio = await measuredTextContrast(page, "[data-locale-selected]");
+      expect(
+        ratio,
+        `DS-COR-002: brand cyan is a surface colour. As ink it takes the darkened pair — ` +
+          `text-tuggi-primary-text (#007aa5), which is what the unselected sibling already ` +
+          `uses on hover. Measured ${ratio.toFixed(2)}:1.`,
+      ).toBeGreaterThanOrEqual(AA_NORMAL_TEXT);
+    });
+  }
+
+  test("the selection is not communicated by colour alone (SC 1.4.1)", async ({ page }) => {
+    // The 6 px dot next to the selected label is why the colour swap is only
+    // about legibility and not about meaning. Removing it would turn a contrast
+    // fix into a 1.4.1 failure, silently.
+    await page.goto(localeUrl("pt", ""));
+    await page.locator(LOCALE_TRIGGER).click();
+
+    const marks = page.locator("[data-locale-selected] div.rounded-full");
+    await expect(marks, "the selected language carries a non-colour mark").toHaveCount(1);
   });
 });

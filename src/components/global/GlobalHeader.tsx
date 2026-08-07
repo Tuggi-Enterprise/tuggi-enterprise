@@ -238,13 +238,21 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
                       // config with `pathnames`.
                       href={{ pathname, params }}
                       locale={loc.code}
+                      data-locale-selected={currentLocale === loc.code || undefined}
                       onClick={() => {
                         document.cookie = `NEXT_LOCALE=${loc.code}; path=/; max-age=31536000`;
                         setIsLocaleOpen(false);
                       }}
+                      // DS-COR-002: brand cyan is a surface colour, and as ink
+                      // it takes the darkened pair. `text-tuggi-primary` on
+                      // `bg-blue-50/50` measures 2.57:1 — text-sm bold is not
+                      // "large text" (the WCAG 2.2 floor is 18.66 px bold), so
+                      // the minimum is 4.5:1. `-primary-text` on the same
+                      // surface measures 4.64:1. The dot below stays: it is
+                      // what keeps the selection from being colour alone.
                       className={`flex items-center justify-between px-4 py-2.5 text-sm font-bold rounded-xl transition-colors ${
                         currentLocale === loc.code
-                          ? "text-tuggi-primary bg-blue-50/50"
+                          ? "text-tuggi-primary-text bg-blue-50/50"
                           : "text-slate-600 hover:bg-slate-50 hover:text-tuggi-primary-text"
                       }`}
                     >

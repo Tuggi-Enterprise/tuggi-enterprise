@@ -2,6 +2,7 @@ import { test, expect } from "@playwright/test";
 import fs from "node:fs";
 import path from "node:path";
 import { localizedPathname } from "../../src/i18n/pathnames";
+import { contrast } from "./support/contrast";
 
 /**
  * Card #193, component 4.4 — TriggerComparison, spec §4 of
@@ -245,20 +246,6 @@ test.describe("spec §4.4 — the contrast survives 360 px", () => {
 });
 
 /* -------------------------------------------------------------------------- */
-
-/** WCAG 2.2, relative luminance and contrast ratio, on sRGB channels. */
-function luminance([r, g, b]: number[]): number {
-  const channel = (value: number) => {
-    const c = value / 255;
-    return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
-  };
-  return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b);
-}
-
-function contrast(ink: number[], background: number[]): number {
-  const [a, b] = [luminance(ink), luminance(background)].sort((x, y) => y - x);
-  return (a + 0.05) / (b + 0.05);
-}
 
 type Shape = {
   column: "radius" | "cone";
