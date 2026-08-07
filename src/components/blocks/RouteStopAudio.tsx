@@ -65,18 +65,23 @@ export function RouteStopAudio({ audios, defaultLang, stopName }: RouteStopAudio
         </div>
       )}
 
-      {/* Remounted per language: swapping the src under a playing element
-          leaves the position and the duration of the previous clip on screen.
-          The clip's URL is the sample id — stable, never translated, and the
-          only thing that identifies one recording of one stop. */}
+      {/* Remounted per language, and the remount is the point: the player
+          reuses one element and moves its source itself while a sequence
+          plays, so a language chosen mid-clip has to arrive as a new card and
+          not as a source swapped under a running one. The clip's URL is the
+          sample id — stable, never translated, and the only thing that
+          identifies one recording of one stop.
+
+          A stop is a single clip, not a pair: the CMS delivers one recording
+          per language (docs/contracts/cms-para-site.md), so there is nothing
+          to chain and no chip to draw. */}
       <AudioSampleCard
         key={current.lang}
         preload="none"
         sample={{
           id: current.audioUrl,
           placeName: stopName,
-          src: current.audioUrl,
-          audioLang: current.lang,
+          clips: [{ src: current.audioUrl, part: "story", audioLang: current.lang }],
           transcript: null,
         }}
       />

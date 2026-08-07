@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
 import fs from "node:fs";
 import path from "node:path";
 import { localizedPathname } from "../../src/i18n/pathnames";
@@ -371,20 +371,20 @@ test.describe("spec §1.8 — the three events, or nothing about audio is decida
  * Two separate promises live here because one is about which clip is served
  * and the other is about what the card says the clip is.
  */
-test.describe("spec §6.5 — the published order, and the file behind each name", () => {
-  /**
-   * The order the card asked for: Avenida Paulista and Ponte di Rialto before
-   * Walt Disney World Resort.
-   *
-   * The ids stay where they were, and asserting them is the point: §6.5 asked
-   * for the swap as a rename of key and file, and the delivery moved the array
-   * instead — the `id` is the GA event value and the `sampleN-dir.mp3` beside
-   * each `-desc` is the only file whose provenance is established. So the pair
-   * (position, file) is what this asserts, and a rename would be as red as a
-   * wrong order.
-   */
-  const PUBLISHED = ["sample2", "sample3", "sample1"] as const;
+/**
+ * The order the card asked for: Avenida Paulista and Ponte di Rialto before
+ * Walt Disney World Resort.
+ *
+ * The ids stay where they were, and asserting them is the point: §6.5 asked
+ * for the swap as a rename of key and file, and the delivery moved the array
+ * instead — the `id` is the GA event value and the `sampleN-dir.mp3` beside
+ * each `-desc` is the only file whose provenance is established. So the pair
+ * (position, file) is what this asserts, and a rename would be as red as a
+ * wrong order.
+ */
+const PUBLISHED = ["sample2", "sample3", "sample1"] as const;
 
+test.describe("spec §6.5 — the published order, and the file behind each name", () => {
   for (const locale of LOCALES) {
     test(`spec §6.5: /${locale} plays Paulista, then Rialto, then Disney`, async ({ page }) => {
       const messages = messagesFor(locale);
@@ -406,15 +406,16 @@ test.describe("spec §6.5 — the published order, and the file behind each name
 });
 
 /**
- * Spec §1.2 — the chips, and the reading of them this card did *not* settle.
+ * Spec §1.2 — the chips, and what each one is now allowed to claim.
  *
  * The pair is the spec's, reused literally: `Direcional` and `História`, both
- * from i18n. It reads like a defect on a card that plays `sampleN-desc.mp3`
- * behind a button saying "Tocar a história de X", while `sampleN-dir.mp3` is
- * requested by no page of this site — the chaining that used to play it left
- * with the global player (#193). That observation was reported on #194 and left
- * to its owners: the copy is the `design`'s, and what those files are is #213,
- * open with the operator.
+ * from i18n. For two cards it read like a defect, because unifying the players
+ * (#193) dropped the chaining and left "Direcional" over a card that played
+ * only `sampleN-desc.mp3` — reported on #194, and the reason #213 found the
+ * three cue files referenced by no line of `src/`. The operator's answer was to
+ * put the cue back on the air, so the chip describes what the card plays again
+ * and the block below asserts exactly that: a page draws the chip of a half it
+ * plays, and no other.
  *
  * Which is why the shape is asserted rather than described. Someone reading the
  * paragraph above will be tempted to delete the chip, or the files, on the way
@@ -457,5 +458,216 @@ test.describe("spec §1.2 — the chips are the spec's pair, and they come from 
         `public/audio/${id}-dir.mp3`,
       ).toBe(true);
     }
+  });
+});
+
+/**
+ * Card #213 — the pair is played again, and this block is what keeps it that
+ * way.
+ *
+ * The regression it answers had no error and no red test: unifying the players
+ * (e5a8c16) gave the model a single `src`, the chaining `DriveSamples` did with
+ * two elements (`onEnded={handleDirEnded}`) had nowhere to live, and the three
+ * `sampleN-dir.mp3` quietly stopped being requested by anything. Nobody noticed
+ * until the operator did — *"tudo tocava, por que parou de tocar?"*. A
+ * behaviour with no test is a behaviour that leaves without a sound, so what is
+ * asserted here is the behaviour itself: the second source enters playback on
+ * its own, after the first, from one press of the visitor.
+ */
+test.describe("#213 — the cue plays, and the story follows it", () => {
+  /** What a card records about itself while it plays. */
+  type Played = { sources: string[]; chips: string[] };
+
+  /**
+   * Watches one card from the browser, instead of polling it from here.
+   *
+   * The cue is barely over a second long: a poll can step over the whole clip
+   * and see only the story, which is also what a card that never chained looks
+   * like. `timeupdate` only fires while a source is *running*, so the list it
+   * builds is the sources that actually played, in order — and the observer on
+   * `aria-current` catches a chip that is marked and unmarked between two
+   * polls (DS-A11Y-003).
+   */
+  async function watchCard(page: Page, index: number) {
+    await page.evaluate((cardIndex) => {
+      const cards = [...document.querySelectorAll("section article")].filter((card) =>
+        card.querySelector("audio"),
+      );
+      const card = cards[cardIndex];
+      const el = card.querySelector("audio") as HTMLAudioElement;
+      const played: Played = { sources: [], chips: [] };
+      (window as unknown as { __played: Played }).__played = played;
+
+      const pushSource = () => {
+        const source = new URL(el.currentSrc || el.src, location.href).pathname;
+        if (played.sources[played.sources.length - 1] !== source) played.sources.push(source);
+      };
+      el.addEventListener("timeupdate", pushSource);
+
+      const chips = card.querySelector("ul");
+      if (chips) {
+        const observer = new MutationObserver(() => {
+          const label = chips.querySelector("[aria-current]")?.textContent?.trim();
+          if (label && played.chips[played.chips.length - 1] !== label) played.chips.push(label);
+        });
+        observer.observe(chips, {
+          attributes: true,
+          subtree: true,
+          attributeFilter: ["aria-current"],
+        });
+      }
+    }, index);
+  }
+
+  const readPlayed = (page: Page) =>
+    page.evaluate(() => (window as unknown as { __played: Played }).__played);
+
+  /** Focus + Enter, never click: the reason is in the note on SC 1.4.2 above. */
+  async function press(page: Page, index: number) {
+    const cards = page.locator("section article").filter({ has: page.locator("audio") });
+    await cards.nth(index).getByRole("button").first().focus();
+    await page.keyboard.press("Enter");
+  }
+
+  test("the second source enters playback on its own, after the first", async ({ page }) => {
+    // A press, a clip of ~1.2 s, and the swap that follows it: the default
+    // 30 s covers it, but not on a cold static asset.
+    test.setTimeout(90_000);
+    await page.goto(`/pt${localizedPathname("pt", "/drive")}`);
+
+    const cards = page.locator("section article").filter({ has: page.locator("audio") });
+    await expect(cards).toHaveCount(3);
+    await watchCard(page, 0);
+    await press(page, 0);
+
+    // Two sources, in this order, both having actually produced playback —
+    // and the second one started by nothing but the end of the first.
+    await expect
+      .poll(async () => (await readPlayed(page)).sources, { timeout: 30_000 })
+      .toEqual([`/audio/${PUBLISHED[0]}-dir.mp3`, `/audio/${PUBLISHED[0]}-desc.mp3`]);
+
+    expect(
+      await page.evaluate(() => {
+        const el = [...document.querySelectorAll("audio")][0] as HTMLAudioElement;
+        return { paused: el.paused, playing: el.currentTime > 0 };
+      }),
+    ).toEqual({ paused: false, playing: true });
+  });
+
+  test("DS-A11Y-003: the chip of the half that is playing is the one marked", async ({ page }) => {
+    test.setTimeout(90_000);
+    const messages = messagesFor("pt");
+    await page.goto(`/pt${localizedPathname("pt", "/drive")}`);
+
+    const cards = page.locator("section article").filter({ has: page.locator("audio") });
+    await expect(cards).toHaveCount(3);
+    // At rest nothing is marked: `aria-current` says what is playing, and a
+    // card that is not playing has no current half to point at.
+    await expect(cards.first().locator("li[aria-current]")).toHaveCount(0);
+
+    await watchCard(page, 0);
+    await press(page, 0);
+
+    // The state that used to be carried by a colour and nothing else (audit
+    // finding 16) now moves in the accessibility tree, in the order the clips
+    // play.
+    await expect
+      .poll(async () => (await readPlayed(page)).chips, { timeout: 30_000 })
+      .toEqual([messages.tagDirectional, messages.tagStory]);
+
+    // ...and it is said in words, for whoever is not looking at the chips.
+    await expect(cards.first().locator('[role="status"]')).toHaveText(messages.tagStory);
+  });
+
+  test("the idle card carries the story, so the length on its face is the story's", async ({
+    page,
+  }) => {
+    await page.goto(`/pt${localizedPathname("pt", "/drive")}`);
+    const cards = page.locator("section article").filter({ has: page.locator("audio") });
+
+    // What a crawler and a visitor with no JavaScript get, and what the
+    // metadata line is measuring: the narration, never the one-second cue in
+    // front of it.
+    expect(
+      await cards.locator("audio").evaluateAll((nodes) =>
+        nodes.map((el) => new URL((el as HTMLAudioElement).src).pathname),
+      ),
+    ).toEqual(PUBLISHED.map((id) => `/audio/${id}-desc.mp3`));
+
+    await expect
+      .poll(
+        async () =>
+          (await cards.locator("p.line-clamp-2 + p").allInnerTexts()).every((text) =>
+            /\d+:\d\d/.test(text),
+          ),
+        { timeout: 15_000 },
+      )
+      .toBe(true);
+  });
+
+  test("CLAUDE.md §6: the sequence is in the model, and both halves are in it", () => {
+    const catalogue = fs.readFileSync(path.join(SRC, "lib/audio-samples.ts"), "utf8");
+    for (const id of PUBLISHED) {
+      // The regression was exactly this: a model with room for one source per
+      // sample, and a file that no line of `src/` named any more.
+      expect(catalogue, `${id}: the directional cue`).toContain(`/audio/${id}-dir.mp3`);
+      expect(catalogue, `${id}: the story`).toContain(`/audio/${id}-desc.mp3`);
+    }
+    // One element, still: a sequence is a list of sources, not a second player
+    // (spec §1.10 item 1, asserted over the whole of `src/` above).
+    const code = fs.readFileSync(CARD, "utf8");
+    expect(code.match(/<audio\b/g)?.length).toBe(1);
+  });
+});
+
+/**
+ * Card #213 — the route stop keeps its languages.
+ *
+ * `RouteStopAudio` consumes the same player, and it is the one surface where
+ * the visitor picks the language of what he is about to hear: one recording per
+ * language per stop, `audio_url` by `language`
+ * (docs/contracts/cms-para-site.md). BR-AUDIO-020 is the promise underneath —
+ * the content is heard in the language the user chooses — and the player now
+ * moves its own source while a sequence plays, which is a new way for that
+ * switch to break. It does not: the card is remounted per language, so the
+ * chosen recording arrives as a new element and not as a source swapped under a
+ * running one.
+ */
+test.describe("#213 / BR-AUDIO-020 — the stop's language switch survives the sequence", () => {
+  test("choosing a language changes the recording, and changing back restores it", async ({
+    page,
+  }) => {
+    const tours = JSON.parse(fs.readFileSync(path.join(SRC, "messages", "pt.json"), "utf8")) as {
+      Tours: Record<string, string>;
+    };
+    // A stop of this route publishes en, es and pt-br (routes-snapshot.json),
+    // which is what makes the group render at all.
+    await page.goto("/pt/tours/brazil/as-maravilhas-do-rio-em-um-dia");
+
+    const group = page.getByRole("group", { name: tours.Tours.audioLanguages }).first();
+    await expect(group).toBeVisible();
+    const player = group.locator("xpath=following-sibling::article");
+    const source = () =>
+      player.locator("audio").evaluate((el) => (el as HTMLAudioElement).src);
+
+    // The page's own dialect is the one selected — nothing was chosen yet.
+    await expect(group.getByRole("button", { pressed: true })).toHaveCount(1);
+    const initial = await source();
+    expect(initial).not.toBe("");
+
+    await group.getByRole("button", { name: "EN" }).focus();
+    await page.keyboard.press("Enter");
+    await expect.poll(source, { timeout: 10_000 }).not.toBe(initial);
+    await expect(group.getByRole("button", { name: "EN" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    // One recording, one element: the switch replaces the card, it does not
+    // add a second player beside it.
+    await expect(player.locator("audio")).toHaveCount(1);
+
+    await group.getByRole("button", { name: "PT-BR" }).focus();
+    await page.keyboard.press("Enter");
+    await expect.poll(source, { timeout: 10_000 }).toBe(initial);
   });
 });

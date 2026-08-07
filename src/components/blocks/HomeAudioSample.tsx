@@ -1,6 +1,6 @@
 import { useTranslations } from "next-intl";
 import { AudioSampleGrid, type AudioSample } from "./AudioSampleGrid";
-import { AUDIO_SAMPLE_FILES } from "@/lib/audio-samples";
+import { AUDIO_SAMPLE_FILES, storyOf } from "@/lib/audio-samples";
 
 /**
  * "Hear a sample" on the home page.
@@ -21,12 +21,21 @@ export function HomeAudioSample() {
   const t = useTranslations("Home.AudioSample");
   const ts = useTranslations("AudioSample");
 
-  const samples: AudioSample[] = AUDIO_SAMPLE_FILES.map((file) => ({
-    ...file,
-    placeName: ts(`${file.id}Name`),
-    city: ts(`${file.id}City`),
-    tags: ["story"],
-  }));
+  const samples: AudioSample[] = AUDIO_SAMPLE_FILES.map((file) => {
+    // The narration, and only it. The directional cue that plays in front of
+    // the story belongs to the /drive block, which is the one that shows the
+    // pair and names both halves — this block never played it, before or
+    // after the players were unified (#213).
+    const clips = [storyOf(file)] as const;
+    return {
+      ...file,
+      clips,
+      placeName: ts(`${file.id}Name`),
+      city: ts(`${file.id}City`),
+      // The chips are what the card plays, taken from the clips it was given.
+      tags: clips.map((clip) => clip.part),
+    };
+  });
 
   return (
     <section className="bg-white py-20 lg:py-24 border-t border-gray-100">

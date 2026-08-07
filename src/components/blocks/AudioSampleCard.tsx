@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { LoaderCircle, Navigation, Pause, Play, Volume2 } from "lucide-react";
 import { sendGAEvent } from "@next/third-parties/google";
+import type { AudioSamplePart } from "@/lib/audio-samples";
 import type { Surface } from "./surface";
 
 /**
@@ -16,6 +17,13 @@ import type { Surface } from "./surface";
  * the only one that already had a real seek bar and a colour pair that passes
  * — the accessibility audit of 2026-08 says so in §6.2, and this file inherits
  * both.
+ *
+ * **A sample is a sequence of clips, and the card plays the sequence** (#213).
+ * At a point of interest the product delivers two halves: the directional cue
+ * that names the place (~1 s) and the story that follows it (~30 s). `/drive`
+ * showed both and played both — one press, the cue, then the story on its own
+ * — until the unification kept a single `src` per sample and the cue stopped
+ * being played by anything. Restoring it is what this file's sequence is for.
  *
  * What the audit obliges (§6.3), and where each obligation lives here:
  *
@@ -30,15 +38,35 @@ import type { Surface } from "./surface";
  *    DS-COR-004 says the hover token is born the day the hover exists, not
  *    before. Hover is scale.
  *  - **Playback state announced by something other than colour** (SC 1.3.1,
- *    4.1.2) — the button's `aria-label` names the action and the icon changes
- *    shape. The finding behind that requirement was `DriveSamples` starting a
- *    second clip on its own when the first ended, with nothing announced;
- *    chaining is gone, so nothing changes state without the user.
- *  - **Never autoplay** (SC 1.4.2) — no `autoPlay`, and no play on hover or on
- *    entering the viewport.
+ *    4.1.2, DS-A11Y-003) — the button's `aria-label` names the action, the
+ *    icon changes shape, and the chip of the half that is playing carries
+ *    `aria-current` while a `role="status"` region names it in text. That is
+ *    the finding the old chaining earned (audit finding 16): it moved a
+ *    coloured chip and nothing else, so a screen-reader user had no way to
+ *    know that the clip had changed under him.
+ *  - **Never autoplay** (SC 1.4.2) — nothing starts without a press. The
+ *    second clip of a sequence is the one exception the audit allows, because
+ *    it is the continuation of a playback the visitor asked for; it is
+ *    announced, and it can only follow a press of his.
  */
 
 /* -------------------------------------------------------------------------- */
+
+/** One recording of a sample. See `@/lib/audio-samples` for the catalogue. */
+export type AudioClip = {
+  /** Under /public, or the absolute URL of a route stop's recording. */
+  src: string;
+  /** Which half this clip is — the chip and the status region name it. */
+  part: AudioSamplePart;
+  /**
+   * The language of the clip, as a BCP 47 tag, or `null` when it is not
+   * established. Same rule as `transcript`: the site serves one file per
+   * sample to all four locales and, apart from the three directional cues
+   * (matched to Storage on #213), nothing in the repository records which
+   * language was recorded — so no call site claims one.
+   */
+  audioLang: string | null;
+};
 
 export type AudioSample = {
   /** Stable key, and the value of the GA events. Never translated. */
@@ -56,8 +84,15 @@ export type AudioSample = {
   city?: string;
   /** ISO 3166-1 alpha-2, resolved by Intl.DisplayNames in the page's locale. */
   countryCode?: string;
-  /** Under /public. */
-  src: string;
+  /**
+   * What the card plays, **in order, ending with the story**.
+   *
+   * The last clip is the one the card is about: it is what the idle element
+   * carries, so the length on the face of the card is the length of the
+   * narration and not of the one-second cue in front of it, and it is what a
+   * crawler and a visitor with no JavaScript find in the served HTML.
+   */
+  clips: readonly [AudioClip, ...AudioClip[]];
   /**
    * The transcript of this clip, or `null` when it has not been produced.
    *
@@ -71,36 +106,24 @@ export type AudioSample = {
    */
   transcript: string | null;
   /**
-   * The language of the clip, as a BCP 47 tag, or `null` when it is not
-   * established. Same rule as `transcript`: the site serves one file per
-   * sample to all four locales and nothing in the repository records which
-   * language was recorded, so no call site claims one.
+   * Descriptors of the sample, in the order they are shown. A page builds them
+   * from the clips it passes — a chip that names a half the card does not play
+   * is a label that lies (CLAUDE.md §6).
    */
-  audioLang: string | null;
-  /** Descriptors of the sample, in the order they are shown. */
-  tags?: readonly AudioSampleTag[];
+  tags?: readonly AudioSamplePart[];
 };
-
-export type AudioSampleTag = "directional" | "story";
 
 /**
  * The pair `DriveSamples` used to draw, kept literally (spec §1.2): the icons
  * are Lucide (DS-COMPONENTE-004) and the labels come from i18n, so a tag can
- * never be a word typed into the component.
- *
- * `directional` is worth a note, because it reads like a defect and is not this
- * file's to settle. The chip sits on a card whose button says *"Tocar a
- * história de X"* and whose `<audio>` is `sampleN-desc.mp3`, while the clip the
- * word names, `sampleN-dir.mp3`, is requested by no page of this site — the
- * chaining that used to play it left with the global player (#193). Spec §1.2
- * and §1.3 keep the pair anyway, and both halves of any fix have an owner
- * elsewhere: the copy is the `design`'s, and what those files are is #213, open
- * with the operator. Reported on #194; not decided by it.
+ * never be a word typed into the component. The same two labels name the half
+ * that is playing, which is what the old player did with its `directionalLabel`
+ * and `storyLabel` — one string per half, in the chip and in the live region.
  */
 const TAG = {
   directional: { icon: Navigation, label: "tagDirectional" },
   story: { icon: Volume2, label: "tagStory" },
-} as const;
+} as const satisfies Record<AudioSamplePart, { icon: unknown; label: string }>;
 
 /**
  * One clip plays at a time across the whole page. A route page carries up to a
@@ -132,6 +155,10 @@ type AudioSampleCardProps = {
  * Colours per surface. On dark, the body text is white or slate-300 — measured
  * on `--color-tuggi-dark`, `--color-tuggi-slate` is 3.13:1 and fails SC 1.4.3,
  * which is the trap this table exists to keep closed (spec §1.7).
+ *
+ * `tagPlaying` is the button's pair, and for the same reason: it is the one
+ * filled brand surface this repository has measured (6.92:1), and DS-COR-004
+ * requires exactly it of any other.
  */
 const SURFACE = {
   light: {
@@ -140,6 +167,7 @@ const SURFACE = {
     meta: "text-tuggi-slate",
     body: "text-tuggi-slate",
     tag: "bg-tuggi-bg text-tuggi-slate border-gray-200",
+    tagPlaying: "bg-tuggi-primary text-tuggi-dark border-tuggi-primary",
     ring: "focus-visible:ring-tuggi-primary-text focus-visible:ring-offset-2",
   },
   dark: {
@@ -148,6 +176,7 @@ const SURFACE = {
     meta: "text-slate-300",
     body: "text-slate-300",
     tag: "bg-slate-800 text-slate-300 border-slate-700",
+    tagPlaying: "bg-tuggi-primary text-tuggi-dark border-tuggi-primary",
     ring: "focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-tuggi-dark",
   },
 } as const satisfies Record<Surface, Record<string, string>>;
@@ -161,6 +190,11 @@ export function AudioSampleCard({
   const locale = useLocale();
   const skin = SURFACE[surface];
 
+  const clips = sample.clips;
+  const last = clips.length - 1;
+  /** The clip the card is about, and the one the served markup carries. */
+  const story = clips[last];
+
   const audioRef = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -170,11 +204,53 @@ export function AudioSampleCard({
   const [openTranscript, setOpenTranscript] = useState(false);
   const startedRef = useRef(false);
 
+  /**
+   * Which clip is in the element, twice: the state renders the chip and the
+   * metadata line, the ref is what the media listeners read — they are
+   * registered once and would otherwise close over the first render's value.
+   * Everything that moves one moves the other, in `load`.
+   */
+  const [loaded, setLoaded] = useState(last);
+  const loadedRef = useRef(last);
+
   const transcriptId = useId();
+
+  /**
+   * Puts one clip of the sequence into the one element the site has.
+   *
+   * The element's source is never a React prop past the first render — the JSX
+   * carries the story and nothing changes it, so React never writes the
+   * attribute again and never fights this function for it. Writing `src` from
+   * both sides is how a swap turns into a reload that restarts the clip the
+   * visitor is listening to.
+   *
+   * `load()` is MDN's instruction for a source changed by script: it "will
+   * reset the element and rescan the available sources, thereby causing the
+   * changes to take effect".
+   */
+  const goToClip = useCallback((el: HTMLAudioElement, index: number, src: string) => {
+    loadedRef.current = index;
+    setLoaded(index);
+    // The previous clip's position and length are not this one's, and a card
+    // that keeps showing them for the instant before `loadedmetadata` is a
+    // card showing a number about a file it is no longer playing.
+    setTime(0);
+    setDuration(NaN);
+    el.src = src;
+    el.load();
+  }, []);
+
+  /**
+   * The listeners are registered once per element, so the sequence has to be
+   * identified by its content, and it is all the effect needs of it: `clips`
+   * is rebuilt by the page on every render and its identity says nothing.
+   */
+  const sequence = clips.map((clip) => clip.src).join("\n");
 
   useEffect(() => {
     const el = audioRef.current;
     if (!el) return;
+    const sources = sequence.split("\n");
 
     const onPlay = () => {
       if (playingAudio && playingAudio !== el) playingAudio.pause();
@@ -182,7 +258,8 @@ export function AudioSampleCard({
       setPlaying(true);
       setLoading(false);
       // Once per card per session: the question the event answers is how many
-      // visitors start a clip, not how many times one visitor scrubs it.
+      // visitors start a clip, not how many times one visitor scrubs it — nor
+      // how many halves the sequence has.
       if (!startedRef.current) {
         startedRef.current = true;
         sendGAEvent({ event: "play_audio_sample", value: sample.id });
@@ -193,6 +270,33 @@ export function AudioSampleCard({
       setLoading(false);
     };
     const onEnded = () => {
+      const next = loadedRef.current + 1;
+      if (next < sources.length) {
+        goToClip(el, next, sources[next]);
+        /**
+         * The continuation, and the one call of this file that is not made
+         * from inside a gesture.
+         *
+         * MDN's autoplay guide allows script-initiated playback when "the user
+         * has interacted with the site (by clicking, tapping, pressing keys,
+         * etc.)", which is true here by a second or two. WebKit states the
+         * requirement per call — the script "must have directly resulted from
+         * a handler for a `touchend`, `click`, `doubleclick`, or `keydown`
+         * event" — and documents no rule that a played element stays unlocked,
+         * so on iOS this can be refused with `NotAllowedError`.
+         *
+         * Which is why the story is what gets loaded *before* the attempt, and
+         * why the failure path is the one MDN prescribes (`showPlayButton`):
+         * the card falls back to its own play button over the story. A refusal
+         * costs the visitor one press and never the narration — the cue is the
+         * part that can be lost, never the part that carries the product.
+         */
+        el.play().catch(() => {
+          setPlaying(false);
+          setLoading(false);
+        });
+        return;
+      }
       setPlaying(false);
       setTime(0);
       sendGAEvent({ event: "audio_sample_complete", value: sample.id });
@@ -232,26 +336,42 @@ export function AudioSampleCard({
       el.removeEventListener("error", onError);
       if (playingAudio === el) playingAudio = null;
     };
-  }, [sample.id]);
+  }, [sample.id, sequence, goToClip]);
 
   const toggle = () => {
     const el = audioRef.current;
     if (!el) return;
-    if (el.paused) {
-      setLoading(true);
-      // A rejected play() (offline, a bad range request) falls back to the
-      // paused state instead of leaving the card claiming it is playing.
-      el.play().catch(() => {
-        setPlaying(false);
-        setLoading(false);
-        setFailed(true);
-      });
-    } else {
+    if (!el.paused) {
       el.pause();
+      return;
     }
+    // Starting the sample over: the sequence goes back to its first clip, and
+    // it is put in *here*, inside the press. This is the only source change
+    // any policy is documented to allow, and it is why the cue is the clip
+    // that starts from a gesture and the story the one that follows it.
+    const atStart = el.ended || el.currentTime === 0;
+    if (atStart && loadedRef.current !== 0) goToClip(el, 0, clips[0].src);
+    setLoading(true);
+    // A rejected play() (offline, a bad range request) falls back to the
+    // paused state instead of leaving the card claiming it is playing.
+    el.play().catch(() => {
+      setPlaying(false);
+      setLoading(false);
+      setFailed(true);
+    });
   };
 
   const knownDuration = isFinite(duration) && duration > 0;
+  const active = clips[loaded] ?? story;
+  /** A single clip is a sample with no halves: there is no state to follow. */
+  const chained = clips.length > 1;
+  /**
+   * Whether the sequence is under way — playing, or paused somewhere inside
+   * it. `aria-current` answers *which half is playing*, so a card at rest has
+   * no answer to give: at rest the element sits on the story with no position,
+   * which is also where it is put back the moment the sequence ends.
+   */
+  const running = chained && (playing || time > 0 || loaded !== last);
 
   /**
    * The metadata line, joined with "·". Built from the parts that exist: a
@@ -260,14 +380,20 @@ export function AudioSampleCard({
    * the language are named by Intl.DisplayNames — the country in the page's
    * locale, the language in its own, which is how the visitor recognizes a
    * language he does not read.
+   *
+   * Both the length and the language are the *loaded* clip's, never the
+   * sample's: the sample has neither. Idle, that is the story — the narration
+   * is what the card offers and its length is what the visitor is deciding
+   * about, while the cue in front of it is a second long and, unlike the
+   * story, has an established language to name while it plays.
    */
   const countryName = sample.countryCode
     ? (new Intl.DisplayNames([locale], { type: "region" }).of(sample.countryCode) ??
       sample.countryCode)
     : null;
-  const languageName = sample.audioLang
-    ? (new Intl.DisplayNames([sample.audioLang], { type: "language" }).of(sample.audioLang) ??
-      sample.audioLang)
+  const languageName = active.audioLang
+    ? (new Intl.DisplayNames([active.audioLang], { type: "language" }).of(active.audioLang) ??
+      active.audioLang)
     : null;
 
   const metadata = [
@@ -335,10 +461,15 @@ export function AudioSampleCard({
           <ul className="flex flex-wrap gap-1.5">
             {sample.tags.map((tag) => {
               const Icon = TAG[tag].icon;
+              // Which half is playing, in the accessibility tree and in the
+              // fill (DS-A11Y-003 asks for a second channel; the region below
+              // is the third, and it is the one that speaks).
+              const current = running && tag === active.part;
               return (
                 <li
                   key={tag}
-                  className={`flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold ${skin.tag}`}
+                  aria-current={current || undefined}
+                  className={`flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold ${current ? skin.tagPlaying : skin.tag}`}
                 >
                   <Icon className="h-3 w-3" aria-hidden="true" />
                   {t(TAG[tag].label)}
@@ -346,6 +477,16 @@ export function AudioSampleCard({
               );
             })}
           </ul>
+        )}
+
+        {/* The half that is playing, in text, for whoever is not looking at
+            the chips. Only a sequence has one: on a card with a single clip
+            nothing changes under the visitor, and a region that announces the
+            same word every time a clip starts is noise (SC 4.1.3). */}
+        {chained && (
+          <span role="status" className="sr-only">
+            {playing ? t(TAG[active.part].label) : ""}
+          </span>
         )}
 
         {failed ? (
@@ -400,7 +541,10 @@ export function AudioSampleCard({
         )}
       </div>
 
-      <audio ref={audioRef} preload={preload} src={sample.src} />
+      {/* The story, and it stays the story: the source React renders is the
+          clip the card is about, so the served HTML carries the narration and
+          the swaps of the sequence happen where the note on `load` explains. */}
+      <audio ref={audioRef} preload={preload} src={story.src} />
     </article>
   );
 }

@@ -5,18 +5,19 @@ import { AUDIO_SAMPLE_FILES } from "@/lib/audio-samples";
 /**
  * The sample section of /drive, on the dark surface.
  *
- * It used to own a player of its own — the third of three (spec §1.1) — and
- * that player chained two clips: when the directional cue ended it started the
- * story on its own and moved a coloured chip, with no `aria-live`, no
- * `aria-current` and no text. A screen-reader user had no way to know what was
- * playing or that anything had changed (accessibility audit §6.2, SC 1.3.1 and
- * 4.1.2, finding 16). The chaining is gone with the player: one card plays one
- * clip, started by the user, and the two chips survive as what they always
- * described — the two halves the product delivers at that point.
+ * This is the block where the product's pair is shown and heard: the
+ * directional cue that names the place, then the story. It used to own a
+ * player of its own — the third of three (spec §1.1) — which chained the two
+ * clips and moved a coloured chip while doing it, with no `aria-current` and
+ * no text, so a screen-reader user had no way to know that anything had
+ * changed (accessibility audit §6.2, SC 1.3.1 and 4.1.2, finding 16).
  *
- * That "Direcional" now sits on a card which plays only `sampleN-desc.mp3` is a
- * real observation, and it is not this file's to act on: see the note on `TAG`
- * in `AudioSampleCard.tsx`, and #194, where it was reported.
+ * Unifying the players took the chaining with it, and for a while these cards
+ * showed a "Direcional" chip over a card that played only `sampleN-desc.mp3` —
+ * reported on #194, and the reason #213 found the three cue files referenced
+ * by no line of `src/`. The chaining is back in the shared player, and the
+ * finding stays answered: the chip of the half that is playing carries
+ * `aria-current` and a `role="status"` region names it (DS-A11Y-003).
  */
 export function DriveSamples() {
   const t = useTranslations("Drive.Samples");
@@ -26,7 +27,9 @@ export function DriveSamples() {
     ...file,
     placeName: ts(`${file.id}Name`),
     city: ts(`${file.id}City`),
-    tags: ["directional", "story"],
+    // The chips are the halves this card plays, read off the clips themselves:
+    // a chip that names a half nobody plays is a label that lies (#213).
+    tags: file.clips.map((clip) => clip.part),
   }));
 
   return (
