@@ -1,16 +1,5 @@
-"use client";
-
 import { useTranslations } from "next-intl";
-import { motion } from "framer-motion";
 import { PRODUCT_FACTS } from "@/lib/product-facts";
-
-const EASE: [number, number, number, number] = [0.21, 0.47, 0.32, 0.98];
-
-const container = { hidden: {}, show: { transition: { staggerChildren: 0.06 } } };
-const rowVar = {
-  hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { duration: 0.4, ease: EASE } },
-};
 
 /**
  * Anonymous market-category comparison — objection handling for a hesitant
@@ -18,6 +7,13 @@ const rowVar = {
  * described by what it is, never by what it lacks (a neutral "—" marks
  * not-applicable cells). Real <table> with scope'd headers; horizontally
  * scrollable on small screens. The TUGGI column is highlighted.
+ *
+ * No motion, and therefore no client boundary. The six rows used to stagger in
+ * with an opacity-only variant, which meant the whole table read blank until an
+ * IntersectionObserver fired: on a 390px screen a realistic fling left 3 of the
+ * 6 rows invisible, and a jump to the end left all 6 (#191). Reinstating the
+ * stagger as a transform is not an option either — translating a <tr> breaks
+ * the vertical border that runs down the highlighted column.
  */
 export function DriveComparison() {
   const t = useTranslations("Drive.Comparison");
@@ -46,13 +42,7 @@ export function DriveComparison() {
         </h2>
 
         <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
-          <motion.table
-            variants={container}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, margin: "-80px" }}
-            className="w-full min-w-[640px] border-separate border-spacing-0 text-left"
-          >
+          <table className="w-full min-w-[640px] border-separate border-spacing-0 text-left">
             <caption className="sr-only">{t("title")}</caption>
             <thead>
               <tr>
@@ -81,7 +71,7 @@ export function DriveComparison() {
               {rows.map((row, i) => {
                 const last = i === rows.length - 1;
                 return (
-                  <motion.tr key={i} variants={rowVar} className="align-middle">
+                  <tr key={i} className="align-middle">
                     <th
                       scope="row"
                       className="border-t border-gray-200 p-4 text-sm font-bold text-tuggi-dark"
@@ -101,11 +91,11 @@ export function DriveComparison() {
                     >
                       {row.tuggi}
                     </td>
-                  </motion.tr>
+                  </tr>
                 );
               })}
             </tbody>
-          </motion.table>
+          </table>
         </div>
 
         <p className="mt-6 text-center text-sm text-tuggi-slate">{t("footnote")}</p>

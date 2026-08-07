@@ -6,9 +6,10 @@ import { Languages as LanguagesIcon } from "lucide-react";
 
 const EASE: [number, number, number, number] = [0.21, 0.47, 0.32, 0.98];
 const container = { hidden: {}, show: { transition: { staggerChildren: 0.04 } } };
+/** Transform only, on purpose: the resting state is the no-JS state (#191). */
 const item = {
-  hidden: { opacity: 0, y: 10 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.35, ease: EASE } },
+  hidden: { y: 10 },
+  show: { y: 0, transition: { duration: 0.35, ease: EASE } },
 };
 
 /**

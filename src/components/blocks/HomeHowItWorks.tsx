@@ -10,20 +10,22 @@ const container = {
   hidden: {},
   show: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } },
 };
+/** Transform only, on purpose: the resting state is the no-JS state (#191). */
 const item = {
-  hidden: { opacity: 0, y: 16 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: EASE } },
+  hidden: { y: 16 },
+  show: { y: 0, transition: { duration: 0.4, ease: EASE } },
 };
 const badge = {
-  hidden: { opacity: 0, scale: 0.8 },
-  show: { opacity: 1, scale: 1, transition: { duration: 0.3, ease: EASE } },
+  hidden: { scale: 0.8 },
+  show: { scale: 1, transition: { duration: 0.3, ease: EASE } },
 };
 
 /**
  * "How it works" — three steps that stagger in on scroll, each number badge
  * scaling in with it. On desktop a thin SVG line draws left→right (pathLength)
  * to connect the steps. Client because it animates; under reduced motion the
- * steps just fade (MotionConfig) and the connector renders already-drawn.
+ * steps land in place with no transform (MotionConfig) and the connector
+ * renders already-drawn.
  */
 export function HomeHowItWorks() {
   const t = useTranslations("Home.HowItWorks");

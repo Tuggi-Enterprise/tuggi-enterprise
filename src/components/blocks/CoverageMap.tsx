@@ -320,10 +320,11 @@ export function CoverageMap({ states }: { states: StateCoverage[] }) {
 
               The information itself is not lost: countries, regions and counts
               are text in CoverageCountryList, immediately below this section,
-              and the filter pills above stay operable. What is still open is
-              DS-COMPONENTE-006 — that alternative has to be legible in the
-              served HTML, and today the list starts at opacity 0 waiting for an
-              IntersectionObserver. That is the no-JS card, not this one. */}
+              and the filter pills above stay operable. That alternative is
+              legible in the served HTML with no JavaScript at all, which is
+              what DS-COMPONENTE-006 asks for — it used to start at opacity 0
+              waiting for an IntersectionObserver, and #191 removed that. The
+              guarantee is asserted in tests/e2e/no-javascript.spec.ts. */}
           {mounted ? (
             <ComposableMap
               projection="geoNaturalEarth1"

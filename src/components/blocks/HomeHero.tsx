@@ -107,11 +107,14 @@ export function HomeHero() {
                 className="tuggi-gps-ring tuggi-gps-ring--delayed pointer-events-none absolute left-1/2 top-[42%] h-28 w-28 rounded-full border border-tuggi-primary/40"
               />
 
-              {/* Phone rises + fades in on mount. The screenshot keeps `priority`;
-                  the H1 (not this) is the LCP element. */}
+              {/* Phone rises into place on mount. The screenshot keeps
+                  `priority`; the H1 (not this) is the LCP element.
+                  Transform only: it used to fade from opacity 0, which meant
+                  the product screenshot in the first fold did not exist for a
+                  reader without JavaScript (#191). */}
               <motion.div
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={{ y: 24 }}
+                animate={{ y: 0 }}
                 transition={{ duration: 0.5, delay: 0.15, ease: EASE }}
                 className="relative"
               >

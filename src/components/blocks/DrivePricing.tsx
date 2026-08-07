@@ -12,9 +12,10 @@ import { PRODUCT_FACTS } from "@/lib/product-facts";
 
 const EASE: [number, number, number, number] = [0.21, 0.47, 0.32, 0.98];
 const container = { hidden: {}, show: { transition: { staggerChildren: 0.08 } } };
+/** Transform only, on purpose: the resting state is the no-JS state (#191). */
 const item = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.45, ease: EASE } },
+  hidden: { y: 20 },
+  show: { y: 0, transition: { duration: 0.45, ease: EASE } },
 };
 const CARD_LIFT =
   "transition-[transform,box-shadow] duration-200 hover:-translate-y-1 motion-reduce:hover:translate-y-0";

@@ -25,6 +25,19 @@ interface CoverageCountryListProps {
 
 const MAX_REGION_PILLS = 4;
 
+/**
+ * Transform only, no opacity — and here that is a requirement, not taste.
+ * This list is the textual alternative to the map above it, which
+ * DS-COMPONENTE-006 requires to be legible in the *served* HTML, with no
+ * JavaScript and no hydration. An `opacity: 0` waiting on an
+ * IntersectionObserver made the alternative exist only for a browser that runs
+ * our JS — see CoverageMap.tsx, and #191.
+ */
+const REVEAL = {
+  hidden: { y: 20 },
+  show: { y: 0 },
+};
+
 export function CoverageCountryList({ states, tourHubs = {} }: CoverageCountryListProps) {
   const t = useTranslations("Coverage");
 
@@ -71,16 +84,16 @@ export function CoverageCountryList({ states, tourHubs = {} }: CoverageCountryLi
         {/* Header */}
         <div className="text-center mb-14">
           <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={REVEAL.hidden}
+            whileInView={REVEAL.show}
             viewport={{ once: true }}
             className="text-3xl md:text-5xl font-black text-tuggi-dark mb-4"
           >
             {t("CountryList.sectionTitle")}
           </motion.h2>
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={REVEAL.hidden}
+            whileInView={REVEAL.show}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
             className="text-tuggi-slate text-lg max-w-2xl mx-auto"
@@ -94,8 +107,8 @@ export function CoverageCountryList({ states, tourHubs = {} }: CoverageCountryLi
           {countryCards.map((card, index) => (
             <motion.div
               key={card.country}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={REVEAL.hidden}
+              whileInView={REVEAL.show}
               viewport={{ once: true }}
               transition={{ delay: Math.min(index * 0.04, 0.5) }}
               className="bg-tuggi-bg rounded-3xl border border-gray-100 p-6 hover:shadow-md transition-shadow"

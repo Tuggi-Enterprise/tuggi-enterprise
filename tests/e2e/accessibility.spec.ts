@@ -25,7 +25,8 @@ import { localizedPathname } from "../../src/i18n/pathnames";
  *     none of them: the browser's own scroll-into-view is the trigger the
  *     IntersectionObserver waits for, so focus never lands on an invisible
  *     element, and `opacity` does not touch the accessibility tree. Its real
- *     defect is behaviour without JavaScript, which is a robustness card.
+ *     defect is behaviour without JavaScript, which is a robustness card —
+ *     #191, and it is asserted in `no-javascript.spec.ts`.
  *   - Transcripts for the three audio players (SC 1.2.1, finding 6). Missing
  *     content, not missing markup — there is nothing to assert until the text
  *     exists.

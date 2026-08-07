@@ -10,10 +10,9 @@ const EASE: [number, number, number, number] = [0.21, 0.47, 0.32, 0.98];
 
 /**
  * Alternating feature rows: real app screenshot in a phone frame + copy.
- * On scroll each row reveals directionally (copy from its own side, phone
- * fades + rises) and the phone gets a gentle scroll parallax on desktop.
- * Copy comes first in the DOM (mobile reads headline → body → screenshot);
- * desktop swaps sides with `lg:order-*`.
+ * On scroll each row rises into place and the phone gets a gentle scroll
+ * parallax on desktop. Copy comes first in the DOM (mobile reads headline →
+ * body → screenshot); desktop swaps sides with `lg:order-*`.
  */
 const FEATURES = [
   { n: 1, images: [{ src: "/images/app/poi-story.jpg", altKey: "feat1Alt" }] },
@@ -56,18 +55,22 @@ function FeatureRow({ feature, idx }: { feature: Feature; idx: number }) {
 
   const imageLeft = idx % 2 === 1; // first row: image on the right
 
+  // Transform only, on purpose: the resting state is the no-JS state (#191).
+  // The copy slides on the y axis, not the x it used to: a resting x offset is
+  // 24px of horizontal overflow on a 390px screen, and the phone below it
+  // already rises.
   const copyVariants = {
-    hidden: { opacity: 0, x: imageLeft ? 24 : -24 },
-    show: { opacity: 1, x: 0, transition: { duration: 0.5, delay: 0.1, ease: EASE } },
+    hidden: { y: 16 },
+    show: { y: 0, transition: { duration: 0.5, delay: 0.1, ease: EASE } },
   };
   const phoneVariants = {
-    hidden: { opacity: 0, y: 16 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: EASE } },
+    hidden: { y: 16 },
+    show: { y: 0, transition: { duration: 0.5, ease: EASE } },
   };
 
   return (
     <div ref={ref} className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-      {/* Copy — slides in from its own side */}
+      {/* Copy — rises into place */}
       <motion.div
         variants={copyVariants}
         initial="hidden"
@@ -85,7 +88,7 @@ function FeatureRow({ feature, idx }: { feature: Feature; idx: number }) {
         </p>
       </motion.div>
 
-      {/* Phone(s) — scroll parallax (desktop) wrapping a fade+rise reveal */}
+      {/* Phone(s) — scroll parallax (desktop) wrapping a rise reveal */}
       <motion.div
         style={parallaxOn ? { y: yParallax } : undefined}
         className={imageLeft ? "lg:order-1" : "lg:order-2"}
