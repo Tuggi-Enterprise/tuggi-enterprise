@@ -293,32 +293,51 @@ export function AudioSampleCard({
       </button>
 
       <div className="flex min-w-0 flex-1 flex-col gap-2">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
-          <div className="min-w-0">
-            {/* Two lines before it truncates, and never a cut without an
-                ellipsis (DS-A11Y-005): the old card used `truncate`, and
-                "Complesso Monumentale della Pilotta" disappeared mid-word. */}
-            <p className={`line-clamp-2 font-bold ${skin.name}`}>{sample.placeName}</p>
-            <p className={`text-sm ${skin.meta}`}>{metadata.join(" · ")}</p>
-          </div>
+        {/* The name owns the full inner width of the card, and the tags sit
+            under the metadata line at every width (card #211).
 
-          {sample.tags && sample.tags.length > 0 && (
-            <ul className="flex shrink-0 flex-wrap gap-1.5">
-              {sample.tags.map((tag) => {
-                const Icon = TAG[tag].icon;
-                return (
-                  <li
-                    key={tag}
-                    className={`flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold ${skin.tag}`}
-                  >
-                    <Icon className="h-3 w-3" aria-hidden="true" />
-                    {t(TAG[tag].label)}
-                  </li>
-                );
-              })}
-            </ul>
-          )}
+            They used to sit beside the name from `sm:` up, and that is a
+            *viewport* breakpoint on an element whose width comes from its grid
+            column: on /drive at 1440 px the card is 393 px, the `shrink-0` tag
+            list takes 189 px — 206 in Italian — and the name is left with
+            76 px; at 1024 px it is left with none, and all three names
+            truncate.
+
+            A container query would key the split to the card rather than to
+            the window, and it still would not earn its place, because the
+            threshold is not a length: the tag list is translated content, so
+            the split only clears the 55% this card's criterion asks of the
+            name at 424 px of card with one tag, and at 692 px with two in
+            Italian. The widest card this site can build is 598 px (two on the
+            rail at 1440 px), and the three-column /drive grid never passes
+            393 px — so the two-tag branch could never be true, and the
+            one-tag branch would buy a single line of height in exchange for a
+            breakpoint that has to guess at a string's width (CLAUDE.md §6,
+            KISS). Measured 2026-08-07, production build, Chrome for Testing. */}
+        <div>
+          {/* Two lines before it truncates, and never a cut without an
+              ellipsis (DS-A11Y-005): the old card used `truncate`, and
+              "Complesso Monumentale della Pilotta" disappeared mid-word. */}
+          <p className={`line-clamp-2 font-bold ${skin.name}`}>{sample.placeName}</p>
+          <p className={`text-sm ${skin.meta}`}>{metadata.join(" · ")}</p>
         </div>
+
+        {sample.tags && sample.tags.length > 0 && (
+          <ul className="flex flex-wrap gap-1.5">
+            {sample.tags.map((tag) => {
+              const Icon = TAG[tag].icon;
+              return (
+                <li
+                  key={tag}
+                  className={`flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold ${skin.tag}`}
+                >
+                  <Icon className="h-3 w-3" aria-hidden="true" />
+                  {t(TAG[tag].label)}
+                </li>
+              );
+            })}
+          </ul>
+        )}
 
         {failed ? (
           // What to do, never the HTTP code (DS-COPY-002). The card stays: the

@@ -251,6 +251,111 @@ test.describe("spec §1.2 and §1.6 — the anatomy survives the longest languag
   });
 });
 
+/**
+ * Card #211 — the card's width comes from its grid column, not from the window.
+ *
+ * The test above is the whole reason the defect shipped: it measures 360 px,
+ * which was the one width where the anatomy was right, and it went green while
+ * the name of the place had 75 px of column at 1440 px and none at 1024 px.
+ * Widths are what this block is measured at now — the four the card names, in
+ * the four languages, on both surfaces that build the grid.
+ *
+ * The three assertions are the card's criteria, and they are about the one
+ * piece of content that says what the visitor is about to hear.
+ */
+const CARD_SURFACES = [360, 768, 1024, 1440] as const;
+
+test.describe("spec §1.6 and card #211 — the name owns the card at every width", () => {
+  for (const width of CARD_SURFACES) {
+    test(`DS-A11Y-005: at ${width} px the place name is legible in all four languages`, async ({
+      page,
+    }) => {
+      // Eight navigations, each waiting on the clip's metadata: the default
+      // 30 s is not the budget for this one.
+      test.setTimeout(120_000);
+      await page.setViewportSize({ width, height: 900 });
+
+      for (const locale of LOCALES) {
+        for (const surface of ["home", "drive"] as const) {
+          const pathname = surface === "home" ? "" : localizedPathname(locale, "/drive");
+          const where = `${locale} ${surface} @${width}`;
+          await page.goto(`/${locale}${pathname}`);
+
+          const cards = page.locator("section article").filter({ has: page.locator("audio") });
+          // An empty locator is the failure this assertion has to survive
+          // first: three cards on /drive, two on the home (spec §6.5 keeps the
+          // third one for #194).
+          await expect(cards, where).toHaveCount(surface === "drive" ? 3 : 2);
+
+          // The duration only joins the metadata line once the file's header
+          // is in, and it is the part that makes the line long. Measuring
+          // before it lands measures a string the visitor never sees.
+          const metadata = page.locator("section article p.line-clamp-2 + p");
+          await expect
+            .poll(async () => (await metadata.allInnerTexts()).every((text) => /\d+:\d\d/.test(text)), {
+              timeout: 15_000,
+              message: where,
+            })
+            .toBe(true);
+
+          const measured = await cards.evaluateAll((nodes) =>
+            nodes.map((card) => {
+              const style = getComputedStyle(card);
+              const contentWidth =
+                card.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+              const name = card.querySelector("p.line-clamp-2")!;
+              const meta = name.nextElementSibling!;
+              const nameWidth = name.getBoundingClientRect().width;
+              return {
+                name: name.textContent ?? "",
+                // The clamp cuts silently: the only way to see it is that the
+                // laid-out text is taller than the box that shows it.
+                clipped: name.scrollHeight > name.clientHeight + 0.5,
+                share: Math.round((nameWidth / contentWidth) * 100),
+                metaLines: Math.round(
+                  meta.getBoundingClientRect().height /
+                    parseFloat(getComputedStyle(meta).lineHeight),
+                ),
+              };
+            }),
+          );
+
+          for (const card of measured) {
+            expect(card.clipped, `${where}: "${card.name}" is truncated`).toBe(false);
+            expect(card.share, `${where}: "${card.name}" holds ${card.share}% of the card`).toBeGreaterThanOrEqual(55);
+            expect(card.metaLines, `${where}: metadata of "${card.name}"`).toBeLessThanOrEqual(2);
+          }
+        }
+      }
+    });
+  }
+
+  /**
+   * DS-LAYOUT-002. Both blocks that carry the grid used to declare a width of
+   * their own — `max-w-3xl` on the home, `max-w-7xl px-4 sm:px-6 lg:px-8` on
+   * /drive, the second one being the rail copied out by hand. Measured against
+   * the header, because the header is the element always on screen and the rule
+   * is about lining up with it, not about a class name.
+   */
+  test("DS-LAYOUT-002: the sample blocks sit on the same rail as the header", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+
+    for (const pathname of ["", localizedPathname("pt", "/drive")]) {
+      await page.goto(`/pt${pathname}`);
+      const rail = (await page.locator("header nav").first().boundingBox())!;
+      const block = (await page
+        .locator("section")
+        .filter({ has: page.locator("article audio") })
+        .locator("> div")
+        .first()
+        .boundingBox())!;
+
+      expect(Math.abs(block.x - rail.x), `/pt${pathname}: left edge`).toBeLessThan(2);
+      expect(Math.abs(block.width - rail.width), `/pt${pathname}: width`).toBeLessThan(2);
+    }
+  });
+});
+
 test.describe("spec §1.8 — the three events, or nothing about audio is decidable", () => {
   test("the player emits play, complete and transcript", () => {
     const code = stripComments(fs.readFileSync(CARD, "utf8"));

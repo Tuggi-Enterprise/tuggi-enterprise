@@ -27,7 +27,10 @@ export function DriveSamples() {
 
   return (
     <section className="py-24 bg-tuggi-dark text-white border-b border-slate-800">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* `.page-shell`, not a second copy of its values: `max-w-7xl mx-auto
+          px-4 sm:px-6 lg:px-8` is the rail written out by hand, to the pixel
+          (DS-LAYOUT-002, CLAUDE.md §6). Same geometry, one owner. */}
+      <div className="page-shell">
         <div className="text-center mb-16 max-w-3xl mx-auto">
           <span className="text-tuggi-primary font-bold text-sm tracking-widest uppercase mb-4 block">
             {t("tag")}

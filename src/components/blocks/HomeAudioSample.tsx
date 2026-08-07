@@ -28,11 +28,18 @@ export function HomeAudioSample() {
 
   return (
     <section className="bg-white py-20 lg:py-24 border-t border-gray-100">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 className="text-3xl sm:text-4xl font-extrabold text-tuggi-dark tracking-tight mb-3">
-          {t("title")}
-        </h2>
-        <p className="text-lg text-tuggi-slate mb-10">{t("subtitle")}</p>
+      {/* The rail is `.page-shell` (DS-LAYOUT-002), and the narrower measure
+          belongs to the prose inside it — not to the block. This block kept a
+          `max-w-3xl` from when it was a single column: with the grid, two
+          cards were splitting 704 px at 1440 px, and the metadata line wrapped
+          in all four languages (card #211). */}
+      <div className="page-shell text-center">
+        <div className="max-w-3xl mx-auto">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-tuggi-dark tracking-tight mb-3">
+            {t("title")}
+          </h2>
+          <p className="text-lg text-tuggi-slate mb-10">{t("subtitle")}</p>
+        </div>
 
         <AudioSampleGrid samples={samples} />
       </div>
