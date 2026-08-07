@@ -466,8 +466,10 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
      decoration, so neither variant gets its own copy of it. */
   const audioCard = partnerData?.audioUrl && audioReady && (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
+      // Transform only, on purpose: the resting state is the no-JS state
+      // (#191, #204). This is the validated proof-of-product, not decoration.
+      initial={{ y: 10 }}
+      animate={{ y: 0 }}
       transition={{ delay: 0.3 }}
       className="w-full max-w-sm mx-auto"
     >
@@ -542,8 +544,11 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
      one ends on the page background so this fade never lands on its dark band. */
   const floatingCta = (
     <motion.div
-      initial={{ y: 100, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
+      // Transform only, on purpose: the resting state is the no-JS state
+      // (#191, #204). The CTA button is the page's one job — it cannot be
+      // the thing that disappears.
+      initial={{ y: 100 }}
+      animate={{ y: 0 }}
       transition={{ delay: 0.5, type: "spring", damping: 20 }}
       className="fixed left-0 right-0 z-50 px-5 pt-10 bg-gradient-to-t from-tuggi-bg via-tuggi-bg/95 to-transparent pointer-events-none transition-[bottom] duration-300 ease-out motion-reduce:transition-none"
       style={{
@@ -616,8 +621,11 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
               page carry the same mark. Almost no partner has a logo — without one
               this collapses back to the bare Tuggi logo, no divider, no gap. */}
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
+            // Transform only, on purpose: the resting state is the no-JS
+            // state (#191, #204). This is the co-branding lockup, the first
+            // thing a visitor from a printed QR code sees.
+            initial={{ y: -10 }}
+            animate={{ y: 0 }}
             transition={{ duration: 0.5 }}
             className="mb-5 flex items-center gap-4"
           >
@@ -646,8 +654,11 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            // Transform only, on purpose: the resting state is the no-JS
+            // state (#191, #204). Wraps the hero title, the description and
+            // the audio/coupon cards — the page's whole textual content.
+            initial={{ y: 20 }}
+            animate={{ y: 0 }}
             transition={{ delay: 0.15, duration: 0.5 }}
             className="text-center w-full"
           >
@@ -740,8 +751,11 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
                 hero title above; this card is the explicit redeem CTA. */}
             {coupon && (
               <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
+                // Transform only, on purpose: the resting state is the no-JS
+                // state (#191, #204). The redeem code and CTA below are the
+                // page's whole job when a coupon is present.
+                initial={{ y: 12 }}
+                animate={{ y: 0 }}
                 transition={{ delay: 0.35 }}
                 className="w-full max-w-sm mx-auto mt-6"
               >

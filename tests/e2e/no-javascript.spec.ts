@@ -284,8 +284,6 @@ const JS_ONLY: Record<string, string> = {
  */
 const KNOWN_GAPS: Record<string, string> = {
   "blocks/CoverageHero.tsx": "#199 está no arquivo; o hero de /coverage sai com aquele card",
-  "blocks/PartnerHero.tsx":
-    "LP de parceiro (/d/<slug>), superfície de QR code e não de busca; tem baseline visual próprio",
 };
 
 function walk(dir: string, out: string[] = []): string[] {
