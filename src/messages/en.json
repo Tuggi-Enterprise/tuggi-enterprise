@@ -675,21 +675,25 @@
       "points": "Mapped Points",
       "regions": "Regions Covered"
     },
-    "Map": {
-      "active": "Active",
-      "sectionTitle": "Explore by Destination",
-      "sectionSubtitle": "Every highlighted region is live. Hover over a state to see what's waiting for you.",
-      "tooltipAttractions": "Mapped Points",
-      "filterAll": "All Countries",
-      "noResults": "No results for this country.",
-      "countryRegions": "regions covered"
-    },
-    "CountryList": {
-      "sectionTitle": "Choose Your Destination",
-      "sectionSubtitle": "Pick a country and see exactly where you'll travel with TUGGI. Audio plays automatically as you explore each region.",
-      "statesLabel": "regions",
-      "attractionsLabel": "points",
-      "toursLabel": "Audio tours"
+    "Density": {
+      "sectionTitle": "Where TUGGI already is",
+      "sectionSubtitle": "The lighter the area, the denser the mapped points in that region.",
+      "filterAll": "All countries",
+      "legendTitle": "Coverage density",
+      "legend": {
+        "lowest": "Early coverage",
+        "low": "Moderate coverage",
+        "high": "High coverage",
+        "highest": "Densest coverage"
+      },
+      "listTitle": "Every destination, region by region",
+      "listIntro": "The full list of what the map draws — and the regions the frame leaves out. Where an audio route already exists, the region name takes you to it.",
+      "group": {
+        "americas": "Americas",
+        "europe": "Europe",
+        "other": "Other destinations"
+      },
+      "outOfFrame": "Outside the map frame: {regions}."
     },
     "CTA": {
       "title": "Bring TUGGI to your city.",

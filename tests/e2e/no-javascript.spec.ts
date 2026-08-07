@@ -269,8 +269,9 @@ const COMPONENTS = path.join(REPO_ROOT, "src/components");
  * leitor sem JavaScript deixe de ver.
  */
 const JS_ONLY: Record<string, string> = {
-  "blocks/CoverageMap.tsx":
-    "tooltip e painel de país dentro de AnimatePresence, montados por interação de mouse",
+  // `blocks/CoverageMap.tsx` estava aqui pelo tooltip dentro de AnimatePresence.
+  // O #193 o substituiu por CoverageDensityMap/CoverageDensityCanvas, que não
+  // usam framer-motion: não há `opacity: 0` nenhum, e por isso não há dispensa.
   "blocks/CityOSHeroAnimator.tsx": "demonstração animada, montada em etapas por estado de React",
   "blocks/DriveHeroAnimator.tsx": "demonstração animada, montada em etapas por estado de React",
   "blocks/HomeHero.tsx": "pílula 'tocando agora', aria-hidden e renderizada só depois do mount",
@@ -298,8 +299,8 @@ function walk(dir: string, out: string[] = []): string[] {
 /**
  * Comentário fora antes de qualquer casamento. Esta régua procura a string
  * `opacity: 0`, e explicar o defeito num comentário — que é exatamente o que
- * CoverageCountryList.tsx e este arquivo fazem — deixaria o teste vermelho por
- * escrever prosa.
+ * este arquivo e os componentes corrigidos fazem — deixaria o teste vermelho
+ * por escrever prosa.
  */
 const stripComments = (source: string) =>
   source.replace(/\/\*[\s\S]*?\*\//g, "").replace(/(^|[^:])\/\/.*$/gm, "$1");

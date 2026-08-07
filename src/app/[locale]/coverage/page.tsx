@@ -9,8 +9,7 @@ import {
   buildUrl,
 } from "@/lib/seo";
 import { CoverageHero } from "@/components/blocks/CoverageHero";
-import { CoverageMap } from "@/components/blocks/CoverageMap";
-import { CoverageCountryList } from "@/components/blocks/CoverageCountryList";
+import { CoverageDensityMap } from "@/components/blocks/CoverageDensityMap";
 import { getCountryDisplayName } from "@/lib/countryNames";
 import { getStateHubPaths } from "@/lib/routes";
 
@@ -164,9 +163,7 @@ export default async function CoveragePage({
 
       <CoverageHero />
 
-      <CoverageMap states={coverageData.states} />
-
-      <CoverageCountryList states={coverageData.states} tourHubs={getStateHubPaths(locale)} />
+      <CoverageDensityMap states={coverageData.states} tourHubs={getStateHubPaths(locale)} />
 
       {/* CTA */}
       <section className="py-24 bg-white border-t border-gray-100">

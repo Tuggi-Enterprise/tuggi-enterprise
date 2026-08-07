@@ -675,21 +675,25 @@
       "points": "Puntos Mapeados",
       "regions": "Regiones Cubiertas"
     },
-    "Map": {
-      "active": "Activo",
-      "sectionTitle": "Explora por Destino",
-      "sectionSubtitle": "Cada región resaltada está activa. Pasa el cursor sobre un estado para ver lo que te espera.",
-      "tooltipAttractions": "Puntos Mapeados",
-      "filterAll": "Todos los Países",
-      "noResults": "Sin resultados para este país.",
-      "countryRegions": "regiones cubiertas"
-    },
-    "CountryList": {
-      "sectionTitle": "Elige Tu Destino",
-      "sectionSubtitle": "Selecciona un país y descubre exactamente dónde explorarás con TUGGI. El audio suena automáticamente mientras recorres cada región.",
-      "statesLabel": "regiones",
-      "toursLabel": "Audioguías",
-      "attractionsLabel": "puntos"
+    "Density": {
+      "sectionTitle": "Dónde ya está TUGGI",
+      "sectionSubtitle": "Cuanto más clara es el área, mayor es la densidad de puntos mapeados en esa región.",
+      "filterAll": "Todos los países",
+      "legendTitle": "Densidad de cobertura",
+      "legend": {
+        "lowest": "Cobertura inicial",
+        "low": "Cobertura moderada",
+        "high": "Cobertura alta",
+        "highest": "Cobertura más densa"
+      },
+      "listTitle": "Todos los destinos, región por región",
+      "listIntro": "La lista completa de lo que dibuja el mapa — y las regiones que quedan fuera del encuadre. Donde ya existe una ruta de audio, el nombre de la región lleva hasta ella.",
+      "group": {
+        "americas": "Américas",
+        "europe": "Europa",
+        "other": "Otros destinos"
+      },
+      "outOfFrame": "Fuera del encuadre del mapa: {regions}."
     },
     "CTA": {
       "title": "Lleva TUGGI a tu ciudad.",
