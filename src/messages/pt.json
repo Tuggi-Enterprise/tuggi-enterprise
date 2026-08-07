@@ -218,6 +218,13 @@
       "cta": "Solicitar Demonstração B2B"
     }
   },
+  "Segments": {
+    "commercial": {
+      "title": "Como funciona a sua participação na receita",
+      "lead": "Você oferece o Tuggi ao seu cliente sem custo nenhum. Quando ele assina, uma parte da venda volta para você. Sem investimento inicial e sem risco.",
+      "note": "O percentual é definido em acordo comercial."
+    }
+  },
   "Technology": {
     "Hero": {
       "eyebrow": "Visão geral da arquitetura",

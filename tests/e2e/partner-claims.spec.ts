@@ -1056,6 +1056,16 @@ const CLAIM_FAMILIES: ClaimFamily[] = [
           "partner's revenue share — BR-B2B-007 item 4 and BR-B2B-005, the one " +
           "money flow the rules do back, and it runs outwards.",
       },
+      {
+        keys: ["Segments.commercial.lead"],
+        why:
+          '"No upfront investment" is the negation of the claim this family bans, ' +
+          "not the claim: it states BR-B2B-004 items 2 and 3 — the partner buys " +
+          "nothing, licenses nothing and is invoiced for nothing. The pattern reads " +
+          "the word and not its polarity, which is the same reason Legal.Terms is " +
+          "waived above. The sentence is the operator's own, published by `design` " +
+          "(#195) and reproduced in spec §5.3 as copy that is not to be rewritten.",
+      },
     ],
   },
   {
@@ -1079,6 +1089,17 @@ const CLAIM_FAMILIES: ClaimFamily[] = [
           "The liability section is a disclaimer, which is the opposite claim: the " +
           "user is solely responsible for driving and TUGGI is not liable. s8Item4 " +
           "is Apple's and Google's product-liability clause.",
+      },
+      {
+        keys: ["Segments.commercial.lead"],
+        why:
+          "This family is about safety, liability and distraction — the driving " +
+          'outcomes no BR-* backs. The "no risk" here is commercial and it is the ' +
+          "same fact as the sentence before it: the partner pays nothing, so he has " +
+          "nothing at stake (BR-B2B-004 items 2 and 3). Operator's own words, " +
+          "published by `design` in #195 and fixed in spec §5.3. Reported to " +
+          "`produto` in #193 rather than trimmed here, because narrowing the " +
+          "pattern to physical safety is a change to the family, not to the copy.",
       },
     ],
   },
@@ -1135,7 +1156,14 @@ const LOCALES = fs
   .sort();
 
 /** The message namespaces the three partner pages read from. */
-const PARTNER_NAMESPACES = ["Fleets", "CityOS", "Technology", "SEO_FLEETS", "SEO_CITY_OS"];
+const PARTNER_NAMESPACES = [
+  "Fleets",
+  "CityOS",
+  "Technology",
+  "Segments",
+  "SEO_FLEETS",
+  "SEO_CITY_OS",
+];
 
 /**
  * The three partner surfaces, as **internal** pathnames — the keys of the

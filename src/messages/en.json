@@ -218,6 +218,13 @@
       "cta": "Request B2B Demo"
     }
   },
+  "Segments": {
+    "commercial": {
+      "title": "How your revenue share works",
+      "lead": "You offer Tuggi to your customer at no cost at all. When they subscribe, part of the sale comes back to you. No upfront investment and no risk.",
+      "note": "The percentage is set in the commercial agreement."
+    }
+  },
   "Technology": {
     "Hero": {
       "eyebrow": "Architecture overview",

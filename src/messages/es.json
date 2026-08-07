@@ -218,6 +218,13 @@
       "cta": "Solicitar Demostración B2B"
     }
   },
+  "Segments": {
+    "commercial": {
+      "title": "Cómo funciona tu participación en los ingresos",
+      "lead": "Ofreces Tuggi a tu cliente sin ningún coste. Cuando se suscribe, una parte de la venta vuelve a ti. Sin inversión inicial y sin riesgo.",
+      "note": "El porcentaje se define en el acuerdo comercial."
+    }
+  },
   "Technology": {
     "Hero": {
       "eyebrow": "Visión general de la arquitectura",

@@ -218,6 +218,13 @@
       "cta": "Richiedi una Demo B2B"
     }
   },
+  "Segments": {
+    "commercial": {
+      "title": "Come funziona la tua partecipazione ai ricavi",
+      "lead": "Offri Tuggi al tuo cliente senza alcun costo. Quando si abbona, una parte della vendita torna a te. Nessun investimento iniziale e nessun rischio.",
+      "note": "La percentuale è definita nell'accordo commerciale."
+    }
+  },
   "Technology": {
     "Hero": {
       "eyebrow": "Panoramica dell'architettura",
