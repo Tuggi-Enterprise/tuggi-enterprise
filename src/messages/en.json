@@ -193,7 +193,7 @@
     },
     "Accessibility": {
       "title": "Universal Accessibility",
-      "desc": "Universal Accessibility is the hardest DTI pillar. TUGGI solves sensory barriers instantly: Audio-first navigation for visually impaired tourists, and geolocated Closed Captions for hearing-impaired passengers. WCAG 2.1 AA compliant.",
+      "desc": "Universal Accessibility is the hardest DTI pillar. TUGGI brings down both sensory barriers: an audio-first experience that describes the surroundings, for tourists who are blind or have low vision; and geolocated closed captions for passengers who are deaf or hard of hearing. We design following WCAG 2.1 AA.",
       "Panel": {
         "title": "Accessibility module",
         "feat1Title": "Audio-first experience",
@@ -548,9 +548,9 @@
       "title": "Accessibility & Inclusion",
       "subtitle": "Commitment to Inclusion and Universal Design.",
       "intro": "At TUGGI Technologies, we believe that access to local culture and history should have no barriers. TUGGI was conceived under the \"Audio-First\" premise, transforming the discovery experience into something purely sensory and auditory, which naturally benefits users with different accessibility profiles.",
-      "s1Title": "1. Technical Compliance (WCAG 2.1)",
+      "s1Title": "1. Technical guidelines we follow (WCAG 2.1)",
       "s1Intro": "We are committed to ensuring that our digital platform and mobile app follow the Web Content Accessibility Guidelines (WCAG) 2.1, at Level AA.",
-      "s1Item1": "<strong>Visual Design:</strong> We use adequate color contrasts and readable typography (Inter) to facilitate reading for users with low vision.",
+      "s1Item1": "<strong>Visual Design:</strong> We measured this site's palette against the WCAG 2.1 Level AA contrast minimum, the threshold that keeps text readable for people with low vision (audit: {a11ySiteAuditDate}). On brand colors, text and icons use the palette's dark color, and the typeface is Inter.",
       "s1Item2": "<strong>Navigation:</strong> Our interface is structured to be compatible with screen readers (such as VoiceOver on iOS and TalkBack on Android).",
       "s2Title": "2. Inclusion Features in TUGGI",
       "s2Intro": "Our product is designed to be accessible to both drivers and passengers:",

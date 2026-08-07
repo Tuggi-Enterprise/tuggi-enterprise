@@ -193,7 +193,7 @@
     },
     "Accessibility": {
       "title": "Accessibilità Universale",
-      "desc": "L'Accessibilità Universale è il pilastro DTI più difficile. TUGGI risolve le barriere sensoriali all'istante: navigazione audio-first per i turisti ipovedenti e sottotitoli geolocalizzati per i passeggeri con difficoltà uditive. Conforme a WCAG 2.1 AA.",
+      "desc": "L'Accessibilità Universale è il pilastro DTI più difficile. TUGGI abbatte entrambe le barriere sensoriali: esperienza guidata dall'audio, con la descrizione di ciò che sta intorno, per i turisti con disabilità visiva; e sottotitoli (Closed Captions) geolocalizzati per i passeggeri con disabilità uditiva. Progettiamo seguendo le WCAG 2.1 AA.",
       "Panel": {
         "title": "Modulo di Accessibilità",
         "feat1Title": "Esperienza guidata dall'audio",
@@ -548,9 +548,9 @@
       "title": "Accessibilità e Inclusione",
       "subtitle": "Impegno per l'Inclusione e il Design Universale.",
       "intro": "In TUGGI Technologies, crediamo che l'accesso alla cultura e alla storia locale non debba avere barriere. TUGGI è stato concepito secondo la premessa \"Audio-First\", trasformando l'esperienza di scoperta in qualcosa di puramente sensoriale e uditivo, che naturalmente avvantaggia gli utenti con diversi profili di accessibilità.",
-      "s1Title": "1. Conformità Tecnica (WCAG 2.1)",
+      "s1Title": "1. Linee guida tecniche che seguiamo (WCAG 2.1)",
       "s1Intro": "Ci impegniamo a garantire che la nostra piattaforma digitale e la nostra app mobile seguano le Linee Guida per l'Accessibilità dei Contenuti Web (WCAG) 2.1, a Livello AA.",
-      "s1Item1": "<strong>Design Visivo:</strong> Usiamo contrasti di colore adeguati e una tipografia leggibile (Inter) per facilitare la lettura agli utenti ipovedenti.",
+      "s1Item1": "<strong>Design visivo:</strong> Abbiamo misurato la palette di questo sito rispetto al minimo di contrasto del livello AA delle WCAG 2.1, la soglia che mantiene il testo leggibile per chi ha ipovisione (audit: {a11ySiteAuditDate}). Sui colori del brand, testo e icone usano il colore scuro della palette, e il carattere tipografico è Inter.",
       "s1Item2": "<strong>Navigazione:</strong> La nostra interfaccia è strutturata per essere compatibile con i lettori di schermo (come VoiceOver su iOS e TalkBack su Android).",
       "s2Title": "2. Funzioni di Inclusione in TUGGI",
       "s2Intro": "Il nostro prodotto è progettato per essere accessibile sia ai conducenti sia ai passeggeri:",

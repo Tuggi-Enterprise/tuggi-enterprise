@@ -42,7 +42,16 @@ export default async function AccessibilityPage({ params }: { params: Promise<{ 
         <h2>{t("s1Title")}</h2>
         <p>{t("s1Intro")}</p>
         <ul>
-          <li>{t.rich("s1Item1", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
+          <li>
+            {/* The audit date is interpolated, never typed into the sentence —
+                BR-COMUNICACAO-006 items 4 and 5. next-intl 4 has no global
+                default values, so a call site that forgets the spread renders
+                the message key to the visitor. */}
+            {t.rich("s1Item1", {
+              ...PRODUCT_FACTS,
+              strong: (chunks) => <strong>{chunks}</strong>,
+            })}
+          </li>
           <li>{t.rich("s1Item2", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
         </ul>
       </section>

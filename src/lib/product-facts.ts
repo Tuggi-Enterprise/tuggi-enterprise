@@ -195,6 +195,42 @@ export const COVERAGE_COUNTRIES = 48;
  */
 export const COVERAGE_REGIONS_FLOOR = 900;
 
+// ── Accessibility measurement — BR-COMUNICACAO-006 ──────────────────────────
+
+/**
+ * The date the site's palette was measured against the WCAG 2.1 Level AA
+ * contrast minimum — **BR-COMUNICACAO-006, items 4 and 5**.
+ *
+ * The audit is `docs/design/acessibilidade-auditoria-2026-08.md`; the palette
+ * fix landed with issue #183 and the leva `12c1644`, and the re-measurement
+ * that this date names is 2026-08-06.
+ *
+ * **It is here because a claim of fact carries its date, and a date typed into
+ * a sentence goes stale in one language at a time.** Item 5 gives the claim
+ * three ways to die, and two of them are ours to notice:
+ *
+ *   (a) **2027-02-06** — six months from the measurement. Same clock
+ *       BR-COMUNICACAO-003 item 6(a)(iv) puts on the download figure, for the
+ *       same reason: it does not refresh itself.
+ *   (c) **Whenever the `@theme` block of `globals.css` changes**, because that
+ *       block is the thing that was measured. A token moves, the claim is
+ *       vencida the same day, and what replaces it is a new measurement or the
+ *       commitment of item 1 — never this date with a new number next to it.
+ *
+ * **ISO, and deliberately not `{…, date, long}`.** Formatting it would need a
+ * `timeZone` in `src/i18n/request.ts` — there is none today, so next-intl
+ * falls back to the process timezone and server and client can render
+ * different days — and a `Date` in `DecidedFact.value`, which is
+ * `number | string | null`. The format is the `design`'s call, not a shortcut.
+ *
+ * **Scope, and it is the point of item 2.** This date covers the *site*. It
+ * says nothing about the app, whose primary CTA still measures 2.70:1 with
+ * #145 open, nor about the CMS, nor about a B2B module. A claim of fact
+ * without a subject is the widest claim there is, which is what
+ * `Legal.Accessibility.s1Item1` used to make in four languages.
+ */
+export const A11Y_SITE_AUDIT_DATE = "2026-08-06";
+
 // ── Decided not to be published ─────────────────────────────────────────────
 
 /**
@@ -249,6 +285,12 @@ export const DECIDED_FACTS: readonly DecidedFact[] = [
     rule: "BR-COMUNICACAO-002 item 9",
   },
   {
+    name: "A11Y_SITE_AUDIT_DATE",
+    value: A11Y_SITE_AUDIT_DATE,
+    placeholder: "a11ySiteAuditDate",
+    rule: "BR-COMUNICACAO-006 itens 4 e 5",
+  },
+  {
     name: "STORIES_PLAYED",
     value: STORIES_PLAYED,
     placeholder: "storiesPlayed",
@@ -275,4 +317,5 @@ export const PRODUCT_FACTS = {
   operatingSince: OPERATING_SINCE,
   mappedPointMillions: MAPPED_POINT_MILLIONS,
   coverageCountries: COVERAGE_COUNTRIES,
+  a11ySiteAuditDate: A11Y_SITE_AUDIT_DATE,
 } as const;

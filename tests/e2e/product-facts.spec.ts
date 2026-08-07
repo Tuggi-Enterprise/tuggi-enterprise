@@ -425,7 +425,10 @@ const PUBLISHED_ON: Record<string, string[]> = {
     "Drive.PlansExplainer.p3",
   ],
   "/download": ["Download.metaDesc"],
-  "/trust-center/accessibility": ["Legal.Accessibility.s2Item3"],
+  "/trust-center/accessibility": [
+    "Legal.Accessibility.s1Item1",
+    "Legal.Accessibility.s2Item3",
+  ],
 };
 
 function localeUrl(locale: string, pagePath: string): string {

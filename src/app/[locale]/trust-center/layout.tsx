@@ -40,8 +40,8 @@ export default async function TrustCenterLayout({
 
   // A <div>, not a <main>: the root layout already opens `<main
   // id="main-content">` around every page, so this one nested a second
-  // landmark of the same role inside it — on the very page where the site
-  // declares WCAG conformance (SC 1.3.1).
+  // landmark of the same role inside it — on the very page that publishes the
+  // site's accessibility statement (SC 1.3.1).
   //
   // The sidebar label is a <p>, not an <h2>: as a heading it came before the
   // page's own <h1> in document order, which put the heading tree out of

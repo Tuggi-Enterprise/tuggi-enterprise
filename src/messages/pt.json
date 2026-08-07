@@ -193,7 +193,7 @@
     },
     "Accessibility": {
       "title": "Acessibilidade Universal",
-      "desc": "Acessibilidade Universal é o pilar DTI mais difícil. O TUGGI resolve barreiras sensoriais instantaneamente: navegação 'Audio-first' para turistas com deficiência visual e legendas (Closed Captions) geolocalizadas para passageiros com deficiência auditiva. Compatível com WCAG 2.1 AA.",
+      "desc": "Acessibilidade Universal é o pilar DTI mais difícil. O TUGGI derruba as duas barreiras sensoriais: experiência guiada por áudio, com descrição do entorno, para turistas com deficiência visual; e legendas (Closed Captions) geolocalizadas para passageiros com deficiência auditiva. Projetamos seguindo as WCAG 2.1 AA.",
       "Panel": {
         "title": "Módulo de Acessibilidade",
         "feat1Title": "Experiência guiada por áudio",
@@ -548,9 +548,9 @@
       "title": "Acessibilidade e Inclusão",
       "subtitle": "Compromisso com a Inclusão e o Design Universal.",
       "intro": "Na TUGGI Technologies, acreditamos que o acesso à cultura e à história local não deve ter barreiras. O TUGGI foi concebido sob a premissa \"Audio-First\", transformando a experiência de descoberta em algo puramente sensorial e auditivo, o que beneficia nativamente usuários com diferentes perfis de acessibilidade.",
-      "s1Title": "1. Conformidade Técnica (WCAG 2.1)",
+      "s1Title": "1. Diretrizes técnicas que seguimos (WCAG 2.1)",
       "s1Intro": "Estamos empenhados em garantir que nossa plataforma digital e aplicativo móvel sigam as Diretrizes de Acessibilidade para Conteúdo Web (WCAG) 2.1, no nível AA.",
-      "s1Item1": "<strong>Design Visual:</strong> Utilizamos contrastes de cores adequados e tipografia legível (Inter) para facilitar a leitura por usuários com baixa visão.",
+      "s1Item1": "<strong>Design visual:</strong> Medimos a paleta deste site contra o mínimo de contraste do nível AA das WCAG 2.1, que existe para facilitar a leitura de quem tem baixa visão (auditoria: {a11ySiteAuditDate}). Sobre as cores de marca, texto e ícones usam a cor escura da paleta, e a tipografia é a Inter.",
       "s1Item2": "<strong>Navegação:</strong> Nossa interface é estruturada para ser compatível com leitores de tela (como VoiceOver no iOS e TalkBack no Android).",
       "s2Title": "2. Recursos de Inclusão no TUGGI",
       "s2Intro": "Nosso produto é desenhado para ser acessível tanto para quem dirige quanto para quem acompanha a viagem:",
