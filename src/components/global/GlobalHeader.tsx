@@ -6,7 +6,7 @@ import { useParams } from "next/navigation";
 import { Link, usePathname } from "@/i18n/routing";
 import Image from "next/image";
 import { ChevronDown, Menu, X, Smartphone } from "lucide-react";
-import { VISIBLE_NAV_ITEMS } from "@/lib/nav";
+import { DOWNLOAD_CTA_HREF, VISIBLE_NAV_ITEMS } from "@/lib/nav";
 import type { SiteLocale } from "@/i18n/locales";
 
 /**
@@ -265,14 +265,16 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
             </div>
 
             <Link
-              href="/download"
+              href={DOWNLOAD_CTA_HREF}
+              data-download-cta="header-desktop"
               className="hidden sm:block bg-tuggi-secondary text-tuggi-dark font-bold rounded-xl px-7 py-3 hover:bg-tuggi-secondary-hover transition-all shadow-md hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-dark focus-visible:ring-offset-2 active:scale-95"
             >
               {t("downloadApp")}
             </Link>
 
             <Link
-              href="/download"
+              href={DOWNLOAD_CTA_HREF}
+              data-download-cta="header-compact"
               className="sm:hidden bg-tuggi-secondary text-tuggi-dark p-3 rounded-xl hover:bg-tuggi-secondary-hover transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-dark active:scale-95"
               aria-label={t("downloadApp")}
             >
@@ -349,7 +351,8 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
         {/* Corporate CTA Footer */}
         <div className="p-6 bg-slate-50 border-t border-gray-100 shrink-0">
           <Link
-            href="/download"
+            href={DOWNLOAD_CTA_HREF}
+            data-download-cta="header-drawer"
             onClick={() => setIsMobileMenuOpen(false)}
             className="flex items-center justify-center gap-2 bg-tuggi-secondary text-tuggi-dark font-bold rounded-xl px-6 py-4 text-sm transition-all hover:bg-tuggi-secondary-hover shadow-lg shadow-orange-500/10 active:scale-[0.98]"
           >

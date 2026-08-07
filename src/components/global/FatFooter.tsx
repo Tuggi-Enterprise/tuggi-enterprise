@@ -2,6 +2,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import Image from "next/image";
 import { FooterStoreBadges } from "@/components/blocks/FooterStoreBadges";
+import { DOWNLOAD_CTA_HREF } from "@/lib/nav";
 
 export function FatFooter() {
   const t = useTranslations("Footer");
@@ -33,7 +34,7 @@ export function FatFooter() {
             <h3 className="text-xs font-bold tracking-widest text-white uppercase mb-6">
               {t("driveB2c")}
             </h3>
-            <Link href="/download" className="text-sm text-slate-400 hover:text-white transition-colors duration-200 block mb-3 focus-visible:ring-2 focus-visible:ring-tuggi-primary-text focus:outline-none rounded-sm w-max">
+            <Link href={DOWNLOAD_CTA_HREF} data-download-cta="footer" className="text-sm text-slate-400 hover:text-white transition-colors duration-200 block mb-3 focus-visible:ring-2 focus-visible:ring-tuggi-primary-text focus:outline-none rounded-sm w-max">
               {t("appDownload")}
             </Link>
             <Link href="/drive" className="text-sm text-slate-400 hover:text-white transition-colors duration-200 block mb-3 focus-visible:ring-2 focus-visible:ring-tuggi-primary-text focus:outline-none rounded-sm w-max">

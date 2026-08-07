@@ -29,6 +29,15 @@ export const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com
 export const TUGGI_PARTNER_ID = "8be94d35-282d-46bf-bc12-6fcd2f83a432";
 
 /**
+ * The `core.clients.slug` of that same row — the other half of the same fact,
+ * and the reason `/d/tuggi` exists at all. Every "get the app" CTA on the site
+ * points at it, so it is declared once here instead of being typed as a URL in
+ * each of them: a landing whose slug stops resolving 404s, and it would 404
+ * from the header of every page at once.
+ */
+export const TUGGI_CLIENT_SLUG = "tuggi";
+
+/**
  * A partner id reaches us as untrusted text — a resolved /d/<slug>, a
  * `/download?ID=` query string, or a POST body — so it is matched before it is
  * used. Same UUID shape the app's InstallReferrerService parses out of the Play
