@@ -243,15 +243,6 @@
       "startGuide": "Avvia la Guida",
       "ccText": "Il Miradouro da Serra, a 847 metri sul livello del mare, offre una delle viste più mozzafiato della regione montana, con un panorama a 360° sulle valli e le vette circostanti..."
     },
-    "Behavior": {
-      "title": "Imposta e Dimentica",
-      "step1Title": "1. Scegli la Tua Lingua",
-      "step1Desc": "Scegli tra {contentLanguages} lingue native per una narrazione ad alta fedeltà.",
-      "step2Title": "2. Libera il Tuo Schermo",
-      "step2Desc": "Usa la tua app di navigazione preferita, controlla la tua playlist o lascia lo schermo acceso così i passeggeri possono leggere i sottotitoli. TUGGI fa la sua magia in background senza interrompere il tuo flusso.",
-      "step3Title": "3. Guida Normalmente",
-      "step3Desc": "I racconti partono automaticamente mentre attraversi i recinti virtuali."
-    },
     "Samples": {
       "tag": "Curatela Premium",
       "title": "Ascolta cosa sblocchi",

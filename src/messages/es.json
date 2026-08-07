@@ -243,15 +243,6 @@
       "startGuide": "Iniciar Guía",
       "ccText": "Miradouro da Serra, a 847 metros de altitud, ofrece una de las vistas más impresionantes de la región serrana, con un panorama de 360° sobre los valles y montañas circundantes..."
     },
-    "Behavior": {
-      "title": "Configúralo y Olvídate",
-      "step1Title": "1. Elige tu Idioma",
-      "step1Desc": "Selecciona entre {contentLanguages} idiomas nativos para historias narradas con alta fidelidad.",
-      "step2Title": "2. Libera tu Pantalla",
-      "step2Desc": "Usa tu aplicación de navegación favorita, controla tu lista de reproducción o mantén la pantalla encendida para que los pasajeros lean los subtítulos. TUGGI hace su magia en segundo plano sin interrumpir tu flujo.",
-      "step3Title": "3. Conduce Normalmente",
-      "step3Desc": "Las historias se reproducen automáticamente al cruzar cercas virtuales."
-    },
     "Samples": {
       "tag": "Curaduría Premium",
       "title": "Escucha lo que desbloqueas",

@@ -374,10 +374,11 @@ test.describe("BR-COMUNICACAO-002 / BR-COMUNICACAO-003 — a decision and its co
 /**
  * The sentences the module feeds, and the page each one reaches the visitor on.
  *
- * `Drive.Behavior.step1Desc` is migrated and deliberately absent from this
- * map: nothing imports `DriveBehavior.tsx`, so the string is not published
- * anywhere today. Naming the reason here rather than leaving a silent gap —
- * the orphan component is reported, not deleted by this card.
+ * Every string the module feeds is in this map. It used to carry one written
+ * exception — `Drive.Behavior.step1Desc`, fed by a component nothing imported,
+ * so the sentence reached no page. The component and its message block are
+ * gone (#196), and so is the exception: a waiver that outlives what it excused
+ * is a waiver with no owner.
  */
 const PUBLISHED_ON: Record<string, string[]> = {
   "/": [
