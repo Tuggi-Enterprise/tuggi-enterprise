@@ -147,14 +147,14 @@ export default async function PurposePage({
 
       {/* Manifesto Footer */}
       <footer className="py-32 px-4 text-center border-t border-slate-100">
-        {/* lang="en" because the quote is served in English inside pt, es and
-            it documents: without it a screen reader pronounces English words
-            with the page's voice (SC 3.1.2). This declares what is true today;
-            it is not the fix. The translated line is `design`'s to write, and
-            when it lands the quote moves to Purpose.Manifesto.quote and this
-            attribute goes with it. */}
-        <blockquote lang="en" className="max-w-3xl mx-auto italic text-2xl md:text-3xl text-slate-500 font-serif mb-8">
-          &quot;The world is better when we stop looking at it through a window, and start hearing it breathe.&quot;
+        {/* The `lang="en"` this element carried is gone with the English: the
+            quote is now served in the document's own language, and declaring
+            English over it would make a screen reader pronounce Portuguese
+            with an English voice — SC 3.1.2 inverted. The quotation marks live
+            inside the message value, curly, in all four languages, so a locale
+            that uses another convention can bring its own. */}
+        <blockquote className="max-w-3xl mx-auto italic text-2xl md:text-3xl text-slate-500 font-serif mb-8">
+          {t("Manifesto.quote")}
         </blockquote>
         <p className="text-sm font-bold uppercase tracking-widest text-tuggi-dark">
           TUGGI Manifesto

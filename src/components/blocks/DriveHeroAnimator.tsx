@@ -178,7 +178,7 @@ export function DriveHeroAnimator() {
           <g transform="translate(0, -37)">
             <rect x="-42" y="-12" width="84" height="18" rx="3" fill="white" opacity="0.96" />
             <text x="0" y="1" textAnchor="middle" fontSize="8.5" fontWeight="700" fill="#1e2936" fontFamily="system-ui, -apple-system, sans-serif">
-              Miradouro da Serra
+              {t("animatorPoi")}
             </text>
           </g>
         </g>

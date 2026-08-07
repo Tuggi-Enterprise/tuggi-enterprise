@@ -10,20 +10,36 @@
  * refresh with `npm run update-coverage`.
  *
  * Preview: https://www.tuggi.app/coverage (shared on WhatsApp, Slack, Twitter, LinkedIn)
+ *
+ * Nothing links here yet, and that is not visible from this file: page.tsx
+ * builds its metadata with buildOpenGraph, which always sets `openGraph.images`
+ * and therefore suppresses the App Router file convention — measured on the
+ * served HTML of /pt/coverage, which advertises /images/og-image-tuggi.jpg.
+ * Pointing the page at this route is a decision about what the site shares, not
+ * a translation, so it did not ride in with #192.
  */
 
 import { ImageResponse } from "next/og";
+import { getTranslations } from "next-intl/server";
 import { getCoverageData } from "@/lib/coverage";
 import { COVERAGE_COUNTRIES, MAPPED_POINT_MILLIONS } from "@/lib/product-facts";
 import { getCountryDisplayName } from "@/lib/countryNames";
+import enMessages from "@/messages/en.json";
 
 export const size        = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt         = "TUGGI Global Coverage — Audio Stories Across the World";
+// The `alt` export is a string, not a function: it never sees `params`, so it
+// cannot follow the locale the way the body below does. It reads the English
+// value of the key the page already uses for this same alt
+// (SEO_COVERAGE.ogImageAlt) instead of carrying a second copy of the sentence —
+// one owner, and a rewrite of the key cannot leave this one behind.
+export const alt         = enMessages.SEO_COVERAGE.ogImageAlt;
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
-function fmt(n: number) {
-  return n.toLocaleString("en-US");
+// Grouping follows the locale of the card, not en-US: "1,183" reads as a
+// decimal to every locale on this site that writes 1.183.
+function fmt(n: number, locale: string) {
+  return n.toLocaleString(locale);
 }
 
 function topCountries(
@@ -39,13 +55,19 @@ function topCountries(
 }
 
 // ── Image ──────────────────────────────────────────────────────────────────────
-export default async function Image() {
+export default async function Image({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t         = await getTranslations({ locale, namespace: "SEO_COVERAGE" });
   const coverage  = await getCoverageData();
   const countries = topCountries(coverage.states);
 
   // The published floor — one owner, in lib/product-facts. The "+" is the
   // "mais de" of BR-COMUNICACAO-002 item 4.
-  const countDisplay = `${fmt(MAPPED_POINT_MILLIONS * 1_000_000)}+`;
+  const countDisplay = `${fmt(MAPPED_POINT_MILLIONS * 1_000_000, locale)}+`;
 
   return new ImageResponse(
     (
@@ -138,7 +160,7 @@ export default async function Image() {
                 textTransform: "uppercase",
               }}
             >
-              TUGGI · GLOBAL COVERAGE
+              {t("ogEyebrow")}
             </span>
           </div>
 
@@ -165,18 +187,18 @@ export default async function Image() {
               marginBottom: 40,
             }}
           >
-            Mapped Points
+            {t("ogHeadline")}
           </div>
 
-          {/* Stat chips. The "Active POIs" chip is gone: it republished the
-              big number above, exact and off a frozen snapshot. The label over
-              the big number was "Audio Stories Ready to Play" over a count of
-              mapped points — the two are 2,042,796 against 16,910, and that is
-              BR-COMUNICACAO-002 item 2. */}
+          {/* Stat chips. The third chip is gone: it republished the big number
+              above, exact and off a frozen snapshot. The label over that number
+              named a content noun over a count of mapped points, two orders of
+              magnitude apart — BR-COMUNICACAO-002 item 2. It now comes from
+              SEO_COVERAGE.ogHeadline, in the locale of the card. */}
           <div style={{ display: "flex", gap: 16 }}>
             {[
-              { label: "Countries", value: String(COVERAGE_COUNTRIES)          },
-              { label: "Regions",   value: String(coverage.totalActiveRegions) },
+              { label: t("ogStatCountries"), value: String(COVERAGE_COUNTRIES)          },
+              { label: t("ogStatRegions"),   value: String(coverage.totalActiveRegions) },
             ].map(stat => (
               <div
                 key={stat.label}
@@ -246,7 +268,7 @@ export default async function Image() {
               marginBottom: 24,
             }}
           >
-            Coverage by Country
+            {t("ogCountryList")}
           </div>
 
           {countries.map(({ name, count }) => (
@@ -276,7 +298,7 @@ export default async function Image() {
                   fontWeight: 700,
                 }}
               >
-                {fmt(count)}
+                {fmt(count, locale)}
               </span>
             </div>
           ))}

@@ -409,6 +409,8 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
 
   const t = useTranslations("Download");
   const tCoupon = useTranslations("Coupon");
+  const tPlayer = useTranslations("Download.Player");
+  const tA11y = useTranslations("A11y");
 
   // A partner with a seal is running a campaign: the visitor scanned a printed
   // piece that already carries that mark, so the page mirrors the piece instead
@@ -433,15 +435,6 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
     .replace(/\s+\S*$/, "")
     .trimEnd();
 
-  // Inline translation pro MORE/LESS local
-  const isPt = locale.includes("pt");
-  const isEs = locale.includes("es");
-  const isIt = locale === "it";
-  const tMore = isPt ? "MAIS" : isEs ? "MÁS" : isIt ? "DI PIÙ" : "MORE";
-  const tLess = isPt ? "MENOS" : isEs ? "MENOS" : isIt ? "MENO" : "LESS";
-  const tPlay = isPt ? "Tocar áudio" : isEs ? "Reproducir audio" : isIt ? "Riproduci audio" : "Play audio";
-  const tPause = isPt ? "Pausar áudio" : isEs ? "Pausar audio" : isIt ? "Metti in pausa" : "Pause audio";
-
   /* Partner welcome text with its collapse control. Declared once and placed by
      whichever layout renders below — the campaign variant left-aligns it in the
      content column and tightens the leading, since there it shares the first
@@ -462,7 +455,7 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
           }}
           className="ml-1.5 text-tuggi-primary font-semibold text-xs focus:outline-none uppercase tracking-wider hover:underline"
         >
-          {isDescExpanded ? tLess : tMore}
+          {isDescExpanded ? t("readLess") : t("readMore")}
         </button>
       )}
     </p>
@@ -506,12 +499,12 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-tuggi-primary opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-tuggi-primary"></span>
                   </span>
-                  Playing
+                  {tPlayer("playing")}
                 </span>
               ) : autoplayBlocked ? (
-                'Tap the play button'
+                tPlayer("tapToPlay")
               ) : (
-                'Paused'
+                tPlayer("paused")
               )}
             </p>
           </div>
@@ -520,7 +513,7 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
           <button
             type="button"
             onClick={toggleAudio}
-            aria-label={isAudioPlaying ? tPause : tPlay}
+            aria-label={isAudioPlaying ? tA11y("pauseAudio") : tA11y("playAudio")}
             aria-pressed={isAudioPlaying}
             className="w-10 h-10 rounded-full bg-tuggi-dark text-white shadow-md flex items-center justify-center focus:outline-none hover:scale-105 active:scale-95 transition-all"
           >

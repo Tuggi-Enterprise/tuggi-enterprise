@@ -139,15 +139,15 @@ export function ContactRouter() {
                   <div className="w-16 h-16 bg-green-50 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
                     <Mail className="w-8 h-8" aria-hidden="true" />
                   </div>
-                  <h3 className="text-2xl font-bold text-tuggi-dark">Request Received</h3>
+                  <h3 className="text-2xl font-bold text-tuggi-dark">{t("Success.title")}</h3>
                   <p className="text-slate-600 max-w-sm mx-auto">
-                    Thank you for your interest. Our representative will contact you via your corporate email shortly.
+                    {t("Success.body")}
                   </p>
                   <button 
                     onClick={() => setSubmitted(false)}
                     className="text-tuggi-primary-text font-semibold hover:underline mt-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text rounded-sm"
                   >
-                    Send another message
+                    {t("Success.again")}
                   </button>
                 </div>
               ) : (

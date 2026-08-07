@@ -74,15 +74,19 @@ export default async function RootLayout({
   setRequestLocale(locale);
 
   const messages = await getMessages();
+  // The skip link sits outside NextIntlClientProvider on purpose — it has to be
+  // the first focusable element in the document (WCAG 2.2 SC 2.4.1), so it is
+  // read on the server instead of through useTranslations.
+  const tA11y = await getTranslations({ locale, namespace: "A11y" });
 
   return (
     <html lang={locale} className={inter.className}>
       <body className="bg-white text-[#0B1220] antialiased">
-        <a 
-          href="#main-content" 
+        <a
+          href="#main-content"
           className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-6 focus:py-3 focus:bg-tuggi-primary focus:text-tuggi-dark focus:font-bold focus:rounded-xl focus:shadow-2xl focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2"
         >
-          Skip to main content
+          {tA11y("skipToContent")}
         </a>
         <NextIntlClientProvider messages={messages} locale={locale}>
           <GlobalHeader currentLocale={locale} />

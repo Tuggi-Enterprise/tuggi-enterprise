@@ -3,6 +3,10 @@ import { Ear, EyeOff, Captions } from "lucide-react";
 
 export function CityOSAccessibility() {
   const t = useTranslations("CityOS.Accessibility");
+  // The mock panel has its own sub-namespace: its labels are interface of a
+  // simulated screen, not section copy, and mixing them invites a rewrite of
+  // one to be read as a rewrite of the other.
+  const tPanel = useTranslations("CityOS.Accessibility.Panel");
 
   // bg-tuggi-bg, not white: the hero above this section is white, and the two
   // sections that used to alternate between them were removed — the two whites
@@ -34,7 +38,7 @@ export function CityOSAccessibility() {
 
             <div className="flex justify-between items-center border-b border-gray-800 pb-4">
               <h3 className="text-white font-semibold text-lg flex items-center gap-2">
-                Accessibility OS
+                {tPanel("title")}
               </h3>
               <div className="w-8 h-4 bg-tuggi-primary rounded-full relative shadow-[0_0_10px_rgba(0,168,232,0.5)]">
                 <div className="absolute right-0.5 top-0.5 w-3 h-3 bg-white rounded-full"></div>
@@ -42,42 +46,42 @@ export function CityOSAccessibility() {
             </div>
 
             <div className="space-y-4 relative z-10">
-              {/* Feature: Audio-first navigation */}
+              {/* Feature row 1 */}
               <div className="bg-white/5 border border-white/10 rounded-md p-4 flex items-center gap-4 hover:border-tuggi-primary/50 transition-colors">
                 <div className="bg-tuggi-primary/20 p-2 rounded-sm shrink-0">
                   <EyeOff className="w-6 h-6 text-tuggi-primary" aria-hidden="true" />
                 </div>
                 <div className="flex-1 flex flex-col">
-                  <span className="text-white font-semibold text-sm tracking-wide">Audio-First Navigation</span>
-                  <span className="text-gray-400 text-xs">VoiceOver Integration</span>
+                  <span className="text-white font-semibold text-sm tracking-wide">{tPanel("feat1Title")}</span>
+                  <span className="text-gray-400 text-xs">{tPanel("feat1Desc")}</span>
                 </div>
                 <div className="w-8 h-4 bg-tuggi-primary rounded-full relative">
                   <div className="absolute right-0.5 top-0.5 w-3 h-3 bg-white rounded-full"></div>
                 </div>
               </div>
 
-              {/* Feature: Spatial Audio */}
+              {/* Feature row 2 */}
               <div className="bg-white/5 border border-white/10 rounded-md p-4 flex items-center gap-4 hover:border-tuggi-primary/50 transition-colors">
                 <div className="bg-tuggi-primary/20 p-2 rounded-sm shrink-0">
                   <Ear className="w-6 h-6 text-tuggi-primary" aria-hidden="true" />
                 </div>
                 <div className="flex-1 flex flex-col">
-                  <span className="text-white font-semibold text-sm tracking-wide">Spatial Context</span>
-                  <span className="text-gray-400 text-xs">Immersive Rendering</span>
+                  <span className="text-white font-semibold text-sm tracking-wide">{tPanel("feat2Title")}</span>
+                  <span className="text-gray-400 text-xs">{tPanel("feat2Desc")}</span>
                 </div>
                 <div className="w-8 h-4 bg-tuggi-primary rounded-full relative">
                   <div className="absolute right-0.5 top-0.5 w-3 h-3 bg-white rounded-full"></div>
                 </div>
               </div>
 
-               {/* Feature: Closed Captions */}
+               {/* Feature row 3 */}
                <div className="bg-white/5 border border-white/10 rounded-md p-4 flex items-center gap-4 hover:border-tuggi-primary/50 transition-colors">
                 <div className="bg-tuggi-primary/20 p-2 rounded-sm shrink-0">
                   <Captions className="w-6 h-6 text-tuggi-primary" aria-hidden="true" />
                 </div>
                 <div className="flex-1 flex flex-col">
-                  <span className="text-white font-semibold text-sm tracking-wide">Dynamic Subtitles</span>
-                  <span className="text-gray-400 text-xs">Geolocated closed captions</span>
+                  <span className="text-white font-semibold text-sm tracking-wide">{tPanel("feat3Title")}</span>
+                  <span className="text-gray-400 text-xs">{tPanel("feat3Desc")}</span>
                 </div>
                 <div className="w-8 h-4 bg-tuggi-primary rounded-full relative">
                   <div className="absolute right-0.5 top-0.5 w-3 h-3 bg-white rounded-full"></div>

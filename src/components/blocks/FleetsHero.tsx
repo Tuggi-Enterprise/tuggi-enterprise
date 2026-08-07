@@ -17,9 +17,12 @@ export function FleetsHero() {
             alignment instead of inventing content for a page that is queued
             for a rewrite. */}
         <div className="max-w-3xl mx-auto text-center flex flex-col items-center space-y-6">
+          {/* The eyebrow used to name a capability that BR-B2B-007's closed list
+              does not carry, in English, in all four locales. It names the
+              audience now: no claim, and one key instead of a literal. */}
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-tuggi-primary/40 rounded-full text-tuggi-primary-text font-semibold text-sm">
             <LineChart className="w-5 h-5" aria-hidden="true" />
-            B2B2C API Platform
+            {t("eyebrow")}
           </div>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-tuggi-dark leading-tight">
             {t("title")}

@@ -14,6 +14,8 @@
     "officialApp": "Official App",
     "trustFooter": "Secure Connection • Official App Distribution • Powered by Tuggi",
     "loading": "Loading...",
+    "readMore": "MORE",
+    "readLess": "LESS",
     "Campaign": {
       "headline": "Between one dish and the next, the region tells <accent>its own story</accent>.",
       "subtext": "You keep going. The narration follows.",
@@ -27,6 +29,11 @@
       "step3Text": "A detour, a stop, the long way back along the beach. The content is in the territory, not in a fixed itinerary.",
       "bandTitle": "Download free",
       "bandSubtitle": "Try it now!"
+    },
+    "Player": {
+      "playing": "Playing",
+      "tapToPlay": "Tap the play button",
+      "paused": "Paused"
     }
   },
   "Header": {
@@ -189,7 +196,16 @@
     },
     "Accessibility": {
       "title": "Universal Accessibility",
-      "desc": "Universal Accessibility is the hardest DTI pillar. TUGGI solves sensory barriers instantly: Audio-first navigation for visually impaired tourists, and geolocated Closed Captions for hearing-impaired passengers. WCAG 2.1 AA compliant."
+      "desc": "Universal Accessibility is the hardest DTI pillar. TUGGI solves sensory barriers instantly: Audio-first navigation for visually impaired tourists, and geolocated Closed Captions for hearing-impaired passengers. WCAG 2.1 AA compliant.",
+      "Panel": {
+        "title": "Accessibility module",
+        "feat1Title": "Audio-first experience",
+        "feat1Desc": "Works with VoiceOver and TalkBack",
+        "feat2Title": "Spatial context",
+        "feat2Desc": "Immersive audio",
+        "feat3Title": "Dynamic subtitles",
+        "feat3Desc": "Geolocated closed captions"
+      }
     },
     "Intelligence": {
       "title": "Data-Driven Tourism Intelligence",
@@ -200,7 +216,8 @@
     "Hero": {
       "title": "De-commoditize Your Fleet.",
       "subtitle": "Transform a standard vehicle rental into a Premium Cultural Experience.",
-      "cta": "Partner with TUGGI"
+      "cta": "Partner with TUGGI",
+      "eyebrow": "For fleets and rental companies"
     },
     "Financial": {
       "col2Title": "Instant Scalability",
@@ -418,6 +435,11 @@
       "slaValue": "Our enterprise experts typically respond within 24 business hours.",
       "pressTitle": "Press & Partnerships",
       "pressValue": "press@tuggi.app"
+    },
+    "Success": {
+      "title": "Request received.",
+      "body": "Thank you for your interest. Our representative will contact you via your corporate email shortly.",
+      "again": "Send another message"
     }
   },
   "Legal": {
@@ -573,6 +595,9 @@
       "v5Desc": "We skip the basics to deliver the hidden gems and true local knowledge.",
       "v6Title": "Universal Accessibility.",
       "v6Desc": "Designed to be consumed across different profiles and native languages."
+    },
+    "Manifesto": {
+      "quote": "“The world is better when we stop looking at it through a window, and start hearing it breathe.”"
     }
   },
   "NotFound": {
@@ -630,7 +655,12 @@
     "title": "Live Destinations — Choose Where You Explore",
     "description": "TUGGI is live in {coverageCountries} countries and over {mappedPointMillions} million points of interest — Italy, Spain, Portugal, Brazil, Chile, the USA and more. Audio stories play automatically the moment you start exploring.",
     "ogTitle": "TUGGI is Live in {coverageCountries} Countries — Over {mappedPointMillions} Million Mapped Points",
-    "ogImageAlt": "TUGGI global coverage map: mapped points around the world"
+    "ogImageAlt": "TUGGI global coverage map: mapped points around the world",
+    "ogEyebrow": "TUGGI · GLOBAL COVERAGE",
+    "ogHeadline": "Mapped points around the world",
+    "ogStatCountries": "Countries",
+    "ogStatRegions": "Regions",
+    "ogCountryList": "Coverage by country"
   },
   "Coverage": {
     "Hero": {
@@ -812,6 +842,9 @@
     "closeMenu": "Close menu",
     "breadcrumb": "Breadcrumb",
     "routeMap": "Interactive route map",
-    "toggleCaptions": "Turn captions on or off"
+    "toggleCaptions": "Turn captions on or off",
+    "skipToContent": "Skip to main content",
+    "playAudio": "Play audio",
+    "pauseAudio": "Pause audio"
   }
 }

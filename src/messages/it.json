@@ -14,6 +14,8 @@
     "officialApp": "App Ufficiale",
     "trustFooter": "Connessione Sicura • Distribuzione App Ufficiale • Powered by Tuggi",
     "loading": "Caricamento...",
+    "readMore": "DI PIÙ",
+    "readLess": "MENO",
     "Campaign": {
       "headline": "Tra un piatto e l'altro, la regione racconta <accent>la propria storia</accent>.",
       "subtext": "Tu prosegui il viaggio. La narrazione ti segue.",
@@ -27,6 +29,11 @@
       "step3Text": "Una deviazione, una sosta, il ritorno lungo la spiaggia. Il contenuto è nel territorio, non in un itinerario fisso.",
       "bandTitle": "Scarica gratis",
       "bandSubtitle": "Provala ora!"
+    },
+    "Player": {
+      "playing": "In riproduzione",
+      "tapToPlay": "Tocca il pulsante play",
+      "paused": "In pausa"
     }
   },
   "Header": {
@@ -189,7 +196,16 @@
     },
     "Accessibility": {
       "title": "Accessibilità Universale",
-      "desc": "L'Accessibilità Universale è il pilastro DTI più difficile. TUGGI risolve le barriere sensoriali all'istante: navigazione audio-first per i turisti ipovedenti e sottotitoli geolocalizzati per i passeggeri con difficoltà uditive. Conforme a WCAG 2.1 AA."
+      "desc": "L'Accessibilità Universale è il pilastro DTI più difficile. TUGGI risolve le barriere sensoriali all'istante: navigazione audio-first per i turisti ipovedenti e sottotitoli geolocalizzati per i passeggeri con difficoltà uditive. Conforme a WCAG 2.1 AA.",
+      "Panel": {
+        "title": "Modulo di Accessibilità",
+        "feat1Title": "Esperienza guidata dall'audio",
+        "feat1Desc": "Compatibile con VoiceOver e TalkBack",
+        "feat2Title": "Contesto spaziale",
+        "feat2Desc": "Audio immersivo",
+        "feat3Title": "Sottotitoli dinamici",
+        "feat3Desc": "Sottotitoli geolocalizzati"
+      }
     },
     "Intelligence": {
       "title": "Intelligenza Turistica Basata sui Dati",
@@ -200,7 +216,8 @@
     "Hero": {
       "title": "De-commoditizza la tua Flotta.",
       "subtitle": "Trasforma un normale noleggio auto in un'Esperienza Culturale Premium.",
-      "cta": "Diventa Partner di TUGGI"
+      "cta": "Diventa Partner di TUGGI",
+      "eyebrow": "Per flotte e società di noleggio"
     },
     "Financial": {
       "col2Title": "Scalabilità Istantanea",
@@ -418,6 +435,11 @@
       "slaValue": "I nostri esperti enterprise rispondono di solito entro 24 ore lavorative.",
       "pressTitle": "Stampa e Partnership",
       "pressValue": "press@tuggi.app"
+    },
+    "Success": {
+      "title": "Richiesta ricevuta.",
+      "body": "Grazie per il tuo interesse. Un nostro specialista ti contatterà a breve alla tua email aziendale.",
+      "again": "Invia un altro messaggio"
     }
   },
   "Legal": {
@@ -573,6 +595,9 @@
       "v5Desc": "Saltiamo le banalità per offrire le gemme nascoste e la vera conoscenza locale.",
       "v6Title": "Accessibilità Universale.",
       "v6Desc": "Progettata per essere fruita da profili diversi e in lingue native."
+    },
+    "Manifesto": {
+      "quote": "“Il mondo è migliore quando smettiamo di guardarlo dal finestrino e cominciamo a sentirlo respirare.”"
     }
   },
   "NotFound": {
@@ -630,7 +655,12 @@
     "title": "Destinazioni Attive — Scegli Dove Esplorare",
     "description": "TUGGI è attivo in {coverageCountries} paesi e oltre {mappedPointMillions} milioni di punti di interesse — Italia, Spagna, Portogallo, Brasile, Cile, USA e altro ancora. I racconti audio partono automaticamente nel momento in cui inizi a esplorare.",
     "ogTitle": "TUGGI Attivo in {coverageCountries} Paesi — Oltre {mappedPointMillions} Milioni di Punti Mappati",
-    "ogImageAlt": "Mappa di copertura globale di TUGGI: punti mappati in tutto il mondo"
+    "ogImageAlt": "Mappa di copertura globale di TUGGI: punti mappati in tutto il mondo",
+    "ogEyebrow": "TUGGI · COPERTURA GLOBALE",
+    "ogHeadline": "Punti mappati in tutto il mondo",
+    "ogStatCountries": "Paesi",
+    "ogStatRegions": "Regioni",
+    "ogCountryList": "Copertura per paese"
   },
   "Coverage": {
     "Hero": {
@@ -812,6 +842,9 @@
     "closeMenu": "Chiudi il menu",
     "breadcrumb": "Percorso di navigazione",
     "routeMap": "Mappa interattiva dell'itinerario",
-    "toggleCaptions": "Attiva o disattiva i sottotitoli"
+    "toggleCaptions": "Attiva o disattiva i sottotitoli",
+    "skipToContent": "Vai al contenuto principale",
+    "playAudio": "Riproduci audio",
+    "pauseAudio": "Metti in pausa"
   }
 }

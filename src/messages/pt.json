@@ -14,6 +14,8 @@
     "officialApp": "App Oficial",
     "trustFooter": "Conexão Segura • Distribuição Oficial • Powered by Tuggi",
     "loading": "Carregando...",
+    "readMore": "MAIS",
+    "readLess": "MENOS",
     "Campaign": {
       "headline": "Entre um prato e outro, a região conta a <accent>própria história</accent>.",
       "subtext": "Você segue viagem. A narração acompanha.",
@@ -27,6 +29,11 @@
       "step3Text": "Desvio, parada, volta pela praia. O conteúdo está no território, não em um roteiro fixo.",
       "bandTitle": "Baixe grátis",
       "bandSubtitle": "Teste agora!"
+    },
+    "Player": {
+      "playing": "Reproduzindo",
+      "tapToPlay": "Toque no play",
+      "paused": "Pausado"
     }
   },
   "Header": {
@@ -189,7 +196,16 @@
     },
     "Accessibility": {
       "title": "Acessibilidade Universal",
-      "desc": "Acessibilidade Universal é o pilar DTI mais difícil. O TUGGI resolve barreiras sensoriais instantaneamente: navegação 'Audio-first' para turistas com deficiência visual e legendas (Closed Captions) geolocalizadas para passageiros com deficiência auditiva. Compatível com WCAG 2.1 AA."
+      "desc": "Acessibilidade Universal é o pilar DTI mais difícil. O TUGGI resolve barreiras sensoriais instantaneamente: navegação 'Audio-first' para turistas com deficiência visual e legendas (Closed Captions) geolocalizadas para passageiros com deficiência auditiva. Compatível com WCAG 2.1 AA.",
+      "Panel": {
+        "title": "Módulo de Acessibilidade",
+        "feat1Title": "Experiência guiada por áudio",
+        "feat1Desc": "Compatível com VoiceOver e TalkBack",
+        "feat2Title": "Contexto espacial",
+        "feat2Desc": "Áudio imersivo",
+        "feat3Title": "Legendas dinâmicas",
+        "feat3Desc": "Legendas geolocalizadas"
+      }
     },
     "Intelligence": {
       "title": "Inteligência de Turismo Baseada em Dados",
@@ -200,7 +216,8 @@
     "Hero": {
       "title": "Descomoditize sua Frota.",
       "subtitle": "Transforme um aluguel de veículo padrão em uma Experiência Cultural Premium.",
-      "cta": "Seja Parceiro da TUGGI"
+      "cta": "Seja Parceiro da TUGGI",
+      "eyebrow": "Para frotas e locadoras"
     },
     "Financial": {
       "col2Title": "Escalabilidade Instantânea",
@@ -418,6 +435,11 @@
       "slaValue": "Nossos especialistas corporativos geralmente respondem em até 24 horas úteis.",
       "pressTitle": "Imprensa e Parcerias",
       "pressValue": "press@tuggi.app"
+    },
+    "Success": {
+      "title": "Solicitação recebida.",
+      "body": "Obrigado pelo seu interesse. Um especialista entra em contato pelo seu e-mail corporativo em breve.",
+      "again": "Enviar outra mensagem"
     }
   },
   "Legal": {
@@ -573,6 +595,9 @@
       "v5Desc": "Pulamos o básico para entregar as joias escondidas e o verdadeiro conhecimento local.",
       "v6Title": "Acessibilidade Universal.",
       "v6Desc": "Projetado para ser consumido em diferentes perfis e idiomas nativos."
+    },
+    "Manifesto": {
+      "quote": "“O mundo fica melhor quando deixamos de olhá-lo pela janela e passamos a ouvi-lo respirar.”"
     }
   },
   "NotFound": {
@@ -630,7 +655,12 @@
     "title": "Destinos Ativos — Escolha Onde Explorar",
     "description": "O TUGGI está ativo em {coverageCountries} países e mais de {mappedPointMillions} milhões de pontos de interesse — Itália, Espanha, Portugal, Brasil, Chile, EUA e mais. Histórias em áudio tocam automaticamente assim que você começa a explorar.",
     "ogTitle": "TUGGI Ativo em {coverageCountries} Países — Mais de {mappedPointMillions} Milhões de Pontos Mapeados",
-    "ogImageAlt": "Mapa de cobertura global do TUGGI: pontos mapeados pelo mundo"
+    "ogImageAlt": "Mapa de cobertura global do TUGGI: pontos mapeados pelo mundo",
+    "ogEyebrow": "TUGGI · COBERTURA GLOBAL",
+    "ogHeadline": "Pontos mapeados no mundo todo",
+    "ogStatCountries": "Países",
+    "ogStatRegions": "Regiões",
+    "ogCountryList": "Cobertura por país"
   },
   "Coverage": {
     "Hero": {
@@ -812,6 +842,9 @@
     "closeMenu": "Fechar menu",
     "breadcrumb": "Trilha de navegação",
     "routeMap": "Mapa interativo do roteiro",
-    "toggleCaptions": "Ativar ou desativar legendas"
+    "toggleCaptions": "Ativar ou desativar legendas",
+    "skipToContent": "Ir para o conteúdo principal",
+    "playAudio": "Tocar áudio",
+    "pauseAudio": "Pausar áudio"
   }
 }
