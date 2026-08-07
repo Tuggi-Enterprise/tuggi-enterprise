@@ -1,6 +1,7 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Metadata } from "next";
 import { buildAlternates, buildOpenGraph, buildTwitterCard, defaultRobots } from "@/lib/seo";
+import { PRODUCT_FACTS } from "@/lib/product-facts";
 
 export async function generateMetadata({
   params,
@@ -52,7 +53,12 @@ export default async function AccessibilityPage({ params }: { params: Promise<{ 
         <ul>
           <li>{t.rich("s2Item1", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
           <li>{t.rich("s2Item2", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
-          <li>{t.rich("s2Item3", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
+          <li>
+            {t.rich("s2Item3", {
+              ...PRODUCT_FACTS,
+              strong: (chunks) => <strong>{chunks}</strong>,
+            })}
+          </li>
         </ul>
       </section>
 

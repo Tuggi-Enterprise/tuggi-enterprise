@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { PhoneFrame } from "./PhoneFrame";
+import { PRODUCT_FACTS } from "@/lib/product-facts";
 
 const EASE: [number, number, number, number] = [0.21, 0.47, 0.32, 0.98];
 
@@ -79,7 +80,9 @@ function FeatureRow({ feature, idx }: { feature: Feature; idx: number }) {
         <h3 className="text-2xl sm:text-3xl font-bold text-tuggi-dark tracking-tight mb-4 leading-snug">
           {t(`feat${feature.n}Title`)}
         </h3>
-        <p className="text-lg text-tuggi-slate leading-relaxed">{t(`feat${feature.n}Body`)}</p>
+        <p className="text-lg text-tuggi-slate leading-relaxed">
+          {t(`feat${feature.n}Body`, PRODUCT_FACTS)}
+        </p>
       </motion.div>
 
       {/* Phone(s) — scroll parallax (desktop) wrapping a fade+rise reveal */}

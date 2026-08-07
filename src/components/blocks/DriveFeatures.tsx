@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { WifiOff, Globe, Accessibility as AccessibilityIcon } from "lucide-react";
+import { PRODUCT_FACTS } from "@/lib/product-facts";
 
 const EASE: [number, number, number, number] = [0.21, 0.47, 0.32, 0.98];
 const container = { hidden: {}, show: { transition: { staggerChildren: 0.08 } } };
@@ -23,7 +24,7 @@ export function DriveFeatures() {
 
   const cards = [
     { icon: WifiOff, title: t("feat1Title"), body: t("feat1Desc") },
-    { icon: Globe, title: t("feat3Title"), body: t("feat3Desc") },
+    { icon: Globe, title: t("feat3Title"), body: t("feat3Desc", PRODUCT_FACTS) },
     { icon: AccessibilityIcon, title: a("title"), body: a("body") },
   ];
 

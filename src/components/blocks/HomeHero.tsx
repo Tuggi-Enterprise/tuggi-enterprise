@@ -8,6 +8,7 @@ import { ArrowLeft } from "lucide-react";
 import { sendGAEvent } from "@next/third-parties/google";
 import { APP_STORE_URL, PLAY_STORE_URL } from "@/lib/app-meta";
 import { PhoneFrame } from "./PhoneFrame";
+import { PRODUCT_FACTS } from "@/lib/product-facts";
 
 const EASE: [number, number, number, number] = [0.21, 0.47, 0.32, 0.98];
 
@@ -83,8 +84,12 @@ export function HomeHero() {
               </a>
             </div>
 
-            {/* Language count lives in Home.Hero.trustLine (10 audio languages). */}
-            <p className="mt-6 text-sm font-medium text-tuggi-slate">{t("trustLine")}</p>
+            {/* The audio-language count is a product fact, not copy: the
+                sentence lives in Home.Hero.trustLine and the number comes
+                from lib/product-facts (BR-IDIOMA-001, DS-COPY-005). */}
+            <p className="mt-6 text-sm font-medium text-tuggi-slate">
+              {t("trustLine", PRODUCT_FACTS)}
+            </p>
           </div>
 
           {/* Phone + overlays. The wrapper is sized to the phone so the absolute

@@ -8,6 +8,7 @@ import { sendGAEvent } from "@next/third-parties/google";
 import { APP_STORE_URL, PLAY_STORE_URL } from "@/lib/app-meta";
 import { formatPrice, type CountryPricing, type PassKey } from "@/lib/pricing";
 import { usePlatform, useGeoPricing, type Platform } from "@/lib/conversionHooks";
+import { PRODUCT_FACTS } from "@/lib/product-facts";
 
 const EASE: [number, number, number, number] = [0.21, 0.47, 0.32, 0.98];
 const container = { hidden: {}, show: { transition: { staggerChildren: 0.08 } } };
@@ -173,7 +174,7 @@ export function DrivePricing() {
                 {["free1", "free2", "free3"].map((k) => (
                   <li key={k} className="flex items-start gap-3">
                     <CheckCircle2 className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
-                    <span>{t(k)}</span>
+                    <span>{t(k, PRODUCT_FACTS)}</span>
                   </li>
                 ))}
               </ul>
@@ -200,7 +201,7 @@ export function DrivePricing() {
                 {["pass1Feat1", "pass1Feat2", "pass1Feat3"].map((k) => (
                   <li key={k} className="flex items-start gap-3">
                     <CheckCircle2 className="w-5 h-5 text-tuggi-primary-text flex-shrink-0 mt-0.5" aria-hidden="true" />
-                    <span>{t(k)}</span>
+                    <span>{t(k, PRODUCT_FACTS)}</span>
                   </li>
                 ))}
               </ul>
@@ -224,7 +225,7 @@ export function DrivePricing() {
                 {["pass2Feat1", "pass2Feat2", "pass2Feat3"].map((k) => (
                   <li key={k} className="flex items-start gap-3">
                     <CheckCircle2 className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
-                    <span>{t(k)}</span>
+                    <span>{t(k, PRODUCT_FACTS)}</span>
                   </li>
                 ))}
               </ul>

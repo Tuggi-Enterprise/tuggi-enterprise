@@ -12,6 +12,7 @@ import { ProseSection } from "@/components/blocks/ProseSection";
 import { DriveStickyCta } from "@/components/blocks/DriveStickyCta";
 import { HomeMotionConfig } from "@/components/blocks/HomeMotionConfig";
 import { buildAlternates, buildOpenGraph, buildTwitterCard, defaultRobots } from "@/lib/seo";
+import { PRODUCT_FACTS } from "@/lib/product-facts";
 
 export async function generateMetadata({
   params,
@@ -52,7 +53,7 @@ export default async function DrivePage({
       "name": faq(`q${i}`),
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": faq(`a${i}`),
+        "text": faq(`a${i}`, PRODUCT_FACTS),
       },
     })),
   };

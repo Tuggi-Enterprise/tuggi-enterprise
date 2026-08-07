@@ -10,6 +10,7 @@
 
 import { ImageResponse } from "next/og";
 import { getCoverageData } from "@/lib/coverage";
+import { activeCountries, activePoints } from "@/lib/product-facts";
 import { getCountryDisplayName } from "@/lib/countryNames";
 
 export const size        = { width: 1200, height: 630 };
@@ -38,7 +39,8 @@ export default async function Image() {
   const coverage  = await getCoverageData();
   const countries = topCountries(coverage.states);
 
-  const countDisplay = fmt(Math.floor(coverage.totalActiveRaw / 1000) * 1000);
+  // The published, rounded figure — one owner, in lib/product-facts.
+  const countDisplay = fmt((await activePoints()).value);
 
   return new ImageResponse(
     (
@@ -164,7 +166,7 @@ export default async function Image() {
           {/* Stat chips */}
           <div style={{ display: "flex", gap: 16 }}>
             {[
-              { label: "Countries",   value: String(coverage.totalActiveCountries) },
+              { label: "Countries",   value: String((await activeCountries()).value) },
               { label: "Regions",     value: String(coverage.totalActiveRegions)   },
               { label: "Active POIs", value: fmt(coverage.totalActiveRaw)          },
             ].map(stat => (

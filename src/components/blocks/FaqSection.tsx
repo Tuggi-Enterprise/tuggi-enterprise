@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
+import { PRODUCT_FACTS } from "@/lib/product-facts";
 
 /**
  * Accessible FAQ accordion driven by a next-intl namespace with enumerated
@@ -59,7 +60,7 @@ export function FaqSection({ namespace, count }: { namespace: string; count: num
                   }`}
                 >
                   <p className="px-6 pb-5 text-slate-600 leading-relaxed text-sm">
-                    {t(`a${i}`)}
+                    {t(`a${i}`, PRODUCT_FACTS)}
                   </p>
                 </dd>
               </div>

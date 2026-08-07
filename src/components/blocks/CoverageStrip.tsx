@@ -1,7 +1,7 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
 import { Globe, ArrowRight } from "lucide-react";
-import { getCoverageData } from "@/lib/coverage";
+import { activeCountries } from "@/lib/product-facts";
 
 // Curated flagship destinations grouped by region. Country names are localized
 // at render via Intl.DisplayNames (a PT reader sees "Estados Unidos", "França"),
@@ -19,13 +19,11 @@ const SHOWN = REGIONS.reduce((n, r) => n + r.codes.length, 0);
  * /coverage). Answers the "is my destination covered?" objection before the CTA.
  */
 export async function CoverageStrip() {
-  const [locale, t, data] = await Promise.all([
+  const [locale, t, countries] = await Promise.all([
     getLocale(),
     getTranslations("Home.Coverage"),
-    getCoverageData(),
+    activeCountries(),
   ]);
-
-  const countries = data.totalActiveCountries;
   const regionNames = new Intl.DisplayNames([locale], { type: "region" });
   const nameOf = (code: string) => regionNames.of(code) ?? code;
 
@@ -36,7 +34,7 @@ export async function CoverageStrip() {
           <Globe className="w-6 h-6" aria-hidden="true" />
         </div>
         <h2 className="text-2xl sm:text-3xl font-bold text-tuggi-dark tracking-tight mb-3">
-          {t("title", { count: countries })}
+          {t("title", { count: countries.value })}
         </h2>
         <p className="text-tuggi-slate mb-10 max-w-2xl mx-auto">{t("subtitle")}</p>
 
@@ -60,7 +58,7 @@ export async function CoverageStrip() {
           ))}
         </div>
 
-        <p className="mt-10 text-sm text-tuggi-slate">{t("more", { count: countries - SHOWN })}</p>
+        <p className="mt-10 text-sm text-tuggi-slate">{t("more", { count: countries.value - SHOWN })}</p>
         <Link
           href="/coverage"
           className="mt-3 inline-flex items-center gap-2 font-semibold text-tuggi-primary-text hover:text-tuggi-primary transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary focus-visible:ring-offset-2 rounded"

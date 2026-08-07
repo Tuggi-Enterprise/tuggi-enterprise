@@ -15,6 +15,7 @@ import { CookieBanner } from "@/components/global/CookieBanner";
 import { JsonLd } from "@/components/global/JsonLd";
 import { buildAlternates } from "@/lib/seo";
 import "@/app/globals.css";
+import { PRODUCT_FACTS } from "@/lib/product-facts";
 
 const inter = Inter({ subsets: ["latin"], display: "swap" });
 
@@ -41,7 +42,7 @@ export async function generateMetadata({
       template: "%s | TUGGI",
       default: t("rootTitle"),
     },
-    description: t("rootDescription"),
+    description: t("rootDescription", PRODUCT_FACTS),
     metadataBase: new URL(baseUrl),
     alternates: buildAlternates(locale),
     icons: {

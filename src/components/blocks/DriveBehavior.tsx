@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
 import { Languages, Lock, Navigation, Play } from "lucide-react";
+import { PRODUCT_FACTS } from "@/lib/product-facts";
 
 export function DriveBehavior() {
   const t = useTranslations("Drive.Behavior");
@@ -40,7 +41,9 @@ export function DriveBehavior() {
                 </div>
                 <h3 className="text-xl font-bold text-tuggi-dark">{t("step1Title")}</h3>
               </div>
-              <p className="text-slate-600 pl-14 leading-relaxed">{t("step1Desc")}</p>
+              <p className="text-slate-600 pl-14 leading-relaxed">
+                {t("step1Desc", PRODUCT_FACTS)}
+              </p>
             </div>
 
             {/* Step 2 */}

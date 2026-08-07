@@ -1,5 +1,6 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getCoverageData } from "@/lib/coverage";
+import { activeCountries, activePoints } from "@/lib/product-facts";
 import {
   buildAlternates,
   buildOpenGraph,
@@ -19,16 +20,18 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  const [t, coverageData] = await Promise.all([
+  const [t, points, countries] = await Promise.all([
     getTranslations({ locale, namespace: "SEO_COVERAGE" }),
-    getCoverageData(),
+    activePoints(),
+    activeCountries(),
   ]);
 
-  // Round down to nearest 1,000 — e.g. 234,503 → "234,000"
-  // This auto-updates every time the snapshot is regenerated and deployed.
-  const countRounded = (
-    Math.floor(coverageData.totalActiveRaw / 1000) * 1000
-  ).toLocaleString(locale === "en" ? "en-US" : locale);
+  // Both figures, and the floor they are rounded to, come from
+  // lib/product-facts — the rounding rule used to be written out three
+  // times over the same snapshot (BR-COMUNICACAO-002 item 4).
+  const countRounded = points.value.toLocaleString(
+    locale === "en" ? "en-US" : locale,
+  );
 
   const title       = t("title");
   const description = t("description", {
@@ -36,7 +39,7 @@ export async function generateMetadata({
   });
   const ogTitle     = t("ogTitle", {
     count: countRounded,
-    countries: coverageData.totalActiveCountries,
+    countries: countries.value,
   });
 
   return {
@@ -75,10 +78,11 @@ export default async function CoveragePage({
   const pageUrl = buildUrl(locale, "coverage");
 
   // Shared interpolation values for SEO strings with {count}/{countries}
-  const countRounded = (
-    Math.floor(coverageData.totalActiveRaw / 1000) * 1000
-  ).toLocaleString(locale === "en" ? "en-US" : locale);
-  const seoVars = { count: countRounded, countries: coverageData.totalActiveCountries };
+  const [points, countries] = await Promise.all([activePoints(), activeCountries()]);
+  const countRounded = points.value.toLocaleString(
+    locale === "en" ? "en-US" : locale,
+  );
+  const seoVars = { count: countRounded, countries: countries.value };
 
   // ── JSON-LD structured data ───────────────────────────────────────────────
   const jsonLd = {
@@ -161,7 +165,7 @@ export default async function CoveragePage({
       />
 
       <CoverageHero
-        totalCountries={coverageData.totalActiveCountries}
+        totalCountries={countries.value}
         totalAttractions={coverageData.totalActiveRaw}
         totalActiveRegions={coverageData.totalActiveRegions}
       />

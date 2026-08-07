@@ -1,7 +1,7 @@
 {
   "Download": {
     "metaTitle": "Download TUGGI – Self-Guided Audio Travel Guide",
-    "metaDesc": "Get the TUGGI app: self-guided audio tours, hands-free and offline. Listen in 10 languages with closed captions. Free to start.",
+    "metaDesc": "Get the TUGGI app: self-guided audio tours, hands-free and offline. Listen in {contentLanguages} languages with closed captions. Free to start.",
     "partnerBadge": "TUGGI PARTNER INVITATION ACTIVATED",
     "heroTitle1": "Your",
     "heroTitle2": "cultural",
@@ -62,7 +62,7 @@
     "FAQ": {
       "title": "Frequently Asked Questions",
       "q1": "What is the best app for self-guided audio tours?",
-      "a1": "TUGGI is a self-guided audio travel guide for iOS and Android. It plays audio stories about the places around you automatically, triggered by GPS — hands-free and screen-off — while you drive, walk, or cycle. It works offline, supports 10 languages with closed captions, and is free to start.",
+      "a1": "TUGGI is a self-guided audio travel guide for iOS and Android. It plays audio stories about the places around you automatically, triggered by GPS — hands-free and screen-off — while you drive, walk, or cycle. It works offline, supports {contentLanguages} languages with closed captions, and is free to start.",
       "q2": "Is there a free audio travel guide app?",
       "a2": "Yes. TUGGI is free to download and start listening with daily stories. To listen without limits you can unlock a Travel Pass (7-day or 30-day, one-time payment) or an annual plan. You'll see your exact local price in the App Store or Google Play.",
       "q3": "What's a good travel app for a road trip?",
@@ -70,7 +70,7 @@
       "q4": "Can I explore a city without a tour guide?",
       "a4": "Yes. TUGGI acts as a self-guided audio guide, so you can explore at your own pace without booking a human guide or a fixed tour. Stories play automatically as you reach each point of interest, on foot or by car.",
       "q5": "Does TUGGI work offline and in my language?",
-      "a5": "Yes. Download a route in advance and listen with no signal and no roaming charges. TUGGI offers audio in 10 languages with synchronized closed captions for deaf and hard-of-hearing travelers.",
+      "a5": "Yes. Download a route in advance and listen with no signal and no roaming charges. TUGGI offers audio in {contentLanguages} languages with synchronized closed captions for deaf and hard-of-hearing travelers.",
       "q6": "How is TUGGI different from Google Maps or a human guide?",
       "a6": "TUGGI isn't a navigation app and doesn't replace your GPS — it runs alongside it and adds self-guided audio storytelling about the places you pass. Unlike a human guide, it's available 24/7, in multiple languages, hands-free, and free to start.",
       "q7": "Who is TUGGI for?",
@@ -79,7 +79,7 @@
     "Hero": {
       "title": "You move, TUGGI tells the story of every place.",
       "subtitle": "Turn TUGGI on, start moving and put your phone away. It uses GPS to spot each point of interest along the way and reads its story out loud. Works on foot, by bike, by car or on public transport, offline and in your language.",
-      "trustLine": "Free to start · Works offline · Audio in 10 languages",
+      "trustLine": "Free to start · Works offline · Audio in {contentLanguages} languages",
       "appStoreAlt": "Download TUGGI on the App Store",
       "playStoreAlt": "Get TUGGI on Google Play",
       "phoneAlt": "TUGGI map showing nearby audio stories, events and trails",
@@ -136,7 +136,7 @@
       "feat5Body": "The app adds it all up: places discovered, cities, kilometers covered and hours of audio. It becomes a log of your travels you can show your friends.",
       "feat5Alt": "TUGGI explorer passport showing discoveries, cities, kilometers and listening hours",
       "feat6Title": "Made to go anywhere",
-      "feat6Body": "Download the maps and use everything without internet. Control the guide by voice with Siri or Google, without taking your phone out of your pocket. And listen in 10 languages, whichever suits you.",
+      "feat6Body": "Download the maps and use everything without internet. Control the guide by voice with Siri or Google, without taking your phone out of your pocket. And listen in {contentLanguages} languages, whichever suits you.",
       "feat6AltTools": "TUGGI explorer tools including offline maps and voice commands",
       "feat6AltLanguages": "TUGGI audio language selector with English, Spanish, Italian, Portuguese and more"
     },
@@ -160,7 +160,7 @@
       "title": "What is TUGGI",
       "p1": "TUGGI is a self-guided audio travel guide for iPhone and Android. It uses GPS to recognize the places you pass and tells the story of each one out loud, at the right moment, without you searching for anything on the screen. It works however you travel: on foot, by bike, by car, by bus or on the metro.",
       "p2": "Stories start on their own as you get close to a point of interest. Because everything works offline, you download a city before you leave and listen with no internet and no roaming data. And since every story comes with synchronized captions, deaf and hard-of-hearing travelers follow along on screen.",
-      "p3": "TUGGI does not replace your navigation app: it runs alongside it, without getting in the way of your map or your music, and simply adds the cultural narration of the route. Start free, pick from 10 languages, and turn any trip into a journey with a story."
+      "p3": "TUGGI does not replace your navigation app: it runs alongside it, without getting in the way of your map or your music, and simply adds the cultural narration of the route. Start free, pick from {contentLanguages} languages, and turn any trip into a journey with a story."
     },
     "Coverage": {
       "title": "Live in {count} countries",
@@ -246,7 +246,7 @@
     "Behavior": {
       "title": "Set It and Forget It",
       "step1Title": "1. Choose Your Language",
-      "step1Desc": "Select from 8+ native languages for high-fidelity storytelling.",
+      "step1Desc": "Select from {contentLanguages} native languages for high-fidelity storytelling.",
       "step2Title": "2. Free Your Screen",
       "step2Desc": "Use your favorite navigation app, control your playlist, or keep the screen on for passengers to read the Closed Captions. TUGGI works its magic in the background without interrupting your flow.",
       "step3Title": "3. Drive Normally",
@@ -272,7 +272,7 @@
       "feat1Title": "100% Offline Mode",
       "feat1Desc": "Download the city pack at your hotel. Zero data roaming charges on the road.",
       "feat3Title": "Multilingual Audio",
-      "feat3Desc": "High-fidelity storytelling in 8+ native languages."
+      "feat3Desc": "High-fidelity storytelling in {contentLanguages} native languages."
     },
     "Pricing": {
       "title": "Travel Passes",
@@ -300,7 +300,7 @@
       "pass3Action": "Subscribe to Annual Plan",
       "pass3PriceLine": "From a few cents a day",
       "storeNote": "You'll see your exact local price in the App Store or Google Play.",
-      "pass2Feat3": "All 10 languages included",
+      "pass2Feat3": "All {contentLanguages} languages included",
       "pass3Feat3": "100% offline maps and audio",
       "anchor": "Less than a single guided tour — and it narrates your whole trip.",
       "chip1": "No card required",
@@ -330,7 +330,7 @@
       "q3": "How is TUGGI different from Google Maps or a GPS?",
       "a3": "TUGGI isn't a navigation app. It runs alongside your navigation and music and plays self-guided audio stories about the places you pass — hands-free, no screen.",
       "q4": "What languages does TUGGI support?",
-      "a4": "Audio in 10 languages, with synchronized closed captions so deaf and hard-of-hearing travelers can follow every story.",
+      "a4": "Audio in {contentLanguages} languages, with synchronized closed captions so deaf and hard-of-hearing travelers can follow every story.",
       "q5": "Can I use TUGGI walking or cycling?",
       "a5": "Yes — road trips, walking tours, cycling, and family travel all work.",
       "q6": "Do I have to look at my phone?",
@@ -358,7 +358,7 @@
       "rowLang": "Languages",
       "langGuide": "The guide's language",
       "langAudio": "A few per tour",
-      "langTuggi": "10 languages",
+      "langTuggi": "{contentLanguages} languages",
       "rowRoute": "Route",
       "routeGuide": "The guide's itinerary",
       "routeAudio": "A fixed route to follow",
@@ -383,7 +383,7 @@
       "title": "How TUGGI’s plans work",
       "p1": "You can use TUGGI for free: when you download it, you get 24 hours of unlimited audio, no card and nothing to sign up for. After that, the app stays free with a limited number of stories a day, so you explore at your own pace before deciding.",
       "p2": "When you want to listen without limits, pick a one-time pass: the 7-day one for a short trip, or the 30-day one for longer holidays. Both are one-time payments with no auto-renewal. If you travel all year, there is an annual plan inside the app.",
-      "p3": "Every pass includes fully offline maps and audio, synchronized captions and all 10 languages. Prices vary by country, and you see the exact price in the App Store or Google Play before you confirm. Nothing is charged without your confirmation in the store."
+      "p3": "Every pass includes fully offline maps and audio, synchronized captions and all {contentLanguages} languages. Prices vary by country, and you see the exact price in the App Store or Google Play before you confirm. Nothing is charged without your confirmation in the store."
     }
   },
   "Contact": {
@@ -546,7 +546,7 @@
       "s2Intro": "Our product is designed to be accessible to both drivers and passengers:",
       "s2Item1": "<strong>Audio-First Experience:</strong> We eliminate the need for visual or tactile interaction with the screen during the trip. Stories are automatically triggered via geolocation, allowing visually impaired people and those with reduced mobility to enjoy the content autonomously.",
       "s2Item2": "<strong>Closed Captions:</strong> For passengers with hearing impairments, TUGGI offers real-time synchronized transcription. While the audio plays, the narrative text is displayed on the screen, ensuring that no one misses the cultural context of the route.",
-      "s2Item3": "<strong>Linguistic Accessibility:</strong> We offer multilingual support in over 8 languages, ensuring that the language barrier is not an impediment to knowledge.",
+      "s2Item3": "<strong>Linguistic Accessibility:</strong> We offer multilingual support in {contentLanguages} languages, ensuring that the language barrier is not an impediment to knowledge.",
       "s3Title": "3. Feedback Channel and Continuous Improvement",
       "s3Intro": "Accessibility is an ongoing process. We recognize that there is always room for improvement and are ready to listen to our users.",
       "s4Title": "4. Cultural Inclusion and Social Impact",
@@ -592,7 +592,7 @@
   },
   "Metadata": {
     "rootTitle": "TUGGI — Self-Guided Audio Travel Guide",
-    "rootDescription": "TUGGI tells you a place's story out loud the moment you get near it. Works offline, in 10 languages, free to start on iOS and Android.",
+    "rootDescription": "TUGGI tells you a place's story out loud the moment you get near it. Works offline, in {contentLanguages} languages, free to start on iOS and Android.",
     "homeTitle": "Self-Guided Audio Travel Guide — Stories That Play As You Go | TUGGI",
     "homeDescription": "TUGGI tells you each place's story out loud as you pass by, however you travel. A self-guided audio travel guide that works offline, in your language. Free to start.",
     "driveTitle": "Plans & Pricing - Travel Passes",

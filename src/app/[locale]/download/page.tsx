@@ -4,6 +4,7 @@ import { PartnerHeroWrapper } from "@/components/blocks/PartnerHeroWrapper";
 import { getPartnerById } from "@/lib/partner";
 import { resolveWelcomeLang } from "@/lib/ptDialect";
 import { buildAlternates } from "@/lib/seo";
+import { PRODUCT_FACTS } from "@/lib/product-facts";
 
 export async function generateMetadata({
   params,
@@ -15,7 +16,7 @@ export async function generateMetadata({
 
   return {
     title: t("metaTitle"),
-    description: t("metaDesc"),
+    description: t("metaDesc", PRODUCT_FACTS),
     // Without this the page inherits the layout's alternates, which are the
     // home page's: /pt/download was declaring /pt as its own canonical, i.e.
     // telling a crawler it *is* the home page. It stays noindex; what changes

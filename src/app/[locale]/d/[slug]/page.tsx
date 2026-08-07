@@ -6,6 +6,7 @@ import { PartnerHeroWrapper } from "@/components/blocks/PartnerHeroWrapper";
 import { resolvePartnerOrCoupon } from "@/lib/partner";
 import { resolveWelcomeLang } from "@/lib/ptDialect";
 import { buildTwitterCard, defaultRobots } from "@/lib/seo";
+import { PRODUCT_FACTS } from "@/lib/product-facts";
 
 const OG_IMAGE = "/images/og-image-tuggi.jpg";
 
@@ -51,7 +52,9 @@ export async function generateMetadata({
 
   // The root layout title template already appends " | TUGGI", so use the bare name.
   const title = partner.name && !partner.isTuggi ? partner.name : t("metaTitle");
-  const description = partner.description ? clamp(partner.description) : t("metaDesc");
+  const description = partner.description
+    ? clamp(partner.description)
+    : t("metaDesc", PRODUCT_FACTS);
 
   // The partner page lives at one clean, locale-agnostic URL (no /en, /pt …) —
   // the middleware resolves the language per request, so the canonical is self-referential.

@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
+import { PRODUCT_FACTS } from "@/lib/product-facts";
 
 const EASE: [number, number, number, number] = [0.21, 0.47, 0.32, 0.98];
 
@@ -23,7 +24,7 @@ export function DriveComparison() {
 
   const rows = [
     { label: t("rowCost"), guide: t("costGuide"), audio: t("costAudio"), tuggi: t("costTuggi") },
-    { label: t("rowLang"), guide: t("langGuide"), audio: t("langAudio"), tuggi: t("langTuggi") },
+    { label: t("rowLang"), guide: t("langGuide"), audio: t("langAudio"), tuggi: t("langTuggi", PRODUCT_FACTS) },
     { label: t("rowRoute"), guide: t("routeGuide"), audio: t("routeAudio"), tuggi: t("routeTuggi") },
     { label: t("rowDrive"), guide: null, audio: t("driveAudio"), tuggi: t("driveTuggi") },
     { label: t("rowOffline"), guide: null, audio: t("offlineAudio"), tuggi: t("offlineTuggi") },

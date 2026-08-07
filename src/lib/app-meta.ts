@@ -1,3 +1,5 @@
+import { CONTENT_LANGUAGES } from "./product-facts";
+
 /**
  * Single source of truth for app-level metadata.
  * Reused by JSON-LD (structured data), /llms.txt, and (optionally) the
@@ -69,11 +71,18 @@ export const SOCIAL_PROFILES: string[] = [
   "https://www.facebook.com/people/Tuggi-Personal-tour-guide/61580839157589/",
 ];
 
-/** Key product features (English) for SoftwareApplication.featureList. */
+/**
+ * Key product features (English) for SoftwareApplication.featureList.
+ *
+ * The language count is interpolated from lib/product-facts rather than
+ * typed: this list is one of the four places the same figure used to be
+ * written by hand, and the structured data a crawler reads has to agree with
+ * the sentence a visitor reads (BR-IDIOMA-001, DS-COPY-005).
+ */
 export const APP_FEATURES = [
   "Self-guided audio stories that trigger automatically by GPS location",
   "Screen-off playback while you drive, walk, or cycle",
   "Works offline — download routes in advance, no roaming",
-  "Audio in 10 languages with synchronized closed captions",
+  `Audio in ${CONTENT_LANGUAGES} languages with synchronized closed captions`,
   "Free to start; optional 7-day, 30-day, or annual Travel Pass",
 ];

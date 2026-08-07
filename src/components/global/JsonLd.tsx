@@ -7,6 +7,7 @@ import {
   PLAY_STORE_URL,
   APP_FEATURES,
 } from "@/lib/app-meta";
+import { PRODUCT_FACTS } from "@/lib/product-facts";
 
 export function JsonLd({ locale }: { locale: string }) {
   const t = useTranslations("Metadata");
@@ -23,7 +24,7 @@ export function JsonLd({ locale }: { locale: string }) {
     "name": "TUGGI",
     "url": baseUrl,
     "logo": `${baseUrl}/images/logo_tuggi_full.png`,
-    "description": t("rootDescription"),
+    "description": t("rootDescription", PRODUCT_FACTS),
     "contactPoint": {
       "@type": "ContactPoint",
       "contactType": "customer support",

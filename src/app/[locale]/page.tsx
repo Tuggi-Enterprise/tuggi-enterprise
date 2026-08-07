@@ -10,6 +10,7 @@ import { CoverageStrip } from "@/components/blocks/CoverageStrip";
 import { ProseSection } from "@/components/blocks/ProseSection";
 import { FaqSection } from "@/components/blocks/FaqSection";
 import { buildAlternates, buildOpenGraph, buildTwitterCard, defaultRobots } from "@/lib/seo";
+import { PRODUCT_FACTS } from "@/lib/product-facts";
 
 const HOME_FAQ_COUNT = 7;
 
@@ -59,7 +60,7 @@ export default async function HomePage({
       "name": faq(`q${i}`),
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": faq(`a${i}`),
+        "text": faq(`a${i}`, PRODUCT_FACTS),
       },
     })),
   };

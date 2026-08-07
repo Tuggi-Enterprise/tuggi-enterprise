@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+import { PRODUCT_FACTS } from "@/lib/product-facts";
 
 /**
  * SEO/context prose block: an <h2> + N paragraphs from an i18n namespace.
@@ -23,7 +24,7 @@ export async function ProseSection({
         </h2>
         <div className="space-y-4 text-tuggi-slate leading-relaxed">
           {Array.from({ length: paragraphs }, (_, i) => (
-            <p key={i}>{t(`p${i + 1}`)}</p>
+            <p key={i}>{t(`p${i + 1}`, PRODUCT_FACTS)}</p>
           ))}
         </div>
       </div>
