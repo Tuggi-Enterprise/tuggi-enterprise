@@ -1,7 +1,7 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
 import { Globe, ArrowRight } from "lucide-react";
-import { activeCountries } from "@/lib/product-facts";
+import { COVERAGE_COUNTRIES, PRODUCT_FACTS } from "@/lib/product-facts";
 
 // Curated flagship destinations grouped by region. Country names are localized
 // at render via Intl.DisplayNames (a PT reader sees "Estados Unidos", "França"),
@@ -19,10 +19,9 @@ const SHOWN = REGIONS.reduce((n, r) => n + r.codes.length, 0);
  * /coverage). Answers the "is my destination covered?" objection before the CTA.
  */
 export async function CoverageStrip() {
-  const [locale, t, countries] = await Promise.all([
+  const [locale, t] = await Promise.all([
     getLocale(),
     getTranslations("Home.Coverage"),
-    activeCountries(),
   ]);
   const regionNames = new Intl.DisplayNames([locale], { type: "region" });
   const nameOf = (code: string) => regionNames.of(code) ?? code;
@@ -34,7 +33,7 @@ export async function CoverageStrip() {
           <Globe className="w-6 h-6" aria-hidden="true" />
         </div>
         <h2 className="text-2xl sm:text-3xl font-bold text-tuggi-dark tracking-tight mb-3">
-          {t("title", { count: countries.value })}
+          {t("title", PRODUCT_FACTS)}
         </h2>
         <p className="text-tuggi-slate mb-10 max-w-2xl mx-auto">{t("subtitle")}</p>
 
@@ -58,7 +57,9 @@ export async function CoverageStrip() {
           ))}
         </div>
 
-        <p className="mt-10 text-sm text-tuggi-slate">{t("more", { count: countries.value - SHOWN })}</p>
+        {/* The remainder is derived, not a second declaration: the countries
+            named above come out of REGIONS, the total out of the rule. */}
+        <p className="mt-10 text-sm text-tuggi-slate">{t("more", { count: COVERAGE_COUNTRIES - SHOWN })}</p>
         <Link
           href="/coverage"
           className="mt-3 inline-flex items-center gap-2 font-semibold text-tuggi-primary-text hover:text-tuggi-primary transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text focus-visible:ring-offset-2 rounded"

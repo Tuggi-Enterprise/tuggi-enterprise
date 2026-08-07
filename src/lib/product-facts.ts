@@ -28,31 +28,34 @@ import { LOCALES } from "@/i18n/locales";
  *    the sentence also has to say *which* catalogue it counts — see
  *    CONTENT_LANGUAGES.
  *
- * 2. **No second declaration.** Country and point counts already have an
- *    owner — the generated `src/data/coverage-snapshot.json`, read by
- *    `lib/coverage.ts`. The accessors here re-export it. Copying the figure
- *    would create the fourth place where coverage can disagree with itself.
+ * 2. **No second declaration.** Each figure is declared once, here, and the
+ *    four locales interpolate it. `DECIDED_FACTS` is what keeps that true in
+ *    both directions.
  *
- * 3. **A snapshot number never travels without its age.** `activeCountries()`
- *    and `activePoints()` return the generation date alongside the value,
- *    because the figure that was on the site before this module came out of a
- *    snapshot frozen weeks earlier and nobody could tell by looking. The
- *    archive lost 48,120 rows in the 24 days that snapshot sat there.
+ * 3. **No published figure comes off the generated snapshot.**
+ *    `coverage-snapshot.json` is built to decide what the map draws, and its
+ *    counts apply a 50-POI-per-region threshold that exists for rendering.
+ *    Reading them as coverage is how the site came to publish 39 countries —
+ *    BR-COMUNICACAO-002 item 9 and its "nenhum dos dois números de país sai
+ *    mais do snapshot". The snapshot still feeds the map, the country list and
+ *    the region count on the page; it no longer feeds a claim. What replaced
+ *    it is a measurement against production with a date and a rule ID, and a
+ *    floor big enough that the figure does not depend on when it was taken.
  *
  * ---------------------------------------------------------------------------
- * Values that are still nulls, and why that is the point
+ * One value is still null, and that is a decision, not a gap
  * ---------------------------------------------------------------------------
  *
- * Three fields are `null` on purpose: which figure goes into the headline copy
- * is a promise, and promises belong to the operator (`_perguntas-abertas.md`
- * 70, 71 and 72). A `null` here is not a gap to fill with a plausible number —
- * it is a decision that has not happened.
+ * `STORIES_PLAYED` is null because the operator decided on 2026-08-07 that no
+ * usage figure goes out — BR-COMUNICACAO-003 item 5. A null here is not a slot
+ * waiting for a plausible number; it is an answer.
  *
- * PENDING_FACTS carries them as data so `tests/e2e/product-facts.spec.ts` can
- * hold both halves at once: while the value is null no string may publish that
- * figure, and the moment the value stops being null the copy has to read it
- * from here or the suite goes red. That is the mechanism a `TODO` does not
- * have — the previous unbacked figure survived for months next to one.
+ * DECIDED_FACTS carries the decisions as data so
+ * `tests/e2e/product-facts.spec.ts` can hold both halves at once: while a value
+ * is null no string may publish it, and while it is not null the copy has to
+ * read it from here in all four languages or the suite goes red. That is the
+ * mechanism a `TODO` does not have — the previous unbacked figure survived for
+ * months next to one.
  */
 
 // ── Language catalogues — BR-IDIOMA-001 ─────────────────────────────────────
@@ -112,148 +115,111 @@ export const SITE_INTERFACE_LANGUAGES = LOCALES.length;
  */
 export const OPERATING_SINCE = 2025;
 
-// ── Coverage and archive, off the generated snapshot ────────────────────────
-
-/** A figure read off a generated snapshot, carried with the date it was made. */
-export interface SnapshotFact {
-  value: number;
-  /** ISO 8601 — when the snapshot behind `value` was generated. */
-  measuredAt: string;
-}
+// ── Archive and coverage — BR-COMUNICACAO-002, items 8 and 9 ────────────────
 
 /**
- * A published count is a floor, rounded down — **BR-COMUNICACAO-002, item 4**.
- * An exact figure with no date on it ages in silence, and this one moves in
- * both directions.
- */
-const POINT_ROUNDING = 1000;
-
-/**
- * The snapshot is loaded on demand, and this is not a style choice.
+ * Whole millions of mapped points, floored — **BR-COMUNICACAO-002, item 8**.
  *
- * `coverage-snapshot.json` is ~120 KB of generated data, and half the files
- * that read this module are client components (the hero trust line, the plans
- * table). A static import here would put the snapshot on the critical path of
- * pages that only ever wanted a language count — Core Web Vitals are a
- * requirement of this surface, not a later optimization. Both accessors are
- * server-side and already async, so the cost of the lazy import is nothing.
+ * The floor is the million and not the thousand, and that is the decision, not
+ * a rounding preference: the archive moves in both directions — 2,090,916 on
+ * 2026-07-13 against 2,042,796 on 2026-08-06, both measured in production —
+ * and a floor of thousands puts the published figure back at the mercy of how
+ * old the last snapshot is. At the million, both readings publish the same
+ * sentence.
+ *
+ * **This counts points on the map, not audio guides** — item 2. The two are
+ * two orders of magnitude apart (2,042,796 against 16,910 produced guides), so
+ * this value may only carry the nouns item 8 closes the list on: "ponto
+ * mapeado", "ponto de interesse", "ponto no mapa". Never história, guia,
+ * áudio, narração or roteiro — item 8 says this is the figure the mistake is
+ * actually made on, and it was: the coverage page published two million
+ * *histórias prontas para tocar*, and there are 16,910 of those.
+ *
+ * The copy spells the scale word out in the plural in four languages ("2
+ * milhões", "2 million"), so a value below two needs the singular written
+ * before this constant may move. The spec holds that.
  */
-async function coverage() {
-  const { getCoverageData } = await import("./coverage");
-  return getCoverageData();
-}
+export const MAPPED_POINT_MILLIONS = 2;
 
 /**
- * Countries the product is live in, as the snapshot counts them, with the date
- * the snapshot was generated.
+ * Sovereign countries with at least one published POI —
+ * **BR-COMUNICACAO-002, item 9**, measured against `core.app_poi_read` in
+ * production on 2026-08-06.
  *
- * **The criterion behind this number is not settled** — `_perguntas-abertas.md`
- * 71. The snapshot applies a 50-POI-per-region threshold that exists to decide
- * what the map renders, and reading it as a coverage criterion is what produced
- * the figure the site publishes. BR-COMUNICACAO-002, item 3 already binds the
- * copy whatever the answer is: a presence count may not carry the words
- * "narrated guide".
+ * A measurement, not a snapshot reading, and that distinction is the whole
+ * defect this constant closes. `coverage-snapshot.json` counts the countries
+ * that cleared `STATE_MIN_COUNT = 50` — a threshold that exists to decide what
+ * the map draws — and the site published that number, 39, as coverage. Anyone
+ * who reaches for `totalActiveCountries` republishes it without noticing,
+ * which is why no accessor here reads it any more.
+ *
+ * The 58 territories are not this number: a dependent territory is not a
+ * country (Guadeloupe, Martinique, Réunion, French Guiana, Mayotte, Gibraltar,
+ * Jersey, Guernsey, Saint-Pierre-et-Miquelon and Greenland are the ten of
+ * difference), and 58 may only be published under "destinos" or "territórios".
+ * Neither figure may carry a content noun: 14 is the count of countries with
+ * at least one audio guide produced, and it is the only one that can. "Guias
+ * narrados em 48 países" is false; "presente em 48 países" is true.
  */
-export async function activeCountries(): Promise<SnapshotFact> {
-  const data = await coverage();
-  return { value: data.totalActiveCountries, measuredAt: data.generatedAt };
-}
+export const COVERAGE_COUNTRIES = 48;
+
+// ── Decided not to be published ─────────────────────────────────────────────
 
 /**
- * Mapped points, rounded down for publication, with the date behind them.
+ * Plays a traveller has listened to — **BR-COMUNICACAO-003, items 5 and 6**.
  *
- * **This counts points on the map, not audio guides** — BR-COMUNICACAO-002,
- * item 2. The two are two orders of magnitude apart, so this value may never
- * be published next to a content noun: story, guide, audio, narration. Which
- * of the two figures goes into the headline is `_perguntas-abertas.md` 70.
- */
-export async function activePoints(): Promise<SnapshotFact> {
-  const data = await coverage();
-  return {
-    value: Math.floor(data.totalActiveRaw / POINT_ROUNDING) * POINT_ROUNDING,
-    measuredAt: data.generatedAt,
-  };
-}
-
-// ── Waiting on the operator ─────────────────────────────────────────────────
-
-/**
- * Plays a traveller has listened to — **BR-COMUNICACAO-003**.
+ * `null`, and it stays null. A five-figure count was published in four
+ * languages with nothing behind it; the measurement of 2026-08-06 found three
+ * orders of magnitude less, most of it the team's own accounts. The operator
+ * closed the question on 2026-08-07 — *"esse é um numero de venda e nao
+ * real"* — so this is a decided null, not a pending one.
  *
- * `null`, and item 5 says it stays that way until `_perguntas-abertas.md` 72
- * closes. A five-figure count was published in four languages with nothing
- * behind it; the measurement of 2026-08-06 found three orders of magnitude
- * less, most of it the team's own accounts. Item 4 closes the obvious escape:
- * no rounding repairs a figure that has no source, so a smaller invented
- * number is not an answer either.
+ * Item 4 closes the obvious escape: no rounding repairs a figure that has no
+ * source, so a smaller invented number is not an answer either. The only two
+ * usage figures that can ever be published are in item 6, they come from the
+ * store consoles, and **no agent measures or estimates them** — the operator
+ * brings the number or there is no number.
  */
 export const STORIES_PLAYED: number | null = null;
 
-/**
- * The official wording of what the coverage figure covers —
- * `_perguntas-abertas.md` 71.
- *
- * Sovereign countries, distinct territories, the threshold already published,
- * or countries with a narrated guide: four true readings of the same database,
- * three and a half times apart. Choosing between them is a promise, not a
- * form, so it is not `design`'s and it is not `dev`'s.
- */
-export const COVERAGE_STATEMENT: string | null = null;
-
-/**
- * The official wording of the archive figure — `_perguntas-abertas.md` 70.
- *
- * Not in the design spec's field map, which names only the coverage one. It is
- * here because question 70 decides a statement of exactly the same shape over
- * a different fact — mapped points against produced audio guides — and without
- * a field of its own that decision has nowhere to land, which is how the last
- * one was forgotten.
- */
-export const ARCHIVE_STATEMENT: string | null = null;
-
-/** A product fact whose value is a promise the operator has not made yet. */
-export interface PendingFact {
+/** A product fact the operator decided on, and the copy that has to follow it. */
+export interface DecidedFact {
   /** The exported binding, for the failure message. */
   name: string;
-  /** Null until the question below closes. */
+  /** `null` means the decision was *not to publish it* — that is not a gap. */
   value: number | string | null;
-  /** The ICU placeholder the copy must use once a value exists. */
+  /** The ICU placeholder the copy uses to read it from here. */
   placeholder: string;
-  /** Entry in docs/business-rules/_perguntas-abertas.md that decides it. */
-  question: number;
-  /** The rule that already binds the copy, whatever the answer turns out to be. */
+  /** The rule that owns the decision. */
   rule: string;
 }
 
 /**
- * The open decisions, as data.
+ * The decisions, as data.
  *
  * Read by `tests/e2e/product-facts.spec.ts`, which enforces both directions:
  * while `value` is null the placeholder may not appear in any message file,
- * and the moment it is not null the placeholder has to appear — so answering
- * the question without wiring the copy fails the suite instead of passing
- * quietly.
+ * and while it is not null every locale has to interpolate it — so a figure
+ * that stops being published in one language, or a decision that never reaches
+ * the copy, fails the suite instead of passing quietly.
  */
-export const PENDING_FACTS: readonly PendingFact[] = [
+export const DECIDED_FACTS: readonly DecidedFact[] = [
   {
-    name: "ARCHIVE_STATEMENT",
-    value: ARCHIVE_STATEMENT,
-    placeholder: "archiveStatement",
-    question: 70,
-    rule: "BR-COMUNICACAO-002 item 2",
+    name: "MAPPED_POINT_MILLIONS",
+    value: MAPPED_POINT_MILLIONS,
+    placeholder: "mappedPointMillions",
+    rule: "BR-COMUNICACAO-002 item 8",
   },
   {
-    name: "COVERAGE_STATEMENT",
-    value: COVERAGE_STATEMENT,
-    placeholder: "coverageStatement",
-    question: 71,
-    rule: "BR-COMUNICACAO-002 item 3",
+    name: "COVERAGE_COUNTRIES",
+    value: COVERAGE_COUNTRIES,
+    placeholder: "coverageCountries",
+    rule: "BR-COMUNICACAO-002 item 9",
   },
   {
     name: "STORIES_PLAYED",
     value: STORIES_PLAYED,
     placeholder: "storiesPlayed",
-    question: 72,
     rule: "BR-COMUNICACAO-003 item 5",
   },
 ];
@@ -267,13 +233,14 @@ export const PENDING_FACTS: readonly PendingFact[] = [
  * ignores values a message does not use, so a component that renders several
  * keys hands it over once instead of matching values to keys by hand.
  *
- * Only facts with a decided value belong here. A pending one stays out: an
- * unresolved placeholder is a visible defect, which is what we want, and the
- * spec keeps the two lists from disagreeing.
+ * A fact decided *not* to be published stays out: it would render as an empty
+ * slot instead of failing, and the spec keeps the two lists from disagreeing.
  */
 export const PRODUCT_FACTS = {
   contentLanguages: CONTENT_LANGUAGES,
   cmsContentLanguages: CMS_CONTENT_LANGUAGES,
   siteInterfaceLanguages: SITE_INTERFACE_LANGUAGES,
   operatingSince: OPERATING_SINCE,
+  mappedPointMillions: MAPPED_POINT_MILLIONS,
+  coverageCountries: COVERAGE_COUNTRIES,
 } as const;

@@ -1,26 +1,46 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { MapPin, Globe, Star } from "lucide-react";
+import {
+  COVERAGE_COUNTRIES,
+  MAPPED_POINT_MILLIONS,
+  PRODUCT_FACTS,
+} from "@/lib/product-facts";
 
 interface CoverageHeroProps {
-  totalCountries: number;
-  totalAttractions: number;
+  /**
+   * Regions the map draws, off the snapshot. The only figure on this page that
+   * still comes from there: it is a presence count with a presence noun, and
+   * it is not one of the two the rule owns.
+   */
   totalActiveRegions: number;
 }
 
-export function CoverageHero({
-  totalCountries,
-  totalAttractions,
-  totalActiveRegions,
-}: CoverageHeroProps) {
+export function CoverageHero({ totalActiveRegions }: CoverageHeroProps) {
   const t = useTranslations("Coverage");
+  const locale = useLocale();
+  const fmt = (n: number) => n.toLocaleString(locale);
 
+  /**
+   * The two figures the rule owns come from lib/product-facts, not from the
+   * props: the page used to hand this component `totalActiveCountries` (39,
+   * the map's rendering threshold) and `totalActiveRaw` (an exact archive
+   * count off a snapshot frozen weeks earlier) — BR-COMUNICACAO-002 items 8
+   * and 9.
+   *
+   * The "+" on the points card is the "mais de" of item 4: the value is a
+   * floor, and a floor rendered bare reads as an exact number.
+   *
+   * `data-fact` is what tests/e2e/product-facts.spec.ts asserts against — the
+   * label is uppercased by CSS and the value is locale-formatted, so matching
+   * these cards by their text is how the guard would rot.
+   */
   const stats = [
-    { label: t("Stats.countries"),   value: totalCountries,     icon: Globe,  color: "text-tuggi-primary" },
-    { label: t("Stats.attractions"), value: totalAttractions,   icon: Star,   color: "text-tuggi-primary" },
-    { label: t("Stats.regions"),     value: totalActiveRegions, icon: MapPin, color: "text-tuggi-primary" },
+    { fact: "countries", label: t("Stats.countries"), value: fmt(COVERAGE_COUNTRIES),                     icon: Globe,  color: "text-tuggi-primary" },
+    { fact: "points",    label: t("Stats.points"),    value: `${fmt(MAPPED_POINT_MILLIONS * 1_000_000)}+`, icon: Star,   color: "text-tuggi-primary" },
+    { fact: "regions",   label: t("Stats.regions"),   value: fmt(totalActiveRegions),                     icon: MapPin, color: "text-tuggi-primary" },
   ];
 
   return (
@@ -56,7 +76,7 @@ export function CoverageHero({
             transition={{ delay: 0.2 }}
             className="text-xl text-tuggi-slate leading-relaxed"
           >
-            {t("Hero.subtitle")}
+            {t("Hero.subtitle", PRODUCT_FACTS)}
           </motion.p>
         </div>
 
@@ -72,8 +92,11 @@ export function CoverageHero({
               <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 transition-transform">
                 <stat.icon className={`w-6 h-6 ${stat.color}`} />
               </div>
-              <div className="text-4xl font-black text-tuggi-dark mb-2 tracking-tight">
-                {stat.value.toLocaleString()}
+              <div
+                data-fact={stat.fact}
+                className="text-4xl font-black text-tuggi-dark mb-2 tracking-tight"
+              >
+                {stat.value}
               </div>
               <div className="text-sm font-bold text-tuggi-slate uppercase tracking-wider">
                 {stat.label}

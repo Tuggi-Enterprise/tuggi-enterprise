@@ -2,15 +2,17 @@ import { test, expect, type Page } from "@playwright/test";
 import fs from "node:fs";
 import path from "node:path";
 import { localizedPathname } from "../../src/i18n/pathnames";
+import { getCoverageData } from "../../src/lib/coverage";
 import {
   CONTENT_LANGUAGES,
   CMS_CONTENT_LANGUAGES,
   SITE_INTERFACE_LANGUAGES,
   OPERATING_SINCE,
-  PENDING_FACTS,
+  COVERAGE_COUNTRIES,
+  MAPPED_POINT_MILLIONS,
+  STORIES_PLAYED,
+  DECIDED_FACTS,
   PRODUCT_FACTS,
-  activeCountries,
-  activePoints,
 } from "../../src/lib/product-facts";
 
 /**
@@ -41,11 +43,14 @@ import {
  * sentence — visibly wrong, silently shipped. The rendered half below reads
  * what the server actually serves, in four languages.
  *
- * **3. The pending decisions.** Three figures are `null` in the module because
- * the operator has not chosen them (`_perguntas-abertas.md` 70, 71, 72). The
- * pending half holds both directions at once: while a value is null nothing
- * may publish it, and the day it stops being null the copy has to read it from
- * the module or this suite goes red. That is what a `TODO` could not do — the
+ * **3. The decisions.** Three figures were `null` in the module while the
+ * operator had not chosen them; all three closed (2026-08-06 and 2026-08-07).
+ * Two got a value — the archive floor and the country count, BR-COMUNICACAO-002
+ * items 8 and 9 — and one was decided *not to be published*, which is why
+ * `STORIES_PLAYED` is still null (BR-COMUNICACAO-003 item 5). The decided half
+ * holds both directions at once: while a value is null nothing may publish it,
+ * and while it is not null the copy has to read it from the module in all four
+ * languages or this suite goes red. That is what a `TODO` could not do — the
  * previous unbacked figure sat next to one for months.
  *
  * ---------------------------------------------------------------------------
@@ -251,33 +256,66 @@ test.describe("BR-IDIOMA-001 — the two language catalogues, and only one owner
 });
 
 /* ---------------------------------------------------------------------------
- * 3. Snapshot figures never travel without their age
+ * 3. The archive and coverage figures, and the snapshot they are not
  * ------------------------------------------------------------------------- */
 
-test.describe("BR-COMUNICACAO-002 items 4 and 5 — a snapshot figure carries its date", () => {
-  test("BR-COMUNICACAO-002: activePoints and activeCountries report when they were measured", async () => {
-    const [points, countries] = await Promise.all([activePoints(), activeCountries()]);
+test.describe("BR-COMUNICACAO-002 items 8 and 9 — the two figures the rule decided", () => {
+  test("BR-COMUNICACAO-002 item 8: the archive floor is the million, and production still carries it", async () => {
+    const data = await getCoverageData();
 
-    for (const fact of [points, countries]) {
-      expect(fact.value).toBeGreaterThan(0);
-      // A published figure with no date on it ages in silence — and this one
-      // moves in both directions: the archive shrank between two readings.
-      expect(Number.isNaN(Date.parse(fact.measuredAt))).toBe(false);
-    }
+    // The published figure is not read off the snapshot anymore — item 5,
+    // and the borda that takes both country figures off it as well. What the
+    // snapshot is still asked is the one question it can answer honestly:
+    // does the data contradict the floor? The archive shrank 48,120 rows in
+    // 24 days, so a floor of thousands would depend on the snapshot's age;
+    // at the million, 2,090,916 and 2,042,796 publish the same sentence.
+    expect(
+      Math.floor(data.totalActive / 1_000_000),
+      "The snapshot no longer supports the published floor. Re-measure in " +
+        "production, move MAPPED_POINT_MILLIONS and BR-COMUNICACAO-002 item 8 " +
+        "together — the constant does not move on its own.",
+    ).toBeGreaterThanOrEqual(MAPPED_POINT_MILLIONS);
 
-    // Item 4: the published count is a floor, rounded down. One owner for the
-    // rounding, which used to be written out three times over one snapshot.
-    expect(points.value % 1000).toBe(0);
+    // Four languages spell the scale word out in the plural ("2 milhões",
+    // "2 million"). A value of one needs the singular written first; this is
+    // the guarantee the copy makes, so it is the one asserted here.
+    expect(MAPPED_POINT_MILLIONS).toBeGreaterThanOrEqual(2);
+  });
+
+  test("BR-COMUNICACAO-002 item 9: coverage is the measured country count, never the map's threshold", async () => {
+    const data = await getCoverageData();
+
+    // 48 sovereign countries with at least one published POI, measured on
+    // 2026-08-06. Not 58 — a dependent territory is not a country — and not
+    // 14, which is the only country figure that may carry a content noun.
+    expect(COVERAGE_COUNTRIES).toBe(48);
+
+    // The 39 that was on the site is `STATE_MIN_COUNT = 50` seen sideways: a
+    // map rendering threshold read as a coverage criterion. Anyone who wires
+    // a page back to the snapshot's country count republishes it, and this is
+    // what says so.
+    expect(
+      COVERAGE_COUNTRIES,
+      "The published country count went back to the snapshot's, which counts " +
+        "the regions the map draws (STATE_MIN_COUNT = 50), not the countries " +
+        "the product is live in.",
+    ).not.toBe(data.totalActiveCountries);
   });
 });
 
 /* ---------------------------------------------------------------------------
- * 4. The pending decisions
+ * 4. The decisions, and the copy that has to follow them
  * ------------------------------------------------------------------------- */
 
-test.describe("BR-COMUNICACAO-002 / BR-COMUNICACAO-003 — the figures still waiting on a decision", () => {
-  test("no pending figure is interpolable while it has no value", () => {
-    const leaked = PENDING_FACTS.filter(
+test.describe("BR-COMUNICACAO-002 / BR-COMUNICACAO-003 — a decision and its copy move together", () => {
+  test("BR-COMUNICACAO-003 item 5: no usage figure is interpolable, decided or not", () => {
+    // STORIES_PLAYED is null *by decision*, not for want of a measurement:
+    // the operator closed it on 2026-08-07 — "esse é um numero de venda e nao
+    // real". Item 6 is the only door back, and it opens with a number from
+    // the store consoles that no agent may measure or estimate.
+    expect(STORIES_PLAYED).toBeNull();
+
+    const leaked = DECIDED_FACTS.filter(
       (fact) => fact.value === null && fact.placeholder in PRODUCT_FACTS,
     ).map((fact) => fact.name);
     expect(
@@ -287,8 +325,8 @@ test.describe("BR-COMUNICACAO-002 / BR-COMUNICACAO-003 — the figures still wai
     ).toEqual([]);
   });
 
-  for (const fact of PENDING_FACTS) {
-    test(`${fact.name}: question ${fact.question} and the copy that publishes it move together (${fact.rule})`, () => {
+  for (const fact of DECIDED_FACTS) {
+    test(`${fact.name}: the decision and the copy that publishes it move together (${fact.rule})`, () => {
       const users: string[] = [];
       for (const locale of LOCALES) {
         for (const [key, value] of flatMessages(locale)) {
@@ -299,26 +337,31 @@ test.describe("BR-COMUNICACAO-002 / BR-COMUNICACAO-003 — the figures still wai
       }
 
       if (fact.value === null) {
-        // Nothing published: the value does not exist yet, so a sentence that
-        // interpolates it would render an unresolved placeholder to a visitor.
+        // Decided not to be published. A sentence that interpolates it would
+        // render an unresolved placeholder to a visitor, and re-adding one is
+        // how the figure comes back through the side door.
         expect(
           users,
-          `${fact.name} has no value yet — _perguntas-abertas.md ${fact.question} ` +
-            "is open. Copy cannot publish it before the operator chooses it.",
+          `${fact.name} is null by decision (${fact.rule}). Copy cannot ` +
+            "publish it, and no rounding or smaller invention replaces it.",
         ).toEqual([]);
       } else {
-        // The decision landed. This is the half a TODO never had: the value
-        // being set is not the end of the job, and the suite says so until the
-        // sentence reads it from the module in every language.
+        // This is the half a TODO never had: setting the value is not the end
+        // of the job, and the suite says so until the sentence reads it from
+        // the module in every language.
         expect(
           users,
-          `${fact.name} now has a value (_perguntas-abertas.md ${fact.question} ` +
-            `closed), and no message string interpolates {${fact.placeholder}}. ` +
-            "Wire the copy in all four languages, or set it back to null — a " +
-            "decided figure that no page publishes is the figure being " +
-            "forgotten a second time.",
+          `${fact.name} has a value (${fact.rule}) and no message string ` +
+            `interpolates {${fact.placeholder}}. Wire the copy in all four ` +
+            "languages — a decided figure that no page publishes is the " +
+            "figure being forgotten a second time.",
         ).not.toEqual([]);
-        expect(new Set(users.map((u) => u.split(":")[0])).size).toBe(LOCALES.length);
+        expect(
+          new Set(users.map((u) => u.split(":")[0])).size,
+          `{${fact.placeholder}} is missing from at least one locale. A ` +
+            "figure published in three languages and hardcoded in the fourth " +
+            "is exactly how pt and es came to disagree with en and it.",
+        ).toBe(LOCALES.length);
       }
     });
   }
@@ -343,7 +386,13 @@ const PUBLISHED_ON: Record<string, string[]> = {
     "Home.Context.p3",
     "Home.FAQ.a1",
     "Home.FAQ.a5",
+    "Home.Coverage.title",
     "Metadata.rootDescription",
+  ],
+  "/coverage": [
+    "Coverage.Hero.subtitle",
+    "SEO_COVERAGE.description",
+    "SEO_COVERAGE.ogTitle",
   ],
   "/drive": [
     "Drive.Features.feat3Desc",
@@ -422,9 +471,53 @@ test.describe("DS-COPY-005 — the figure reaches the page, in every language", 
           );
         }
 
-        expect(served).not.toContain("{contentLanguages");
+        // An unresolved ICU slot survives as braces in the served text. Every
+        // name the module publishes is checked, not just the first one that
+        // ever leaked.
+        for (const name of Object.keys(PRODUCT_FACTS)) {
+          expect(served).not.toContain(`{${name}`);
+        }
         for (const key of keys) expect(served).not.toContain(key);
       });
     }
+  }
+});
+
+/* ---------------------------------------------------------------------------
+ * 6. The coverage stat cards, which publish a number with no sentence
+ * ------------------------------------------------------------------------- */
+
+/**
+ * The three cards at the top of /coverage are the one place a figure reaches a
+ * visitor without a sentence around it: the number is markup and the noun is a
+ * separate, CSS-uppercased label. Matching them by text is how this guard
+ * would rot, so `CoverageHero` marks the values with `data-fact` and this
+ * reads those.
+ */
+test.describe("BR-COMUNICACAO-002 items 8 and 9 — what the coverage page shows without a sentence", () => {
+  for (const locale of LOCALES) {
+    test(`BR-COMUNICACAO-002 items 8 and 9: /${locale}/coverage publishes the measured country count and the million floor`, async ({
+      page,
+    }) => {
+      const response = await page.goto(localeUrl(locale, "/coverage"));
+      expect(response?.status()).toBe(200);
+
+      await expect(page.locator("[data-fact=countries]")).toHaveText(
+        COVERAGE_COUNTRIES.toLocaleString(locale),
+      );
+
+      // Item 4: the archive number is a floor, and a floor rendered bare reads
+      // as an exact count — the "+" is the "mais de".
+      await expect(page.locator("[data-fact=points]")).toHaveText(
+        `${(MAPPED_POINT_MILLIONS * 1_000_000).toLocaleString(locale)}+`,
+      );
+
+      // The threshold that used to be here, named so the next person who
+      // wires this card back to the snapshot sees why it fails.
+      const threshold = (await getCoverageData()).totalActiveCountries;
+      await expect(page.locator("[data-fact=countries]")).not.toHaveText(
+        threshold.toLocaleString(locale),
+      );
+    });
   }
 });

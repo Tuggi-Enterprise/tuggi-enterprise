@@ -163,7 +163,7 @@
       "p3": "O TUGGI não substitui o seu GPS de navegação: ele roda junto, sem atrapalhar o mapa nem a música, e só adiciona a narração cultural do caminho. Comece grátis, escolha entre {contentLanguages} idiomas e transforme qualquer trajeto em uma viagem com história."
     },
     "Coverage": {
-      "title": "Ao vivo em {count} países",
+      "title": "Ao vivo em {coverageCountries} países",
       "subtitle": "Histórias já esperando no seu destino.",
       "americas": "Américas",
       "europe": "Europa",
@@ -637,19 +637,19 @@
   },
   "SEO_COVERAGE": {
     "title": "Destinos Ativos — Escolha Onde Explorar",
-    "description": "O TUGGI está ativo em mais de {count} pontos de interesse na Itália, Espanha, Portugal, Brasil, Chile, EUA e mais. Histórias em áudio tocam automaticamente assim que você começa a explorar.",
-    "ogTitle": "TUGGI Está Ativo em {countries} Países — {count}+ Histórias Prontas",
-    "ogImageAlt": "Mapa de cobertura global do TUGGI: histórias em áudio pelo mundo"
+    "description": "O TUGGI está ativo em {coverageCountries} países e mais de {mappedPointMillions} milhões de pontos de interesse — Itália, Espanha, Portugal, Brasil, Chile, EUA e mais. Histórias em áudio tocam automaticamente assim que você começa a explorar.",
+    "ogTitle": "TUGGI Ativo em {coverageCountries} Países — Mais de {mappedPointMillions} Milhões de Pontos Mapeados",
+    "ogImageAlt": "Mapa de cobertura global do TUGGI: pontos mapeados pelo mundo"
   },
   "Coverage": {
     "Hero": {
       "tag": "Destinos Ativos",
       "title": "Escolha o destino. As histórias já estão te esperando.",
-      "subtitle": "O TUGGI está ativo na Itália, Espanha, Portugal, Brasil, Chile, EUA e mais. Selecione um país abaixo — o áudio toca automaticamente assim que você começa a explorar."
+      "subtitle": "O TUGGI está ativo em {coverageCountries} países — Itália, Espanha, Portugal, Brasil, Chile, EUA e mais. Selecione um país abaixo — o áudio toca automaticamente assim que você começa a explorar."
     },
     "Stats": {
       "countries": "Países com Cobertura",
-      "attractions": "Histórias Prontas para Tocar",
+      "points": "Pontos Mapeados",
       "regions": "Regiões Cobertas"
     },
     "Map": {

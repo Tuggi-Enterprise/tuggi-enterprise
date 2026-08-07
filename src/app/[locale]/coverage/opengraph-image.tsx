@@ -3,14 +3,18 @@
  *
  * Dynamic Open Graph image for the /coverage page.
  * Generated at build time (SSG) using Next.js Satori integration.
- * Shows real coverage stats from the snapshot — auto-updates with `npm run update-coverage`.
+ *
+ * The two figures the rule owns — mapped points and countries — come from
+ * lib/product-facts, not from the snapshot (BR-COMUNICACAO-002 items 8 and 9).
+ * The country ranking and the region count still come from the snapshot and
+ * refresh with `npm run update-coverage`.
  *
  * Preview: https://www.tuggi.app/coverage (shared on WhatsApp, Slack, Twitter, LinkedIn)
  */
 
 import { ImageResponse } from "next/og";
 import { getCoverageData } from "@/lib/coverage";
-import { activeCountries, activePoints } from "@/lib/product-facts";
+import { COVERAGE_COUNTRIES, MAPPED_POINT_MILLIONS } from "@/lib/product-facts";
 import { getCountryDisplayName } from "@/lib/countryNames";
 
 export const size        = { width: 1200, height: 630 };
@@ -39,8 +43,9 @@ export default async function Image() {
   const coverage  = await getCoverageData();
   const countries = topCountries(coverage.states);
 
-  // The published, rounded figure — one owner, in lib/product-facts.
-  const countDisplay = fmt((await activePoints()).value);
+  // The published floor — one owner, in lib/product-facts. The "+" is the
+  // "mais de" of BR-COMUNICACAO-002 item 4.
+  const countDisplay = `${fmt(MAPPED_POINT_MILLIONS * 1_000_000)}+`;
 
   return new ImageResponse(
     (
@@ -160,15 +165,18 @@ export default async function Image() {
               marginBottom: 40,
             }}
           >
-            Audio Stories Ready to Play
+            Mapped Points
           </div>
 
-          {/* Stat chips */}
+          {/* Stat chips. The "Active POIs" chip is gone: it republished the
+              big number above, exact and off a frozen snapshot. The label over
+              the big number was "Audio Stories Ready to Play" over a count of
+              mapped points — the two are 2,042,796 against 16,910, and that is
+              BR-COMUNICACAO-002 item 2. */}
           <div style={{ display: "flex", gap: 16 }}>
             {[
-              { label: "Countries",   value: String((await activeCountries()).value) },
-              { label: "Regions",     value: String(coverage.totalActiveRegions)   },
-              { label: "Active POIs", value: fmt(coverage.totalActiveRaw)          },
+              { label: "Countries", value: String(COVERAGE_COUNTRIES)          },
+              { label: "Regions",   value: String(coverage.totalActiveRegions) },
             ].map(stat => (
               <div
                 key={stat.label}

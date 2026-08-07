@@ -1,6 +1,6 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getCoverageData } from "@/lib/coverage";
-import { activeCountries, activePoints } from "@/lib/product-facts";
+import { MAPPED_POINT_MILLIONS, PRODUCT_FACTS } from "@/lib/product-facts";
 import {
   buildAlternates,
   buildOpenGraph,
@@ -20,27 +20,15 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  const [t, points, countries] = await Promise.all([
-    getTranslations({ locale, namespace: "SEO_COVERAGE" }),
-    activePoints(),
-    activeCountries(),
-  ]);
+  const t = await getTranslations({ locale, namespace: "SEO_COVERAGE" });
 
-  // Both figures, and the floor they are rounded to, come from
-  // lib/product-facts — the rounding rule used to be written out three
-  // times over the same snapshot (BR-COMUNICACAO-002 item 4).
-  const countRounded = points.value.toLocaleString(
-    locale === "en" ? "en-US" : locale,
-  );
-
+  // Both figures come from lib/product-facts, which reads the rule rather than
+  // the snapshot: the description used to publish an exact archive count off a
+  // snapshot frozen weeks earlier, and the ogTitle used to call two million
+  // mapped points "histórias prontas" — BR-COMUNICACAO-002 items 8 and 9.
   const title       = t("title");
-  const description = t("description", {
-    count: countRounded,
-  });
-  const ogTitle     = t("ogTitle", {
-    count: countRounded,
-    countries: countries.value,
-  });
+  const description = t("description", PRODUCT_FACTS);
+  const ogTitle     = t("ogTitle", PRODUCT_FACTS);
 
   return {
     title,
@@ -77,13 +65,6 @@ export default async function CoveragePage({
 
   const pageUrl = buildUrl(locale, "coverage");
 
-  // Shared interpolation values for SEO strings with {count}/{countries}
-  const [points, countries] = await Promise.all([activePoints(), activeCountries()]);
-  const countRounded = points.value.toLocaleString(
-    locale === "en" ? "en-US" : locale,
-  );
-  const seoVars = { count: countRounded, countries: countries.value };
-
   // ── JSON-LD structured data ───────────────────────────────────────────────
   const jsonLd = {
     "@context": "https://schema.org",
@@ -94,7 +75,7 @@ export default async function CoveragePage({
         "@id": `${pageUrl}#webpage`,
         "url": pageUrl,
         "name": tSeo("title"),
-        "description": tSeo("description", seoVars),
+        "description": tSeo("description", PRODUCT_FACTS),
         "inLanguage": locale,
         "isPartOf": {
           "@type": "WebSite",
@@ -150,8 +131,10 @@ export default async function CoveragePage({
           "@type": "Country",
           "name": name,
         })),
-        // Total attractions as a quantitative value
-        "numberOfItems": coverageData.totalActiveRaw,
+        // Mapped points, as the published floor — structured data is a
+        // published surface too (BR-COMUNICACAO-002, "a régua vale para
+        // qualquer superfície"), and this used to be the exact snapshot count.
+        "numberOfItems": MAPPED_POINT_MILLIONS * 1_000_000,
       },
     ],
   };
@@ -164,11 +147,7 @@ export default async function CoveragePage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <CoverageHero
-        totalCountries={countries.value}
-        totalAttractions={coverageData.totalActiveRaw}
-        totalActiveRegions={coverageData.totalActiveRegions}
-      />
+      <CoverageHero totalActiveRegions={coverageData.totalActiveRegions} />
 
       <CoverageMap states={coverageData.states} />
 

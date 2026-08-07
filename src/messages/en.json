@@ -163,7 +163,7 @@
       "p3": "TUGGI does not replace your navigation app: it runs alongside it, without getting in the way of your map or your music, and simply adds the cultural narration of the route. Start free, pick from {contentLanguages} languages, and turn any trip into a journey with a story."
     },
     "Coverage": {
-      "title": "Live in {count} countries",
+      "title": "Live in {coverageCountries} countries",
       "subtitle": "Stories already waiting at your destination.",
       "americas": "Americas",
       "europe": "Europe",
@@ -637,19 +637,19 @@
   },
   "SEO_COVERAGE": {
     "title": "Live Destinations — Choose Where You Explore",
-    "description": "TUGGI is live across {count}+ points of interest in Italy, Spain, Portugal, Brazil, Chile, the USA and more. Audio stories play automatically the moment you start exploring.",
-    "ogTitle": "TUGGI is Live in {countries} Countries — {count}+ Audio Stories Ready",
-    "ogImageAlt": "TUGGI global coverage map: audio stories around the world"
+    "description": "TUGGI is live in {coverageCountries} countries and over {mappedPointMillions} million points of interest — Italy, Spain, Portugal, Brazil, Chile, the USA and more. Audio stories play automatically the moment you start exploring.",
+    "ogTitle": "TUGGI is Live in {coverageCountries} Countries — Over {mappedPointMillions} Million Mapped Points",
+    "ogImageAlt": "TUGGI global coverage map: mapped points around the world"
   },
   "Coverage": {
     "Hero": {
       "tag": "Live Destinations",
       "title": "Pick a destination. Your stories are ready.",
-      "subtitle": "TUGGI is live across Italy, Spain, Portugal, Brazil, Chile, the USA and more. Select a country below — audio plays automatically the moment you start exploring."
+      "subtitle": "TUGGI is live in {coverageCountries} countries — Italy, Spain, Portugal, Brazil, Chile, the USA and more. Select a country below — audio plays automatically the moment you start exploring."
     },
     "Stats": {
       "countries": "Countries Live",
-      "attractions": "Stories Ready to Play",
+      "points": "Mapped Points",
       "regions": "Regions Covered"
     },
     "Map": {

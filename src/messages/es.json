@@ -163,7 +163,7 @@
       "p3": "TUGGI no sustituye tu app de navegación: funciona junto a ella, sin estorbar el mapa ni la música, y solo añade la narración cultural del recorrido. Empieza gratis, elige entre {contentLanguages} idiomas y convierte cualquier trayecto en un viaje con historia."
     },
     "Coverage": {
-      "title": "Disponible en {count} países",
+      "title": "Disponible en {coverageCountries} países",
       "subtitle": "Historias ya esperando en tu destino.",
       "americas": "Américas",
       "europe": "Europa",
@@ -637,19 +637,19 @@
   },
   "SEO_COVERAGE": {
     "title": "Destinos Activos — Elige Dónde Explorar",
-    "description": "TUGGI está activo en más de {count} puntos de interés en Italia, España, Portugal, Brasil, Chile, EE.UU. y más. Las historias de audio suenan automáticamente en cuanto empiezas a explorar.",
-    "ogTitle": "TUGGI Activo en {countries} Países — {count}+ Historias Listas",
-    "ogImageAlt": "Mapa de cobertura global de TUGGI: historias en audio por el mundo"
+    "description": "TUGGI está activo en {coverageCountries} países y más de {mappedPointMillions} millones de puntos de interés — Italia, España, Portugal, Brasil, Chile, EE.UU. y más. Las historias de audio suenan automáticamente en cuanto empiezas a explorar.",
+    "ogTitle": "TUGGI Activo en {coverageCountries} Países — Más de {mappedPointMillions} Millones de Puntos Mapeados",
+    "ogImageAlt": "Mapa de cobertura global de TUGGI: puntos mapeados por el mundo"
   },
   "Coverage": {
     "Hero": {
       "tag": "Destinos Activos",
       "title": "Elige tu destino. Tus historias ya te esperan.",
-      "subtitle": "TUGGI está activo en Italia, España, Portugal, Brasil, Chile, EE.UU. y más. Selecciona un país a continuación — el audio suena automáticamente en cuanto empiezas a explorar."
+      "subtitle": "TUGGI está activo en {coverageCountries} países — Italia, España, Portugal, Brasil, Chile, EE.UU. y más. Selecciona un país a continuación — el audio suena automáticamente en cuanto empiezas a explorar."
     },
     "Stats": {
       "countries": "Países con Cobertura",
-      "attractions": "Historias Listas para Reproducir",
+      "points": "Puntos Mapeados",
       "regions": "Regiones Cubiertas"
     },
     "Map": {

@@ -163,7 +163,7 @@
       "p3": "TUGGI non sostituisce la tua app di navigazione: funziona insieme a lei, senza intralciare la mappa o la musica, e aggiunge solo la narrazione culturale del percorso. Inizia gratis, scegli tra {contentLanguages} lingue e trasforma qualsiasi tragitto in un viaggio con una storia."
     },
     "Coverage": {
-      "title": "Disponibile in {count} paesi",
+      "title": "Disponibile in {coverageCountries} paesi",
       "subtitle": "Storie già pronte nella tua destinazione.",
       "americas": "Americhe",
       "europe": "Europa",
@@ -637,19 +637,19 @@
   },
   "SEO_COVERAGE": {
     "title": "Destinazioni Attive — Scegli Dove Esplorare",
-    "description": "TUGGI è attivo in {count}+ punti di interesse in Italia, Spagna, Portogallo, Brasile, Cile, USA e altro ancora. I racconti audio partono automaticamente nel momento in cui inizi a esplorare.",
-    "ogTitle": "TUGGI è Attivo in {countries} Paesi — {count}+ Racconti Audio Pronti",
-    "ogImageAlt": "Mappa di copertura globale di TUGGI: storie audio in tutto il mondo"
+    "description": "TUGGI è attivo in {coverageCountries} paesi e oltre {mappedPointMillions} milioni di punti di interesse — Italia, Spagna, Portogallo, Brasile, Cile, USA e altro ancora. I racconti audio partono automaticamente nel momento in cui inizi a esplorare.",
+    "ogTitle": "TUGGI Attivo in {coverageCountries} Paesi — Oltre {mappedPointMillions} Milioni di Punti Mappati",
+    "ogImageAlt": "Mappa di copertura globale di TUGGI: punti mappati in tutto il mondo"
   },
   "Coverage": {
     "Hero": {
       "tag": "Destinazioni Live",
       "title": "Scegli una destinazione. I tuoi racconti sono pronti.",
-      "subtitle": "TUGGI è attivo in Italia, Spagna, Portogallo, Brasile, Cile, USA e altro ancora. Seleziona un paese qui sotto — l'audio parte automaticamente nel momento in cui inizi a esplorare."
+      "subtitle": "TUGGI è attivo in {coverageCountries} paesi — Italia, Spagna, Portogallo, Brasile, Cile, USA e altro ancora. Seleziona un paese qui sotto — l'audio parte automaticamente nel momento in cui inizi a esplorare."
     },
     "Stats": {
       "countries": "Paesi Attivi",
-      "attractions": "Racconti Pronti all'Ascolto",
+      "points": "Punti Mappati",
       "regions": "Regioni Coperte"
     },
     "Map": {
