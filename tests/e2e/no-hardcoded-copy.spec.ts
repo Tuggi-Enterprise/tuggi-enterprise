@@ -357,6 +357,51 @@ test.describe("the four message files stay in step", () => {
     });
   }
 
+  /**
+   * BR-COMUNICACAO-005 item 5: no public surface names a date, quarter,
+   * version, roadmap position or vague deadline — "em breve", "coming soon",
+   * "volte logo" — for content that does not exist yet. The empty tour hub is
+   * where the site speaks about content it has not produced, and it used to
+   * answer with two deadlines in one sentence. The gate is the possibility's
+   * *condition*; the deadline is what nobody committed to.
+   *
+   * Asserted on one key, not on a sweep of every message, because the rule
+   * names its own borderline: "um especialista entra em contato em breve"
+   * (Contact.Success.body) is a human-channel promise and stays as it is.
+   * A sweep would go red on it, and a rule that produces false positives stops
+   * being read.
+   */
+  const DEADLINES = [
+    /\bem breve\b/i,
+    /\ben breve\b/i,
+    /\ba breve\b/i,
+    /\bcoming soon\b/i,
+    /\bsoon\b/i,
+    /\bpronto\b/i,
+    /\bpresto\b/i,
+    /\bpr[oó]ximamente\b/i,
+    /\bprossimamente\b/i,
+    /\bcheck back\b/i,
+    /\bvolte\b/i,
+    /\bvuelve\b/i,
+    /\btorna\b/i,
+    // A date, a quarter or a version is the explicit half of the same promise.
+    /\b(19|20)\d{2}\b/,
+    /\bQ[1-4]\b/,
+    /\bv\d+(\.\d+)*\b/i,
+  ];
+
+  test("BR-COMUNICACAO-005 item 5: Tours.hubEmpty states the condition, not a deadline", () => {
+    const offenders = LOCALES.flatMap((locale) => {
+      const value = messageAt(messagesFor(locale), "Tours.hubEmpty");
+      return DEADLINES.filter((deadline) => deadline.test(value)).map(
+        (deadline) => `${locale}: ${value} matches ${deadline}`,
+      );
+    });
+
+    expect(offenders).toEqual([]);
+  });
+
   test("BR-IDIOMA-001 item 3: no message is empty in any locale", () => {
     const empty = LOCALES.flatMap((locale) => {
       const messages = messagesFor(locale);

@@ -792,7 +792,7 @@
     "hubMetaDesc": "Explora las audioguías autoguiadas de Tuggi por país — rutas seleccionadas con mapas, paradas y vistas previas de audio reales.",
     "hubTitle": "Audioguías Autoguiadas",
     "hubSubtitle": "Rutas seleccionadas que se reproducen automáticamente mientras exploras — por país.",
-    "hubEmpty": "Pronto habrá nuevas audioguías en tu idioma. Vuelve en breve.",
+    "hubEmpty": "Esta lista está vacía en tu idioma. En la app, la narración sigue el idioma que usas — es tu recorrido el que crea el audio.",
     "viewAllInCountry": "Ver las {count}",
     "themes": {
       "historical": "Histórico",
