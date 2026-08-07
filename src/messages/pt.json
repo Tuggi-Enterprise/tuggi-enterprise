@@ -3,10 +3,13 @@
     "metaTitle": "Baixar TUGGI – Guia de Viagem em Áudio Autoguiado",
     "metaDesc": "Baixe o TUGGI: guias de viagem em áudio autoguiados, mãos-livres e offline. Ouça em {contentLanguages} idiomas com legendas. Grátis para começar.",
     "partnerBadge": "CONVITE PARCEIRO TUGGI ATIVADO",
+    "heroWelcomeLabel": "Boas-vindas",
+    "heroWelcomeTitle": "Experiência Tuggi",
     "heroTitle1": "Sua experiência",
     "heroTitle2": "cultural",
     "heroTitle3": "já começou.",
     "heroSubtitle": "Estamos preparando tudo para você. Você será redirecionado para a loja oficial em instantes.",
+    "partnerVisitSite": "Visitar site",
     "redirecting": "Redirecionando",
     "openingStore": "Abrindo loja...",
     "initializing": "Iniciando download para",
@@ -19,7 +22,7 @@
     "Campaign": {
       "headline": "Entre um prato e outro, a região conta a <accent>própria história</accent>.",
       "subtext": "Você segue viagem. A narração acompanha.",
-      "referredBy": "Indicado por {name}",
+      "referredBy": "Indicado por <partner>{name}</partner>",
       "stepsHeading": "Como funciona",
       "step1Title": "Abra e esqueça",
       "step1Text": "Ligue o app no começo do passeio e guarde o celular no bolso.",
@@ -63,7 +66,8 @@
     "accessibility": "Acessibilidade",
     "security": "Segurança B2G",
     "coverage": "Cobertura Global",
-    "audioTours": "Roteiros de Áudio"
+    "audioTours": "Roteiros de Áudio",
+    "rights": "Todos os direitos reservados."
   },
   "Home": {
     "FAQ": {
@@ -233,6 +237,7 @@
   },
   "Technology": {
     "Hero": {
+      "eyebrow": "Visão geral da arquitetura",
       "title": "Infraestrutura de Áudio Espacial Enterprise-Grade.",
       "subtitle": "Construída para escala e resiliência."
     },

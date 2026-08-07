@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations, useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
@@ -86,8 +86,6 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
   const [isLogged, setIsLogged] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [platform, setPlatform] = useState<"ios" | "android" | "other">("other");
-
-  const locale = useLocale();
 
   // Audio player state
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -666,11 +664,21 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
             <h1 className="mb-5">
               {isTuggi ? (
                 <>
+                  {/* Label + title, not one sentence broken in the middle of a
+                      grammatical unit: "Welcome to the" left the article on one
+                      line and the noun on the next, which is untranslatable to
+                      Italian without hanging an elision at the line break. Same
+                      silhouette as the partner branch below. */}
                   <span className="block text-3xl md:text-4xl font-extrabold text-tuggi-dark leading-tight">
-                    {locale.includes("pt") ? "Bem-vindo à" : locale.includes("es") ? "Bienvenido a la" : "Welcome to the"}
+                    {t("heroWelcomeLabel")}
                   </span>
-                  <span className="block text-3xl md:text-5xl font-black text-tuggi-primary mt-1 uppercase tracking-tight">
-                    Experiência Tuggi
+                  {/* No `uppercase`: text-transform would render EXPERIÊNCIA
+                      TUGGI and erase the spelling that separates the master
+                      signature from the product name (DS-MARCA-001), on the one
+                      line where the tourist learns what the app is called. The
+                      size already carries the emphasis. */}
+                  <span className="block text-3xl md:text-5xl font-black text-tuggi-primary mt-1 tracking-tight">
+                    {t("heroWelcomeTitle")}
                   </span>
                   <span className="block text-lg md:text-xl font-medium text-tuggi-slate mt-3">
                     {t("heroTitle1")} <span className="text-tuggi-secondary italic font-bold">{t("heroTitle2")}</span> {t("heroTitle3")}
@@ -678,11 +686,24 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
                 </>
               ) : partnerData?.name ? (
                 <>
+                  {/* One key, four locales, and the partner's name keeps its own
+                      size: next-intl 4 maps a *tag* to a component, never a
+                      plain {placeholder}, so the name is styled only from
+                      inside <partner>. Splitting label and name into two keys
+                      would freeze the word order in the JSX and duplicate
+                      "Indicado por" (CLAUDE.md §6, SSOT).
+                      `normal-case tracking-normal` are not decoration: without
+                      them the wrapper's `uppercase tracking-wide` cascades in
+                      and shouts the partner's proper name. */}
                   <span className="block text-sm md:text-base font-semibold text-tuggi-slate uppercase tracking-wide">
-                    {locale.includes("pt") ? "Indicado por" : locale.includes("es") ? "Recomendado por" : "Referred by"}
-                  </span>
-                  <span className="block text-3xl md:text-4xl font-extrabold text-tuggi-dark leading-tight mt-1">
-                    {partnerData.name}
+                    {t.rich("Campaign.referredBy", {
+                      name: partnerData.name,
+                      partner: (chunks) => (
+                        <span className="block text-3xl md:text-4xl font-extrabold text-tuggi-dark leading-tight tracking-normal normal-case mt-1">
+                          {chunks}
+                        </span>
+                      ),
+                    })}
                   </span>
                   <span className="block text-lg md:text-xl font-medium text-tuggi-slate mt-3">
                     {t("heroTitle1")} <span className="text-tuggi-secondary italic font-bold">{t("heroTitle2")}</span> {t("heroTitle3")}
@@ -716,7 +737,7 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
                       className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-slate-200 text-tuggi-dark text-xs font-semibold hover:bg-slate-50 transition-colors"
                     >
                       <Globe size={14} className="text-tuggi-primary" />
-                      {locale.includes("pt") ? "Visitar site" : locale.includes("es") ? "Visitar sitio" : locale.includes("it") ? "Visita il sito" : "Visit site"}
+                      {t("partnerVisitSite")}
                     </a>
                   )}
                   {partnerData.social &&

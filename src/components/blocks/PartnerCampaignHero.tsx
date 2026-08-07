@@ -146,7 +146,14 @@ export function PartnerCampaignHero({
             data-block="referral"
             className="text-[0.6875rem] font-bold uppercase leading-none tracking-[0.14em] text-tuggi-slate/80 sm:text-xs"
           >
-            {t("referredBy", { name: partnerName })}
+            {/* Same key as PartnerHero, and it carries a <partner> tag so the
+                name can be styled there. Here the line is small and uniform,
+                so the tag is the identity function and nothing changes on
+                screen — but `t()` would render the tag as literal text. */}
+            {t.rich("referredBy", {
+              name: partnerName,
+              partner: (chunks) => <>{chunks}</>,
+            })}
           </p>
         )}
 

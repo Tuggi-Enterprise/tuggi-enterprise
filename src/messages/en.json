@@ -3,10 +3,13 @@
     "metaTitle": "Download TUGGI – Self-Guided Audio Travel Guide",
     "metaDesc": "Get the TUGGI app: self-guided audio tours, hands-free and offline. Listen in {contentLanguages} languages with closed captions. Free to start.",
     "partnerBadge": "TUGGI PARTNER INVITATION ACTIVATED",
+    "heroWelcomeLabel": "Welcome",
+    "heroWelcomeTitle": "Tuggi Experience",
     "heroTitle1": "Your",
     "heroTitle2": "cultural",
     "heroTitle3": "experience has started.",
     "heroSubtitle": "We are preparing everything for you. You will be redirected to the official store in a moment.",
+    "partnerVisitSite": "Visit site",
     "redirecting": "Redirecting",
     "openingStore": "Opening store...",
     "initializing": "Initializing download for",
@@ -19,7 +22,7 @@
     "Campaign": {
       "headline": "Between one dish and the next, the region tells <accent>its own story</accent>.",
       "subtext": "You keep going. The narration follows.",
-      "referredBy": "Referred by {name}",
+      "referredBy": "Referred by <partner>{name}</partner>",
       "stepsHeading": "How it works",
       "step1Title": "Open it and forget it",
       "step1Text": "Start the app at the beginning of the outing and put your phone back in your pocket.",
@@ -63,7 +66,8 @@
     "accessibility": "Accessibility",
     "security": "B2G Security",
     "coverage": "Global Coverage",
-    "audioTours": "Audio Tours"
+    "audioTours": "Audio Tours",
+    "rights": "All rights reserved."
   },
   "Home": {
     "FAQ": {
@@ -233,6 +237,7 @@
   },
   "Technology": {
     "Hero": {
+      "eyebrow": "Architecture overview",
       "title": "Enterprise-Grade Spatial Audio Infrastructure.",
       "subtitle": "Built for scale and resilience."
     },

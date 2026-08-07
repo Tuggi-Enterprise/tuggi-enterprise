@@ -101,7 +101,12 @@ export function FatFooter() {
         {/* Bottom Bar */}
         <div className="mt-16 pt-8 border-t border-slate-800 flex flex-col items-center sm:items-start space-y-4">
           <p className="text-xs text-slate-400 text-center sm:text-left">
-            © {new Date().getFullYear()} TUGGI Technologies. All rights reserved.
+            {/* "TUGGI Technologies" is the company's legal signature, in the
+                master spelling (DS-MARCA-001): it neither translates nor
+                becomes "Tuggi", and it sits next to the CNPJ and the address,
+                which are printed as issued. Only the rights sentence was
+                English in all four locales. */}
+            © {new Date().getFullYear()} TUGGI Technologies. {t("rights")}
           </p>
           <div className="flex flex-col sm:flex-row gap-2 sm:gap-6 text-xs text-slate-400 font-medium text-center sm:text-left">
             <p>CNPJ: 64.539.859/0001-56</p>

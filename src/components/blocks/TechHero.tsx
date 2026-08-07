@@ -10,7 +10,10 @@ export function TechHero() {
         <div className="max-w-3xl">
           <div className="inline-flex items-center space-x-2 bg-slate-800/50 rounded-full px-3 py-1 mb-6 border border-slate-700">
             <span className="flex h-2 w-2 rounded-full bg-tuggi-primary"></span>
-            <span className="text-xs font-semibold text-slate-300 tracking-wider uppercase">Architecture Overview</span>
+            {/* Sentence case in the message: `uppercase` is form and stays in
+                the pill. Measured at 360px in the longest locale (es, 256px of
+                text inside a 344px track) before it moved. */}
+            <span className="text-xs font-semibold text-slate-300 tracking-wider uppercase">{t("eyebrow")}</span>
           </div>
           <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold tracking-tight mb-8 leading-tight">
             {t("title")}

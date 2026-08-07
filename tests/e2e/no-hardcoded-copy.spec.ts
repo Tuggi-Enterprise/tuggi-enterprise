@@ -180,11 +180,6 @@ const PENDING_NAV_LOCATOR =
   "these exact names; translating them makes one assertion pass against an empty locator. The " +
   "note in GlobalHeader.tsx has the detail — moving that spec to a data-* hook is `qa`'s call.";
 
-const PENDING_COPY =
-  "English (or, worse, one hardcoded language) served in all four locales, found by this scan " +
-  "and outside the copy card #192 applied. Reported with #192; it needs copy before it can move, " +
-  "and the four campaign strings move together or the block ends up half translated.";
-
 const WAIVED: Waiver[] = [
   // ── Brand marks and legal identifiers ────────────────────────────────────
   { file: "app/[locale]/coverage/opengraph-image.tsx", texts: ["T"], reason: BRAND },
@@ -198,7 +193,15 @@ const WAIVED: Waiver[] = [
   { file: "components/global/GlobalHeader.tsx", texts: ["TUGGI Logo"], reason: BRAND },
   {
     file: "components/global/FatFooter.tsx",
-    texts: ["TUGGI", "CNPJ: 64.539.859/0001-56", "Rua PAIS LEME, 215 - CONJ 1713 - Pinheiros - São Paulo, BR"],
+    texts: [
+      "TUGGI",
+      // What is left of the copyright line once #208 moved the rights
+      // sentence to Footer.rights: the company's legal signature, in the
+      // master spelling, next to the identifiers below it.
+      "TUGGI Technologies.",
+      "CNPJ: 64.539.859/0001-56",
+      "Rua PAIS LEME, 215 - CONJ 1713 - Pinheiros - São Paulo, BR",
+    ],
     reason: `${BRAND} The CNPJ and the registered address are legal identifiers of the company, printed as issued.`,
   },
 
@@ -228,33 +231,6 @@ const WAIVED: Waiver[] = [
     file: "components/global/GlobalHeader.tsx",
     texts: ["Main Navigation", "Mobile Navigation"],
     reason: PENDING_NAV_LOCATOR,
-  },
-  {
-    file: "components/blocks/TechHero.tsx",
-    texts: ["Architecture Overview"],
-    reason: PENDING_COPY,
-  },
-  {
-    file: "components/global/FatFooter.tsx",
-    texts: ["TUGGI Technologies. All rights reserved."],
-    reason: PENDING_COPY,
-  },
-  {
-    file: "components/blocks/PartnerHero.tsx",
-    texts: [
-      "Bem-vindo à",
-      "Bienvenido a la",
-      "Welcome to the",
-      "Experiência Tuggi",
-      "Indicado por",
-      "Recomendado por",
-      "Referred by",
-      "Visitar site",
-      "Visitar sitio",
-      "Visita il sito",
-      "Visit site",
-    ],
-    reason: PENDING_COPY,
   },
 ];
 
@@ -415,7 +391,49 @@ test.describe("the four message files stay in step", () => {
 });
 
 test.describe("what the server actually serves, in each locale", () => {
+  /**
+   * The partner fixture of tests/e2e/mock-supabase-server.mjs — /d/e2e-sem-logo
+   * resolves to a plain partner with this company_name, and /d/[slug] is one of
+   * the two routes that never translate their path (src/i18n/pathnames.ts).
+   */
+  const PARTNER_NAME = "Delícias do Vale do Café";
+
+  /** The message minus its markup, which is what the visitor reads. */
+  function rendered(message: string, name: string): string {
+    return message.replace(/<\/?partner>/g, "").replace("{name}", name);
+  }
+
   for (const locale of LOCALES) {
+    /**
+     * #208: the referral line was a locale ternary with no `it` branch, and the
+     * partner's name was a sibling <span> so it could keep its own size. It is
+     * now one message with a <partner> tag, which is the only way next-intl 4
+     * hands an element to a value — a plain {placeholder} is always text.
+     *
+     * Two things can go wrong silently and neither is visible in a diff: `t()`
+     * instead of `t.rich` prints the tag as literal text, and dropping
+     * `normal-case` lets the label's `uppercase` cascade into the name — a
+     * proper noun re-spelled by CSS, which no text assertion can see.
+     *
+     * The welcome pair (heroWelcomeLabel/heroWelcomeTitle) is not asserted
+     * here: it renders only for the Tuggi-owned branch of the hero, and no
+     * fixture in the mock resolves to it. The static scan above is what keeps
+     * it out of the JSX.
+     */
+    test(`DS-COPY-001: /${locale}/d/<partner> serves the referral line from i18n (#208)`, async ({
+      page,
+    }) => {
+      const message = messageAt(messagesFor(locale), "Download.Campaign.referredBy");
+      await page.goto(`/${locale}/d/e2e-sem-logo`);
+
+      const referral = page.locator("h1");
+      await expect(referral).toContainText(rendered(message, PARTNER_NAME));
+
+      const name = referral.getByText(PARTNER_NAME, { exact: true });
+      await expect(name).toBeVisible();
+      await expect(name).toHaveCSS("text-transform", "none");
+    });
+
     test(`DS-COPY-001: /${locale} serves the strings card #192 moved to i18n`, async ({ page }) => {
       const messages = messagesFor(locale);
 
