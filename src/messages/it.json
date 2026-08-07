@@ -661,7 +661,7 @@
     "description": "TUGGI è attivo in {coverageCountries} paesi e oltre {mappedPointMillions} milioni di punti di interesse — Italia, Spagna, Portogallo, Brasile, Cile, USA e altro ancora. I racconti audio partono automaticamente nel momento in cui inizi a esplorare.",
     "ogTitle": "TUGGI Attivo in {coverageCountries} Paesi — Oltre {mappedPointMillions} Milioni di Punti Mappati",
     "ogImageAlt": "Mappa di copertura globale di TUGGI: punti mappati in tutto il mondo",
-    "ogEyebrow": "TUGGI · COPERTURA GLOBALE",
+    "ogEyebrow": "Copertura globale",
     "ogHeadline": "Punti mappati in tutto il mondo",
     "ogStatCountries": "Paesi",
     "ogStatRegions": "Regioni",

@@ -35,14 +35,29 @@ export async function generateMetadata({
     description,
     alternates: buildAlternates(locale, "coverage"),
     robots: defaultRobots,
+    // The share card is the one this page generates, with the coverage figures
+    // in it — not the generic brand image. Whoever receives a link to /coverage
+    // is deciding one thing in seconds ("is where I'm going covered?"), and the
+    // preview is where that gets answered.
+    //
+    // The URL of the route is named here on purpose: dropping `images` to let
+    // the App Router file convention take over would also drop `imageAlt`, and
+    // the route's `alt` export is a static string that never sees `params` —
+    // partner-claims.spec.ts requires og:image:alt to come from i18n in all
+    // four locales. Twitter needs the same URL or it stays on the generic one.
     openGraph: buildOpenGraph({
       title: ogTitle,
       description,
       locale,
       pagePath: "coverage",
+      image: `/${locale}/coverage/opengraph-image`,
       imageAlt: t("ogImageAlt"),
     }),
-    twitter: buildTwitterCard({ title: ogTitle, description }),
+    twitter: buildTwitterCard({
+      title: ogTitle,
+      description,
+      image: `/${locale}/coverage/opengraph-image`,
+    }),
   };
 }
 

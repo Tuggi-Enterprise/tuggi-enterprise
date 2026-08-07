@@ -182,7 +182,6 @@ const PENDING_NAV_LOCATOR =
 
 const WAIVED: Waiver[] = [
   // ── Brand marks and legal identifiers ────────────────────────────────────
-  { file: "app/[locale]/coverage/opengraph-image.tsx", texts: ["T"], reason: BRAND },
   { file: "app/[locale]/d/[slug]/opengraph-image.tsx", texts: ["TUGGI"], reason: BRAND },
   { file: "app/[locale]/tours/[country]/[slug]/opengraph-image.tsx", texts: ["TUGGI"], reason: BRAND },
   { file: "app/[locale]/purpose/page.tsx", texts: ["TUGGI Manifesto"], reason: BRAND },
@@ -320,7 +319,14 @@ test.describe("the four message files stay in step", () => {
     /\broteiro|\bitinerar|\bitinerary/i,
   ];
 
-  for (const key of ["SEO_COVERAGE.ogHeadline", "SEO_COVERAGE.ogImageAlt"]) {
+  for (const key of [
+    "SEO_COVERAGE.ogHeadline",
+    "SEO_COVERAGE.ogImageAlt",
+    // The eyebrow sits directly above the figure on the card, which is close
+    // enough to read as its label — and since #209 the card is what /coverage
+    // shares, not a route nobody reaches.
+    "SEO_COVERAGE.ogEyebrow",
+  ]) {
     test(`BR-COMUNICACAO-002 item 2: ${key} names the figure without a content noun`, () => {
       const offenders = LOCALES.flatMap((locale) => {
         const value = messageAt(messagesFor(locale), key);
@@ -466,9 +472,37 @@ test.describe("what the server actually serves, in each locale", () => {
     });
   }
 
+  /**
+   * #209: /coverage shares the card it generates — the one with the coverage
+   * figures — and not the generic brand image. The failure this guards is
+   * silent by construction: `buildOpenGraph` defaults `image` to
+   * og-image-tuggi.jpg, so dropping the argument leaves a page that still
+   * builds, still validates, and quietly advertises a logo. The Twitter card
+   * takes the same URL through a second parameter, and forgetting it splits the
+   * two previews without any error either.
+   */
+  test("#209: /coverage advertises its own share card, in every locale", async ({ page }) => {
+    for (const locale of LOCALES) {
+      await page.goto(`/${locale}/coverage`);
+      const route = `/${locale}/coverage/opengraph-image`;
+
+      const og = await page
+        .locator('meta[property="og:image"]')
+        .first()
+        .getAttribute("content");
+      expect(og, `og:image in ${locale}`).toContain(route);
+
+      const twitter = await page
+        .locator('meta[name="twitter:image"]')
+        .first()
+        .getAttribute("content");
+      expect(twitter, `twitter:image in ${locale}`).toContain(route);
+    }
+  });
+
   test("DS-COPY-001: the /coverage share card renders in every locale", async ({ request }) => {
     // The image reads `params` and translates its own labels; a regression in
-    // either turns into a 500 nobody sees, because no page links to this route.
+    // either turns into a 500 nobody sees.
     for (const locale of LOCALES) {
       const response = await request.get(`/${locale}/coverage/opengraph-image`);
       expect(response.status(), `/${locale}/coverage/opengraph-image`).toBe(200);

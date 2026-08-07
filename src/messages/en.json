@@ -661,7 +661,7 @@
     "description": "TUGGI is live in {coverageCountries} countries and over {mappedPointMillions} million points of interest — Italy, Spain, Portugal, Brazil, Chile, the USA and more. Audio stories play automatically the moment you start exploring.",
     "ogTitle": "TUGGI is Live in {coverageCountries} Countries — Over {mappedPointMillions} Million Mapped Points",
     "ogImageAlt": "TUGGI global coverage map: mapped points around the world",
-    "ogEyebrow": "TUGGI · GLOBAL COVERAGE",
+    "ogEyebrow": "Global coverage",
     "ogHeadline": "Mapped points around the world",
     "ogStatCountries": "Countries",
     "ogStatRegions": "Regions",

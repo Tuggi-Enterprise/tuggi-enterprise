@@ -11,16 +11,19 @@
  *
  * Preview: https://www.tuggi.app/coverage (shared on WhatsApp, Slack, Twitter, LinkedIn)
  *
- * Nothing links here yet, and that is not visible from this file: page.tsx
- * builds its metadata with buildOpenGraph, which always sets `openGraph.images`
- * and therefore suppresses the App Router file convention — measured on the
- * served HTML of /pt/coverage, which advertises /images/og-image-tuggi.jpg.
- * Pointing the page at this route is a decision about what the site shares, not
- * a translation, so it did not ride in with #192.
+ * This is what /coverage shares (#209). page.tsx names this route's URL in
+ * `openGraph.images` and in the Twitter card, because buildOpenGraph always
+ * sets `images` and therefore suppresses the App Router file convention — and
+ * because the convention would also take the `alt` with it, which has to follow
+ * the locale and cannot: the `alt` export is a static string, and it is gone
+ * from this file for that reason. The alt a reader hears is
+ * SEO_COVERAGE.ogImageAlt, served by the page.
  */
 
 import { ImageResponse } from "next/og";
 import { getTranslations } from "next-intl/server";
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 import { getCoverageData } from "@/lib/coverage";
 import {
   COVERAGE_COUNTRIES,
@@ -28,16 +31,26 @@ import {
   COVERAGE_REGIONS_FLOOR,
 } from "@/lib/product-facts";
 import { getCountryDisplayName } from "@/lib/countryNames";
-import enMessages from "@/messages/en.json";
 
 export const size        = { width: 1200, height: 630 };
 export const contentType = "image/png";
-// The `alt` export is a string, not a function: it never sees `params`, so it
-// cannot follow the locale the way the body below does. It reads the English
-// value of the key the page already uses for this same alt
-// (SEO_COVERAGE.ogImageAlt) instead of carrying a second copy of the sentence —
-// one owner, and a rewrite of the key cannot leave this one behind.
-export const alt         = enMessages.SEO_COVERAGE.ogImageAlt;
+
+/**
+ * The signature on this card is the lockup, not the symbol and not a letter in
+ * a square: a share preview is a surface where people *discover* the brand
+ * (DS-MARCA-007 item 7). The white two-colour variant is the one that is
+ * correct over a dark background (DS-MARCA-005).
+ *
+ * Read once at module scope — the file never changes between requests.
+ */
+const LOCKUP = await readFile(
+  join(process.cwd(), "public", "images", "logo_tuggi_full_white.png"),
+  "base64"
+).then((data) => `data:image/png;base64,${data}`);
+
+/** Fixed height, automatic width: the lockup is 3.02:1 and is never stretched
+ *  (DS-MARCA-007 item 1). Satori reads the intrinsic ratio from the buffer. */
+const LOCKUP_HEIGHT = 40;
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 // Grouping follows the locale of the card, not en-US: "1,183" reads as a
@@ -124,37 +137,18 @@ export default async function Image({
             padding: "64px 72px",
           }}
         >
-          {/* Brand badge */}
+          {/* Signature. The eyebrow next to it is the category only: the
+              lockup spells the name, so repeating it in text was the same
+              word twice. */}
           <div
             style={{
               display: "flex",
               alignItems: "center",
-              gap: 10,
+              gap: 16,
               marginBottom: 32,
             }}
           >
-            <div
-              style={{
-                background: "#00a8e8",
-                borderRadius: 8,
-                width: 32,
-                height: 32,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <span
-                style={{
-                  color: "#ffffff",
-                  fontSize: 14,
-                  fontWeight: 900,
-                  letterSpacing: "-0.02em",
-                }}
-              >
-                T
-              </span>
-            </div>
+            <img src={LOCKUP} height={LOCKUP_HEIGHT} style={{ objectFit: "contain" }} alt="" />
             <span
               style={{
                 color: "#00a8e8",
