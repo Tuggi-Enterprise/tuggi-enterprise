@@ -32,6 +32,19 @@ import {
  */
 
 const COVERAGE = "/pt/coverage";
+const HOME = "/pt";
+
+/**
+ * Desde o #223 o desenho só começa a carregar quando o quadro chega perto da
+ * dobra, e os testes do desenho não rolavam a página. Rolar até o quadro é o
+ * ajuste: o que cada um prova continua sendo provado depois da rolagem — o que
+ * mudou é **quando** o TopoJSON chega, não o que ele desenha. Só o teste de
+ * altura reservada mede antes *e* depois de propósito, e por isso chama isto no
+ * meio.
+ */
+const bringMapIntoView = async (page: Page) => {
+  await page.locator('[data-part="map-frame"]').scrollIntoViewIfNeeded();
+};
 
 const readableText = (page: Page) =>
   page.evaluate(() => {
@@ -156,12 +169,97 @@ test.describe("sem JavaScript", () => {
 });
 
 // ───────────────────────────────────────────────────────────────────────────
-// 2 — O desenho, com JavaScript
+// 2 — O adiamento do desenho (#223), e o que ele não pode levar junto
+// ───────────────────────────────────────────────────────────────────────────
+
+const TOPOJSON = /\/(countries|states)-world\.json$/;
+
+test.describe("#223 — o TopoJSON só é buscado perto da dobra", () => {
+  for (const [nome, url] of [
+    ["a home", HOME],
+    ["/coverage", COVERAGE],
+  ] as const) {
+    test(`${nome} não busca TopoJSON nenhum na carga inicial`, async ({ page }) => {
+      const asked: string[] = [];
+      page.on("request", (request) => {
+        const path = new URL(request.url()).pathname;
+        if (TOPOJSON.test(path)) asked.push(path);
+      });
+
+      await page.goto(url);
+      // "A rede ficou quieta" é literalmente a afirmação sob teste, e é por isso
+      // que aqui o `networkidle` desaconselhado é a espera certa: qualquer
+      // busca disparada na hidratação teria acontecido antes dele.
+      await page.waitForLoadState("networkidle");
+
+      // Controle: o quadro existe e está bem abaixo da dobra. Sem isto o teste
+      // passaria numa página onde o bloco tivesse sumido, ou onde ele estivesse
+      // visível desde o início — e aí "não buscou" não provaria adiamento.
+      const frame = page.locator('[data-part="map-frame"]');
+      await expect(frame).toHaveCount(1);
+      const viewport = page.viewportSize()!.height;
+      const top = (await frame.boundingBox())!.y;
+      expect(top, "o quadro do mapa está na dobra — este teste não prova nada aí").toBeGreaterThan(
+        viewport
+      );
+
+      expect(
+        asked,
+        "o TopoJSON foi buscado sem ninguém ter chegado perto do mapa (#223)"
+      ).toEqual([]);
+
+      // E a outra metade, que é o que impede o adiamento de virar "nunca":
+      // chegando perto, os dois arquivos são buscados e o mapa desenha.
+      await bringMapIntoView(page);
+      await expect(page.locator("[data-country]").first()).toBeVisible({ timeout: 15_000 });
+      expect([...asked].sort()).toEqual(["/countries-world.json", "/states-world.json"]);
+    });
+  }
+
+  test("DS-COMPONENTE-006 — a lista da home continua servida, e sem JavaScript", async ({
+    browser,
+  }) => {
+    // Contexto próprio em vez de `test.use`: este teste é o par do de cima e
+    // vale lido ao lado dele, não num bloco separado três telas abaixo. O que
+    // ele impede é o modo de falha caro desta entrega — adiar o conteúdo junto
+    // com o desenho, que é exatamente o que a regra proíbe.
+    const context = await browser.newContext({ javaScriptEnabled: false });
+    const page = await context.newPage();
+    try {
+      await page.goto(HOME);
+      const text = await readableText(page);
+      const { states } = await getCoverageData();
+      const countries = activeCountries(states).map((country) =>
+        localizedCountryLabel(country, "pt")
+      );
+
+      expect(countries.length).toBeGreaterThan(30);
+
+      const missing = countries.filter((name) => !text.includes(name));
+      expect(
+        missing,
+        `${missing.length} países ausentes do texto legível da home sem JS. A home usa ` +
+          "`detail=\"countries\"` e não tem pílula de filtro (#217), então esta lista é o único " +
+          "lugar da página onde esses nomes existem: adiá-la é apagá-la"
+      ).toEqual([]);
+
+      const heading = page.locator('[data-block="coverage-list"] h3').first();
+      await expect(heading).toHaveCSS("opacity", "1");
+      await expect(heading).not.toHaveText("");
+    } finally {
+      await context.close();
+    }
+  });
+});
+
+// ───────────────────────────────────────────────────────────────────────────
+// 3 — O desenho, com JavaScript
 // ───────────────────────────────────────────────────────────────────────────
 
 test.describe("o desenho", () => {
   test("§3.2 — o quadro desenha os países cobertos, e nenhum outro", async ({ page }) => {
     await page.goto(COVERAGE);
+    await bringMapIntoView(page);
     const shapes = page.locator("[data-country]");
     await expect(shapes.first()).toBeVisible({ timeout: 15_000 });
 
@@ -192,10 +290,13 @@ test.describe("o desenho", () => {
 
     // Antes do TopoJSON chegar: a altura já está reservada (CLS do bloco = 0) e
     // a proporção é a da caixa projetada, senão o mapa entra com tarja nos dois
-    // lados e "a caixa preenche o viewBox" vira letra morta.
+    // lados e "a caixa preenche o viewBox" vira letra morta. Desde o #223 este
+    // "antes" é garantido, e não apenas provável: sem rolar até o quadro nada é
+    // buscado, então a medida abaixo é a do quadro vazio.
     const box = (await frame.boundingBox())!;
     expect(box.width / box.height).toBeCloseTo(MAP_FRAME.width / MAP_FRAME.height, 2);
 
+    await bringMapIntoView(page);
     await expect(frame.locator("[data-country]").first()).toBeVisible({ timeout: 15_000 });
     const after = (await frame.boundingBox())!;
     expect(after.height, "o quadro mudou de altura quando o mapa chegou").toBeCloseTo(
@@ -206,6 +307,7 @@ test.describe("o desenho", () => {
 
   test("o mapa continua fora da ordem de tabulação (SC 2.4.3, 4.1.2)", async ({ page }) => {
     await page.goto(COVERAGE);
+    await bringMapIntoView(page);
     const frame = page.locator('[data-part="map-frame"]');
     await expect(frame.locator("[data-country]").first()).toBeVisible({ timeout: 15_000 });
 
@@ -220,6 +322,7 @@ test.describe("o desenho", () => {
     page,
   }) => {
     await page.goto(COVERAGE);
+    await bringMapIntoView(page);
     await expect(page.locator("[data-country]").first()).toBeVisible({ timeout: 15_000 });
 
     const measured = await page.evaluate(() => {
@@ -326,7 +429,7 @@ test.describe("360 px", () => {
 });
 
 // ───────────────────────────────────────────────────────────────────────────
-// 3 — A legenda, nos quatro idiomas
+// 4 — A legenda, nos quatro idiomas
 // ───────────────────────────────────────────────────────────────────────────
 
 for (const locale of ["pt", "en", "es", "it"]) {

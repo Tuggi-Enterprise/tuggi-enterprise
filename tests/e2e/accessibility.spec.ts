@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
 import fs from "node:fs";
 import path from "node:path";
 import { LOCALES } from "../../src/i18n/locales";
@@ -178,6 +178,15 @@ const AUDITED_PAGES = [
 ] as const;
 
 test.describe("Coverage map keyboard operability (SC 2.4.7, 2.4.3, 4.1.2)", () => {
+  /**
+   * Since #223 the drawing loads only once its frame comes near the fold, so
+   * the three tests below have to bring it there before they can look at it.
+   * The rule each one proves is untouched: whether the shapes are focusable is
+   * a question about the map that exists, and this is how it comes to exist.
+   */
+  const bringMapIntoView = (page: Page) =>
+    page.locator('[data-part="map-frame"]').scrollIntoViewIfNeeded();
+
   test("no decorative shape of the map is in the tab order", async ({ page }) => {
     // react-simple-maps hardcodes tabIndex="0" on every <path> it draws, and it
     // is not in our JSX — no grep of this repo ever showed it, and the axe rules
@@ -185,10 +194,12 @@ test.describe("Coverage map keyboard operability (SC 2.4.7, 2.4.3, 4.1.2)", () =
     // put 4,773 unnamed, focus-invisible stops in the tab order of /coverage:
     // the first one on Tab #48, and still inside the map 140 Tabs later.
     await page.goto(localeUrl("pt", "/coverage"));
+    await bringMapIntoView(page);
 
     const map = page.locator("svg.rsm-svg");
     await expect(map).toBeVisible();
-    // The paths render asynchronously (the TopoJSON is fetched after mount).
+    // The paths render asynchronously (the TopoJSON is fetched once the frame
+    // is near the fold, #223).
     await expect(page.locator("svg.rsm-svg path").first()).toBeAttached();
 
     expect(await page.locator('svg.rsm-svg path[tabindex="0"]').count()).toBe(0);
@@ -201,6 +212,7 @@ test.describe("Coverage map keyboard operability (SC 2.4.7, 2.4.3, 4.1.2)", () =
     // aria-hidden over focusable descendants is itself a violation, so these
     // two assertions only mean anything together.
     await page.goto(localeUrl("pt", "/coverage"));
+    await bringMapIntoView(page);
 
     const map = page.locator("svg.rsm-svg");
     await expect(map).toHaveAttribute("aria-hidden", "true");
@@ -211,6 +223,7 @@ test.describe("Coverage map keyboard operability (SC 2.4.7, 2.4.3, 4.1.2)", () =
     // The measurement the audit made, turned into a bound: the country filter
     // pills are two Tabs apart, and no shape sits between them.
     await page.goto(localeUrl("pt", "/coverage"));
+    await bringMapIntoView(page);
     await expect(page.locator("svg.rsm-svg path").first()).toBeAttached();
 
     const insideMap: string[] = [];

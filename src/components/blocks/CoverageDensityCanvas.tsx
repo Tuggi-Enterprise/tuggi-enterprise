@@ -1,8 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { ReactNode } from "react";
 import { useTranslations } from "next-intl";
-import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 
 import type { StateCoverage } from "@/lib/coverage";
 import { getCountryDisplayName } from "@/lib/countryNames";
@@ -49,6 +49,21 @@ type Topology = Record<string, unknown>;
 type Geo = { countries: Topology; states: Topology };
 
 /**
+ * The drawing's two heavy halves, and they are one state because the drawing is
+ * useless in halves: `react-simple-maps` (plus the `d3-geo` it pulls in) and the
+ * two TopoJSON documents.
+ */
+type MapKit = { rsm: typeof import("react-simple-maps"); geo: Geo };
+
+/**
+ * How far ahead of the frame the loading starts, in CSS pixels of the scroll
+ * root. Roughly a mobile viewport of lead: enough that a reader scrolling at a
+ * normal pace finds the drawing already there, and not so much that the block
+ * is loaded from the top of a page where it sits below seven other ones.
+ */
+const LOAD_AHEAD_PX = 600;
+
+/**
  * The drawing half of `CoverageDensityMap` — and only the drawing half.
  *
  * Everything a reader needs is in the section around this component, rendered
@@ -70,6 +85,21 @@ type Geo = { countries: Topology; states: Topology };
  * we can draw — spec §3.5, the frame disappears instead of leaving an empty
  * rectangle, because there is nothing the reader could do about it and the
  * information is all in the text below.
+ *
+ * **Nothing heavy is loaded until the frame is close to the viewport** (#223).
+ * The two TopoJSON documents are 972 KB on disk (255 KB over the wire), and
+ * `react-simple-maps` is a chunk of its own; before this, every visitor paid all
+ * of it during hydration, including on the home, where the block is seventh of
+ * ten and well below the fold. So `react-simple-maps` is imported dynamically
+ * and both files are fetched from the same `IntersectionObserver` — one gate,
+ * because loading either one early is the same waste.
+ *
+ * **The deferral is of the drawing only, and that boundary is the point.** The
+ * legend, the country-by-country list and the region names live in
+ * `CoverageDensityMap`, rendered by the server, and DS-COMPONENTE-006 forbids
+ * exactly the mistake this optimisation invites — content that waits on an
+ * observer is content that never arrives without JavaScript. Nothing below this
+ * component's own frame is gated by `kit`.
  */
 export function CoverageDensityCanvas({
   states,
@@ -77,7 +107,8 @@ export function CoverageDensityCanvas({
   showCountryFilter,
 }: Props) {
   const t = useTranslations("Coverage.Density");
-  const [geo, setGeo] = useState<Geo | null>(null);
+  const [kit, setKit] = useState<MapKit | null>(null);
+  const [loading, setLoading] = useState(false);
   const [failed, setFailed] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [focused, setFocused] = useState<FocusedRegion | null>(null);
@@ -88,7 +119,31 @@ export function CoverageDensityCanvas({
   const [finePointer, setFinePointer] = useState(false);
   const frameRef = useRef<HTMLDivElement>(null);
 
+  // The gate. It watches the frame the drawing would go into — the frame is
+  // rendered from the first paint, with its aspect ratio already reserved, so
+  // the deferral costs no layout shift. Unguarded `IntersectionObserver` is the
+  // house pattern here (RouteStops, StickyCta) and the callback is asynchronous
+  // even for an element already on screen, which is why nothing below sets
+  // state in the body of an effect.
   useEffect(() => {
+    const frame = frameRef.current;
+    if (!frame) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          observer.disconnect();
+          setLoading(true);
+        }
+      },
+      { rootMargin: `${LOAD_AHEAD_PX}px` }
+    );
+    observer.observe(frame);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!loading) return;
     let alive = true;
     const load = (url: string) =>
       fetch(url).then((res) => {
@@ -96,9 +151,13 @@ export function CoverageDensityCanvas({
         return res.json();
       });
 
-    Promise.all([load("/countries-world.json"), load("/states-world.json")])
-      .then(([countries, statesGeo]) => {
-        if (alive) setGeo({ countries, states: statesGeo });
+    Promise.all([
+      import("react-simple-maps"),
+      load("/countries-world.json"),
+      load("/states-world.json"),
+    ])
+      .then(([rsm, countries, statesGeo]) => {
+        if (alive) setKit({ rsm, geo: { countries, states: statesGeo } });
       })
       .catch(() => {
         if (alive) setFailed(true);
@@ -107,7 +166,7 @@ export function CoverageDensityCanvas({
     return () => {
       alive = false;
     };
-  }, []);
+  }, [loading]);
 
   // A tooltip pinned to the cursor on a device with no cursor is the classic
   // ghost tooltip that never closes (spec §3.6). Where there is no fine
@@ -140,6 +199,129 @@ export function CoverageDensityCanvas({
   const countryLabel = (country: string) =>
     countryLabels[country] ?? getCountryDisplayName(country);
   const flipTooltip = tooltipPos.x > tooltipPos.width * 0.72;
+
+  // Assembled before the return, and not inside a ternary, because the three
+  // components only exist once the dynamic import has resolved: `kit` is what
+  // narrows them from "maybe undefined" to usable, in one place instead of at
+  // every tag. Until the gate opens the frame is the reserved rectangle and
+  // nothing else — no spinner spinning off-screen for a load that has not
+  // started, which would be an animation the reader never sees and a lie about
+  // what the page is doing.
+  let drawing: ReactNode = null;
+
+  if (kit) {
+    const { ComposableMap, Geographies, Geography } = kit.rsm;
+
+    drawing = (
+      <ComposableMap
+        projection="geoNaturalEarth1"
+        projectionConfig={{ scale: MAP_FRAME.scale, center: MAP_FRAME.center }}
+        width={MAP_FRAME.width}
+        height={MAP_FRAME.height}
+        style={{ width: "100%", height: "100%" }}
+        aria-hidden="true"
+      >
+        {/* Layer 1 — the countries where TUGGI is, and only those.
+            The fixed box runs from the US west coast to Slovenia, which
+            puts West Africa between South America and Europe; drawing
+            every country would put land in the frame that spec §3.9 item
+            3 says is not in it. Drawing the covered ones is also the
+            honest shape of the answer the visitor came for. */}
+        <Geographies geography={kit.geo.countries}>
+          {({ geographies }) =>
+            geographies
+              .filter((country) => covered.has(norm(snapshotCountryOf(country.properties.name))))
+              .map((country) => (
+                <Geography
+                  key={`country-${country.rsmKey}`}
+                  geography={country}
+                  tabIndex={-1}
+                  data-country={snapshotCountryOf(country.properties.name)}
+                  style={{
+                    default: {
+                      fill: MAP_LAND_FILL,
+                      stroke: MAP_LAND_STROKE,
+                      strokeWidth: 0.4,
+                      outline: "none",
+                    },
+                    hover: {
+                      fill: MAP_LAND_FILL,
+                      stroke: MAP_LAND_STROKE,
+                      strokeWidth: 0.4,
+                      outline: "none",
+                    },
+                    pressed: { outline: "none" },
+                  }}
+                />
+              ))
+          }
+        </Geographies>
+
+        {/* Layer 2 — density. Four steps, no marker, no pin, nothing
+            countable, and no number anywhere on the drawing. */}
+        <Geographies geography={kit.geo.states}>
+          {({ geographies }) =>
+            geographies.map((region) => {
+              const data = findState(region.properties.name, region.properties.admin);
+              if (!data || data.activeCount <= 0) {
+                return (
+                  <Geography
+                    key={`region-${region.rsmKey}`}
+                    geography={region}
+                    tabIndex={-1}
+                    style={{
+                      default: { fill: "transparent", stroke: "none", outline: "none" },
+                      hover: { fill: "transparent", stroke: "none", outline: "none" },
+                      pressed: { outline: "none" },
+                    }}
+                  />
+                );
+              }
+
+              const dimmed = selectedCountry !== null && selectedCountry !== data.country;
+              const step = densityStep(data.activeCount, cuts);
+              const fill = dimmed ? MAP_LAND_FILL : DENSITY_STEPS[step].fill;
+              const show = () => setFocused({ region: data.state, country: data.country, step });
+
+              return (
+                <Geography
+                  key={`region-${region.rsmKey}`}
+                  geography={region}
+                  tabIndex={-1}
+                  data-step={dimmed ? undefined : step}
+                  onMouseEnter={() => finePointer && !dimmed && show()}
+                  onClick={() => !finePointer && !dimmed && show()}
+                  style={{
+                    default: {
+                      fill,
+                      stroke: dimmed ? MAP_LAND_STROKE : DENSITY_STROKE,
+                      strokeWidth: 0.35,
+                      outline: "none",
+                      cursor: dimmed ? "default" : "pointer",
+                    },
+                    hover: {
+                      fill,
+                      stroke: dimmed ? MAP_LAND_STROKE : DENSITY_STROKE,
+                      strokeWidth: dimmed ? 0.35 : 0.8,
+                      outline: "none",
+                      cursor: dimmed ? "default" : "pointer",
+                    },
+                    pressed: { outline: "none" },
+                  }}
+                />
+              );
+            })
+          }
+        </Geographies>
+      </ComposableMap>
+    );
+  } else if (loading) {
+    drawing = (
+      <div className="w-full h-full flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-tuggi-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -203,114 +385,7 @@ export function CoverageDensityCanvas({
             backgroundColor: MAP_OCEAN_FILL,
           }}
         >
-          {geo ? (
-            <ComposableMap
-              projection="geoNaturalEarth1"
-              projectionConfig={{ scale: MAP_FRAME.scale, center: MAP_FRAME.center }}
-              width={MAP_FRAME.width}
-              height={MAP_FRAME.height}
-              style={{ width: "100%", height: "100%" }}
-              aria-hidden="true"
-            >
-              {/* Layer 1 — the countries where TUGGI is, and only those.
-                  The fixed box runs from the US west coast to Slovenia, which
-                  puts West Africa between South America and Europe; drawing
-                  every country would put land in the frame that spec §3.9 item
-                  3 says is not in it. Drawing the covered ones is also the
-                  honest shape of the answer the visitor came for. */}
-              <Geographies geography={geo.countries}>
-                {({ geographies }) =>
-                  geographies
-                    .filter((country) => covered.has(norm(snapshotCountryOf(country.properties.name))))
-                    .map((country) => (
-                      <Geography
-                        key={`country-${country.rsmKey}`}
-                        geography={country}
-                        tabIndex={-1}
-                        data-country={snapshotCountryOf(country.properties.name)}
-                        style={{
-                          default: {
-                            fill: MAP_LAND_FILL,
-                            stroke: MAP_LAND_STROKE,
-                            strokeWidth: 0.4,
-                            outline: "none",
-                          },
-                          hover: {
-                            fill: MAP_LAND_FILL,
-                            stroke: MAP_LAND_STROKE,
-                            strokeWidth: 0.4,
-                            outline: "none",
-                          },
-                          pressed: { outline: "none" },
-                        }}
-                      />
-                    ))
-                }
-              </Geographies>
-
-              {/* Layer 2 — density. Four steps, no marker, no pin, nothing
-                  countable, and no number anywhere on the drawing. */}
-              <Geographies geography={geo.states}>
-                {({ geographies }) =>
-                  geographies.map((region) => {
-                    const data = findState(region.properties.name, region.properties.admin);
-                    if (!data || data.activeCount <= 0) {
-                      return (
-                        <Geography
-                          key={`region-${region.rsmKey}`}
-                          geography={region}
-                          tabIndex={-1}
-                          style={{
-                            default: { fill: "transparent", stroke: "none", outline: "none" },
-                            hover: { fill: "transparent", stroke: "none", outline: "none" },
-                            pressed: { outline: "none" },
-                          }}
-                        />
-                      );
-                    }
-
-                    const dimmed = selectedCountry !== null && selectedCountry !== data.country;
-                    const step = densityStep(data.activeCount, cuts);
-                    const fill = dimmed ? MAP_LAND_FILL : DENSITY_STEPS[step].fill;
-                    const show = () =>
-                      setFocused({ region: data.state, country: data.country, step });
-
-                    return (
-                      <Geography
-                        key={`region-${region.rsmKey}`}
-                        geography={region}
-                        tabIndex={-1}
-                        data-step={dimmed ? undefined : step}
-                        onMouseEnter={() => finePointer && !dimmed && show()}
-                        onClick={() => !finePointer && !dimmed && show()}
-                        style={{
-                          default: {
-                            fill,
-                            stroke: dimmed ? MAP_LAND_STROKE : DENSITY_STROKE,
-                            strokeWidth: 0.35,
-                            outline: "none",
-                            cursor: dimmed ? "default" : "pointer",
-                          },
-                          hover: {
-                            fill,
-                            stroke: dimmed ? MAP_LAND_STROKE : DENSITY_STROKE,
-                            strokeWidth: dimmed ? 0.35 : 0.8,
-                            outline: "none",
-                            cursor: dimmed ? "default" : "pointer",
-                          },
-                          pressed: { outline: "none" },
-                        }}
-                      />
-                    );
-                  })
-                }
-              </Geographies>
-            </ComposableMap>
-          ) : (
-            <div className="w-full h-full flex items-center justify-center">
-              <div className="w-8 h-8 border-2 border-tuggi-primary border-t-transparent rounded-full animate-spin" />
-            </div>
-          )}
+          {drawing}
 
           {finePointer && focused && (
             <div
