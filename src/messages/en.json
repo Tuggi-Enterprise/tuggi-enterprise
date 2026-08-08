@@ -734,7 +734,7 @@
       },
       "listTitle": "Every destination, region by region",
       "listIntro": "The full list of what the map draws — and the regions the frame leaves out. Where an audio route already exists, the region name takes you to it.",
-      "countryListTitle": "The countries TUGGI is already in",
+      "countryListTitle": "See if your destination is already on the map",
       "countryListIntro": "The full list, region by region, is on the coverage page.",
       "countryListCta": "See full coverage",
       "group": {

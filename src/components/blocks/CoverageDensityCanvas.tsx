@@ -31,6 +31,11 @@ interface Props {
    * other. Anything missing degrades to the English label (#215).
    */
   countryLabels: Record<string, string>;
+  /**
+   * The pills that filter the map. Off where the served list below already
+   * prints the same names — see `detail` in `CoverageDensityMap` (#217).
+   */
+  showCountryFilter: boolean;
 }
 
 interface FocusedRegion {
@@ -66,7 +71,11 @@ type Geo = { countries: Topology; states: Topology };
  * rectangle, because there is nothing the reader could do about it and the
  * information is all in the text below.
  */
-export function CoverageDensityCanvas({ states, countryLabels }: Props) {
+export function CoverageDensityCanvas({
+  states,
+  countryLabels,
+  showCountryFilter,
+}: Props) {
   const t = useTranslations("Coverage.Density");
   const [geo, setGeo] = useState<Geo | null>(null);
   const [failed, setFailed] = useState(false);
@@ -138,7 +147,15 @@ export function CoverageDensityCanvas({ states, countryLabels }: Props) {
           `aria-pressed` because "which country is selected" is carried by fill
           alone on a map that assistive technology cannot see (SC 1.4.1 /
           4.1.2): these are the controls that stay operable now that the map
-          itself is out of the tab order. */}
+          itself is out of the tab order.
+
+          Absent where the served list below already prints the same names
+          (#217): 40 touch targets and, at 360 px, a horizontal scroller whose
+          continuation is a hidden affordance — a control for operating the map,
+          in front of a reader who came to read it. Nothing goes with it: the
+          map, the legend, the grouped list and the link out are all rendered
+          around this component by the server. */}
+      {showCountryFilter && (
       <div className="flex flex-nowrap overflow-x-auto pb-3 -mx-6 px-6 gap-2 mb-6 sm:flex-wrap sm:justify-center sm:overflow-visible sm:mx-0 sm:px-0 sm:pb-0 sm:mb-8">
         <button
           onClick={() => setSelectedCountry(null)}
@@ -166,6 +183,7 @@ export function CoverageDensityCanvas({ states, countryLabels }: Props) {
           </button>
         ))}
       </div>
+      )}
 
       {!failed && (
         <div

@@ -32,6 +32,12 @@ interface Props {
    * question the home is asked is "is my destination in it?", and the country
    * is the granularity that answers it: spec §3.9 item 1 asks the served HTML
    * of the home for the names of the countries, and that is what this renders.
+   *
+   * It decides the filter pills above the map too, and that is the same
+   * decision rather than a second one: with `"countries"` the served list below
+   * *is* the country names, so the pills republished all 39 of them 800 px
+   * higher, string for string, in a section 1.344 px tall at 360 px (#217).
+   * With `"regions"` the two say different things, so both stay.
    */
   detail?: "regions" | "countries";
 }
@@ -90,7 +96,11 @@ export async function CoverageDensityMap({
 
           {/* The labels are resolved here, on the server, and handed down —
               see `countryLabels` (#215). */}
-          <CoverageDensityCanvas states={states} countryLabels={countryLabels(states, locale)} />
+          <CoverageDensityCanvas
+            states={states}
+            countryLabels={countryLabels(states, locale)}
+            showCountryFilter={detail === "regions"}
+          />
 
           {/* The legend is server-rendered on purpose: the four steps are the
               only key to a drawing that says nothing without it, and colour

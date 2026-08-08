@@ -302,6 +302,108 @@ test.describe("spec §6.1 item 7 — a cobertura da home responde sem JavaScript
   });
 });
 
+/**
+ * #217 — a home imprimia os 39 nomes de país duas vezes: as pílulas de filtro
+ * do bloco escuro e a lista agrupada logo abaixo. Interseção medida pelo
+ * `design`: 39 de 39, nos quatro idiomas.
+ *
+ * O que a correção **não** pode fazer é tirar a resposta do HTML servido: o
+ * que some é o controle de filtro, não a informação, e `DS-COMPONENTE-006`
+ * continua exigindo a alternativa textual sem JavaScript (#191). Por isso os
+ * três testes abaixo rodam com JavaScript desligado, e o primeiro deles mede
+ * a interseção contra a lista que sobrou — se ela também tivesse sumido, a
+ * interseção seria zero pelo motivo errado.
+ */
+test.describe("#217 — a home não publica os mesmos nomes duas vezes", () => {
+  test.use({ javaScriptEnabled: false });
+
+  /** Palavras que carregam sentido: sem acento, sem artigo, sem preposição. */
+  const significantWords = (phrase: string) =>
+    new Set(
+      phrase
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[̀-ͯ]/g, "")
+        .split(/[^a-z0-9]+/)
+        .filter((word) => word.length >= 4),
+    );
+
+  for (const locale of LOCALES) {
+    test(`/${locale}: a interseção entre as pílulas e a lista de países é zero`, async ({
+      page,
+    }) => {
+      await page.goto(`/${locale}`, { waitUntil: "domcontentloaded" });
+      const { states } = await getCoverageData();
+      const countries = activeCountries(states).map((country) =>
+        localizedCountryLabel(country, locale),
+      );
+
+      // Controle: a lista é a metade que fica, e ela responde a pergunta da
+      // home ("meu destino está?"). Se ela sumir, o card foi resolvido pela
+      // ponta errada.
+      const list = await page.locator('[data-block="coverage-list"]').innerText();
+      expect(
+        countries.filter((name) => !list.includes(name)),
+        "país que a lista servida da home deixou de imprimir",
+      ).toEqual([]);
+
+      const pills = await page
+        .locator('[data-block="coverage-density"] button')
+        .allInnerTexts();
+      const repeated = pills
+        .map((text) => text.trim())
+        .filter((text) => countries.includes(text));
+      expect(repeated, "nome de país impresso nas duas seções da home").toEqual([]);
+    });
+  }
+
+  test("/coverage continua com a fila de filtro e a lista região a região", async ({ page }) => {
+    for (const locale of LOCALES) {
+      await page.goto(`/${locale}/coverage`, { waitUntil: "domcontentloaded" });
+      const { states } = await getCoverageData();
+      const countries = activeCountries(states).map((country) =>
+        localizedCountryLabel(country, locale),
+      );
+
+      const pills = new Set(
+        (await page.locator('[data-block="coverage-density"] button').allInnerTexts()).map((t) =>
+          t.trim(),
+        ),
+      );
+      expect(
+        countries.filter((name) => !pills.has(name)),
+        `/${locale}/coverage perdeu pílula de país — lá as duas seções dizem coisas diferentes`,
+      ).toEqual([]);
+
+      // E a lista continua sendo a de regiões, não a de países: a região é o
+      // que só existe dentro dela.
+      const list = await page.locator('[data-block="coverage-list"]').innerText();
+      const busiest = [...states]
+        .filter((s) => s.activeCount > 0)
+        .sort((a, b) => b.activeCount - a.activeCount)[0];
+      expect(list, `/${locale}/coverage deixou de listar região`).toContain(busiest.state);
+    }
+  });
+
+  for (const locale of LOCALES) {
+    test(`/${locale}: nenhum título repete o vizinho imediato`, async ({ page }) => {
+      await page.goto(`/${locale}`, { waitUntil: "domcontentloaded" });
+      const headings = await page.locator("h2, h3").allInnerTexts();
+      expect(headings.length, "controle: a home tem títulos para comparar").toBeGreaterThan(5);
+
+      const offenders: string[] = [];
+      for (let i = 1; i < headings.length; i += 1) {
+        const previous = significantWords(headings[i - 1]);
+        const shared = [...significantWords(headings[i])].filter((word) => previous.has(word));
+        if (shared.length > 2) {
+          offenders.push(`"${headings[i - 1]}" × "${headings[i]}" → ${shared.join(", ")}`);
+        }
+      }
+      expect(offenders, "títulos vizinhos dizendo a mesma frase").toEqual([]);
+    });
+  }
+});
+
 test.describe("spec §6.1 item 8 — a única porta B2B da página de maior tráfego", () => {
   test("os dois destinos são cards, e cada um mantém o seu evento", async ({ page }) => {
     await page.goto("/pt");
