@@ -2,6 +2,7 @@ import { test, expect, type Page } from "@playwright/test";
 import fs from "node:fs";
 import path from "node:path";
 import { localizedPathname } from "../../src/i18n/pathnames";
+import { AUDIO_SAMPLE_FILES } from "../../src/lib/audio-samples";
 
 /**
  * Card #193, component 4.1 — the global audio player, spec §1 of
@@ -670,4 +671,85 @@ test.describe("#213 / BR-AUDIO-020 — the stop's language switch survives the s
     await page.keyboard.press("Enter");
     await expect.poll(source, { timeout: 10_000 }).toBe(initial);
   });
+});
+
+/**
+ * Card #216 — the block's copy never says how many samples the block has.
+ *
+ * BR-COMUNICACAO-002 item 2 is the family: a figure and a counted noun typed
+ * next to each other, where the figure has an owner somewhere else. The four
+ * subtitles said "two short stories" over a grid that has rendered three since
+ * `bf7d5f1` (spec §1.3 raised the home from two to three), which is the same
+ * defect `tests/e2e/figure-noun-pair.spec.ts` watches for POI counts — with a
+ * spelled numeral instead of a digit, which is why no existing ruler saw it.
+ *
+ * `DS-COPY-005` is the rule that is literally on point ("no product figure is
+ * written into an i18n string"), and it is still `proposta` in
+ * docs/design/spec-repaginacao-site-2026-08.md §8 — never promoted to
+ * `heuristica.md`, so `regra.sh` does not know it. Noted on the card.
+ *
+ * **The owner is `AUDIO_SAMPLE_FILES`, not the copy.** Spec §1.3 authorises one
+ * to three samples, and /parcerias and the segment pages will ask this same
+ * component for two. Any figure in this namespace re-declares a count the array
+ * decides, and goes stale the next time the array moves — so the assertion is
+ * "no figure at all", over the whole namespace rather than over `subtitle`, so
+ * it still holds when the sentence moves to the heading.
+ *
+ * Singular is deliberately not on the list: `um`/`uno`/`una`/`one` are articles
+ * in three of the four languages, and a ruler that flags "a story you hear
+ * while exploring" would be turned off by the next person to write copy here.
+ * The defect is a plural count written by hand.
+ */
+const HAND_WRITTEN_COUNT = new RegExp(
+  "\\d|\\b(?:" +
+    [
+      "dois|duas|tr[êe]s|quatro|cinco|seis|sete|oito|nove|dez",
+      "two|three|four|five|six|seven|eight|nine|ten",
+      "dos|tres|cuatro|siete|ocho|nueve|diez",
+      "due|tre|quattro|cinque|sei|sette|otto|dieci",
+    ].join("|") +
+    ")\\b",
+  "i",
+);
+
+function homeAudioSampleMessages(locale: string): Record<string, string> {
+  const file = path.join(SRC, "messages", `${locale}.json`);
+  const all = JSON.parse(fs.readFileSync(file, "utf8")) as {
+    Home: { AudioSample: Record<string, string> };
+  };
+  return all.Home.AudioSample;
+}
+
+test.describe("BR-COMUNICACAO-002 item 2 / DS-COPY-005 — the sample block states no count of its own", () => {
+  test("control: the namespace is there, in all four languages, and it has something to say", () => {
+    // An assertion about what a set of strings does *not* contain is satisfied
+    // by an empty set. This is what keeps the four tests below load-bearing.
+    for (const locale of LOCALES) {
+      const strings = Object.values(homeAudioSampleMessages(locale));
+      expect(strings.length, locale).toBeGreaterThan(1);
+      expect(
+        strings.every((value) => value.trim().length > 0),
+        locale,
+      ).toBe(true);
+    }
+    // And the count the copy must not state is a real one: more than one sample
+    // is published, so "how many" is a question the copy could get wrong.
+    expect(AUDIO_SAMPLE_FILES.length).toBeGreaterThan(1);
+  });
+
+  for (const locale of LOCALES) {
+    test(`BR-COMUNICACAO-002 item 2: Home.AudioSample in ${locale} writes down no number of samples`, () => {
+      const offenders = Object.entries(homeAudioSampleMessages(locale))
+        .filter(([, value]) => HAND_WRITTEN_COUNT.test(value))
+        .map(([key, value]) => `Home.AudioSample.${key} — "${value}"`);
+
+      expect(
+        offenders,
+        "This copy states how many samples the block shows. The count belongs to " +
+          "AUDIO_SAMPLE_FILES (spec §1.3 authorises one to three, and other pages ask " +
+          "for a different number of the same component), so a figure written here is a " +
+          "second owner that goes stale the next time the array moves.",
+      ).toEqual([]);
+    });
+  }
 });
