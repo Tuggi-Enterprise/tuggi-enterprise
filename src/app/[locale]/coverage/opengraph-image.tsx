@@ -4,10 +4,16 @@
  * Dynamic Open Graph image for the /coverage page.
  * Generated at build time (SSG) using Next.js Satori integration.
  *
- * The three figures the rule owns — mapped points, countries and the region
- * floor — come from lib/product-facts, not from the snapshot
- * (BR-COMUNICACAO-002 items 8, 9 and 10). Only the country ranking still comes
- * from the snapshot, and it refreshes with `npm run update-coverage`.
+ * **No number on this card comes from `coverage-snapshot.json`.** The three
+ * figures the rule owns — mapped points, countries and the region floor — come
+ * from lib/product-facts (BR-COMUNICACAO-002 items 8, 9 and 10), and the
+ * country panel is a list of names with no count beside them (#221). The
+ * snapshot may feed a listing and may not feed a number presented as a claim,
+ * and item 5 names an Open Graph image as exactly that kind of surface: this
+ * whole file is an affirmation. The ranking that used to print
+ * `fmt(activeCount)` per country published a figure off a snapshot frozen at
+ * 2026-07-13, which superdeclares the archive against the production
+ * measurement the rule was written from — item 9's own `totalActiveRaw` case.
  *
  * Preview: https://www.tuggi.app/coverage (shared on WhatsApp, Slack, Twitter, LinkedIn)
  *
@@ -30,7 +36,8 @@ import {
   MAPPED_POINT_MILLIONS,
   COVERAGE_REGIONS_FLOOR,
 } from "@/lib/product-facts";
-import { getCountryDisplayName } from "@/lib/countryNames";
+import { activeCountries } from "@/lib/coverage-density";
+import { localizedCountryLabel } from "@/lib/countryNames";
 
 export const size        = { width: 1200, height: 630 };
 export const contentType = "image/png";
@@ -59,17 +66,8 @@ function fmt(n: number, locale: string) {
   return n.toLocaleString(locale);
 }
 
-function topCountries(
-  states: Awaited<ReturnType<typeof getCoverageData>>["states"],
-  limit = 7
-) {
-  const map = new Map<string, number>();
-  states.forEach(s => map.set(s.country, (map.get(s.country) ?? 0) + s.activeCount));
-  return Array.from(map.entries())
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, limit)
-    .map(([country, count]) => ({ name: getCountryDisplayName(country), count }));
-}
+/** How many names the right panel holds before it runs past the card. */
+const COUNTRY_PANEL_ROWS = 7;
 
 // ── Image ──────────────────────────────────────────────────────────────────────
 export default async function Image({
@@ -80,7 +78,12 @@ export default async function Image({
   const { locale } = await params;
   const t         = await getTranslations({ locale, namespace: "SEO_COVERAGE" });
   const coverage  = await getCoverageData();
-  const countries = topCountries(coverage.states);
+  // Names, and nothing beside them. `activeCountries` is the same listing the
+  // map's own pills are built from — the navigation the rule allows — and it
+  // keeps this file from touching a snapshot count at all (#221).
+  const countries = activeCountries(coverage.states)
+    .slice(0, COUNTRY_PANEL_ROWS)
+    .map(country => localizedCountryLabel(country, locale));
 
   // The published floor — one owner, in lib/product-facts. The "+" is the
   // "mais de" of BR-COMUNICACAO-002 item 4.
@@ -272,12 +275,11 @@ export default async function Image({
             {t("ogCountryList")}
           </div>
 
-          {countries.map(({ name, count }) => (
+          {countries.map(name => (
             <div
               key={name}
               style={{
                 display: "flex",
-                justifyContent: "space-between",
                 alignItems: "center",
                 padding: "10px 0",
                 borderBottom: "1px solid rgba(255,255,255,0.05)",
@@ -291,15 +293,6 @@ export default async function Image({
                 }}
               >
                 {name}
-              </span>
-              <span
-                style={{
-                  color: "#00a8e8",
-                  fontSize: 16,
-                  fontWeight: 700,
-                }}
-              >
-                {fmt(count, locale)}
               </span>
             </div>
           ))}

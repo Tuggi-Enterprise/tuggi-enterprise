@@ -140,18 +140,11 @@ function generateMetadataNode(source: ts.SourceFile): ts.Node | null {
 type Waiver = { file: string; accesses: string[]; card: string; reason: string };
 
 const WAIVED: Waiver[] = [
-  {
-    file: "app/[locale]/coverage/opengraph-image.tsx",
-    accesses: ["s.activeCount"],
-    card: "#221",
-    reason:
-      "topCountries() sums s.activeCount per country and prints it in the share card's country " +
-      "ranking panel (fmt(count, locale)). An Open Graph image is the exact surface item 5 names " +
-      "by name, and the ranking is a claim (a number next to a country on a card shared on " +
-      "WhatsApp/Slack/Twitter/LinkedIn), not the site's navigable listing. Filed 2026-08-07, found " +
-      "by tests/e2e/snapshot-affirmation-boundary.spec.ts (#206). Fix is `dev`'s: source the ranking " +
-      "from a production measurement, drop the panel, or show it without a number.",
-  },
+  // Empty, and that is the point: the one entry that lived here — `s.activeCount`
+  // in app/[locale]/coverage/opengraph-image.tsx, the share card's country
+  // ranking — was #221, and #221 landed. The panel now lists country names with
+  // no count beside them and the file reaches no snapshot figure at all, so the
+  // og:image test above proves the rule for it instead of excusing it.
 ];
 
 function isWaived(file: string, access: string): boolean {
