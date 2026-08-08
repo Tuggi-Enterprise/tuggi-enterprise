@@ -1,11 +1,16 @@
 import { Fragment } from "react";
 import Link from "next/link";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { ArrowRight } from "lucide-react";
 
 import { Link as LocalizedLink } from "@/i18n/routing";
 import type { StateCoverage } from "@/lib/coverage";
-import { DENSITY_STEPS, DENSITY_STROKE, groupCoverage } from "@/lib/coverage-density";
+import {
+  DENSITY_STEPS,
+  DENSITY_STROKE,
+  countryLabels,
+  groupCoverage,
+} from "@/lib/coverage-density";
 import { CoverageDensityCanvas } from "./CoverageDensityCanvas";
 
 interface Props {
@@ -59,7 +64,8 @@ export async function CoverageDensityMap({
   detail = "regions",
 }: Props) {
   const t = await getTranslations("Coverage.Density");
-  const groups = groupCoverage(states, tourHubs);
+  const locale = await getLocale();
+  const groups = groupCoverage(states, locale, tourHubs);
 
   if (!groups.length) return null;
 
@@ -82,7 +88,9 @@ export async function CoverageDensityMap({
             <p className="text-gray-300 text-base max-w-xl mx-auto">{t("sectionSubtitle")}</p>
           </div>
 
-          <CoverageDensityCanvas states={states} />
+          {/* The labels are resolved here, on the server, and handed down —
+              see `countryLabels` (#215). */}
+          <CoverageDensityCanvas states={states} countryLabels={countryLabels(states, locale)} />
 
           {/* The legend is server-rendered on purpose: the four steps are the
               only key to a drawing that says nothing without it, and colour
@@ -137,7 +145,7 @@ export async function CoverageDensityMap({
                         key={country.country}
                         className="rounded-full border border-gray-200 bg-tuggi-bg px-4 py-2 text-sm font-semibold text-tuggi-dark"
                       >
-                        {country.displayName}
+                        {country.label}
                       </li>
                     ))}
                   </ul>
@@ -163,7 +171,7 @@ export async function CoverageDensityMap({
                 {group.countries.map((country) => (
                   <li key={country.country} className="break-inside-avoid mb-6">
                     <span className="block text-base font-black text-tuggi-dark leading-tight">
-                      {country.displayName}
+                      {country.label}
                     </span>
                     <p className="text-sm text-tuggi-slate leading-relaxed">
                       {country.regions.map((region, index) => (

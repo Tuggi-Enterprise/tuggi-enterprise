@@ -3,7 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 import { getCoverageData } from "../../src/lib/coverage";
-import { getCountryDisplayName } from "../../src/lib/countryNames";
+import { localizedCountryLabel } from "../../src/lib/countryNames";
 import { activeCountries } from "../../src/lib/coverage-density";
 
 /**
@@ -275,8 +275,11 @@ test.describe("spec §6.1 item 7 — a cobertura da home responde sem JavaScript
     const countries = activeCountries(states);
 
     expect(countries.length).toBeGreaterThan(30);
+    // Em português, porque é a língua de `/pt`: desde o #215 o nome do país é
+    // escrito na língua da página, e procurar "United States" aqui deixaria de
+    // provar que a alternativa textual está servida — provaria o inglês.
     const missing = countries
-      .map((country) => getCountryDisplayName(country))
+      .map((country) => localizedCountryLabel(country, "pt"))
       .filter((name) => !text.includes(name));
     expect(missing, "países ausentes do texto servido da home").toEqual([]);
 

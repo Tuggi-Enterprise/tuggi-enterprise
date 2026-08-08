@@ -3,7 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { localizedPathname } from "../../src/i18n/pathnames";
 import { getCoverageData } from "../../src/lib/coverage";
-import { getCountryDisplayName } from "../../src/lib/countryNames";
+import { localizedCountryLabel } from "../../src/lib/countryNames";
 
 /**
  * Content that explains the product does not depend on JavaScript to be
@@ -171,11 +171,13 @@ test.describe("sem JavaScript", () => {
     const topRegionByCountry = new Map<string, string>();
     for (const s of states) {
       if (s.activeCount === 0) continue;
-      const country = getCountryDisplayName(s.country);
+      // O agrupamento é pelo rótulo cru do snapshot — a identidade —, e o que
+      // se procura na página é o nome escrito em português, que é o que o
+      // leitor de `/pt/coverage` vê desde o #215.
       const best = states
-        .filter((o) => getCountryDisplayName(o.country) === country && o.activeCount > 0)
+        .filter((o) => o.country === s.country && o.activeCount > 0)
         .sort((a, b) => b.activeCount - a.activeCount)[0];
-      topRegionByCountry.set(country, best.state);
+      topRegionByCountry.set(localizedCountryLabel(s.country, "pt"), best.state);
     }
     expect(topRegionByCountry.size).toBeGreaterThan(10);
 

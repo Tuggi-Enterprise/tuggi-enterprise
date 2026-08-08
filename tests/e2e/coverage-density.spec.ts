@@ -1,7 +1,7 @@
 import { test, expect, type Page } from "@playwright/test";
 
 import { getCoverageData, type StateCoverage } from "../../src/lib/coverage";
-import { getCountryDisplayName } from "../../src/lib/countryNames";
+import { getCountryDisplayName, localizedCountryLabel } from "../../src/lib/countryNames";
 import {
   MAP_FRAME,
   activeCountries,
@@ -110,9 +110,11 @@ test.describe("sem JavaScript", () => {
     await expect(blocks).toHaveCount(2);
     const text = (await blocks.allInnerTexts()).join(" ");
 
-    // Controle positivo: sem isto o teste passa contra um locator vazio.
-    expect(text).toContain("Brazil");
-    expect(text).toContain("Argentina");
+    // Controle positivo: sem isto o teste passa contra um locator vazio. Os
+    // nomes vêm do rótulo localizado, não escritos à mão em inglês — `COVERAGE`
+    // é `/pt`, e desde o #215 o que está na tela é "Brasil".
+    expect(text).toContain(localizedCountryLabel("Brazil", "pt"));
+    expect(text).toContain(localizedCountryLabel("Argentina", "pt"));
 
     const perCountryTotal = new Map<string, number>();
     const perCountryRegions = new Map<string, number>();

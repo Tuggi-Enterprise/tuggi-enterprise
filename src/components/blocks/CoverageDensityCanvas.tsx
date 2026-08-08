@@ -23,6 +23,14 @@ import {
 
 interface Props {
   states: StateCoverage[];
+  /**
+   * Snapshot country → the name written in the page's language, resolved by
+   * the server (`countryLabels`). A prop and not a `useLocale()` call here
+   * because this component renders on both sides of hydration, and
+   * `Intl.DisplayNames` is the browser's ICU on one side and Node's on the
+   * other. Anything missing degrades to the English label (#215).
+   */
+  countryLabels: Record<string, string>;
 }
 
 interface FocusedRegion {
@@ -58,7 +66,7 @@ type Geo = { countries: Topology; states: Topology };
  * rectangle, because there is nothing the reader could do about it and the
  * information is all in the text below.
  */
-export function CoverageDensityCanvas({ states }: Props) {
+export function CoverageDensityCanvas({ states, countryLabels }: Props) {
   const t = useTranslations("Coverage.Density");
   const [geo, setGeo] = useState<Geo | null>(null);
   const [failed, setFailed] = useState(false);
@@ -119,6 +127,9 @@ export function CoverageDensityCanvas({ states }: Props) {
   }, []);
 
   const stepLabel = (step: number) => t(`legend.${DENSITY_STEPS[step].id}`);
+  /** Display only. Degrades to the English name, never to a broken cell. */
+  const countryLabel = (country: string) =>
+    countryLabels[country] ?? getCountryDisplayName(country);
   const flipTooltip = tooltipPos.x > tooltipPos.width * 0.72;
 
   return (
@@ -151,7 +162,7 @@ export function CoverageDensityCanvas({ states }: Props) {
                 : "bg-white/5 text-gray-300 hover:bg-white/10 border border-white/10 cursor-pointer"
             }`}
           >
-            {getCountryDisplayName(country)}
+            {countryLabel(country)}
           </button>
         ))}
       </div>
@@ -293,7 +304,7 @@ export function CoverageDensityCanvas({ states }: Props) {
               }}
             >
               <div className="text-xs font-bold text-gray-300 uppercase tracking-tight mb-1">
-                {getCountryDisplayName(focused.country)}
+                {countryLabel(focused.country)}
               </div>
               <div className="text-lg font-black text-white mb-2 leading-tight">
                 {focused.region}
@@ -325,7 +336,7 @@ export function CoverageDensityCanvas({ states }: Props) {
           <span className="text-sm text-gray-300">
             <span className="font-black text-white">{focused.region}</span>
             {" · "}
-            {getCountryDisplayName(focused.country)}
+            {countryLabel(focused.country)}
             {" · "}
             {stepLabel(focused.step)}
           </span>

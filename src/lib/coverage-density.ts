@@ -20,7 +20,7 @@
  */
 
 import type { StateCoverage } from "./coverage";
-import { getCountryDisplayName } from "./countryNames";
+import { getCountryDisplayName, localizedCountryLabel } from "./countryNames";
 
 // ── Normalise: lowercase + strip combining diacritics + trim ─────────────────
 export const norm = (s: string) =>
@@ -287,6 +287,21 @@ export function activeCountries(states: StateCoverage[]): string[] {
 }
 
 /**
+ * Snapshot country → the name written in the page's language, for every active
+ * country. Display only, and built on the server: the drawing is a client
+ * component, and resolving `Intl.DisplayNames` on both sides of hydration is
+ * how the browser's ICU and Node's get to disagree in a locale nobody tested.
+ */
+export function countryLabels(
+  states: StateCoverage[],
+  locale: string
+): Record<string, string> {
+  return Object.fromEntries(
+    activeCountries(states).map((country) => [country, localizedCountryLabel(country, locale)])
+  );
+}
+
+/**
  * Region lookup for the TopoJSON layer: `(geoState, geoCountry) → snapshot row`.
  *
  * Built once per state array; the fuzzy branch is the original one from
@@ -398,8 +413,10 @@ export interface CoverageRegion {
 }
 
 export interface CoverageCountry {
+  /** The snapshot's own label — the identity, never shown to a reader. */
   country: string;
-  displayName: string;
+  /** The same country written in the page's language. Display only (#215). */
+  label: string;
   /** Every active region, densest first. Names only — see the module header. */
   regions: CoverageRegion[];
   /** Active regions the fixed frame cannot show. */
@@ -421,9 +438,16 @@ const GROUP_ORDER: CoverageGroupId[] = ["americas", "europe", "other"];
  * a screen reader get instead of 980 `aria-hidden` paths, and a list truncated
  * at four regions per country would be an alternative to a different map
  * (DS-COMPONENTE-006).
+ *
+ * `locale` is required rather than defaulted: what the reader sees is written
+ * in the language of the page, and a default here would be a silent English
+ * page waiting to happen. The **key** stays English — `tourHubs` is built by
+ * `getStateHubPaths()` from `getCountryDisplayName()`, so a translated string
+ * on that lookup would drop every route link with no error at all (#215).
  */
 export function groupCoverage(
   states: StateCoverage[],
+  locale: string,
   tourHubs: Record<string, string> = {}
 ): CoverageGroup[] {
   const byCountry = new Map<string, { total: number; regions: StateCoverage[] }>();
@@ -439,16 +463,18 @@ export function groupCoverage(
   const countries: CoverageCountry[] = [...byCountry.entries()]
     .sort((a, b) => b[1].total - a[1].total)
     .map(([country, entry]) => {
-      const displayName = getCountryDisplayName(country);
+      // The key, in English. `getStateHubPaths()` writes the other half of this
+      // string with the same function — the two have to stay the same fact.
+      const hubKey = getCountryDisplayName(country);
       const outOfFrame = (OUT_OF_FRAME_REGIONS[country] ?? []).filter((region) =>
         entry.regions.some((r) => r.state === region)
       );
       return {
         country,
-        displayName,
+        label: localizedCountryLabel(country, locale),
         regions: entry.regions
           .sort((a, b) => b.activeCount - a.activeCount)
-          .map((r) => ({ name: r.state, href: tourHubs[`${displayName}|${r.state}`] ?? null })),
+          .map((r) => ({ name: r.state, href: tourHubs[`${hubKey}|${r.state}`] ?? null })),
         outOfFrame,
       };
     });
