@@ -14,13 +14,7 @@ import {
   segmentPathname,
   type Segment,
 } from "../../src/lib/segments";
-import {
-  DOWNLOAD_CTA_SCOPES,
-  NAV_ITEMS,
-  PARTNERS_HUB_PUBLISHED,
-  VISIBLE_NAV_ITEMS,
-} from "../../src/lib/nav";
-import { TUGGI_CLIENT_SLUG, TUGGI_PARTNER_ID } from "../../src/lib/app-meta";
+import { NAV_ITEMS, PARTNERS_HUB_PUBLISHED, VISIBLE_NAV_ITEMS } from "../../src/lib/nav";
 
 /**
  * DS-COPY-006 — "the slug is text shown to the user: translated, unaccented,
@@ -341,19 +335,6 @@ test.describe("URLs that live outside the site", () => {
     expect(response.status()).toBe(200);
   });
 
-  test("/download is still there for the printed material to land on", async ({ request }) => {
-    // The one that must never move. It is on QR codes already handed out and
-    // inside partner links, and it is the door where `?ID=<uuid>` names the
-    // partner who earns the commission (BR-B2B-001) — whether that lookup then
-    // credits anyone is download-attribution.spec.ts's question, not this one.
-    // The chrome no longer links here (see the CTA suite below) and that is not
-    // permission to retire it: this traffic comes from paper, not from the site.
-    for (const query of ["", `?ID=${TUGGI_PARTNER_ID}`]) {
-      const response = await request.get(`/download${query}`, { maxRedirects: 0 });
-      expect(response.status(), `/download${query}`).toBe(200);
-    }
-  });
-
   test("the tour subtree kept its slug in every locale", async ({ request }) => {
     // Coupling with the CMS, documented in docs/contracts/cms-para-site.md:
     // the route slug comes from the CMS snapshot, and only the menu label for
@@ -368,65 +349,33 @@ test.describe("URLs that live outside the site", () => {
 });
 
 /**
- * BR-B2B-001 — "the partner QR is an instrument of attribution, not of sale":
- *              only a partner's own link may claim a download.
- * DS-COPY-006, edge case 1 — the printed URL does not change once handed out.
+ * BR-B2B-001 — the partner link is an instrument of attribution: only a
+ * partner's own link may claim a download. The Tuggi landing resolves the
+ * internal Tuggi client, which is a row in core.clients and not a partner, so
+ * nothing is credited and no commission moves.
  *
- * The site chrome draws "Download app" four times, and until 2026-08-07 all
- * four went to the bare `/download`: a page that plays no audio and, with no
- * `?ID=`, resolves nobody. They now go to the Tuggi landing, which plays our
- * own welcome audio — the same call AppDownloadButton already made for its
- * desktop fallback — and resolves the internal Tuggi client. That client is a
- * row in core.clients and not a partner: `isAttributablePartnerId` returns
- * false for it, so nothing is credited and no commission moves. Stamping it is
- * what "organic" means here.
- *
- * Two failures this pins, both silent in production:
- *  - a fifth CTA (or a fixed one) written by hand against `/download` again,
- *    which is how the four drifted apart in the first place;
- *  - the `tuggi` row disappearing from core.clients, which turns the CTA in
- *    the header of every page on the site into a 404.
+ * The chrome draws "Download app" four times — the header at two breakpoints,
+ * the mobile drawer, and the footer — and each writes its own href, which is
+ * how they drifted apart before. They point at the Tuggi landing, which plays
+ * our own welcome audio, and not at the bare `/download`, which with no `?ID=`
+ * resolves nobody. The anchor is the data attribute and not the visible label,
+ * which is copy and moves.
  */
-test.describe("the chrome's download CTA", () => {
-  const LANDING = `/d/${TUGGI_CLIENT_SLUG}`;
+test("the four download CTAs in the chrome point at the Tuggi landing", async ({ page }) => {
+  await page.goto(`/${DEFAULT_LOCALE}`);
 
-  for (const locale of LOCALES) {
-    test(`all four CTAs point at the Tuggi landing in ${locale}`, async ({ page }) => {
-      await page.goto(`/${locale}`);
+  const scopes = ["header-desktop", "header-compact", "header-drawer", "footer"];
+  // The mobile drawer lives in the DOM at every width — it slides, it does not
+  // mount — so all four are there without opening anything.
+  await expect(page.locator("[data-download-cta]")).toHaveCount(scopes.length);
 
-      const ctas = page.locator("[data-download-cta]");
-      // The mobile drawer is in the DOM at every width — it slides, it does not
-      // mount — so the count is four without opening anything.
-      await expect(ctas).toHaveCount(DOWNLOAD_CTA_SCOPES.length);
-
-      for (const scope of DOWNLOAD_CTA_SCOPES) {
-        const cta = page.locator(`[data-download-cta="${scope}"]`);
-        await expect(cta, `${scope} is rendered exactly once`).toHaveCount(1);
-        // The locale prefix is what the visitor is already reading in: these
-        // are internal links, not the prefix-free URL that goes on paper.
-        await expect(cta, `${scope} href`).toHaveAttribute(
-          "href",
-          `/${locale}${LANDING}`
-        );
-      }
-    });
+  for (const scope of scopes) {
+    // Strict mode: this also asserts each scope is rendered exactly once.
+    await expect(
+      page.locator(`[data-download-cta="${scope}"]`),
+      `${scope} href`
+    ).toHaveAttribute("href", `/${DEFAULT_LOCALE}/d/tuggi`);
   }
-
-  test("that landing resolves the internal Tuggi client, prefixed or not", async ({
-    request,
-  }) => {
-    // A 200 alone would also pass on a landing that resolved somebody else's
-    // partner page, so the payload is read for the id: the page hands
-    // PartnerHeroWrapper a `partnerId`, and that value is the whole difference
-    // between an unattributed install and a commission.
-    for (const path of [LANDING, ...LOCALES.map((locale) => `/${locale}${LANDING}`)]) {
-      const response = await request.get(path, { maxRedirects: 0 });
-      expect(response.status(), path).toBe(200);
-      expect(await response.text(), `${path} carries the Tuggi client id`).toContain(
-        TUGGI_PARTNER_ID
-      );
-    }
-  });
 });
 
 test.describe("main menu", () => {

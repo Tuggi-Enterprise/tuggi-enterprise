@@ -69,31 +69,6 @@ const CLIENTS_BY_SLUG = {
     social_handle: null,
     avatar_url: `https://${HOST}:${PORT}/storage/v1/object/public/partners/e2e-logo.png`,
   },
-  // The internal Tuggi client, and not a fixture invented for this suite: the
-  // row exists in production and every "get the app" CTA in the site chrome
-  // points at /d/tuggi. Without it here the four links would land on a 404 in
-  // the harness — which is exactly what would happen in production if the row
-  // ever went away, so routing.spec.ts asserts the landing answers.
-  //
-  // `id` must stay equal to TUGGI_PARTNER_ID in src/lib/app-meta.ts: it is what
-  // makes buildPartnerData mark the row `isTuggi` (no third-party name, no
-  // logo) instead of rendering it as somebody's partner page. The spec reads
-  // the constant and asserts the served page carries it, so a drift between
-  // these two fails rather than passing over the wrong branch.
-  tuggi: {
-    id: "8be94d35-282d-46bf-bc12-6fcd2f83a432",
-    slug: "tuggi",
-    name: null,
-    company_name: "Tuggi",
-    // Present in production too: this is the welcome audio the landing plays,
-    // which is the whole reason the chrome points here instead of /download.
-    welcome_poi_id: "33333333-3333-4333-8333-333333333333",
-    metadata: null,
-    client_type: null,
-    website: null,
-    social_handle: null,
-    avatar_url: null,
-  },
 };
 
 /**

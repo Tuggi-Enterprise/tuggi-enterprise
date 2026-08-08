@@ -1,17 +1,14 @@
 "use client";
 
 import { useEffect, useState, type ReactNode } from "react";
-import { APP_STORE_URL, PLAY_STORE_URL, TUGGI_CLIENT_SLUG } from "@/lib/app-meta";
+import { APP_STORE_URL, PLAY_STORE_URL } from "@/lib/app-meta";
 
 /**
  * Locale-agnostic Tuggi landing (middleware resolves the language per request).
  * Used as the desktop / no-JS fallback so the page plays our own welcome audio
  * and is attributed as Tuggi (slug "tuggi" → the Tuggi client).
- *
- * Written bare rather than through the typed `Link`, unlike the header and
- * footer CTAs, because this href is swapped for a store URL after mount.
  */
-const TUGGI_LANDING = `/d/${TUGGI_CLIENT_SLUG}`;
+const TUGGI_LANDING = "/d/tuggi";
 
 interface AppDownloadButtonProps {
   className?: string;

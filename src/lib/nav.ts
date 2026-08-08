@@ -16,50 +16,7 @@
  * and in the footer (§8.6): the header CTA is "Download app", which is the
  * traveller; contact is the partner, and he arrives through Partners.
  */
-import type { AppPathname, StaticAppPathname } from "@/i18n/pathnames";
-import { TUGGI_CLIENT_SLUG } from "@/lib/app-meta";
-
-/**
- * Where the chrome's "Download app" CTA goes — the header (three renderings)
- * and the footer.
- *
- * The Tuggi landing, not the bare `/download`. Two reasons, and neither is
- * cosmetic (decision: Tech Lead, 2026-08-07):
- *
- *  - `/d/tuggi` plays our own welcome audio; `/download` with no query plays
- *    nothing. That is the point of sending the visitor there, and it is the
- *    same call `AppDownloadButton` already made for its desktop fallback.
- *  - It resolves the internal Tuggi client, which is a row in `core.clients`
- *    but not a partner: `isAttributablePartnerId` returns false for it by
- *    name, so nothing is credited and no commission moves. Stamping it is
- *    what "organic" means here — see src/lib/app-meta.ts.
- *
- * `/download` stays up, untouched and un-redirected: it is the URL printed on
- * QR codes and living in partner links, and it resolves a partner from `?ID=`
- * (DS-COPY-006, edge case 1). Changing it drops commission in silence.
- */
-export const DOWNLOAD_CTA_HREF = {
-  pathname: "/d/[slug]",
-  params: { slug: TUGGI_CLIENT_SLUG },
-} as const satisfies { pathname: AppPathname; params: Record<string, string> };
-
-/**
- * Every rendering of that CTA, by its `data-download-cta` value. The chrome
- * draws the same call four times — the header at two breakpoints, the mobile
- * drawer, and the footer — and all four used to point at `/download` because
- * each was written by hand.
- *
- * tests/e2e/routing.spec.ts walks this list and pins the destination of each,
- * so a fifth CTA added without an entry fails rather than quietly shipping the
- * wrong URL. The anchor is the attribute and not the visible label, which is
- * copy and moves.
- */
-export const DOWNLOAD_CTA_SCOPES = [
-  "header-desktop",
-  "header-compact",
-  "header-drawer",
-  "footer",
-] as const;
+import type { StaticAppPathname } from "@/i18n/pathnames";
 
 /**
  * The partners hub (`/partners`). True since #195: the page and its copy in
