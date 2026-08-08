@@ -759,6 +759,99 @@ test.describe("#224 — a refused continuation never costs the narration", () =>
 });
 
 /**
+ * Card #225 — the line describes the sample, so the row stops moving.
+ *
+ * The metadata line used to take its length and its language from the clip
+ * that was loaded, which meant a press changed its subject: "São Paulo,
+ * Brasil · 0:28" became "São Paulo, Brasil · 0:01 · português (Brasil)" for the
+ * 1,2 s the cue lasts, wrapped to two lines, and took the card from 152 px to
+ * 172 px. A grid levels a row, so the two cards nobody touched moved with it,
+ * and the way back landed ~1,2 s after the press — outside the 500 ms in which
+ * a shift is excused as a consequence of the visitor's own input.
+ *
+ * Measured by the browser and not by polling: the whole event is shorter than
+ * a reliable poll interval, which is how it reached production.
+ */
+test.describe("#225 — the card keeps its height while the sample plays", () => {
+  const CASES = [
+    { locale: "pt", width: 768 },
+    { locale: "it", width: 768 },
+    { locale: "it", width: 1440 },
+  ] as const;
+
+  for (const { locale, width } of CASES) {
+    test(`/${locale}/drive at ${width} px: no card of the row changes height between the cue and the story`, async ({
+      page,
+    }) => {
+      test.setTimeout(120_000);
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto(`/${locale}${localizedPathname(locale, "/drive")}`);
+
+      const cards = page.locator("section article").filter({ has: page.locator("audio") });
+      await expect(cards).toHaveCount(3);
+
+      // Measured only once the line is complete: the duration lands with the
+      // file's header, and a card measured before it is a card in a state no
+      // visitor decides in.
+      const metadata = page.locator("section article p.line-clamp-2 + p");
+      await expect
+        .poll(async () => (await metadata.allInnerTexts()).every((text) => /\d+:\d\d/.test(text)), {
+          timeout: 15_000,
+        })
+        .toBe(true);
+      const atRest = await metadata.allInnerTexts();
+
+      // Every height each card of the row takes from here on.
+      await page.evaluate(() => {
+        const row = [...document.querySelectorAll("section article")].filter((card) =>
+          card.querySelector("audio"),
+        );
+        const seen: number[][] = row.map(() => []);
+        (window as unknown as { __heights: number[][] }).__heights = seen;
+        row.forEach((card, index) => {
+          const observer = new ResizeObserver((entries) => {
+            for (const entry of entries) {
+              const height = Math.round(entry.contentRect.height);
+              const list = seen[index];
+              if (list[list.length - 1] !== height) list.push(height);
+            }
+          });
+          observer.observe(card);
+        });
+      });
+
+      await watchCard(page, 0);
+      await press(page, 0);
+      // Through the cue and into the story: the window in which the line used
+      // to be saying something else about something else.
+      await expect
+        .poll(async () => (await readPlayed(page)).sources, { timeout: 30_000 })
+        .toEqual([`/audio/${PUBLISHED[0]}-dir.mp3`, `/audio/${PUBLISHED[0]}-desc.mp3`]);
+      await expect
+        .poll(
+          () =>
+            page
+              .locator("section article audio")
+              .first()
+              .evaluate((el) => (el as HTMLAudioElement).currentTime),
+          { timeout: 20_000 },
+        )
+        .toBeGreaterThan(1);
+
+      const heights = await page.evaluate(
+        () => (window as unknown as { __heights: number[][] }).__heights,
+      );
+      heights.forEach((taken, index) => {
+        expect(taken, `card ${index} took the heights ${taken.join(" → ")}`).toHaveLength(1);
+      });
+      // ...and it is the same line, not a line that survived by saying less.
+      expect(await metadata.allInnerTexts()).toEqual(atRest);
+      expect(atRest.every((text) => /\d+:\d\d/.test(text))).toBe(true);
+    });
+  }
+});
+
+/**
  * Card #213 — the route stop keeps its languages.
  *
  * `RouteStopAudio` consumes the same player, and it is the one surface where

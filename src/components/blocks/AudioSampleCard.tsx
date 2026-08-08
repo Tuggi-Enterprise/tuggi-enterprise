@@ -64,6 +64,11 @@ export type AudioClip = {
    * sample to all four locales and, apart from the three directional cues
    * (matched to Storage on #213), nothing in the repository records which
    * language was recorded — so no call site claims one.
+   *
+   * The card reads it off the **last** clip and nowhere else, because that is
+   * the clip the card is about (#225, and the note on the metadata line). On a
+   * cue it is provenance, recorded by #213 and shown by nothing: a language
+   * that is on screen for the second the cue lasts is not the sample's.
    */
   audioLang: string | null;
 };
@@ -201,6 +206,19 @@ export function AudioSampleCard({
   const [failed, setFailed] = useState(false);
   const [time, setTime] = useState(0);
   const [duration, setDuration] = useState(NaN);
+  /**
+   * How long the *sample* is, which is the story's length — what the metadata
+   * line shows, in every state (#225).
+   *
+   * `duration` above stays the *loaded* clip's, because it is the seek bar's
+   * range and a bar whose maximum is not the running clip's length points at
+   * the wrong second. The line is the other question: it says what the visitor
+   * is deciding about, it is decided before he presses anything, and a figure
+   * that drops from 0:28 to 0:01 for the second the cue lasts is a card
+   * changing its subject under him — and, because it wraps, moving every card
+   * on its row of the grid.
+   */
+  const [sampleDuration, setSampleDuration] = useState(NaN);
   const [openTranscript, setOpenTranscript] = useState(false);
   const startedRef = useRef(false);
   /**
@@ -343,7 +361,13 @@ export function AudioSampleCard({
     const onWaiting = () => setLoading(true);
     const onPlaying = () => setLoading(false);
     const onTime = () => setTime(el.currentTime);
-    const onMeta = () => setDuration(el.duration);
+    const onMeta = () => {
+      setDuration(el.duration);
+      // The sample's own length, taken from the only clip that measures it.
+      // It is read once, at rest or when the sequence returns to the story,
+      // and it is what keeps the metadata line still while the cue plays.
+      if (loadedRef.current === last) setSampleDuration(el.duration);
+    };
     const onError = () => {
       setFailed(true);
       setPlaying(false);
@@ -375,7 +399,7 @@ export function AudioSampleCard({
       el.removeEventListener("error", onError);
       if (playingAudio === el) playingAudio = null;
     };
-  }, [sample.id, sequence, goToClip]);
+  }, [sample.id, sequence, last, goToClip]);
 
   const toggle = () => {
     const el = audioRef.current;
@@ -407,7 +431,10 @@ export function AudioSampleCard({
     });
   };
 
+  /** The seek bar's range: the clip that is loaded, always. */
   const knownDuration = isFinite(duration) && duration > 0;
+  /** The metadata line's figure: the sample, always. */
+  const knownSampleDuration = isFinite(sampleDuration) && sampleDuration > 0;
   const active = clips[loaded] ?? story;
   /** A single clip is a sample with no halves: there is no state to follow. */
   const chained = clips.length > 1;
@@ -427,24 +454,38 @@ export function AudioSampleCard({
    * locale, the language in its own, which is how the visitor recognizes a
    * language he does not read.
    *
-   * Both the length and the language are the *loaded* clip's, never the
-   * sample's: the sample has neither. Idle, that is the story — the narration
-   * is what the card offers and its length is what the visitor is deciding
-   * about, while the cue in front of it is a second long and, unlike the
-   * story, has an established language to name while it plays.
+   * **Every part of it is about the sample, and none about the clip that
+   * happens to be loaded** (#225). It used to take the length and the language
+   * from the loaded clip, which meant a card whose line read
+   * "São Paulo, Brasil · 0:28" answered a press with
+   * "São Paulo, Brasil · 0:01 · português (Brasil)" for the 1,2 s the cue
+   * lasts: a second subject, a second line of text, 20 px of extra card, and —
+   * because the grid levels a row — every neighbour of that row moved with it,
+   * back and forth, outside the 500 ms window that excuses a shift after an
+   * input. The clip that is playing is said by the chips and by the
+   * `role="status"` region below, which is where a fact about a clip belongs
+   * and neither of which changes the height of anything.
+   *
+   * So the length is the story's (`sampleDuration`) and the language is the
+   * story's too. On /drive that is `null` and the line never names one — the
+   * three cues have an established language and the narrations do not, and a
+   * label that appears for one second of a thirty-second listen was never the
+   * "language of the sample" the spec asked for in §1.2. On a route stop the
+   * sample *is* one clip in a language the visitor picked himself, and there
+   * the line names it, at rest and while it plays.
    */
   const countryName = sample.countryCode
     ? (new Intl.DisplayNames([locale], { type: "region" }).of(sample.countryCode) ??
       sample.countryCode)
     : null;
-  const languageName = active.audioLang
-    ? (new Intl.DisplayNames([active.audioLang], { type: "language" }).of(active.audioLang) ??
-      active.audioLang)
+  const languageName = story.audioLang
+    ? (new Intl.DisplayNames([story.audioLang], { type: "language" }).of(story.audioLang) ??
+      story.audioLang)
     : null;
 
   const metadata = [
     [sample.city, countryName].filter(Boolean).join(", ") || null,
-    knownDuration ? formatTime(duration) : null,
+    knownSampleDuration ? formatTime(sampleDuration) : null,
     languageName,
   ].filter((part): part is string => Boolean(part));
 
