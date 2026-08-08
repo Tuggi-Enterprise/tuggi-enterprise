@@ -462,6 +462,60 @@ test.describe("spec §1.2 — the chips are the spec's pair, and they come from 
   });
 });
 
+/** What a card records about itself while it plays. */
+type Played = { sources: string[]; chips: string[] };
+
+/**
+ * Watches one card from the browser, instead of polling it from here.
+ *
+ * The cue is barely over a second long: a poll can step over the whole clip
+ * and see only the story, which is also what a card that never chained looks
+ * like. `timeupdate` only fires while a source is *running*, so the list it
+ * builds is the sources that actually played, in order — and the observer on
+ * `aria-current` catches a chip that is marked and unmarked between two
+ * polls (DS-A11Y-003).
+ */
+async function watchCard(page: Page, index: number) {
+  await page.evaluate((cardIndex) => {
+    const cards = [...document.querySelectorAll("section article")].filter((card) =>
+      card.querySelector("audio"),
+    );
+    const card = cards[cardIndex];
+    const el = card.querySelector("audio") as HTMLAudioElement;
+    const played: Played = { sources: [], chips: [] };
+    (window as unknown as { __played: Played }).__played = played;
+
+    const pushSource = () => {
+      const source = new URL(el.currentSrc || el.src, location.href).pathname;
+      if (played.sources[played.sources.length - 1] !== source) played.sources.push(source);
+    };
+    el.addEventListener("timeupdate", pushSource);
+
+    const chips = card.querySelector("ul");
+    if (chips) {
+      const observer = new MutationObserver(() => {
+        const label = chips.querySelector("[aria-current]")?.textContent?.trim();
+        if (label && played.chips[played.chips.length - 1] !== label) played.chips.push(label);
+      });
+      observer.observe(chips, {
+        attributes: true,
+        subtree: true,
+        attributeFilter: ["aria-current"],
+      });
+    }
+  }, index);
+}
+
+const readPlayed = (page: Page) =>
+  page.evaluate(() => (window as unknown as { __played: Played }).__played);
+
+/** Focus + Enter, never click: the reason is in the note on SC 1.4.2 above. */
+async function press(page: Page, index: number) {
+  const cards = page.locator("section article").filter({ has: page.locator("audio") });
+  await cards.nth(index).getByRole("button").first().focus();
+  await page.keyboard.press("Enter");
+}
+
 /**
  * Card #213 — the pair is played again, and this block is what keeps it that
  * way.
@@ -474,62 +528,12 @@ test.describe("spec §1.2 — the chips are the spec's pair, and they come from 
  * behaviour with no test is a behaviour that leaves without a sound, so what is
  * asserted here is the behaviour itself: the second source enters playback on
  * its own, after the first, from one press of the visitor.
+ *
+ * The three helpers above were declared inside this block until #224 needed
+ * them too — one watcher, one press, both used by the block that measures the
+ * happy path and by the one that measures the refused path (CLAUDE.md §6).
  */
 test.describe("#213 — the cue plays, and the story follows it", () => {
-  /** What a card records about itself while it plays. */
-  type Played = { sources: string[]; chips: string[] };
-
-  /**
-   * Watches one card from the browser, instead of polling it from here.
-   *
-   * The cue is barely over a second long: a poll can step over the whole clip
-   * and see only the story, which is also what a card that never chained looks
-   * like. `timeupdate` only fires while a source is *running*, so the list it
-   * builds is the sources that actually played, in order — and the observer on
-   * `aria-current` catches a chip that is marked and unmarked between two
-   * polls (DS-A11Y-003).
-   */
-  async function watchCard(page: Page, index: number) {
-    await page.evaluate((cardIndex) => {
-      const cards = [...document.querySelectorAll("section article")].filter((card) =>
-        card.querySelector("audio"),
-      );
-      const card = cards[cardIndex];
-      const el = card.querySelector("audio") as HTMLAudioElement;
-      const played: Played = { sources: [], chips: [] };
-      (window as unknown as { __played: Played }).__played = played;
-
-      const pushSource = () => {
-        const source = new URL(el.currentSrc || el.src, location.href).pathname;
-        if (played.sources[played.sources.length - 1] !== source) played.sources.push(source);
-      };
-      el.addEventListener("timeupdate", pushSource);
-
-      const chips = card.querySelector("ul");
-      if (chips) {
-        const observer = new MutationObserver(() => {
-          const label = chips.querySelector("[aria-current]")?.textContent?.trim();
-          if (label && played.chips[played.chips.length - 1] !== label) played.chips.push(label);
-        });
-        observer.observe(chips, {
-          attributes: true,
-          subtree: true,
-          attributeFilter: ["aria-current"],
-        });
-      }
-    }, index);
-  }
-
-  const readPlayed = (page: Page) =>
-    page.evaluate(() => (window as unknown as { __played: Played }).__played);
-
-  /** Focus + Enter, never click: the reason is in the note on SC 1.4.2 above. */
-  async function press(page: Page, index: number) {
-    const cards = page.locator("section article").filter({ has: page.locator("audio") });
-    await cards.nth(index).getByRole("button").first().focus();
-    await page.keyboard.press("Enter");
-  }
-
   test("the second source enters playback on its own, after the first", async ({ page }) => {
     // A press, a clip of ~1.2 s, and the swap that follows it: the default
     // 30 s covers it, but not on a cold static asset.
@@ -619,6 +623,139 @@ test.describe("#213 — the cue plays, and the story follows it", () => {
     const code = fs.readFileSync(CARD, "utf8");
     expect(code.match(/<audio\b/g)?.length).toBe(1);
   });
+});
+
+/**
+ * Card #224 — what a refused continuation is allowed to cost.
+ *
+ * The sequence has one call that is not made from inside a gesture, and every
+ * autoplay policy in the three documents the component cites reserves the right
+ * to refuse it. `bb7ac14` shipped the refusal path anyway — and, on the way
+ * back from it, read `ended || currentTime === 0` off an element that `load()`
+ * had just reset. A story that was refused permission to play and a story that
+ * has already finished are the same three attributes, so the card rewound to
+ * the cue: press, cue, refusal, press, cue, refusal — the narration
+ * unreachable, on the page whose job is to prove how the product sounds.
+ *
+ * There was no red test because there was no test of the refusal at all: the
+ * block above measures the path where the policy says yes. This one is the
+ * other half, and the criterion it holds the component to is behavioural, not
+ * structural — **the story always plays**. The cue is the bonus; whatever any
+ * browser decides about the continuation, a press has to reach the narration
+ * and none may go backwards.
+ */
+test.describe("#224 — a refused continuation never costs the narration", () => {
+  /**
+   * Refuses every `play()` that is not made from inside a gesture handler —
+   * the strictest reading of the policies, and the one WebKit tells sites to
+   * assume ("websites should assume any use of `<video>` or `<audio>` requires
+   * a user gesture click to play").
+   *
+   * It has to be a double: WebKit is not installed on the machines this suite
+   * runs on, and Chromium does not implement this policy, so the real refusal
+   * cannot be produced here. What is asserted is therefore not "iOS behaves
+   * like this" — it is that the component survives a refusal, which is the
+   * only half of the question the repository can answer.
+   */
+  async function refuseUngesturedPlay(page: Page) {
+    await page.addInitScript(() => {
+      let insideGesture = false;
+      const openGesture = () => {
+        insideGesture = true;
+        // The window is the *task*, and it has to be: the HTML spec performs a
+        // microtask checkpoint after every listener whose stack empties, so a
+        // `queueMicrotask` here closes the window between this listener and
+        // React's — and refuses the press itself, which is not the policy
+        // anyone documents. A task boundary is the honest reading of "directly
+        // resulted from a handler": the whole dispatch is inside it, and the
+        // `ended` that arrives a second later is not.
+        setTimeout(() => {
+          insideGesture = false;
+        }, 0);
+      };
+      for (const type of ["click", "keydown", "touchend"]) {
+        document.addEventListener(type, openGesture, true);
+      }
+
+      const refusals: string[] = [];
+      (window as unknown as { __refusals: string[] }).__refusals = refusals;
+      const play = HTMLMediaElement.prototype.play;
+      HTMLMediaElement.prototype.play = function refusingPlay(this: HTMLMediaElement) {
+        // `src`, never `currentSrc`: the component sets the attribute and calls
+        // play() in the same breath, and `currentSrc` is still naming the clip
+        // that was in the element before the swap.
+        if (insideGesture) return play.call(this);
+        refusals.push(new URL(this.src, location.href).pathname);
+        return Promise.reject(new DOMException("Refused by the test", "NotAllowedError"));
+      };
+    });
+  }
+
+  const readRefusals = (page: Page) =>
+    page.evaluate(() => (window as unknown as { __refusals: string[] }).__refusals);
+
+  /** The three attributes the old condition was reading, from the first card. */
+  const elementState = (page: Page) =>
+    page.evaluate(() => {
+      const el = document.querySelector("section article audio") as HTMLAudioElement;
+      return {
+        source: new URL(el.currentSrc || el.src, location.href).pathname,
+        paused: el.paused,
+        currentTime: el.currentTime,
+      };
+    });
+
+  for (const locale of ["pt", "it"] as const) {
+    test(`/${locale}/drive: the press after a refusal plays the story, and no press replays the cue`, async ({
+      page,
+    }) => {
+      // Two presses, a clip of ~1,2 s and two swaps, on assets that may be
+      // cold: the default 30 s is not the budget for this one.
+      test.setTimeout(120_000);
+      await refuseUngesturedPlay(page);
+      await page.goto(`/${locale}${localizedPathname(locale, "/drive")}`);
+
+      const cards = page.locator("section article").filter({ has: page.locator("audio") });
+      await expect(cards).toHaveCount(3);
+      await watchCard(page, 0);
+
+      const cue = `/audio/${PUBLISHED[0]}-dir.mp3`;
+      const story = `/audio/${PUBLISHED[0]}-desc.mp3`;
+
+      // The press is granted, because it is a press: the cue plays.
+      await press(page, 0);
+      await expect
+        .poll(async () => (await readPlayed(page)).sources, { timeout: 30_000 })
+        .toEqual([cue]);
+
+      // ...and the continuation is refused. This assertion is what keeps the
+      // rest of the test honest: if the swap stopped happening, or if the
+      // double stopped refusing, everything below would pass over a path
+      // nobody exercised.
+      await expect.poll(() => readRefusals(page), { timeout: 30_000 }).toEqual([story]);
+
+      // The state that has no reading: the story is loaded, paused, at zero,
+      // which is attribute for attribute what a *finished* sequence looks
+      // like. Nothing in the DOM tells the two apart — the component has to
+      // have kept the answer itself.
+      expect(await elementState(page)).toEqual({ source: story, paused: true, currentTime: 0 });
+
+      // The press that pays for the refusal. It costs one press and it reaches
+      // the narration: the cue does not play a second time, and the story
+      // advances. Rewinding would leave `sources` at [cue] and this red.
+      await press(page, 0);
+      await expect
+        .poll(async () => (await readPlayed(page)).sources, { timeout: 30_000 })
+        .toEqual([cue, story]);
+      await expect
+        .poll(async () => (await elementState(page)).currentTime, { timeout: 15_000 })
+        .toBeGreaterThan(0);
+      expect((await elementState(page)).source).toBe(story);
+      // And the second press asked for nothing the policy could refuse: one
+      // refusal in the whole run, the continuation's.
+      expect(await readRefusals(page)).toEqual([story]);
+    });
+  }
 });
 
 /**

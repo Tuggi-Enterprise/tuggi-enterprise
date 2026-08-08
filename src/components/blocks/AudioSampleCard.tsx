@@ -203,6 +203,24 @@ export function AudioSampleCard({
   const [duration, setDuration] = useState(NaN);
   const [openTranscript, setOpenTranscript] = useState(false);
   const startedRef = useRef(false);
+  /**
+   * Whether the next press starts the sequence over, from the cue.
+   *
+   * This is the one fact about the sequence that the element cannot be asked
+   * for. `load()` "will reset the element" (MDN) — `paused` true, `currentTime`
+   * back at the beginning, `ended` false — so an element sitting on a story it
+   * was refused permission to play is indistinguishable, attribute by
+   * attribute, from one sitting on a story that already finished. Deriving the
+   * answer from `ended || currentTime === 0` read the first as the second and
+   * rewound to the cue, which put the narration out of reach entirely: every
+   * odd press played the cue and every even one was the refused continuation
+   * (#224).
+   *
+   * True at rest, because nothing has played yet; true again the moment the
+   * story ends; false as soon as anything starts playing, which is exactly when
+   * the sequence stops being at its start.
+   */
+  const restartOnNextPressRef = useRef(true);
 
   /**
    * Which clip is in the element, twice: the state renders the chip and the
@@ -255,6 +273,9 @@ export function AudioSampleCard({
     const onPlay = () => {
       if (playingAudio && playingAudio !== el) playingAudio.pause();
       playingAudio = el;
+      // Something is playing, so the sequence is under way and the next press
+      // is a resume, never a rewind. Only the end of the story puts this back.
+      restartOnNextPressRef.current = false;
       setPlaying(true);
       setLoading(false);
       // Once per card per session: the question the event answers is how many
@@ -277,19 +298,34 @@ export function AudioSampleCard({
          * The continuation, and the one call of this file that is not made
          * from inside a gesture.
          *
-         * MDN's autoplay guide allows script-initiated playback when "the user
-         * has interacted with the site (by clicking, tapping, pressing keys,
-         * etc.)", which is true here by a second or two. WebKit states the
-         * requirement per call — the script "must have directly resulted from
-         * a handler for a `touchend`, `click`, `doubleclick`, or `keydown`
-         * event" — and documents no rule that a played element stays unlocked,
-         * so on iOS this can be refused with `NotAllowedError`.
+         * Swapping the source of the element that is already playing is the
+         * shape WebKit itself prescribes for this: "Change the source of the
+         * media element instead of creating multiple media elements if you
+         * want to play multiple videos back to back (or play a pre-roll ad
+         * with sound, followed by the main video)" — *Auto-Play Policy Changes
+         * for macOS*. Apple's guide says what unlocks the call: "the
+         * JavaScript `play()` and `load()` methods are also inactive until the
+         * user initiates playback, unless the `play()` or `load()` method is
+         * triggered by user action". Chrome grants it to any document the
+         * visitor has touched — "autoplay with sound is allowed if the user
+         * has interacted with the domain (click, tap, etc.)".
          *
-         * Which is why the story is what gets loaded *before* the attempt, and
-         * why the failure path is the one MDN prescribes (`showPlayButton`):
-         * the card falls back to its own play button over the story. A refusal
-         * costs the visitor one press and never the narration — the cue is the
-         * part that can be lost, never the part that carries the product.
+         * What none of them states is that the permission *survives the swap*,
+         * and the same WebKit post ends by telling sites to assume that any use
+         * of a media element requires a user gesture click to play — its words,
+         * without the two tag names, which a ruler in this suite counts. So the
+         * continuation is written as something that may be refused, and
+         * the refusal is made cheap instead of being prevented: the story is
+         * what gets loaded *before* the attempt, so a refusal leaves the
+         * element sitting on the narration, and the failure path is the one
+         * MDN prescribes for `NotAllowedError` (`showPlayButton`) — the card
+         * falls back to its own play button, over the story.
+         *
+         * A refusal costs the visitor one press and never the narration — the
+         * cue is the part that can be lost, never the part that carries the
+         * product. That sentence was written here before it was true: what
+         * makes the press after a refusal play the story, instead of rewinding
+         * to the cue, is `restartOnNextPressRef` (#224).
          */
         el.play().catch(() => {
           setPlaying(false);
@@ -297,6 +333,9 @@ export function AudioSampleCard({
         });
         return;
       }
+      // The end of the story is the end of the sequence, and the only thing
+      // that arms the rewind: from here the next press starts the sample over.
+      restartOnNextPressRef.current = true;
       setPlaying(false);
       setTime(0);
       sendGAEvent({ event: "audio_sample_complete", value: sample.id });
@@ -349,8 +388,15 @@ export function AudioSampleCard({
     // it is put in *here*, inside the press. This is the only source change
     // any policy is documented to allow, and it is why the cue is the clip
     // that starts from a gesture and the story the one that follows it.
-    const atStart = el.ended || el.currentTime === 0;
-    if (atStart && loadedRef.current !== 0) goToClip(el, 0, clips[0].src);
+    //
+    // Whether this press is a start or a resume is answered by the ref and
+    // never by the element — the note on `restartOnNextPressRef` is the whole
+    // reason, and the behaviour it buys is the one promise this card cannot
+    // break: whatever a policy decides about the continuation, a press always
+    // reaches the story (#224).
+    if (restartOnNextPressRef.current && loadedRef.current !== 0) {
+      goToClip(el, 0, clips[0].src);
+    }
     setLoading(true);
     // A rejected play() (offline, a bad range request) falls back to the
     // paused state instead of leaving the card claiming it is playing.
