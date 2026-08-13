@@ -245,17 +245,17 @@
     "FAQ": {
       "title": "The questions we hear most",
       "q1": "What does it cost?",
-      "a1": "Appearing on Tuggi costs nothing: signing up, being approved, displaying the QR Code, having your place published after we assess it, and being found and read by every traveller. Tuggi also takes no cut of your sales, and you pay for nobody's access — the one who pays for Tuggi is the traveller. There is one paid part of the partnership, outside that list, and we go over it with you.",
+      "a1": "Appearing on Tuggi costs nothing: you sign up, we approve you, you display the QR Code and, after we assess it, your place is published, found and read by every traveller. Tuggi also takes no cut of your sales, and you pay for nobody's access. The one who pays for Tuggi is the traveller. There is one paid part of the partnership, outside that list, and we go over it with you.",
       "q2": "Do I have to change anything in how I work?",
-      "a2": "Two things: the QR Code on display where the traveller is already looking — the menu, the front desk, the counter, the back of the seat — and the story of your place, told to us once. Beyond that, it requires no integration with your system, no equipment and no software for your staff to operate.",
+      "a2": "Two things. You put the QR Code where the traveller is already looking — on the menu, at the front desk, on the counter, on the back of the seat — and you tell us the story of your place, once. Beyond that, the partnership requires no integration with your system, no equipment and no software for your staff to operate.",
       "q3": "Will my place really get into Tuggi?",
-      "a3": "It is not automatic, and we would rather say so now. Once the partnership is approved, our team assesses your place: what gets in is permanent, open to the public and has a story of its own to tell — it does not have to be famous or old. If something is missing we tell you what it was, and you can fix it and put it forward again.",
+      "a3": "It is not automatic, and we would rather say so now. Once the partnership is approved, our team assesses your place. What gets in is permanent, open to the public and has a story of its own to tell. It does not have to be famous or old. If something is missing, we tell you what it was, and you can fix it and put it forward again.",
       "q4": "And if my place does not get in?",
       "a4": "You are still a partner. Your QR Code, the traveller attributed to you and your revenue share do not depend on it. Nothing you already have goes away.",
       "q5": "What if my guest does not speak English?",
-      "a5": "Tuggi speaks {contentLanguages} languages to the traveller. When your place is published, it is read in the language of whoever arrives — and heard, in that same language, by whoever has the guide on. The narration is produced the moment someone asks for it in that language.",
+      "a5": "Tuggi speaks {contentLanguages} languages to the traveller. When your place is published, it is read in the language of whoever arrives. And whoever has the guide on hears it in that same language. We produce the narration the moment someone asks for it in that language.",
       "q6": "What do I earn from this?",
-      "a6": "Every purchase made by a traveller who downloaded Tuggi through your QR Code counts towards your revenue share. The percentage is set in a commercial agreement — and that is what we talk about when you leave your details below."
+      "a6": "The traveller downloads Tuggi through your QR Code and is attributed to you. From then on, every purchase they make counts towards your revenue share. The percentage is set in a commercial agreement, and that is what we talk about when you leave your details below."
     },
     "form": {
       "title": "The first step is a conversation",

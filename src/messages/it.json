@@ -245,17 +245,17 @@
     "FAQ": {
       "title": "Le domande che ci fanno più spesso",
       "q1": "Quanto costa?",
-      "a1": "Apparire su Tuggi non costa nulla: registrarti, essere approvato, esporre il QR Code, avere il tuo locale pubblicato dopo la valutazione ed essere trovato e letto da ogni turista. Tuggi non trattiene nemmeno una parte delle tue vendite, e tu non paghi l'accesso di nessuno — chi paga Tuggi è il turista. C'è una parte della partnership a pagamento, fuori da quell'elenco, e ne parliamo con te.",
+      "a1": "Apparire su Tuggi non costa nulla: ti registri, ti approviamo, esponi il QR Code e, dopo la valutazione, il tuo locale viene pubblicato, trovato e letto da ogni turista. Tuggi non trattiene nemmeno una parte delle tue vendite, e tu non paghi l'accesso di nessuno. Chi paga Tuggi è il turista. C'è una parte della partnership a pagamento, fuori da quell'elenco, e ne parliamo con te.",
       "q2": "Devo cambiare qualcosa nel mio lavoro?",
-      "a2": "Due cose: il QR Code esposto dove il turista già guarda — il menù, la reception, il bancone, lo schienale del sedile — e la storia del tuo locale, raccontata a noi una volta. A parte questo, non richiede integrazione con il tuo sistema, né attrezzature, né software da far usare al tuo staff.",
+      "a2": "Due cose. Metti il QR Code dove il turista già guarda — sul menù, alla reception, sul bancone, sullo schienale del sedile — e ci racconti la storia del tuo locale, una volta sola. A parte questo, la partnership non richiede integrazione con il tuo sistema, né attrezzature, né software da far usare al tuo staff.",
       "q3": "Il mio locale entra davvero su Tuggi?",
-      "a3": "Non è automatico, e preferiamo dirlo subito. Dopo l'approvazione della partnership, il nostro team valuta il tuo locale: entrano luoghi permanenti, aperti al pubblico e con una storia propria da raccontare — non serve essere famosi né antichi. Se manca qualcosa te lo diciamo, e puoi correggere e ripresentare.",
+      "a3": "Non è automatico, e preferiamo dirlo subito. Dopo l'approvazione della partnership, il nostro team valuta il tuo locale. Entrano luoghi permanenti, aperti al pubblico e con una storia propria da raccontare. Non serve essere famosi né antichi. Se manca qualcosa, te lo diciamo, e puoi correggere e ripresentare.",
       "q4": "E se il mio locale non entra?",
       "a4": "Resti partner. Il tuo QR Code, il turista attribuito a te e la tua partecipazione ai ricavi non dipendono da questo. Niente di quello che hai già sparisce.",
       "q5": "E se il mio ospite non parla italiano?",
-      "a5": "Tuggi parla {contentLanguages} lingue con il turista. Quando il tuo locale è pubblicato, viene letto nella lingua di chi arriva — e ascoltato, nella stessa lingua, da chi ha la guida accesa. La narrazione è prodotta nel momento in cui qualcuno la chiede in quella lingua.",
+      "a5": "Tuggi parla {contentLanguages} lingue con il turista. Quando il tuo locale è pubblicato, viene letto nella lingua di chi arriva. E chi ha la guida accesa lo ascolta nella stessa lingua. Produciamo la narrazione nel momento in cui qualcuno la chiede in quella lingua.",
       "q6": "Quanto ci guadagno?",
-      "a6": "Ogni acquisto fatto dal turista che ha scaricato Tuggi con il tuo QR Code entra nel calcolo della tua partecipazione ai ricavi. La percentuale si definisce in un accordo commerciale — ed è di questo che parliamo quando lasci il tuo contatto qui sotto."
+      "a6": "Il turista scarica Tuggi con il tuo QR Code e viene attribuito a te. Da lì in poi, ogni acquisto che fa entra nel calcolo della tua partecipazione ai ricavi. La percentuale si definisce in un accordo commerciale, ed è di questo che parliamo quando lasci il tuo contatto qui sotto."
     },
     "form": {
       "title": "Il primo passo è una conversazione",

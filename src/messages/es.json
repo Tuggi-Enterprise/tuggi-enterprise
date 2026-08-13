@@ -245,17 +245,17 @@
     "FAQ": {
       "title": "Las preguntas que más nos hacen",
       "q1": "¿Cuánto cuesta?",
-      "a1": "Aparecer en Tuggi no cuesta nada: registrarte, ser aprobado, mostrar el Código QR, tener tu local publicado tras la evaluación y ser encontrado y leído por todo turista. Tuggi tampoco se queda con parte de tus ventas, y tú no pagas el acceso de nadie: quien paga por Tuggi es el turista. Hay una parte de la alianza que es de pago, fuera de esa lista, y la vemos contigo.",
+      "a1": "Aparecer en Tuggi no cuesta nada: te registras, te aprobamos, muestras el Código QR y, tras la evaluación, tu local queda publicado, encontrado y leído por todo turista. Tuggi tampoco se queda con parte de tus ventas, y tú no pagas el acceso de nadie. Quien paga por Tuggi es el turista. Hay una parte de la alianza que es de pago, fuera de esa lista, y la vemos contigo.",
       "q2": "¿Tengo que cambiar algo en mi operación?",
-      "a2": "Dos cosas: el Código QR a la vista donde el turista ya mira —la carta, la recepción, el mostrador, el respaldo del asiento— y la historia de tu local, contada una vez. Fuera de eso, no exige integración con tu sistema, ni equipos, ni software que tu equipo tenga que manejar.",
+      "a2": "Dos cosas. Pones el Código QR donde el turista ya mira —en la carta, en la recepción, en el mostrador, en el respaldo del asiento— y nos cuentas la historia de tu local, una sola vez. Fuera de eso, la alianza no exige integración con tu sistema, ni equipos, ni software que tu equipo tenga que manejar.",
       "q3": "¿Mi local entra de verdad en Tuggi?",
-      "a3": "No es automático, y preferimos decirlo ahora. Una vez aprobada la alianza, nuestro equipo evalúa tu local: entran lugares permanentes, abiertos al público y con historia propia que contar; no hace falta ser famoso ni antiguo. Si falta algo, te decimos qué fue y puedes corregirlo y presentarlo de nuevo.",
+      "a3": "No es automático, y preferimos decirlo ahora. Una vez aprobada la alianza, nuestro equipo evalúa tu local. Entran lugares permanentes, abiertos al público y con historia propia que contar. No hace falta ser famoso ni antiguo. Si falta algo, te decimos qué fue, y puedes corregirlo y presentarlo de nuevo.",
       "q4": "¿Y si mi local no entra?",
       "a4": "Sigues siendo aliado. Tu Código QR, el turista atribuido a ti y tu participación en los ingresos no dependen de eso. Nada de lo que ya tienes desaparece.",
       "q5": "¿Y si mi huésped no habla español?",
-      "a5": "Tuggi habla {contentLanguages} idiomas con el turista. Cuando tu local está publicado, se lee en el idioma de quien llegue y lo escucha, en ese mismo idioma, quien lleva la guía encendida. La narración se produce en el momento en que alguien la pide en ese idioma.",
+      "a5": "Tuggi habla {contentLanguages} idiomas con el turista. Cuando tu local está publicado, se lee en el idioma de quien llegue. Y quien lleva la guía encendida lo escucha en ese mismo idioma. Producimos la narración en el momento en que alguien la pide en ese idioma.",
       "q6": "¿Cuánto gano con esto?",
-      "a6": "Toda compra hecha por el turista que descargó Tuggi con tu Código QR entra en el cálculo de tu participación en los ingresos. El porcentaje se define en un acuerdo comercial, y de eso hablamos cuando dejas tu contacto aquí abajo."
+      "a6": "El turista descarga Tuggi con tu Código QR y queda atribuido a ti. A partir de ahí, toda compra que haga entra en el cálculo de tu participación en los ingresos. El porcentaje se define en un acuerdo comercial, y de eso hablamos cuando dejas tu contacto aquí abajo."
     },
     "form": {
       "title": "El primer paso es una conversación",

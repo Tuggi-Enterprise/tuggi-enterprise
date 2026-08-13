@@ -6,9 +6,10 @@ import { LOCALES } from "../../src/i18n/locales";
 
 /**
  * The ladder of the partner offer — criteria 6 and 23 to 27 of §9 of
- * `docs/design/spec-lp-parcerias-conversao-2026-08.md` (card #306), and the four
+ * `docs/design/spec-lp-parcerias-conversao-2026-08.md` (card #306), the four
  * criteria the §0.6 delta of that same spec added for the paid band (card #316,
- * in the second block of the file).
+ * in the second block of the file), and criteria 32 and 33, which are the voice
+ * of the objection block (card #306 again, in the third).
  *
  * ---------------------------------------------------------------------------
  * What a ladder is, and why it is worth five tests
@@ -471,6 +472,119 @@ test.describe("BR-B2B-016 — the partnership has a paid band, and the page ment
     // Criterion 31.
     test(`BR-B2B-016 items 6 and 7: ${locale} publishes no price, recurrence or plan name`, () => {
       expect(keysMatching(partnerCopy(locale), PRICE_AND_PLAN[locale])).toEqual([]);
+    });
+  }
+});
+
+/* ---------------------------------------------------------------------------
+ * The voice of the objection block — criteria 32 and 33 of §9 of the same spec
+ * (card #306), which are `DS-COPY-013` of `docs/design/heuristica.md` in
+ * verifiable form. The operator read the six answers and said they were written
+ * by a machine: dashes everywhere and no commas. Both halves of that are
+ * countable, and neither is countable in the shape the sentence suggests.
+ *
+ * **A guard that counted only the dash would answer in three languages and stay
+ * silent in the fourth.** Measured on the copy published in `14c125f`: pt, en
+ * and it carried a dash in five of six answers, Spanish in one of six — and
+ * Spanish was not better, it translated the same asides with a colon in `a1` and
+ * a semicolon in `a3`. Banning one mark pushes the aside onto its neighbour, so
+ * the count is of the family — `—`, `–`, `;`, `:` and `(` — and a **pair** of
+ * dashes fencing an aside inside one period counts once. Without that pairing
+ * rule the count would punish the Spanish convention of the raya glued to the
+ * aside (RAE, *Ortografía* §3.4.4) as if it were abuse.
+ *
+ * **Breath is measured in characters, not in words, and that is measurement
+ * rather than taste.** The defect of origin is the opening sentence of `a6`, the
+ * same sentence in four languages: 21/18/23/22 words against 116/111/125/127
+ * characters. In words the same defect varies 28% and a ceiling that caught the
+ * English would have to be 17 — a margin of one word, with legitimate copy
+ * failing. In characters it varies 14%, and 90 catches all four with 21 to
+ * spare. It is the trap of criterion 23 in the dimension of the unit: a ruler
+ * that is not invariant across the languages fails in three and passes in the
+ * fourth.
+ *
+ * Both were run in both directions. Against the copy of §5.11: nothing. Against
+ * the copy published in `14c125f`: twelve answers over the aside ceiling and
+ * five over the breath ceiling, spread across the four languages. A criterion
+ * that does not fail the known defect is not a criterion.
+ *
+ * **Scope is `Partners.FAQ.a1` to `a6`, and it is smaller on purpose.** Widened
+ * to `Partners.*` and `Segments.*` today, the aside count stays green and the
+ * breath count fails exactly one key in four languages — a body of the mechanism
+ * that carries the same sentence `a6` used to carry, is shared with the segment
+ * template, and belongs to its own card. A guard born red on a key nobody may
+ * touch is a guard someone switches off.
+ *
+ * What neither count decides is whether an aside is an aside: the test is
+ * removal — take the fenced stretch out and the sentence has to stand and stay
+ * true. A dash standing in for a comma passes the count and fails review, and
+ * review is the `design`'s.
+ * ------------------------------------------------------------------------- */
+
+/** The block criteria 32 and 33 read: the six answers, in order. */
+const FAQ_ANSWERS = [1, 2, 3, 4, 5, 6].map((n) => `Partners.FAQ.a${n}`);
+
+const DASH = /[—–]/;
+const DASHES = /[—–]/g;
+const SIBLING_MARKS = /[;:(]/g;
+
+/** Periods, with their closing punctuation kept — the dash pair lives inside one. */
+function periods(value: string): string[] {
+  return value.split(/(?<=[.!?])\s+/);
+}
+
+/**
+ * Criterion 32: asides in one value. A pair of dashes inside the same period is
+ * one aside, not two; an odd dash still counts as one. The sibling marks count
+ * one for one, because none of them comes in pairs.
+ */
+function asideMarks(value: string): number {
+  return periods(value).reduce((total, period) => {
+    const dashes = (period.match(DASHES) ?? []).length;
+    return total + ((dashes + 1) >> 1) + (period.match(SIBLING_MARKS) ?? []).length;
+  }, 0);
+}
+
+/**
+ * Criterion 33: the longest stretch a reader crosses without a pause. An ICU
+ * slot is worth ten characters — the reader meets the value, not the name, and
+ * the four slots of this page resolve to between five and fourteen.
+ */
+function longestBreath(value: string): number {
+  return Math.max(
+    ...value
+      .replace(/\{[a-zA-Z]+\}/g, "x".repeat(10))
+      .split(/[,;:—–().!?]/)
+      .map((stretch) => stretch.trim().length)
+  );
+}
+
+test.describe("DS-COPY-013 — the objection block is punctuated by a person, and both halves count", () => {
+  for (const locale of LOCALES) {
+    // Criterion 32.
+    test(`DS-COPY-013: no ${locale} FAQ answer carries more than one aside mark`, () => {
+      const messages = messagesFor(locale);
+      const offenders = FAQ_ANSWERS.map((key) => [key, asideMarks(at(messages, key))] as const)
+        .filter(([, marks]) => marks > 1)
+        .map(([key, marks]) => `${key}: ${marks} aside marks`);
+      expect(offenders).toEqual([]);
+    });
+
+    // Criterion 32, frequency clause. One answer may earn a dash; a block where
+    // half the answers have one is the voice the operator recognised.
+    test(`DS-COPY-013: at most two of the six ${locale} answers reach for a dash`, () => {
+      const messages = messagesFor(locale);
+      const withDash = FAQ_ANSWERS.filter((key) => DASH.test(at(messages, key)));
+      expect(withDash.length, `${locale}: ${withDash.join(", ")}`).toBeLessThanOrEqual(2);
+    });
+
+    // Criterion 33.
+    test(`DS-COPY-013: no ${locale} FAQ answer runs ninety characters without a pause`, () => {
+      const messages = messagesFor(locale);
+      const offenders = FAQ_ANSWERS.map((key) => [key, longestBreath(at(messages, key))] as const)
+        .filter(([, breath]) => breath > 90)
+        .map(([key, breath]) => `${key}: ${breath} characters without a pause`);
+      expect(offenders).toEqual([]);
     });
   }
 });
