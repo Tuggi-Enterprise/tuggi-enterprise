@@ -216,11 +216,13 @@
   },
   "Partners": {
     "hero": {
-      "title": "O seu negócio vira um ponto de distribuição do Tuggi",
-      "subtitle": "O turista que baixa o Tuggi pelo seu QR Code fica atribuído a você, e o seu local pode aparecer para quem usa o app. Não custa nada para você."
+      "eyebrow": "Para quem recebe turista",
+      "title": "Apareça para o turista que já está na sua rua",
+      "subtitle": "O seu negócio pode fazer parte da história dessa rua: todo turista do Tuggi encontra e lê o seu local, e quem está com o guia ligado ouve. Ser parceiro não custa nada para você."
     },
     "grid": {
       "title": "Escolha o seu tipo de negócio",
+      "lead": "Cada negócio pega o turista num momento diferente do dia. Ache o seu, e a gente fala sobre ele.",
       "actionOpen": "Ver como funciona"
     },
     "mechanism": {
@@ -229,13 +231,35 @@
     "seo": {
       "primaryTerm": "programa de parceria",
       "title": "Programa de parceria para quem recebe turista",
-      "description": "Locadoras, hotéis, transfers, motorhome e restaurantes: exiba o QR Code do Tuggi e receba participação na receita das compras do turista que você trouxe."
+      "description": "Restaurantes, hotéis, transfers e locadoras: veja como o seu negócio pode aparecer para o turista que já usa o Tuggi na sua rua. Sem custo para você."
     },
     "cta": {
-      "action": "Quero ser parceiro",
-      "video": "Ver o vídeo"
+      "action": "Quero aparecer no Tuggi"
+    },
+    "video": {
+      "caption": "Um trajeto real no Rio de Janeiro: do Santos Dumont a Copacabana, com o Tuggi contando o que passa pela janela.",
+      "playLabel": "Reproduzir o vídeo",
+      "languageLegend": "Idioma da narração",
+      "openOnYoutube": "Assistir no YouTube"
+    },
+    "FAQ": {
+      "title": "As perguntas que a gente mais ouve",
+      "q1": "Quanto custa?",
+      "a1": "Nada. Você não compra nada, não paga mensalidade e não recebe fatura da Tuggi. A Tuggi também não fica com parte das suas vendas: o que você vende continua inteiro seu. Quem paga pelo Tuggi é o turista — e é da compra dele que sai a sua participação na receita.",
+      "q2": "Vou precisar mudar alguma coisa na minha operação?",
+      "a2": "Duas coisas: o QR Code exposto onde o turista já olha — o cardápio, a recepção, o balcão, o encosto do banco — e a história do seu lugar contada uma vez para a gente. Fora isso, não exige integração com o seu sistema, nem equipamento, nem software para a sua equipe operar.",
+      "q3": "O meu lugar entra mesmo no Tuggi?",
+      "a3": "Não é automático, e a gente prefere dizer isso agora. Depois que a parceria é aprovada, o nosso time avalia o seu local: entram lugares permanentes, abertos ao público e com história própria para contar — não precisa ser famoso nem antigo. Se faltar alguma coisa, a gente diz o que foi, e você pode corrigir e apresentar de novo.",
+      "q4": "E se o meu local não entrar?",
+      "a4": "Você continua parceiro. O seu QR Code, o turista atribuído a você e a sua participação na receita não dependem disso. Nada do que você já tem some.",
+      "q5": "E se o meu hóspede não fala português?",
+      "a5": "O Tuggi fala {contentLanguages} idiomas com o turista. Quando o seu local está publicado, ele é lido no idioma de quem chegar — e ouvido, nesse mesmo idioma, por quem está com o guia ligado. A narração é produzida no momento em que alguém pede naquele idioma.",
+      "q6": "Quanto eu ganho com isso?",
+      "a6": "Toda compra feita pelo turista que baixou o Tuggi pelo seu QR Code entra na apuração da sua participação na receita. O percentual é definido em acordo comercial — e é sobre isso que a gente conversa quando você deixa o seu contato aqui embaixo."
     },
     "form": {
+      "title": "O primeiro passo é uma conversa",
+      "body": "Deixe o seu contato e a gente responde pelo canal que você escolher, com o que a parceria faz no seu caso. Deixar o contato não custa nada e não compromete você a nada.",
       "allRequired": "Todos os campos são obrigatórios.",
       "name": "Seu nome",
       "business": "Nome do seu negócio",
@@ -280,8 +304,8 @@
       "s3Title": "A sua participação na receita",
       "s3Body": "Toda compra feita pelo turista atribuído a você entra na apuração da sua participação na receita, com o percentual definido em acordo comercial.",
       "s4Title": "O seu local pode entrar no Tuggi",
-      "s4Body": "Aprovada a parceria, o nosso time avalia se cadastra o seu local como ponto de interesse: é uma decisão editorial da Tuggi, e não é automática. Entram lugares permanentes, abertos ao público e com história própria para contar — não precisa ser famoso nem antigo. Em até {partnerTriageHours} horas após a aprovação você tem o desfecho: ou o local já está publicado, ou avisamos o que faltou, e você pode corrigir e apresentar de novo. Publicado, ele é encontrado como qualquer outro ponto e é ouvido no idioma de quem chegar, em qualquer um dos {contentLanguages} idiomas do app. O seu QR Code e a sua participação na receita não dependem disso.",
-      "lead": "Do seu lado, nada muda na operação: você exibe o QR Code, e o resto acontece no celular do turista."
+      "s4Body": "Aprovada a parceria, o nosso time avalia se cadastra o seu local como ponto de interesse. É uma decisão editorial da Tuggi, e não é automática. Em até {partnerTriageHours} horas após a aprovação você tem o desfecho. E o seu QR Code e a sua participação na receita não dependem dele.",
+      "lead": "Do seu lado são duas coisas: exibir o QR Code e nos contar a história do seu lugar. O resto acontece no celular do turista."
     },
     "cta": {
       "title": "Conte como o turista chega até você",

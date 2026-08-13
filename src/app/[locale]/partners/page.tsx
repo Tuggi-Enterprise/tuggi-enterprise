@@ -6,19 +6,39 @@ import { ProofBlock } from "@/components/blocks/ProofBlock";
 import { PartnershipSteps } from "@/components/blocks/PartnershipSteps";
 import { CoverageDensityMap } from "@/components/blocks/CoverageDensityMap";
 import { LanguagesStrip } from "@/components/blocks/LanguagesStrip";
+import { FaqSection } from "@/components/blocks/FaqSection";
 import { PartnerLeadForm } from "@/components/blocks/PartnerLeadForm";
+import { PartnerVideo } from "@/components/blocks/PartnerVideo";
 import { LEAD_FORM_ANCHOR } from "@/lib/lead-form";
 import { buildAlternates, buildOpenGraph, buildTwitterCard, defaultRobots } from "@/lib/seo";
 import { getCoverageData } from "@/lib/coverage";
+import { PRODUCT_FACTS } from "@/lib/product-facts";
 import { getStateHubPaths } from "@/lib/routes";
-import { PARTNER_VIDEOS } from "@/lib/partner-videos";
+import {
+  PARTNER_VIDEOS,
+  initialPartnerVideo,
+  narrationLanguageLabel,
+} from "@/lib/partner-videos";
 
 /**
  * The partner hub, as a conversion landing page —
- * `docs/design/spec-lp-parcerias-2026-08.md` (card #294). It is the second
- * round of §6 of `docs/design/spec-template-segmento-2026-08.md` and of
+ * `docs/design/spec-lp-parcerias-conversao-2026-08.md` (card #306), which
+ * supersedes `docs/design/spec-lp-parcerias-2026-08.md` (#294) only in what its
+ * §0.2 lists: the form, the privacy copy and criteria 13 to 29 of the older
+ * document are untouched. Both are the second round of §6 of
+ * `docs/design/spec-template-segmento-2026-08.md` and of
  * `docs/design/copy-parcerias-2026-08.md` (#195), which stay in force for the
  * **segment template**; for the hub, what governs is the newer document.
+ *
+ * **The axis of the page is the merchant's gain, not the mechanism.** The H1 is
+ * an imperative invitation — *appear to the traveller who is already on your
+ * street* — and appearing is `BR-MONETIZACAO-056`, free to every traveller in
+ * every state, which is why the headline needs no caveat to be conforming. The
+ * subtitle is the ladder `BR-B2B-015` items 1 and 2 draw: **every** Tuggi
+ * traveller finds and reads the partner's place; the one with the guide on
+ * hears it, because automatic triggering is a paid-tier right
+ * (`BR-MONETIZACAO-055`). Collapsing those two steps into one is the way this
+ * page publishes a claim the product does not keep.
  *
  * **The page has one destination.** The hero, the six cards and the band under
  * the mechanism all point at the form at the bottom — spec §0.1. The grid
@@ -29,10 +49,19 @@ import { PARTNER_VIDEOS } from "@/lib/partner-videos";
  * therefore **not** mounted here: a second target divides the funnel.
  *
  * **The order of the blocks answers questions in the order they are asked**
- * (spec §2): what this is, who it is for, proof before argument, the mechanism
- * that carries all of BR-B2B-010, then the two objections that actually
- * disqualify — *"is there anything in my city?"* and *"my guest is French, does
- * it work for him?"* — and then the ask.
+ * (spec §2): what he gains, the proof of the sentence that says it, who it is
+ * for, the mechanism that carries all of BR-B2B-010, the two objections that
+ * disqualify by geography and by language, the six that disqualify by money,
+ * effort and risk, and then the ask. `ProofBlock` came up from third to second
+ * for one reason: the H1 states a fact and the mapped points are its evidence,
+ * and at 390 px the third position put that evidence outside the two screens
+ * where the attention is.
+ *
+ * **Block 7 answers by rule, and one answer is load-bearing.** `Partners.FAQ.a4`
+ * — the QR Code, the attributed traveller and the revenue share do not depend
+ * on the venue getting into the catalogue — is `BR-B2B-010` item 7: no surface
+ * may state half 2 without half 1 being legible on the same page. If that
+ * answer disappears the page stops conforming even with everything else green.
  *
  * **No figure is written here** — not even in this comment, which the sweep of
  * `tests/e2e/product-facts.spec.ts` reads too. `ProofBlock` publishes the
@@ -51,6 +80,14 @@ import { PARTNER_VIDEOS } from "@/lib/partner-videos";
  * partner pages sharing one generic description, which is how a site
  * cannibalizes itself without noticing.
  */
+
+/**
+ * The six objections of block 7, in funnel order, ending in money — spec §5.5.
+ * One declaration feeds the accordion and the JSON-LD, so the structured data
+ * cannot claim a question the page does not render.
+ */
+const PARTNER_FAQ_COUNT = 6;
+const PARTNER_FAQ_ITEMS = Array.from({ length: PARTNER_FAQ_COUNT }, (_, index) => index + 1);
 
 export async function generateMetadata({
   params,
@@ -88,21 +125,51 @@ export default async function PartnersPage({
   const tSegments = await getTranslations({ locale, namespace: "Segments" });
   const coverage = await getCoverageData();
 
-  // One condition, two effects, one place (spec §4.1): with no video there is
-  // no video block and no secondary call to action — and no space held for
-  // either. Today the registry is empty on purpose; see src/lib/partner-videos.
-  const hasVideo = PARTNER_VIDEOS.length > 0;
+  // The clip lives inside the hero now, so an empty registry has exactly one
+  // effect and no rhythm depends on it: no `media`, single column, the hero of
+  // today. The registry is empty on purpose — see src/lib/partner-videos.
+  const initial = initialPartnerVideo(PARTNER_VIDEOS, locale);
+  const media = initial ? (
+    <PartnerVideo
+      initialId={initial.id}
+      videos={PARTNER_VIDEOS.map((video) => ({
+        ...video,
+        // Resolved here, on the server, with the page's locale — the browser's
+        // ICU data never gets a chance to disagree with the build's.
+        languageLabel: narrationLanguageLabel(locale, video.audioLocale),
+      }))}
+    />
+  ) : undefined;
+
+  // Built from the very keys block 7 renders, so a question that changes in
+  // i18n cannot leave a stale copy of itself in the structured data.
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": PARTNER_FAQ_ITEMS.map((i) => ({
+      "@type": "Question",
+      "name": t(`FAQ.q${i}`),
+      "acceptedAnswer": { "@type": "Answer", "text": t(`FAQ.a${i}`, PRODUCT_FACTS) },
+    })),
+  };
 
   return (
     <article className="min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
       <SegmentHero
+        eyebrow={t("hero.eyebrow")}
         title={t("hero.title")}
         subtitle={t("hero.subtitle")}
         cta={{ label: t("cta.action"), href: LEAD_FORM_ANCHOR }}
-        secondary={hasVideo ? { label: t("cta.video"), href: "#video" } : undefined}
+        media={media}
       />
-      <SegmentGrid />
+      {/* Adjacent to the sentence it proves, and inside the two screens where
+          74% of the viewing time is spent (spec §1.3). */}
       <ProofBlock surface="dark" />
+      <SegmentGrid lead={t("grid.lead")} />
       <PartnershipSteps
         place={t("mechanism.place")}
         lead={tSegments("steps.lead")}
@@ -119,7 +186,11 @@ export default async function PartnersPage({
       {/* Dark, because the block above ends in the white list that is its
           served alternative, and two white neighbours read as one (spec §2). */}
       <LanguagesStrip surface="dark" />
-      <PartnerLeadForm title={tSegments("cta.title")} body={tSegments("cta.body")} />
+      {/* Where the conditions of BR-B2B-010 moved to, and why `s4Body` went
+          from a hundred-odd words to fifty: an objection belongs where it is
+          asked, not inside the step that describes the mechanism (spec §1.5). */}
+      <FaqSection namespace="Partners.FAQ" count={PARTNER_FAQ_COUNT} analyticsId="partners" />
+      <PartnerLeadForm title={t("form.title")} body={t("form.body")} />
     </article>
   );
 }

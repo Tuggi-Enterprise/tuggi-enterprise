@@ -216,11 +216,13 @@
   },
   "Partners": {
     "hero": {
-      "title": "Tu negocio se convierte en un punto de distribución de Tuggi",
-      "subtitle": "El turista que descarga Tuggi con tu Código QR queda atribuido a ti, y tu local puede aparecer para quien usa la app. No te cuesta nada."
+      "eyebrow": "Para quien recibe turistas",
+      "title": "Aparece ante el turista que ya está en tu calle",
+      "subtitle": "Tu negocio puede formar parte de la historia de esa calle: todo turista de Tuggi encuentra y lee tu local, y quien lleva la guía encendida lo escucha. Ser aliado no te cuesta nada."
     },
     "grid": {
       "title": "Elige tu tipo de negocio",
+      "lead": "Cada negocio encuentra al turista en un momento distinto del día. Busca el tuyo y hablamos de él.",
       "actionOpen": "Ver cómo funciona"
     },
     "mechanism": {
@@ -229,13 +231,35 @@
     "seo": {
       "primaryTerm": "programa de alianzas",
       "title": "Programa de alianzas para quien recibe turistas",
-      "description": "Alquiler de coches, hoteles, traslados, autocaravanas y restaurantes: muestra el Código QR de Tuggi y recibe participación en los ingresos de las compras del turista que traes."
+      "description": "Restaurantes, hoteles, transfers y alquiler de coches: mira cómo tu negocio puede aparecer ante el turista que ya usa Tuggi en tu calle. Sin coste para ti."
     },
     "cta": {
-      "action": "Quiero ser aliado",
-      "video": "Ver el vídeo"
+      "action": "Quiero aparecer en Tuggi"
+    },
+    "video": {
+      "caption": "Un trayecto real en Río de Janeiro: del aeropuerto Santos Dumont a Copacabana, con Tuggi contando lo que pasa por la ventana.",
+      "playLabel": "Reproducir el vídeo",
+      "languageLegend": "Idioma de la narración",
+      "openOnYoutube": "Ver en YouTube"
+    },
+    "FAQ": {
+      "title": "Las preguntas que más nos hacen",
+      "q1": "¿Cuánto cuesta?",
+      "a1": "Nada. No compras nada, no pagas mensualidad y no recibes factura de Tuggi. Tuggi tampoco se queda con parte de tus ventas: lo que vendes sigue siendo íntegramente tuyo. Quien paga por Tuggi es el turista, y de su compra sale tu participación en los ingresos.",
+      "q2": "¿Tengo que cambiar algo en mi operación?",
+      "a2": "Dos cosas: el Código QR a la vista donde el turista ya mira —la carta, la recepción, el mostrador, el respaldo del asiento— y la historia de tu local, contada una vez. Fuera de eso, no exige integración con tu sistema, ni equipos, ni software que tu equipo tenga que manejar.",
+      "q3": "¿Mi local entra de verdad en Tuggi?",
+      "a3": "No es automático, y preferimos decirlo ahora. Una vez aprobada la alianza, nuestro equipo evalúa tu local: entran lugares permanentes, abiertos al público y con historia propia que contar; no hace falta ser famoso ni antiguo. Si falta algo, te decimos qué fue y puedes corregirlo y presentarlo de nuevo.",
+      "q4": "¿Y si mi local no entra?",
+      "a4": "Sigues siendo aliado. Tu Código QR, el turista atribuido a ti y tu participación en los ingresos no dependen de eso. Nada de lo que ya tienes desaparece.",
+      "q5": "¿Y si mi huésped no habla español?",
+      "a5": "Tuggi habla {contentLanguages} idiomas con el turista. Cuando tu local está publicado, se lee en el idioma de quien llegue y lo escucha, en ese mismo idioma, quien lleva la guía encendida. La narración se produce en el momento en que alguien la pide en ese idioma.",
+      "q6": "¿Cuánto gano con esto?",
+      "a6": "Toda compra hecha por el turista que descargó Tuggi con tu Código QR entra en el cálculo de tu participación en los ingresos. El porcentaje se define en un acuerdo comercial, y de eso hablamos cuando dejas tu contacto aquí abajo."
     },
     "form": {
+      "title": "El primer paso es una conversación",
+      "body": "Deja tu contacto y te respondemos por el canal que elijas, con lo que la alianza hace en tu caso. Dejar el contacto no cuesta nada y no te compromete a nada.",
       "allRequired": "Todos los campos son obligatorios.",
       "name": "Tu nombre",
       "business": "Nombre de tu negocio",
@@ -280,8 +304,8 @@
       "s3Title": "Tu participación en los ingresos",
       "s3Body": "Cada compra que haga el turista atribuido a ti entra en el cálculo de tu participación en los ingresos, con el porcentaje definido en el acuerdo comercial.",
       "s4Title": "Tu local puede entrar en Tuggi",
-      "s4Body": "Aprobada la alianza, nuestro equipo decide si registra tu local como punto de interés: es una decisión editorial de Tuggi y no es automática. Entran los lugares permanentes, abiertos al público y con una historia propia que contar; no hace falta ser famoso ni antiguo. En un plazo de {partnerTriageHours} horas desde la aprobación tienes el desenlace: o el local ya está publicado, o te decimos qué faltó, y puedes corregirlo y presentarlo de nuevo. Publicado, se encuentra como cualquier otro punto y se escucha en el idioma de quien llegue, en cualquiera de los {contentLanguages} idiomas de la app. Tu Código QR y tu participación en los ingresos no dependen de eso.",
-      "lead": "De tu lado no cambia nada en la operación: tú muestras el Código QR y el resto pasa en el móvil del turista."
+      "s4Body": "Aprobada la alianza, nuestro equipo evalúa si registra tu local como punto de interés. Es una decisión editorial de Tuggi y no es automática. En un máximo de {partnerTriageHours} horas después de la aprobación tienes el desenlace. Y tu Código QR y tu participación en los ingresos no dependen de él.",
+      "lead": "De tu lado son dos cosas: mostrar el Código QR y contarnos la historia de tu local. El resto pasa en el móvil del turista."
     },
     "cta": {
       "title": "Cuéntanos cómo llega el turista hasta ti",

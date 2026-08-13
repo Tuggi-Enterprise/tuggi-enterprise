@@ -58,16 +58,29 @@ const CARD_CLASS =
   "motion-reduce:hover:translate-y-0 focus:outline-none focus-visible:ring-2 " +
   "focus-visible:ring-tuggi-primary-text focus-visible:ring-offset-2";
 
-export function SegmentGrid() {
+/**
+ * A paragraph between the `h2` and the cards — card #306, §5.3. Absent means
+ * absent, like every other optional slot on this page: the segment template
+ * does not pass it and its grid renders as it does today.
+ */
+export function SegmentGrid({ lead }: { lead?: string }) {
   const t = useTranslations();
   const cards = [...SEGMENTS].sort((a, b) => a.order - b.order);
 
   return (
     <section data-block="segment-grid" className="bg-tuggi-bg py-20 lg:py-24">
       <div className="page-shell">
-        <h2 className="text-3xl sm:text-4xl font-extrabold text-tuggi-dark tracking-tight mb-10 max-w-2xl">
+        <h2
+          className={`text-3xl sm:text-4xl font-extrabold text-tuggi-dark tracking-tight max-w-2xl ${
+            lead ? "mb-4" : "mb-10"
+          }`}
+        >
           {t("Partners.grid.title")}
         </h2>
+
+        {lead ? (
+          <p className="text-lg text-tuggi-slate leading-relaxed max-w-2xl mb-10">{lead}</p>
+        ) : null}
 
         <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch list-none p-0">
           {cards.map((segment) => {

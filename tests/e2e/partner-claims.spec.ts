@@ -1069,6 +1069,27 @@ const CLAIM_FAMILIES: ClaimFamily[] = [
           'the hub states the opposite in every locale ("it costs you nothing").',
       },
       {
+        keys: ["Partners.FAQ.a1"],
+        why:
+          "The answer to \"what does it cost\", and it is the negation of this " +
+          "family in three of the four languages at once: the partner receives no " +
+          "invoice, and the Italian names the *traveller's* purchase as the source " +
+          "of the revenue share. BR-B2B-004 items 2 and 3 and BR-B2B-015 item 4 " +
+          "back every clause of it, including the strongest one the operator " +
+          "released in #306 — Tuggi keeps no share of what the merchant sells. " +
+          "Same polarity problem as Segments.commercial.lead below, same money " +
+          "flow as Segments.steps.s3Body above.",
+      },
+      {
+        keys: ["Partners.FAQ.a6"],
+        why:
+          "The same Italian word for the same fact as Segments.steps.s3Body: what " +
+          "the *traveller* buys is the input of the partner's revenue share " +
+          "(BR-B2B-007 item 4, BR-B2B-005). The answer publishes no percentage, no " +
+          "band and no projection — the percentage is a commercial agreement, which " +
+          "is what the sentence says.",
+      },
+      {
         keys: ["Segments.commercial.lead"],
         why:
           '"No upfront investment" is the negation of the claim this family bans, ' +

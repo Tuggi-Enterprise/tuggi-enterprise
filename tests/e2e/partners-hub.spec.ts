@@ -4,7 +4,14 @@ import path from "node:path";
 import { localizedPathname } from "../../src/i18n/pathnames";
 import { LOCALES, type SiteLocale } from "../../src/i18n/locales";
 import { SEGMENTS } from "../../src/lib/segments";
-import { PARTNER_VIDEOS } from "../../src/lib/partner-videos";
+import {
+  PARTNER_VIDEOS,
+  formatClipDuration,
+  initialPartnerVideo,
+  narrationLanguageLabel,
+  type PartnerVideo,
+} from "../../src/lib/partner-videos";
+import { measuredTextContrast } from "./support/contrast";
 
 /**
  * The partner hub — card #195, spec §6 of
@@ -14,6 +21,13 @@ import { PARTNER_VIDEOS } from "../../src/lib/partner-videos";
  * conversion landing page: the hero gained a CTA, the grid stopped being
  * navigation and points at the form, `SegmentCta` is no longer mounted, and
  * four blocks became seven. The form itself is `partner-lead-form.spec.ts`.
+ *
+ * **Card #306 (`docs/design/spec-lp-parcerias-conversao-2026-08.md`) turned the
+ * axis of the page from the mechanism to the merchant's gain**, and seven
+ * blocks became eight: `ProofBlock` came up to second, adjacent to the sentence
+ * it proves, and a block of named objections reuses `FaqSection`. What that
+ * spec's copy has to keep true is `partner-offer-ladder.spec.ts`; what the page
+ * has to serve is here.
  *
  * Rules under test, and each assertion cites the one it proves:
  * **BR-B2B-004** (the partner distributes and pays nothing), **BR-B2B-005**
@@ -104,7 +118,6 @@ test.describe("the partner copy, in the four message files", () => {
   /** The keys #294 added — spec §5, and criterion 1 of its §9. */
   const CARD_294_KEYS = [
     "Partners.cta.action",
-    "Partners.cta.video",
     "Segments.steps.lead",
     "Segments.receptive.hub.cardTitle",
     "Segments.receptive.hub.cardBody",
@@ -139,6 +152,25 @@ test.describe("the partner copy, in the four message files", () => {
     ].map((key) => `Partners.form.${key}`),
   ];
 
+  /**
+   * The 21 keys #306 added — spec §5, and criterion 1 of its §9. The four of
+   * `Partners.video` ship with the component that reads them and before the
+   * clips themselves: the block degrades to today's hero while
+   * `PARTNER_VIDEOS` is empty, so they are not orphans waiting to be mounted,
+   * they are the copy of a mounted component with no data yet.
+   */
+  const CARD_306_KEYS = [
+    "Partners.hero.eyebrow",
+    "Partners.grid.lead",
+    ...["caption", "playLabel", "languageLegend", "openOnYoutube"].map(
+      (key) => `Partners.video.${key}`
+    ),
+    "Partners.FAQ.title",
+    ...[1, 2, 3, 4, 5, 6].flatMap((n) => [`Partners.FAQ.q${n}`, `Partners.FAQ.a${n}`]),
+    "Partners.form.title",
+    "Partners.form.body",
+  ];
+
   const EXPECTED_KEYS = [
     "Partners.hero.title",
     "Partners.hero.subtitle",
@@ -154,6 +186,7 @@ test.describe("the partner copy, in the four message files", () => {
     "Segments.cta.body",
     "Segments.cta.action",
     ...CARD_294_KEYS,
+    ...CARD_306_KEYS,
     ...SEGMENTS.flatMap((segment) => [
       `Segments.${segment.key}.hub.cardTitle`,
       `Segments.${segment.key}.hub.cardBody`,
@@ -170,11 +203,14 @@ test.describe("the partner copy, in the four message files", () => {
       expect(Object.keys(grid)).toContain("actionOpen");
     });
 
-    // Criterion 3: the four video keys are born with the URLs, not before —
-    // an orphan key is a promise the page cannot keep.
-    test(`#294: ${locale}.json declares no Partners.video namespace yet`, () => {
-      const partners = messagesFor(locale)["Partners"] as Messages;
-      expect(Object.keys(partners)).not.toContain("video");
+    // Criterion 2 of #306, replacing criterion 3 of #294: the clip moved into
+    // the hero, so the secondary call to action that pointed at a section of
+    // its own has no section to point at and no key to name it. A key with no
+    // consumer is copy waiting for somebody to mount it again.
+    test(`#306: ${locale}.json no longer carries Partners.cta.video`, () => {
+      const cta = (messagesFor(locale)["Partners"] as Messages)["cta"] as Messages;
+      expect(Object.keys(cta)).not.toContain("video");
+      expect(Object.keys(cta)).toContain("action");
     });
   }
 
@@ -241,6 +277,21 @@ test.describe("the partner copy, in the four message files", () => {
     });
   }
 
+  test("#306 criterion 2: nothing under src/ still reaches for the retired video CTA", () => {
+    const offenders: string[] = [];
+    const walk = (dir: string) => {
+      for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+        const full = path.join(dir, entry.name);
+        if (entry.isDirectory()) walk(full);
+        else if (/\.tsx?$/.test(entry.name) && fs.readFileSync(full, "utf8").includes("cta.video")) {
+          offenders.push(path.relative(REPO_ROOT, full));
+        }
+      }
+    };
+    walk(path.join(REPO_ROOT, "src"));
+    expect(offenders).toEqual([]);
+  });
+
   test("DS-COPY-007: the hub's title carries its primary term, and no segment repeats it", () => {
     // One page, one term, one owner. The check runs per locale because the
     // term is translated and the collision would be too.
@@ -280,18 +331,20 @@ async function visibleText(page: Page): Promise<string> {
 
 test.describe("what /partners serves", () => {
   for (const locale of LOCALES) {
-    test(`the hub serves its seven blocks in ${locale}`, async ({ page }) => {
+    test(`the hub serves its eight blocks in ${locale}`, async ({ page }) => {
       const response = await page.goto(hubUrl(locale));
       expect(response?.status()).toBe(200);
 
-      // Criterion 5 of spec §9 of #294. Seven, because the video block of §4
-      // has no data and therefore does not exist.
+      // Criterion 4 of spec §9 of #306. Eight, and the video is not one of
+      // them: it lives inside the hero, and with no clip the hero is what it
+      // was.
       for (const block of [
         "segment-hero",
         "segment-grid",
         "partnership-steps",
         "coverage-density",
         "languages-strip",
+        "faq",
         "partner-lead-form",
       ]) {
         await expect(page.locator(`[data-block="${block}"]`)).toHaveCount(1);
@@ -304,19 +357,82 @@ test.describe("what /partners serves", () => {
 
       const messages = messagesFor(locale);
       const text = await visibleText(page);
+      // `Partners.hero.eyebrow` is asserted in the hero test below and not
+      // here: `innerText` returns the *rendered* text, `text-transform`
+      // applied, so an upper-cased label never equals its own message string.
       for (const key of [
         "Partners.hero.title",
         "Partners.hero.subtitle",
         "Partners.grid.title",
+        "Partners.grid.lead",
         "Segments.steps.title",
         "Segments.steps.lead",
-        "Segments.cta.title",
+        "Partners.FAQ.title",
+        "Partners.form.title",
+        "Partners.form.body",
       ]) {
         expect(text, `${key} is not visible on ${hubUrl(locale)}`).toContain(at(messages, key));
       }
 
+      // Criterion 4: the six questions are served, not lazily fetched — a
+      // visitor who never runs the accordion still reads what he came to ask.
+      for (const n of [1, 2, 3, 4, 5, 6]) {
+        expect(text, `Partners.FAQ.q${n} is not visible`).toContain(
+          at(messages, `Partners.FAQ.q${n}`)
+        );
+      }
+
       // The commercial model block belongs to the segment page, not here.
       await expect(page.locator('[data-block="business-model"]')).toHaveCount(0);
+    });
+
+    test(`#306 criterion 5: the proof of the H1 is the second block in ${locale}`, async ({
+      page,
+    }) => {
+      await page.goto(hubUrl(locale));
+      // The order is the argument: what he gains, the evidence of it, who it
+      // is for, how it works, where, in what language, the objections, the
+      // ask. Measured on the DOM, because a reordering that only moves the
+      // source is not a reordering.
+      const order = await page
+        .locator("article > section, article > div > section")
+        .evaluateAll((nodes) =>
+          nodes.map(
+            (node) =>
+              node.getAttribute("data-block") ?? `proof-${node.getAttribute("data-proof-block")}`
+          )
+        );
+      expect(order).toEqual([
+        "segment-hero",
+        "proof-dark",
+        "segment-grid",
+        "partnership-steps",
+        "coverage-density",
+        "coverage-list",
+        "languages-strip",
+        "faq",
+        "partner-lead-form",
+      ]);
+    });
+
+    test(`#306 criterion 15: the hub serves one FAQPage, built from the six answers in ${locale}`, async ({
+      page,
+    }) => {
+      await page.goto(hubUrl(locale));
+      const messages = messagesFor(locale);
+
+      const blocks = await page
+        .locator('script[type="application/ld+json"]')
+        .evaluateAll((nodes) =>
+          nodes.map((node) => JSON.parse(node.textContent ?? "null") as { "@type"?: string })
+        );
+      const faqPages = blocks.filter((block) => block?.["@type"] === "FAQPage");
+      expect(faqPages, "one FAQPage, and only one").toHaveLength(1);
+
+      const entities = (faqPages[0] as { mainEntity: { name: string }[] }).mainEntity;
+      expect(entities.map((entity) => entity.name)).toEqual(
+        [1, 2, 3, 4, 5, 6].map((n) => at(messages, `Partners.FAQ.q${n}`))
+      );
     });
 
     test(`spec §2: no two neighbouring sections of the hub share a background in ${locale}`, async ({
@@ -350,13 +466,38 @@ test.describe("what /partners serves", () => {
       const messages = messagesFor(locale);
       const hero = page.locator('[data-block="segment-hero"]');
 
-      // Criterion 9: no secondary CTA and no space held for one.
+      // Criterion 8 of #306: with an empty registry there is no player, no
+      // poster, no language selector and no secondary call to action — and no
+      // space held for any of them. The hero is a single column, which is the
+      // design and not a degraded state.
       const links = hero.locator("a");
       await expect(links).toHaveCount(1);
       await expect(links.first()).toHaveText(at(messages, "Partners.cta.action"));
       await expect(links.first()).toHaveAttribute("href", "#lead-form");
       await expect(page.locator("#video")).toHaveCount(0);
+      await expect(page.locator('[data-block="partner-video"]')).toHaveCount(0);
       expect(PARTNER_VIDEOS).toHaveLength(0);
+
+      // Criterion 10: no third-party frame reaches this page, at load or
+      // after it. The consent banner is on the same page, and a player mounted
+      // before the visitor accepts drops a cookie nobody authorized.
+      await expect(page.locator("iframe")).toHaveCount(0);
+
+      // The eyebrow names who the page is for, above the H1 (§3.2).
+      await expect(hero.locator("p").first()).toHaveText(at(messages, "Partners.hero.eyebrow"));
+    });
+
+    test(`#306 criterion 21: the hero's eyebrow reads at 4.5:1 or better in ${locale}`, async ({
+      page,
+    }) => {
+      // Small text in the brand cyan is the defect this element invites:
+      // `--color-tuggi-primary` under 14 px measures well under the threshold,
+      // and only `--color-tuggi-primary-text` passes (DS-COR-002). Measured on
+      // a canvas rather than parsed out of a computed string — Tailwind v4
+      // hands colours back in a space that is not sRGB.
+      await page.goto(hubUrl(locale));
+      const ratio = await measuredTextContrast(page, '[data-block="segment-hero"] p:first-of-type');
+      expect(ratio).toBeGreaterThanOrEqual(4.5);
     });
 
     test(`spec §2.6: the mechanism repeats the CTA under the steps in ${locale}`, async ({
@@ -505,6 +646,7 @@ test.describe("#191 — the hub without JavaScript", () => {
       "partnership-steps",
       "coverage-density",
       "languages-strip",
+      "faq",
       "partner-lead-form",
     ]) {
       await expect(page.locator(`[data-block="${block}"]`)).toBeVisible();
@@ -517,7 +659,7 @@ test.describe("#191 — the hub without JavaScript", () => {
     // that will never fire.
     const faded = await page
       .locator(
-        '[data-block="segment-hero"], [data-block="segment-grid"], [data-block="partnership-steps"], [data-block="languages-strip"], [data-block="partner-lead-form"]'
+        '[data-block="segment-hero"], [data-block="segment-grid"], [data-block="partnership-steps"], [data-block="languages-strip"], [data-block="faq"], [data-block="partner-lead-form"]'
       )
       .evaluateAll((nodes) =>
         nodes
@@ -558,5 +700,62 @@ test.describe("BR-IDIOMA-001 — the hub in the four locales", () => {
       const response = await request.get(`/pt/${segment.slugs.pt}`, { maxRedirects: 0 });
       expect(response.status(), `/pt/${segment.slugs.pt}`).toBe(404);
     }
+  });
+});
+
+/**
+ * Criteria 11 and 12 of §9 of the conversion spec, and the choice rule of its
+ * §3.4 — the three decisions of the video that the page **cannot** demonstrate
+ * today, because `PARTNER_VIDEOS` is empty on purpose (§3.6, SC 1.2.2).
+ *
+ * They are asserted against the functions rather than against the DOM for that
+ * reason: the day the ids arrive, what these guard is the behaviour the spec
+ * decided, not the behaviour whoever pastes the ids happens to get. Everything
+ * else about the empty registry is measured on the served page, in the hero
+ * test above.
+ */
+test.describe("#306 — the video data, with the registry still empty", () => {
+  const clip = (id: string, audioLocale: string): PartnerVideo => ({
+    id,
+    audioLocale,
+    youtubeId: `yt-${id}`,
+    poster: `/posters/${id}.jpg`,
+    posterWidth: 1280,
+    posterHeight: 720,
+    durationSeconds: 95,
+  });
+
+  test("criterion 11: the pill reads m:ss, and no digit of it comes from i18n", () => {
+    expect(formatClipDuration(95)).toBe("1:35");
+    expect(formatClipDuration(60)).toBe("1:00");
+    // Under a minute still carries the minute, so the pill never changes width
+    // class mid-list; and a rounded half-second never renders "1:60".
+    expect(formatClipDuration(9)).toBe("0:09");
+    expect(formatClipDuration(59.6)).toBe("1:00");
+  });
+
+  test("criterion 12: the language pill is a name in the page's language, never a code", () => {
+    // The mismatch between narration and interface is the point of the block
+    // (§3.4): an Italian visitor reads *Francese* and sees a language the page
+    // itself does not speak.
+    expect(narrationLanguageLabel("it", "fr")).toBe("Francese");
+    expect(narrationLanguageLabel("pt", "en")).toBe("Inglês");
+    expect(narrationLanguageLabel("es", "fr")).toBe("Francés");
+    expect(narrationLanguageLabel("en", "fr")).toBe("French");
+    // The documented fallback, and the only shape in which a bare code ships:
+    // an ICU build that does not know the code hands it back unchanged.
+    expect(narrationLanguageLabel("pt", "qq")).toBe("QQ");
+  });
+
+  test("§3.4: the clip that opens is the page's language, then English, then the first", () => {
+    const videos = [clip("fr-rio", "fr"), clip("en-rio", "en"), clip("pt-rio", "pt")];
+    expect(initialPartnerVideo(videos, "pt")?.id).toBe("pt-rio");
+    // No Italian clip, so the Italian visitor starts in English rather than in
+    // whatever happens to be first in the array.
+    expect(initialPartnerVideo(videos, "it")?.id).toBe("en-rio");
+    expect(initialPartnerVideo([clip("fr-rio", "fr")], "it")?.id).toBe("fr-rio");
+    // The state that ships today: no clip, no media, and the hero of the hero
+    // test above.
+    expect(initialPartnerVideo(PARTNER_VIDEOS, "pt")).toBeUndefined();
   });
 });

@@ -216,11 +216,13 @@
   },
   "Partners": {
     "hero": {
-      "title": "Your business becomes a Tuggi distribution point",
-      "subtitle": "A traveller who downloads Tuggi through your QR Code is attributed to you, and your venue can show up for the people using the app. It costs you nothing."
+      "eyebrow": "For businesses that welcome travellers",
+      "title": "Be found by the traveller who is already on your street",
+      "subtitle": "Your business can be part of the story of that street: every Tuggi traveller finds and reads your place, and whoever has the guide on hears it. Being a partner costs you nothing."
     },
     "grid": {
       "title": "Choose your type of business",
+      "lead": "Every business catches the traveller at a different moment of the day. Find yours, and we will talk about it.",
       "actionOpen": "See how it works"
     },
     "mechanism": {
@@ -229,13 +231,35 @@
     "seo": {
       "primaryTerm": "partner program",
       "title": "Partner program for businesses that host travellers",
-      "description": "Car rental, hotels, transfers, motorhomes and restaurants: display the Tuggi QR Code and earn a revenue share on purchases by the travellers you bring."
+      "description": "Restaurants, hotels, transfers and car rentals: see how your business can appear to the traveller already using Tuggi on your street. At no cost to you."
     },
     "cta": {
-      "action": "I want to be a partner",
-      "video": "Watch the video"
+      "action": "I want to appear on Tuggi"
+    },
+    "video": {
+      "caption": "A real drive in Rio de Janeiro: from Santos Dumont airport to Copacabana, with Tuggi telling you what goes past the window.",
+      "playLabel": "Play the video",
+      "languageLegend": "Narration language",
+      "openOnYoutube": "Watch on YouTube"
+    },
+    "FAQ": {
+      "title": "The questions we hear most",
+      "q1": "What does it cost?",
+      "a1": "Nothing. You buy nothing, you pay no monthly fee and you get no invoice from Tuggi. Tuggi also takes no cut of your sales: what you sell stays entirely yours. The one who pays for Tuggi is the traveller — and your revenue share comes out of what they buy.",
+      "q2": "Do I have to change anything in how I work?",
+      "a2": "Two things: the QR Code on display where the traveller is already looking — the menu, the front desk, the counter, the back of the seat — and the story of your place, told to us once. Beyond that, it requires no integration with your system, no equipment and no software for your staff to operate.",
+      "q3": "Will my place really get into Tuggi?",
+      "a3": "It is not automatic, and we would rather say so now. Once the partnership is approved, our team assesses your place: what gets in is permanent, open to the public and has a story of its own to tell — it does not have to be famous or old. If something is missing we tell you what it was, and you can fix it and put it forward again.",
+      "q4": "And if my place does not get in?",
+      "a4": "You are still a partner. Your QR Code, the traveller attributed to you and your revenue share do not depend on it. Nothing you already have goes away.",
+      "q5": "What if my guest does not speak English?",
+      "a5": "Tuggi speaks {contentLanguages} languages to the traveller. When your place is published, it is read in the language of whoever arrives — and heard, in that same language, by whoever has the guide on. The narration is produced the moment someone asks for it in that language.",
+      "q6": "What do I earn from this?",
+      "a6": "Every purchase made by a traveller who downloaded Tuggi through your QR Code counts towards your revenue share. The percentage is set in a commercial agreement — and that is what we talk about when you leave your details below."
     },
     "form": {
+      "title": "The first step is a conversation",
+      "body": "Leave your details and we will reply on the channel you choose, with what the partnership does in your case. Leaving your details costs nothing and commits you to nothing.",
       "allRequired": "All fields are required.",
       "name": "Your name",
       "business": "Name of your business",
@@ -280,8 +304,8 @@
       "s3Title": "Your revenue share",
       "s3Body": "Every purchase made by a traveller attributed to you enters the calculation of your revenue share, at a percentage set in the commercial agreement.",
       "s4Title": "Your venue can join Tuggi",
-      "s4Body": "Once the partnership is approved, our team decides whether to add your venue as a point of interest: it is an editorial decision at Tuggi, and it is not automatic. Places that are permanent, open to the public and have a story of their own get in — they do not have to be famous or old. Within {partnerTriageHours} hours of approval you have the outcome: either the venue is already published, or we tell you what was missing, and you can fix it and apply again. Once published, it is found like any other point and is heard in the language of whoever arrives, in any of the {contentLanguages} languages of the app. Your QR Code and your revenue share do not depend on it.",
-      "lead": "Nothing changes on your side of the counter: you display the QR Code, and the rest happens on the traveller's phone."
+      "s4Body": "Once the partnership is approved, our team assesses whether to register your place as a point of interest. It is an editorial decision at Tuggi, and it is not automatic. Within {partnerTriageHours} hours of the approval you have the outcome. And your QR Code and your revenue share do not depend on it.",
+      "lead": "On your side it is two things: display the QR Code and tell us the story of your place. The rest happens on the traveller's phone."
     },
     "cta": {
       "title": "Tell us how travellers reach you",
