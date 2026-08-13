@@ -221,8 +221,7 @@
     },
     "grid": {
       "title": "Choose your type of business",
-      "actionOpen": "See how it works",
-      "actionContact": "Talk to us"
+      "actionOpen": "See how it works"
     },
     "mechanism": {
       "place": "the counter, the room, the car"
@@ -231,6 +230,39 @@
       "primaryTerm": "partner program",
       "title": "Partner program for businesses that host travellers",
       "description": "Car rental, hotels, transfers, motorhomes and restaurants: display the Tuggi QR Code and earn a revenue share on purchases by the travellers you bring."
+    },
+    "cta": {
+      "action": "I want to be a partner",
+      "video": "Watch the video"
+    },
+    "form": {
+      "allRequired": "All fields are required.",
+      "name": "Your name",
+      "business": "Name of your business",
+      "businessType": "Type of business",
+      "businessTypePlaceholder": "Select an option",
+      "businessTypeOther": "Other",
+      "channelLegend": "How would you like us to get in touch?",
+      "channelWhatsapp": "WhatsApp",
+      "channelEmail": "Email",
+      "whatsappLabel": "Your WhatsApp number",
+      "whatsappHint": "With country and area code. Example: +1 555 000 0000.",
+      "emailLabel": "Your email",
+      "emailHint": "It can be the address you already use every day.",
+      "sending": "Sending…",
+      "consent": "I allow Tuggi to store these details and to contact me by phone call, WhatsApp or email — about this partnership only. Read the <policy>Privacy Policy</policy>.",
+      "consentLinkNewTab": "opens in a new tab",
+      "errorSummary": "Check the fields marked below before sending.",
+      "errorName": "Enter your name.",
+      "errorBusiness": "Enter the name of your business.",
+      "errorBusinessType": "Choose the type of business.",
+      "errorWhatsapp": "Enter the number with country and area code — for example, +1 555 000 0000.",
+      "errorEmail": "Enter an email with @ and a domain — for example, name@example.com.",
+      "errorConsent": "Tick the consent box so we can get in touch.",
+      "errorSend": "We could not send it just now. Try again in a moment — what you typed is still here.",
+      "successTitle": "We have your details.",
+      "successBody": "We will reach out on the channel you chose, to understand how travellers arrive at your business. The partner registration itself happens later, inside the Tuggi app — and we will walk you through it.",
+      "noscript": "Without JavaScript the form cannot be sent. Write to {email} and we will answer."
     }
   },
   "Segments": {
@@ -248,7 +280,8 @@
       "s3Title": "Your revenue share",
       "s3Body": "Every purchase made by a traveller attributed to you enters the calculation of your revenue share, at a percentage set in the commercial agreement.",
       "s4Title": "Your venue can join Tuggi",
-      "s4Body": "Once the partnership is approved, our team decides whether to add your venue as a point of interest: it is an editorial decision at Tuggi, and it is not automatic. Places that are permanent, open to the public and have a story of their own get in — they do not have to be famous or old. Within {partnerTriageHours} hours of approval you have the outcome: either the venue is already published, or we tell you what was missing, and you can fix it and apply again. Once published, it is found like any other point and is heard in the language of whoever arrives, in any of the {contentLanguages} languages of the app. Your QR Code and your revenue share do not depend on it."
+      "s4Body": "Once the partnership is approved, our team decides whether to add your venue as a point of interest: it is an editorial decision at Tuggi, and it is not automatic. Places that are permanent, open to the public and have a story of their own get in — they do not have to be famous or old. Within {partnerTriageHours} hours of approval you have the outcome: either the venue is already published, or we tell you what was missing, and you can fix it and apply again. Once published, it is found like any other point and is heard in the language of whoever arrives, in any of the {contentLanguages} languages of the app. Your QR Code and your revenue share do not depend on it.",
+      "lead": "Nothing changes on your side of the counter: you display the QR Code, and the rest happens on the traveller's phone."
     },
     "cta": {
       "title": "Tell us how travellers reach you",
@@ -283,6 +316,12 @@
       "hub": {
         "cardTitle": "Restaurants",
         "cardBody": "People sitting down to eat have time to listen. The QR Code goes on the menu or on the bill."
+      }
+    },
+    "receptive": {
+      "hub": {
+        "cardTitle": "Tour operators",
+        "cardBody": "Your guest spends the day with you and wants to hear about what they are seeing. The QR Code goes on the voucher or at the meeting point."
       }
     }
   },
@@ -543,6 +582,7 @@
       "s1Item1": "<strong>Account and Authentication Data:</strong> When creating an account via email or partner providers (Google, Apple, Facebook), we receive basic profile data (Name, Email, and user ID generated by our secure Supabase infrastructure).",
       "s1Item2": "<strong>Geolocation Data (GPS):</strong> TUGGI requires real-time location access (including in the background) to trigger audio exactly when you cross a Point of Interest (POI).",
       "s1Item3": "<strong>Usage and Telemetry Data:</strong> We collect information about application interactions, such as which audios were played, selected languages, and system stability metrics.",
+      "s1Item4": "<strong>Business Contact Details:</strong> If you leave your details in the partnership form, we store what you typed there — your name, your business name, the type of business and the channel you chose, WhatsApp number or email — plus the language the page was in. The approximate city comes from your connection's IP address: we do not ask for the city, and we do not store the IP. We use these details for one purpose only: to talk to you about the partnership, by phone call or by message. That means at most 4 contact attempts, within 14 calendar days of your submission; the cycle ends at whichever comes first, and after that we no longer use your details for this — to pick it up again, just send the form once more. We never use these details for newsletters, broadcast lists or marketing campaigns. You can ask us to remove them whenever you want: section 5 explains how.",
       "s2Title": "2. How We Use Your Data (Anonymized Telemetry)",
       "s2Item1": "<strong>Service Operation:</strong> We use your location strictly to calculate the direction vector and proximity to cultural triggers, ensuring audio delivery at the correct timing.",
       "s2Item2": "<strong>Territorial Intelligence (The B2G Standard):</strong> Geolocation and audio playback data are <strong>de-linked from your personal identity (anonymized)</strong> before being stored for flow analysis. We provide aggregated reports to Governments and Rental Companies (e.g., \"How many plays occurred at monument X today\") without ever exposing who the user was. We track cultural flows, not individuals.",
@@ -559,6 +599,9 @@
       "s5ItemO1": "<strong>The permanent deletion of your account and personal data.</strong> To exercise this right, access our ",
       "s5ItemO2": "Data Deletion Page",
       "s5ItemO3": " or use the native function within the app.",
+      "s5ItemLead1": "<strong>Removal of the business contact details you left in a form on this site</strong>, even if you have never had an account in the app. Write to ",
+      "s5ItemLeadEmail": "legal@tuggi.app",
+      "s5ItemLead2": " asking for removal: we close any contact cycle under way and delete your details from our business contact list. The data deletion page is only for app accounts.",
       "s6Title": "6. Contacting the Data Protection Officer (DPO)",
       "s6P1": "If you have questions about this policy or the processing of your data, please contact our Data Protection Officer (DPO) through our ",
       "s6P2": "Contact",

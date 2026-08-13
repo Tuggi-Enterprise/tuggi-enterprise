@@ -45,6 +45,13 @@ export default async function PrivacyPolicyPage({ params }: { params: Promise<{ 
           <li>{t.rich("s1Item1", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
           <li>{t.rich("s1Item2", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
           <li>{t.rich("s1Item3", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
+          {/* The fourth category, and it ships in the same release as the field
+              that collects it — BR-USUARIO-028 item 1: a surface does not
+              collect a category the published policy does not declare. What it
+              has to say is fixed by BR-USUARIO-029 block (A): the purpose, the
+              two channels (the phone call included), the limit of the cycle and
+              the way out. Card #294. */}
+          <li>{t.rich("s1Item4", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
         </ul>
       </section>
 
@@ -82,6 +89,16 @@ export default async function PrivacyPolicyPage({ params }: { params: Promise<{ 
             {t.rich("s5ItemO1", { strong: (chunks) => <strong>{chunks}</strong> })}
             <Link href="/trust-center/data-deletion">{t("s5ItemO2")}</Link>
             {t("s5ItemO3")}
+          </li>
+          {/* BR-USUARIO-029 item 6: whoever left a contact in a form on this
+              site never had an account, so there is nothing for
+              /trust-center/data-deletion to delete — and until this item the
+              page pointed there and nowhere else. One key for the address, used
+              as both the label and the href, so the two cannot drift apart. */}
+          <li>
+            {t.rich("s5ItemLead1", { strong: (chunks) => <strong>{chunks}</strong> })}
+            <a href={`mailto:${t("s5ItemLeadEmail")}`}>{t("s5ItemLeadEmail")}</a>
+            {t("s5ItemLead2")}
           </li>
         </ul>
       </section>

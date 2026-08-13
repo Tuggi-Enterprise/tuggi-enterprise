@@ -41,7 +41,8 @@ export type SegmentKey =
   | "lodging"
   | "transfer"
   | "motorhome"
-  | "restaurants";
+  | "restaurants"
+  | "receptive";
 
 type SegmentBase = {
   /**
@@ -99,9 +100,9 @@ export type Segment =
     });
 
 /**
- * The five segments.
+ * The six segments.
  *
- * All five are `published: false` in this phase: the segment template and its
+ * All six are `published: false` in this phase: the segment template and its
  * copy do not exist yet, and a declared route with no page is a 404 — which is
  * the honest answer — while a published one would be an empty page.
  *
@@ -172,6 +173,23 @@ export const SEGMENTS: readonly Segment[] = [
     icon: "UtensilsCrossed",
     published: false,
     order: 5,
+  },
+  // Sixth, and last on purpose (spec §2.3 of
+  // docs/design/spec-lp-parcerias-2026-08.md): `order` positions, it does not
+  // rank, and renumbering four entries to insert one is churn with nothing
+  // visible behind it. Six cards also close two rows of three at `lg`, where
+  // five left one orphan.
+  {
+    key: "receptive",
+    slugs: {
+      pt: "parcerias/receptivos",
+      en: "partners/tour-operators",
+      es: "alianzas/agencias-receptivas",
+      it: "partner/tour-operator",
+    },
+    icon: "Ticket",
+    published: false,
+    order: 6,
   },
 ];
 

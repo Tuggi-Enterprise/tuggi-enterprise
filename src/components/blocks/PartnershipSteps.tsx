@@ -1,5 +1,6 @@
 import { useTranslations } from "next-intl";
 import { PRODUCT_FACTS } from "@/lib/product-facts";
+import { CtaLink, type CtaHref } from "./CtaLink";
 
 /**
  * Block 4 of the partner template and block 3 of the `/partners` hub — spec
@@ -67,18 +68,40 @@ type PartnershipStepsProps = {
    * translation (copy doc §2, step two).
    */
   place: string;
+  /**
+   * A paragraph between the `h2` and the `<ol>` — the hub passes
+   * `Segments.steps.lead`, the answer to the operational objection ("does
+   * anything change on my side?"). It sits here and not in the hero because the
+   * objection is born exactly when the visitor reads the steps
+   * (`docs/design/spec-lp-parcerias-2026-08.md` §2.6).
+   */
+  lead?: string;
+  /**
+   * The primary call to action repeated after the list, inside **this** white
+   * section: a section of its own for one button would put white against white
+   * and break the alternation the page depends on (spec §2).
+   */
+  cta?: { label: string; href: CtaHref };
 };
 
-export function PartnershipSteps({ place }: PartnershipStepsProps) {
+export function PartnershipSteps({ place, lead, cta }: PartnershipStepsProps) {
   const t = useTranslations("Segments.steps");
   const values = { ...PRODUCT_FACTS, place };
 
   return (
     <section data-block="partnership-steps" className="bg-white py-20 lg:py-24">
       <div className="page-shell">
-        <h2 className="text-3xl sm:text-4xl font-extrabold text-tuggi-dark tracking-tight mb-10 max-w-2xl">
+        <h2
+          className={`text-3xl sm:text-4xl font-extrabold text-tuggi-dark tracking-tight max-w-2xl ${
+            lead ? "mb-4" : "mb-10"
+          }`}
+        >
           {t("title")}
         </h2>
+
+        {lead ? (
+          <p className="text-lg text-tuggi-slate leading-relaxed max-w-2xl mb-10">{lead}</p>
+        ) : null}
 
         <ol className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch list-none p-0">
           {STEPS.map((step) => (
@@ -98,6 +121,17 @@ export function PartnershipSteps({ place }: PartnershipStepsProps) {
             </li>
           ))}
         </ol>
+
+        {cta ? (
+          <div className="mt-12">
+            <CtaLink
+              href={cta.href}
+              className="min-h-[48px] inline-flex items-center justify-center px-8 py-4 bg-tuggi-secondary text-tuggi-dark font-semibold rounded-md shadow-sm hover:bg-tuggi-secondary-hover transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-dark focus-visible:ring-offset-2 w-full sm:w-auto text-center"
+            >
+              {cta.label}
+            </CtaLink>
+          </div>
+        ) : null}
       </div>
     </section>
   );

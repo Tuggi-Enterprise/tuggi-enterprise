@@ -1,4 +1,6 @@
-// Standalone PostgREST double for the /d/<slug> partner flow.
+// Standalone PostgREST double for the /d/<slug> partner flow and for the two
+// tables the site writes to: drive.click_fingerprints (attribution) and
+// campaign.inbound_leads (the lead forms of /contact and /partners).
 //
 // Why a mock server instead of hitting the real project: the festival's
 // core.clients.avatar_url is NULL in production today (the CMS backend used to
@@ -81,6 +83,44 @@ const CLIENTS_BY_SLUG = {
  */
 const fingerprintsByPartner = new Map();
 
+/**
+ * Rows the app inserted into campaign.inbound_leads, readable back over
+ * `GET /__leads`. The partnership form of #294 is only verifiable from what
+ * *arrived*: whether the WhatsApp-only path stores a row at all, and whether
+ * the phone was normalized to E.164 before the POST rather than after it.
+ */
+const inboundLeads = [];
+
+/**
+ * The three CHECK constraints of the real table, migration `20260812130000`.
+ *
+ * The double enforces them **on purpose**: production refuses a malformed row
+ * with SQLSTATE 23514, PostgREST turns that into a 400, and `/api/leads` turns
+ * *that* into a 500 — a lead lost. A mock that accepts everything would let the
+ * one defect this form exists to avoid pass the suite green.
+ */
+function checkViolation(row) {
+  const filled = (value) => typeof value === "string" && value.trim() !== "";
+  if (row.phone_e164 != null && !/^\+[1-9]\d{1,14}$/.test(row.phone_e164)) {
+    return "inbound_leads_phone_e164_formato";
+  }
+  const domain = [
+    "restaurant_bar",
+    "hotel_inn",
+    "tours_activities",
+    "transfer",
+    "car_rental",
+    "other",
+  ];
+  if (row.business_type != null && !domain.includes(row.business_type)) {
+    return "inbound_leads_business_type_dominio";
+  }
+  if (!filled(row.email) && !filled(row.phone_e164)) {
+    return "inbound_leads_contato_minimo";
+  }
+  return null;
+}
+
 function sendJson(res, status, body) {
   const json = JSON.stringify(body);
   res.writeHead(status, { "Content-Type": "application/json" });
@@ -125,9 +165,44 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  if (url.pathname === "/rest/v1/inbound_leads" && req.method === "POST") {
+    readBody(req).then((raw) => {
+      let rows = [];
+      try {
+        const parsed = JSON.parse(raw);
+        rows = Array.isArray(parsed) ? parsed : [parsed];
+      } catch {
+        sendJson(res, 400, { code: "PGRST102", message: "malformed body" });
+        return;
+      }
+      for (const row of rows) {
+        const violated = checkViolation(row);
+        if (violated) {
+          // The shape PostgREST returns for a CHECK violation.
+          sendJson(res, 400, {
+            code: "23514",
+            message: `new row for relation "inbound_leads" violates check constraint "${violated}"`,
+          });
+          return;
+        }
+      }
+      inboundLeads.push(...rows);
+      sendJson(res, 201, { success: true });
+    });
+    return;
+  }
+
   // Drain the request body so clients that stream a POST payload (the rpc
   // call below) don't hang waiting on us to read it.
   req.resume();
+
+  if (url.pathname === "/__leads" && req.method === "GET") {
+    const fullName = url.searchParams.get("full_name");
+    sendJson(res, 200, {
+      rows: fullName ? inboundLeads.filter((row) => row.full_name === fullName) : inboundLeads,
+    });
+    return;
+  }
 
   if (url.pathname === "/__fingerprints" && req.method === "GET") {
     const partnerId = url.searchParams.get("partner_id");

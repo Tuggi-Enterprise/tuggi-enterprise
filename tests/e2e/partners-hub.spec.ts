@@ -4,11 +4,16 @@ import path from "node:path";
 import { localizedPathname } from "../../src/i18n/pathnames";
 import { LOCALES, type SiteLocale } from "../../src/i18n/locales";
 import { SEGMENTS } from "../../src/lib/segments";
+import { PARTNER_VIDEOS } from "../../src/lib/partner-videos";
 
 /**
  * The partner hub — card #195, spec §6 of
  * `docs/design/spec-template-segmento-2026-08.md` and the ready list of §8 of
- * `docs/design/copy-parcerias-2026-08.md`.
+ * `docs/design/copy-parcerias-2026-08.md`, **as amended by card #294**
+ * (`docs/design/spec-lp-parcerias-2026-08.md`), which turned the hub into a
+ * conversion landing page: the hero gained a CTA, the grid stopped being
+ * navigation and points at the form, `SegmentCta` is no longer mounted, and
+ * four blocks became seven. The form itself is `partner-lead-form.spec.ts`.
  *
  * Rules under test, and each assertion cites the one it proves:
  * **BR-B2B-004** (the partner distributes and pays nothing), **BR-B2B-005**
@@ -66,6 +71,23 @@ function leaves(node: Messages, prefix: string): [string, string][] {
  * commercial block is excluded: it landed in `835cbcf` and belongs to the
  * segment template, not to the hub.
  */
+/**
+ * The two keys allowed to carry a digit — criterion 22 of spec §9 of #294.
+ * They are the example of a phone number in the hint and in its error
+ * message: a **format**, not a figure about the product, and the format is the
+ * whole point (the column's CHECK only takes E.164). Every other string of
+ * `Partners.*` and `Segments.*` stays digit-free.
+ */
+const DIGIT_EXEMPT = ["Partners.form.whatsappHint", "Partners.form.errorWhatsapp"];
+
+/**
+ * The one key allowed to say "voucher" — spec §7 of #294, which registered it
+ * in advance so it would not become a card. It is the tour receipt a tour
+ * operator hands the passenger, not the commercial voucher BR-B2B-009 item 1
+ * keeps off the site.
+ */
+const VOUCHER_EXEMPT = "Segments.receptive.hub.cardBody";
+
 function newCopy(locale: string): [string, string][] {
   const messages = messagesFor(locale);
   return [
@@ -79,12 +101,49 @@ function newCopy(locale: string): [string, string][] {
 /* -------------------------------------------------------------------------- */
 
 test.describe("the partner copy, in the four message files", () => {
+  /** The keys #294 added — spec §5, and criterion 1 of its §9. */
+  const CARD_294_KEYS = [
+    "Partners.cta.action",
+    "Partners.cta.video",
+    "Segments.steps.lead",
+    "Segments.receptive.hub.cardTitle",
+    "Segments.receptive.hub.cardBody",
+    ...[
+      "allRequired",
+      "name",
+      "business",
+      "businessType",
+      "businessTypePlaceholder",
+      "businessTypeOther",
+      "channelLegend",
+      "channelWhatsapp",
+      "channelEmail",
+      "whatsappLabel",
+      "whatsappHint",
+      "emailLabel",
+      "emailHint",
+      "sending",
+      "consent",
+      "consentLinkNewTab",
+      "errorSummary",
+      "errorName",
+      "errorBusiness",
+      "errorBusinessType",
+      "errorWhatsapp",
+      "errorEmail",
+      "errorConsent",
+      "errorSend",
+      "successTitle",
+      "successBody",
+      "noscript",
+    ].map((key) => `Partners.form.${key}`),
+  ];
+
   const EXPECTED_KEYS = [
     "Partners.hero.title",
     "Partners.hero.subtitle",
     "Partners.grid.title",
     "Partners.grid.actionOpen",
-    "Partners.grid.actionContact",
     "Partners.mechanism.place",
     "Partners.seo.primaryTerm",
     "Partners.seo.title",
@@ -94,11 +153,30 @@ test.describe("the partner copy, in the four message files", () => {
     "Segments.cta.title",
     "Segments.cta.body",
     "Segments.cta.action",
+    ...CARD_294_KEYS,
     ...SEGMENTS.flatMap((segment) => [
       `Segments.${segment.key}.hub.cardTitle`,
       `Segments.${segment.key}.hub.cardBody`,
     ]),
   ];
+
+  for (const locale of LOCALES) {
+    // Criterion 2 of spec §9. The label of the six cards is now
+    // `Partners.cta.action`; a key with no consumer is copy waiting for
+    // somebody to mount it again (CLAUDE.md §6).
+    test(`#294: ${locale}.json no longer carries Partners.grid.actionContact`, () => {
+      const grid = (messagesFor(locale)["Partners"] as Messages)["grid"] as Messages;
+      expect(Object.keys(grid)).not.toContain("actionContact");
+      expect(Object.keys(grid)).toContain("actionOpen");
+    });
+
+    // Criterion 3: the four video keys are born with the URLs, not before —
+    // an orphan key is a promise the page cannot keep.
+    test(`#294: ${locale}.json declares no Partners.video namespace yet`, () => {
+      const partners = messagesFor(locale)["Partners"] as Messages;
+      expect(Object.keys(partners)).not.toContain("video");
+    });
+  }
 
   for (const locale of LOCALES) {
     test(`BR-IDIOMA-001 item 3: ${locale}.json carries every key of the hub, filled`, () => {
@@ -119,6 +197,7 @@ test.describe("the partner copy, in the four message files", () => {
       // {contentLanguages}; a digit in any of these strings is a figure with
       // no owner.
       const offenders = newCopy(locale)
+        .filter(([key]) => !DIGIT_EXEMPT.includes(key))
         .filter(([, value]) => /[0-9]/.test(value))
         .map(([key, value]) => `${key}: ${value}`);
       expect(offenders).toEqual([]);
@@ -127,9 +206,19 @@ test.describe("the partner copy, in the four message files", () => {
     test(`BR-B2B-009: the ${locale} partner copy names no package, lot, licence or voucher`, () => {
       const forbidden = /pacote|lote|licen|cota\b|atacado|voucher|desconto de volume|bulk|wholesale/i;
       const offenders = newCopy(locale)
+        .filter(([key]) => key !== VOUCHER_EXEMPT)
         .filter(([, value]) => forbidden.test(value))
         .map(([key, value]) => `${key}: ${value}`);
       expect(offenders).toEqual([]);
+    });
+
+    test(`BR-B2B-009: the one exempt "voucher" in ${locale} is still the tour receipt`, () => {
+      // The exemption is not a hole: the word may exist in that one sentence,
+      // and only there. If the key ever stops containing it the waiver is
+      // stale and this goes red — the same discipline as the waiver list of
+      // no-hardcoded-copy.spec.ts.
+      const value = at(messagesFor(locale), VOUCHER_EXEMPT);
+      expect(value.toLowerCase()).toMatch(/voucher/);
     });
 
     test(`BR-B2B-010 item 6: the ${locale} partner copy promises no highlight, priority or date`, () => {
@@ -191,13 +280,27 @@ async function visibleText(page: Page): Promise<string> {
 
 test.describe("what /partners serves", () => {
   for (const locale of LOCALES) {
-    test(`the hub serves its four blocks in ${locale}`, async ({ page }) => {
+    test(`the hub serves its seven blocks in ${locale}`, async ({ page }) => {
       const response = await page.goto(hubUrl(locale));
       expect(response?.status()).toBe(200);
 
-      for (const block of ["segment-hero", "segment-grid", "partnership-steps", "segment-cta"]) {
+      // Criterion 5 of spec §9 of #294. Seven, because the video block of §4
+      // has no data and therefore does not exist.
+      for (const block of [
+        "segment-hero",
+        "segment-grid",
+        "partnership-steps",
+        "coverage-density",
+        "languages-strip",
+        "partner-lead-form",
+      ]) {
         await expect(page.locator(`[data-block="${block}"]`)).toHaveCount(1);
       }
+      await expect(page.locator('[data-proof-block="dark"]')).toHaveCount(1);
+
+      // Spec §0.2 item 6 and §2.9: with a form on the page, a second button to
+      // /contact splits the funnel in two destinations.
+      await expect(page.locator('[data-block="segment-cta"]')).toHaveCount(0);
 
       const messages = messagesFor(locale);
       const text = await visibleText(page);
@@ -206,19 +309,67 @@ test.describe("what /partners serves", () => {
         "Partners.hero.subtitle",
         "Partners.grid.title",
         "Segments.steps.title",
+        "Segments.steps.lead",
         "Segments.cta.title",
       ]) {
         expect(text, `${key} is not visible on ${hubUrl(locale)}`).toContain(at(messages, key));
       }
 
-      // The hub does not repeat coverage, proof or the commercial model
-      // (spec §6): a visitor who sees the same six blocks as the segment page
-      // thinks he never left.
+      // The commercial model block belongs to the segment page, not here.
       await expect(page.locator('[data-block="business-model"]')).toHaveCount(0);
-      await expect(page.locator("[data-fact]")).toHaveCount(0);
     });
 
-    test(`spec §6.2: the grid lists every segment, and an unpublished one leads to contact in ${locale}`, async ({
+    test(`spec §2: no two neighbouring sections of the hub share a background in ${locale}`, async ({
+      page,
+    }) => {
+      // Criterion 10, and it only verifies by rendering. Two blocks of the
+      // same colour touching read as one block — which is exactly what
+      // happens when `CoverageDensityMap` ends in the white list that is its
+      // served alternative and the next block is white too.
+      await page.goto(hubUrl(locale));
+      const backgrounds = await page
+        .locator("article > section, article > div > section")
+        .evaluateAll((nodes) =>
+          nodes.map((node) => ({
+            block: node.getAttribute("data-block") ?? node.getAttribute("data-proof-block") ?? "?",
+            color: getComputedStyle(node).backgroundColor,
+          }))
+        );
+
+      expect(backgrounds.length).toBeGreaterThan(6);
+      const collisions = backgrounds
+        .filter((section, index) => index > 0 && backgrounds[index - 1].color === section.color)
+        .map((section, index) => `${backgrounds[index]?.block} + ${section.block}: ${section.color}`);
+      expect(collisions).toEqual([]);
+    });
+
+    test(`spec §2.4: the hero carries the primary CTA and, with no video, no secondary in ${locale}`, async ({
+      page,
+    }) => {
+      await page.goto(hubUrl(locale));
+      const messages = messagesFor(locale);
+      const hero = page.locator('[data-block="segment-hero"]');
+
+      // Criterion 9: no secondary CTA and no space held for one.
+      const links = hero.locator("a");
+      await expect(links).toHaveCount(1);
+      await expect(links.first()).toHaveText(at(messages, "Partners.cta.action"));
+      await expect(links.first()).toHaveAttribute("href", "#lead-form");
+      await expect(page.locator("#video")).toHaveCount(0);
+      expect(PARTNER_VIDEOS).toHaveLength(0);
+    });
+
+    test(`spec §2.6: the mechanism repeats the CTA under the steps in ${locale}`, async ({
+      page,
+    }) => {
+      await page.goto(hubUrl(locale));
+      const messages = messagesFor(locale);
+      const cta = page.locator('[data-block="partnership-steps"] a[href="#lead-form"]');
+      await expect(cta).toHaveCount(1);
+      await expect(cta).toHaveText(at(messages, "Partners.cta.action"));
+    });
+
+    test(`spec §6.2: the grid lists every segment, and an unpublished one leads to the form in ${locale}`, async ({
       page,
     }) => {
       await page.goto(hubUrl(locale));
@@ -227,30 +378,33 @@ test.describe("what /partners serves", () => {
       await expect(cards).toHaveCount(SEGMENTS.length);
 
       const messages = messagesFor(locale);
-      const contact = localizedPathname(locale, "/contact");
 
       for (const segment of [...SEGMENTS].sort((a, b) => a.order - b.order)) {
         const card = cards.nth(segment.order - 1);
         const link = card.locator("a");
 
-        // The title is the card's accessible name, and the whole card is the
-        // target — DS-A11Y-002.
+        // Title **and** action, since #294: the card no longer opens a page
+        // named after it, it jumps to a form, and the purpose of a link is
+        // what SC 2.4.4 asks its accessible name for.
         const title = at(messages, `Segments.${segment.key}.hub.cardTitle`);
-        await expect(link).toHaveAccessibleName(title);
         await expect(card).toContainText(at(messages, `Segments.${segment.key}.hub.cardBody`));
 
         if (segment.published) {
+          await expect(link).toHaveAccessibleName(
+            `${title} ${at(messages, "Partners.grid.actionOpen")}`
+          );
           await expect(link).toHaveAttribute(
             "href",
             `/${locale}${localizedPathname(locale, `/partners/${segment.key}`)}`
           );
           await expect(card).toContainText(at(messages, "Partners.grid.actionOpen"));
         } else {
-          await expect(link).toHaveAttribute(
-            "href",
-            `/${locale}${contact}?segment=${segment.key}`
+          await expect(link).toHaveAccessibleName(
+            `${title} ${at(messages, "Partners.cta.action")}`
           );
-          await expect(card).toContainText(at(messages, "Partners.grid.actionContact"));
+          await expect(link).toHaveAttribute("href", "#lead-form");
+          await expect(link).toHaveAttribute("data-business-type", segment.key);
+          await expect(card).toContainText(at(messages, "Partners.cta.action"));
         }
 
         // DS-A11Y-003 and spec §6.2: the difference between the two cards is
@@ -283,22 +437,6 @@ test.describe("what /partners serves", () => {
       }
     });
 
-    test(`copy doc §1.1: the hub hero has no call to action in ${locale}`, async ({ page }) => {
-      await page.goto(hubUrl(locale));
-      const hero = page.locator('[data-block="segment-hero"]');
-
-      // Absent means absent: no button, no link, and no reserved space where
-      // one would be. The gap between the last line of the subtitle and the
-      // bottom of the block is the padding, not a hole.
-      await expect(hero.locator("a, button")).toHaveCount(0);
-
-      const gap = await hero.evaluate((section) => {
-        const paragraph = section.querySelector("p")!;
-        return section.getBoundingClientRect().bottom - paragraph.getBoundingClientRect().bottom;
-      });
-      expect(gap, "there is room reserved under the hero for a CTA that does not exist")
-        .toBeLessThan(200);
-    });
   }
 
   test("copy doc §2: the mechanism is two by two from md up, never four across", async ({
@@ -361,7 +499,14 @@ test.describe("#191 — the hub without JavaScript", () => {
   test("every block is served by the server, and none arrives invisible", async ({ page }) => {
     await page.goto(hubUrl("pt"));
 
-    for (const block of ["segment-hero", "segment-grid", "partnership-steps", "segment-cta"]) {
+    for (const block of [
+      "segment-hero",
+      "segment-grid",
+      "partnership-steps",
+      "coverage-density",
+      "languages-strip",
+      "partner-lead-form",
+    ]) {
       await expect(page.locator(`[data-block="${block}"]`)).toBeVisible();
     }
 
@@ -371,7 +516,9 @@ test.describe("#191 — the hub without JavaScript", () => {
     // #204: nothing on this page is born at opacity 0 waiting for an observer
     // that will never fire.
     const faded = await page
-      .locator('[data-block="segment-hero"], [data-block="segment-grid"], [data-block="partnership-steps"], [data-block="segment-cta"]')
+      .locator(
+        '[data-block="segment-hero"], [data-block="segment-grid"], [data-block="partnership-steps"], [data-block="languages-strip"], [data-block="partner-lead-form"]'
+      )
       .evaluateAll((nodes) =>
         nodes
           .flatMap((node) => [node, ...node.querySelectorAll<HTMLElement>("*")])
@@ -403,9 +550,11 @@ test.describe("BR-IDIOMA-001 — the hub in the four locales", () => {
     await page.goto(hubUrl("pt"));
     for (const segment of reserved) {
       await expect(
-        page.locator(`[data-block="segment-grid"] a[href$="segment=${segment.key}"]`)
+        page.locator(`[data-block="segment-grid"] a[data-business-type="${segment.key}"]`)
       ).toHaveCount(1);
 
+      // Criterion 7: the sixth segment's word is decided so publishing it
+      // later costs no URL change, and until then 404 is the honest answer.
       const response = await request.get(`/pt/${segment.slugs.pt}`, { maxRedirects: 0 });
       expect(response.status(), `/pt/${segment.slugs.pt}`).toBe(404);
     }

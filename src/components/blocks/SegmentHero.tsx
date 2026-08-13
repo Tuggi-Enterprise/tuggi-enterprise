@@ -1,5 +1,5 @@
-import type { ComponentProps } from "react";
-import { Link } from "@/i18n/routing";
+import { Play } from "lucide-react";
+import { CtaLink, type CtaHref } from "./CtaLink";
 
 /**
  * Block 1 of the partner template and of the `/partners` hub — spec §2.1 and
@@ -26,12 +26,23 @@ import { Link } from "@/i18n/routing";
  * cannot own a `useTranslations` call without owning one of them. The strings
  * still come from i18n: they are `t()` results at the call site (DS-COPY-001).
  *
- * **The CTA is optional, and absent means absent** (copy doc §1.1). The hub's
- * first decision is *"which of these am I?"*, and that answer is the grid
- * right below; a button to /contact above it competes with the grid and
- * collects the lead of someone who has not qualified himself yet. So there is
- * no reserved space, no placeholder and no disabled button — the element does
- * not exist in the DOM.
+ * **Both calls to action are optional, and absent means absent.** No reserved
+ * space, no placeholder, no disabled button: the element is not in the DOM.
+ * That was already true of `cta` and it is the whole design of `secondary`,
+ * which the hub passes only while `PARTNER_VIDEOS` has an entry — one
+ * condition, and the video block reads the same one (spec §4.1).
+ *
+ * **The hub's hero did not have a CTA and now has one**, and the reversal has a
+ * reason rather than a change of mind: §1.1 of the copy document decided
+ * against it while the grid below was the page's navigation, and
+ * `docs/design/spec-lp-parcerias-2026-08.md` §0.1 took that role away from the
+ * grid. With every card pointing at `#lead-form`, a CTA in the hero no longer
+ * competes with anything — it is the same destination, said earlier.
+ *
+ * **The secondary is a link, never a second filled button.** Two filled buttons
+ * side by side in the first fold are two primaries, and the visitor picks the
+ * cheaper one. High intent looks like a button; low intent looks like a link
+ * (spec §2.4).
  *
  * Single column, `max-w-3xl`: without a hero image the two-column skeleton
  * loses a cell, and an empty half reads as a picture that failed to load
@@ -42,17 +53,22 @@ type SegmentHeroProps = {
   title: string;
   subtitle: string;
   /**
-   * The one call to action. Absent on the hub — see above. `href` is typed
-   * against the route map, so a destination that is not declared is a compile
-   * error rather than a 404.
+   * The high-intent call to action. `href` is typed against the route map or is
+   * an anchor on this page, so a destination that is neither is a compile error
+   * rather than a 404.
    */
   cta?: {
     label: string;
-    href: ComponentProps<typeof Link>["href"];
+    href: CtaHref;
+  };
+  /** The low-intent one, under the primary at 390 px, beside it from `sm`. */
+  secondary?: {
+    label: string;
+    href: CtaHref;
   };
 };
 
-export function SegmentHero({ title, subtitle, cta }: SegmentHeroProps) {
+export function SegmentHero({ title, subtitle, cta, secondary }: SegmentHeroProps) {
   return (
     <section
       data-block="segment-hero"
@@ -64,13 +80,28 @@ export function SegmentHero({ title, subtitle, cta }: SegmentHeroProps) {
             {title}
           </h1>
           <p className="text-xl text-tuggi-slate leading-relaxed max-w-2xl">{subtitle}</p>
-          {cta ? (
-            <Link
-              href={cta.href}
-              className="mt-2 px-8 py-4 bg-tuggi-secondary text-tuggi-dark font-semibold rounded-md shadow-sm hover:bg-tuggi-secondary-hover transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-dark focus-visible:ring-offset-2 w-full sm:w-auto text-center"
-            >
-              {cta.label}
-            </Link>
+          {cta || secondary ? (
+            // Stacked at 390 px and side by side from `sm`: the secondary never
+            // sits next to the primary on a phone (spec §2.4).
+            <div className="mt-2 flex w-full flex-col items-stretch gap-4 sm:w-auto sm:flex-row sm:items-center">
+              {cta ? (
+                <CtaLink
+                  href={cta.href}
+                  className="min-h-[48px] inline-flex items-center justify-center px-8 py-4 bg-tuggi-secondary text-tuggi-dark font-semibold rounded-md shadow-sm hover:bg-tuggi-secondary-hover transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-dark focus-visible:ring-offset-2 w-full sm:w-auto text-center"
+                >
+                  {cta.label}
+                </CtaLink>
+              ) : null}
+              {secondary ? (
+                <CtaLink
+                  href={secondary.href}
+                  className="min-h-[48px] inline-flex items-center justify-center gap-2 px-2 font-semibold text-tuggi-dark underline underline-offset-4 hover:no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-dark focus-visible:ring-offset-2 rounded-md"
+                >
+                  <Play className="w-5 h-5 shrink-0" aria-hidden="true" />
+                  {secondary.label}
+                </CtaLink>
+              ) : null}
+            </div>
           ) : null}
         </div>
       </div>

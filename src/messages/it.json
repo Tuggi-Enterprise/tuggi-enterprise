@@ -221,8 +221,7 @@
     },
     "grid": {
       "title": "Scegli il tuo tipo di attività",
-      "actionOpen": "Scopri come funziona",
-      "actionContact": "Parla con noi"
+      "actionOpen": "Scopri come funziona"
     },
     "mechanism": {
       "place": "il banco, la camera, l'auto"
@@ -231,6 +230,39 @@
       "primaryTerm": "programma partner",
       "title": "Programma partner per chi accoglie i turisti",
       "description": "Autonoleggi, hotel, transfer, camper e ristoranti: esponi il QR Code di Tuggi e ricevi una partecipazione ai ricavi sugli acquisti del turista che porti."
+    },
+    "cta": {
+      "action": "Voglio diventare partner",
+      "video": "Guarda il video"
+    },
+    "form": {
+      "allRequired": "Tutti i campi sono obbligatori.",
+      "name": "Il tuo nome",
+      "business": "Nome della tua attività",
+      "businessType": "Tipo di attività",
+      "businessTypePlaceholder": "Seleziona un'opzione",
+      "businessTypeOther": "Altro",
+      "channelLegend": "Come preferisci che ti contattiamo?",
+      "channelWhatsapp": "WhatsApp",
+      "channelEmail": "Email",
+      "whatsappLabel": "Il tuo WhatsApp",
+      "whatsappHint": "Con prefisso internazionale. Esempio: +39 320 000 0000.",
+      "emailLabel": "La tua email",
+      "emailHint": "Può essere l'indirizzo che usi tutti i giorni.",
+      "sending": "Invio in corso…",
+      "consent": "Autorizzo Tuggi a conservare questi dati e a contattarmi per telefono, WhatsApp o email — solo riguardo a questa partnership. Leggi l''<policy>Informativa sulla Privacy</policy>.",
+      "consentLinkNewTab": "si apre in una nuova scheda",
+      "errorSummary": "Controlla i campi segnalati qui sotto prima di inviare.",
+      "errorName": "Scrivi il tuo nome.",
+      "errorBusiness": "Scrivi il nome della tua attività.",
+      "errorBusinessType": "Scegli il tipo di attività.",
+      "errorWhatsapp": "Scrivi il numero con il prefisso internazionale — per esempio, +39 320 000 0000.",
+      "errorEmail": "Scrivi un'email con @ e dominio — per esempio, nome@esempio.com.",
+      "errorConsent": "Spunta l'autorizzazione perché possiamo contattarti.",
+      "errorSend": "Non è stato possibile inviare adesso. Riprova tra poco: quello che hai scritto è ancora qui.",
+      "successTitle": "Abbiamo ricevuto il tuo contatto.",
+      "successBody": "Ti contattiamo sul canale che hai scelto, per capire come il turista arriva alla tua attività. La registrazione come partner vera e propria si fa dopo, dentro l'app Tuggi — e ti mostriamo come.",
+      "noscript": "Senza JavaScript l'invio non funziona. Scrivi a {email} e ti rispondiamo."
     }
   },
   "Segments": {
@@ -248,7 +280,8 @@
       "s3Title": "La tua partecipazione ai ricavi",
       "s3Body": "Ogni acquisto fatto dal turista attribuito a te entra nel calcolo della tua partecipazione ai ricavi, con la percentuale definita nell'accordo commerciale.",
       "s4Title": "Il tuo locale può entrare in Tuggi",
-      "s4Body": "Approvata la partnership, il nostro team decide se registrare il tuo locale come punto di interesse: è una decisione editoriale di Tuggi e non è automatica. Entrano i luoghi permanenti, aperti al pubblico e con una storia propria da raccontare; non serve essere famosi né antichi. Entro {partnerTriageHours} ore dall'approvazione hai l'esito: o il locale è già pubblicato, oppure ti diciamo che cosa è mancato, e puoi correggerlo e ripresentarlo. Pubblicato, si trova come qualsiasi altro punto e si ascolta nella lingua di chi arriva, in una qualsiasi delle {contentLanguages} lingue dell'app. Il tuo QR Code e la tua partecipazione ai ricavi non dipendono da questo."
+      "s4Body": "Approvata la partnership, il nostro team decide se registrare il tuo locale come punto di interesse: è una decisione editoriale di Tuggi e non è automatica. Entrano i luoghi permanenti, aperti al pubblico e con una storia propria da raccontare; non serve essere famosi né antichi. Entro {partnerTriageHours} ore dall'approvazione hai l'esito: o il locale è già pubblicato, oppure ti diciamo che cosa è mancato, e puoi correggerlo e ripresentarlo. Pubblicato, si trova come qualsiasi altro punto e si ascolta nella lingua di chi arriva, in una qualsiasi delle {contentLanguages} lingue dell'app. Il tuo QR Code e la tua partecipazione ai ricavi non dipendono da questo.",
+      "lead": "Dalla tua parte non cambia nulla: tu esponi il QR Code, e il resto succede sul telefono del turista."
     },
     "cta": {
       "title": "Raccontaci come il turista arriva da te",
@@ -283,6 +316,12 @@
       "hub": {
         "cardTitle": "Ristoranti",
         "cardBody": "Chi si siede a tavola ha tempo di ascoltare. Il QR Code sta sul menù o sul conto."
+      }
+    },
+    "receptive": {
+      "hub": {
+        "cardTitle": "Tour operator ed escursioni",
+        "cardBody": "Il passeggero passa la giornata con te e vuole sentire quello che sta vedendo. Il QR Code sta sul voucher o al punto d'incontro."
       }
     }
   },
@@ -543,6 +582,7 @@
       "s1Item1": "<strong>Dati di Account e Autenticazione:</strong> Quando crei un account tramite email o provider partner (Google, Apple, Facebook), riceviamo dati di profilo di base (Nome, Email e ID utente generato dalla nostra infrastruttura sicura Supabase).",
       "s1Item2": "<strong>Dati di Geolocalizzazione (GPS):</strong> TUGGI richiede l'accesso alla posizione in tempo reale (anche in background) per attivare l'audio esattamente quando attraversi un Punto di Interesse (POI).",
       "s1Item3": "<strong>Dati di Utilizzo e Telemetria:</strong> Raccogliamo informazioni sulle interazioni con l'applicazione, come quali audio sono stati riprodotti, le lingue selezionate e le metriche di stabilità del sistema.",
+      "s1Item4": "<strong>Dati di Contatto Commerciale:</strong> Se lasci il tuo contatto nel modulo partnership, conserviamo quello che hai scritto lì — nome, nome dell'attività, tipo di attività e il canale che hai scelto, numero WhatsApp o email — più la lingua in cui era la pagina. La città approssimativa arriva dall'indirizzo IP della tua connessione: la città non te la chiediamo e l'IP non lo conserviamo. Usiamo questi dati per una sola finalità: parlare con te della partnership, con una telefonata o con un messaggio. Sono al massimo 4 tentativi di contatto, entro 14 giorni dall'invio; il ciclo si chiude con quello che arriva prima e, dopo, non usiamo più il tuo contatto per questo — per riprendere, basta inviare di nuovo il modulo. Non usiamo mai questo contatto per newsletter, liste broadcast o campagne di marketing. Puoi chiederci di rimuoverlo quando vuoi: come farlo è nella sezione 5.",
       "s2Title": "2. Come Usiamo i Tuoi Dati (Telemetria Anonimizzata)",
       "s2Item1": "<strong>Funzionamento del Servizio:</strong> Usiamo la tua posizione esclusivamente per calcolare il vettore di direzione e la prossimità ai trigger culturali, garantendo la riproduzione dell'audio al momento giusto.",
       "s2Item2": "<strong>Intelligenza Territoriale (Lo Standard B2G):</strong> I dati di geolocalizzazione e di riproduzione audio sono <strong>scollegati dalla tua identità personale (anonimizzati)</strong> prima di essere archiviati per l'analisi dei flussi. Forniamo report aggregati a Governi e Società di Noleggio (es. \"Quante riproduzioni sono avvenute al monumento X oggi\") senza mai rivelare chi fosse l'utente. Tracciamo i flussi culturali, non gli individui.",
@@ -559,6 +599,9 @@
       "s5ItemO1": "<strong>La cancellazione permanente del tuo account e dei tuoi dati personali.</strong> Per esercitare questo diritto, accedi alla nostra ",
       "s5ItemO2": "Pagina di Cancellazione dei Dati",
       "s5ItemO3": " o usa la funzione nativa all'interno dell'app.",
+      "s5ItemLead1": "<strong>La rimozione del contatto commerciale che hai lasciato in un modulo del sito</strong>, anche se non hai mai avuto un account nell'app. Scrivi a ",
+      "s5ItemLeadEmail": "legal@tuggi.app",
+      "s5ItemLead2": " chiedendo la rimozione: chiudiamo il contatto in corso e cancelliamo i tuoi dati dal nostro elenco di contatti commerciali. La pagina di cancellazione dei dati serve solo per gli account dell'app.",
       "s6Title": "6. Contattare il Responsabile della Protezione dei Dati (DPO)",
       "s6P1": "Se hai domande su questa informativa o sul trattamento dei tuoi dati, contatta il nostro Responsabile della Protezione dei Dati (DPO) tramite la nostra pagina ",
       "s6P2": "Contatti",

@@ -221,8 +221,7 @@
     },
     "grid": {
       "title": "Elige tu tipo de negocio",
-      "actionOpen": "Ver cómo funciona",
-      "actionContact": "Hablar con nosotros"
+      "actionOpen": "Ver cómo funciona"
     },
     "mechanism": {
       "place": "el mostrador, la habitación, el coche"
@@ -231,6 +230,39 @@
       "primaryTerm": "programa de alianzas",
       "title": "Programa de alianzas para quien recibe turistas",
       "description": "Alquiler de coches, hoteles, traslados, autocaravanas y restaurantes: muestra el Código QR de Tuggi y recibe participación en los ingresos de las compras del turista que traes."
+    },
+    "cta": {
+      "action": "Quiero ser aliado",
+      "video": "Ver el vídeo"
+    },
+    "form": {
+      "allRequired": "Todos los campos son obligatorios.",
+      "name": "Tu nombre",
+      "business": "Nombre de tu negocio",
+      "businessType": "Tipo de negocio",
+      "businessTypePlaceholder": "Selecciona una opción",
+      "businessTypeOther": "Otro",
+      "channelLegend": "¿Cómo prefieres que hablemos contigo?",
+      "channelWhatsapp": "WhatsApp",
+      "channelEmail": "Correo",
+      "whatsappLabel": "Tu WhatsApp",
+      "whatsappHint": "Con código de país y prefijo. Ejemplo: +34 600 000 000.",
+      "emailLabel": "Tu correo electrónico",
+      "emailHint": "Puede ser el correo que ya usas cada día.",
+      "sending": "Enviando…",
+      "consent": "Autorizo a Tuggi a guardar estos datos y a contactarme por llamada, WhatsApp o correo — solo sobre esta alianza. Lee la <policy>Política de Privacidad</policy>.",
+      "consentLinkNewTab": "se abre en una pestaña nueva",
+      "errorSummary": "Revisa los campos marcados abajo antes de enviar.",
+      "errorName": "Escribe tu nombre.",
+      "errorBusiness": "Escribe el nombre de tu negocio.",
+      "errorBusinessType": "Elige el tipo de negocio.",
+      "errorWhatsapp": "Escribe el número con código de país y prefijo — por ejemplo, +34 600 000 000.",
+      "errorEmail": "Escribe un correo con @ y dominio — por ejemplo, nombre@ejemplo.com.",
+      "errorConsent": "Marca la autorización para que podamos contactarte.",
+      "errorSend": "No se pudo enviar ahora. Inténtalo de nuevo en un momento: lo que escribiste sigue aquí.",
+      "successTitle": "Recibimos tu contacto.",
+      "successBody": "Hablamos contigo por el canal que elegiste, para entender cómo llega el turista a tu negocio. El registro en sí se hace después, dentro de la aplicación de Tuggi, y te mostramos el camino.",
+      "noscript": "Sin JavaScript el envío no funciona. Escribe a {email} y te respondemos."
     }
   },
   "Segments": {
@@ -248,7 +280,8 @@
       "s3Title": "Tu participación en los ingresos",
       "s3Body": "Cada compra que haga el turista atribuido a ti entra en el cálculo de tu participación en los ingresos, con el porcentaje definido en el acuerdo comercial.",
       "s4Title": "Tu local puede entrar en Tuggi",
-      "s4Body": "Aprobada la alianza, nuestro equipo decide si registra tu local como punto de interés: es una decisión editorial de Tuggi y no es automática. Entran los lugares permanentes, abiertos al público y con una historia propia que contar; no hace falta ser famoso ni antiguo. En un plazo de {partnerTriageHours} horas desde la aprobación tienes el desenlace: o el local ya está publicado, o te decimos qué faltó, y puedes corregirlo y presentarlo de nuevo. Publicado, se encuentra como cualquier otro punto y se escucha en el idioma de quien llegue, en cualquiera de los {contentLanguages} idiomas de la app. Tu Código QR y tu participación en los ingresos no dependen de eso."
+      "s4Body": "Aprobada la alianza, nuestro equipo decide si registra tu local como punto de interés: es una decisión editorial de Tuggi y no es automática. Entran los lugares permanentes, abiertos al público y con una historia propia que contar; no hace falta ser famoso ni antiguo. En un plazo de {partnerTriageHours} horas desde la aprobación tienes el desenlace: o el local ya está publicado, o te decimos qué faltó, y puedes corregirlo y presentarlo de nuevo. Publicado, se encuentra como cualquier otro punto y se escucha en el idioma de quien llegue, en cualquiera de los {contentLanguages} idiomas de la app. Tu Código QR y tu participación en los ingresos no dependen de eso.",
+      "lead": "De tu lado no cambia nada en la operación: tú muestras el Código QR y el resto pasa en el móvil del turista."
     },
     "cta": {
       "title": "Cuéntanos cómo llega el turista hasta ti",
@@ -283,6 +316,12 @@
       "hub": {
         "cardTitle": "Restaurantes",
         "cardBody": "Quien se sienta a comer tiene tiempo de escuchar. El Código QR va en la carta o en la cuenta."
+      }
+    },
+    "receptive": {
+      "hub": {
+        "cardTitle": "Receptivos y excursiones",
+        "cardBody": "El pasajero pasa el día contigo y quiere oír sobre lo que está viendo. El Código QR va en el voucher o en el punto de encuentro."
       }
     }
   },
@@ -543,6 +582,7 @@
       "s1Item1": "<strong>Datos de Cuenta y Autenticación:</strong> Al crear una cuenta por correo electrónico o proveedores asociados (Google, Apple, Facebook), recibimos datos básicos de perfil (Nombre, Correo y ID de usuario generado por nuestra infraestructura segura de Supabase).",
       "s1Item2": "<strong>Datos de Geolocalización (GPS):</strong> TUGGI necesita acceso a su ubicación en tiempo real (incluso en segundo plano) para activar los audios en el momento exacto en que cruza un Punto de Interés (POI).",
       "s1Item3": "<strong>Datos de Uso y Telemetría:</strong> Recopilamos información sobre las interacciones en la aplicación, como qué audios se reprodujeron, los idiomas seleccionados y las métricas de estabilidad del sistema.",
+      "s1Item4": "<strong>Datos de Contacto Comercial:</strong> Si deja su contacto en el formulario de alianzas, guardamos lo que escribió ahí — nombre, nombre del negocio, tipo de negocio y el canal que eligió, número de WhatsApp o correo electrónico — más el idioma en el que estaba la página. La ciudad aproximada viene de la dirección IP de su conexión: no preguntamos la ciudad y no guardamos la IP. Usamos estos datos con una sola finalidad: hablar con usted sobre la alianza, por llamada telefónica o por mensaje. Son como máximo 4 intentos de contacto, dentro de 14 días corridos desde el envío; el ciclo termina con lo que ocurra primero y, después de eso, dejamos de usar su contacto para esto — para retomarlo, basta con enviar el formulario de nuevo. Nunca usamos este contacto para newsletters, listas de difusión ni campañas de marketing. Puede pedir su eliminación cuando quiera: cómo hacerlo está en la sección 5.",
       "s2Title": "2. Cómo Usamos Sus Datos (Telemetría Anonimizada)",
       "s2Item1": "<strong>Operación del Servicio:</strong> Usamos su ubicación estrictamente para calcular el vector de dirección y la proximidad a los activadores culturales, asegurando la entrega del audio en el momento adecuado.",
       "s2Item2": "<strong>Inteligencia Territorial (El Estándar B2G):</strong> Los datos de geolocalización y reproducción de audio se <strong>desvinculan de su identidad personal (anonimizados)</strong> antes de ser almacenados para análisis de flujo. Proporcionamos informes agregados a Gobiernos y Empresas de Alquiler de Vehículos (ej: \"Cuántas reproducciones ocurrieron en el monumento X hoy\") sin revelar nunca quién fue el usuario. Rastreamos flujos culturales, no personas.",
@@ -559,6 +599,9 @@
       "s5ItemO1": "<strong>La eliminación definitiva de su cuenta y sus datos personales.</strong> Para ejercer este derecho, acceda a nuestra ",
       "s5ItemO2": "Página de Eliminación de Datos",
       "s5ItemO3": " o use la función nativa dentro de la aplicación.",
+      "s5ItemLead1": "<strong>La eliminación del contacto comercial que dejó en un formulario del sitio</strong>, aunque nunca haya tenido una cuenta en la aplicación. Escriba a ",
+      "s5ItemLeadEmail": "legal@tuggi.app",
+      "s5ItemLead2": " pidiendo la eliminación: cerramos el contacto en curso y borramos sus datos de nuestra lista de contactos comerciales. La página de eliminación de datos sirve solo para cuentas de la aplicación.",
       "s6Title": "6. Contacto del Delegado de Protección de Datos (DPO)",
       "s6P1": "Si tiene preguntas sobre esta política o sobre el tratamiento de sus datos, contacte a nuestro Delegado de Protección de Datos (DPO) a través de nuestra página de ",
       "s6P2": "Contacto",
