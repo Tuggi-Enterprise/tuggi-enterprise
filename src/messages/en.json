@@ -218,7 +218,7 @@
     "hero": {
       "eyebrow": "For businesses that welcome travellers",
       "title": "Be found by the traveller who is already on your street",
-      "subtitle": "Your business can be part of the story of that street: every Tuggi traveller finds and reads your place, and whoever has the guide on hears it. Being a partner costs you nothing."
+      "subtitle": "Your business can be part of the story of that street: every Tuggi traveller finds and reads your place, and whoever has the guide on hears it. No Tuggi plan hides you from the traveller."
     },
     "grid": {
       "title": "Choose your type of business",
@@ -231,7 +231,7 @@
     "seo": {
       "primaryTerm": "partner program",
       "title": "Partner program for businesses that host travellers",
-      "description": "Restaurants, hotels, transfers and car rentals: see how your business can appear to the traveller already using Tuggi on your street. At no cost to you."
+      "description": "Restaurants, hotels, transfers and car rentals: see how your business can appear to the traveller already using Tuggi on your street, on any plan."
     },
     "cta": {
       "action": "I want to appear on Tuggi"
@@ -245,7 +245,7 @@
     "FAQ": {
       "title": "The questions we hear most",
       "q1": "What does it cost?",
-      "a1": "Nothing. You buy nothing, you pay no monthly fee and you get no invoice from Tuggi. Tuggi also takes no cut of your sales: what you sell stays entirely yours. The one who pays for Tuggi is the traveller — and your revenue share comes out of what they buy.",
+      "a1": "Appearing on Tuggi costs nothing: signing up, being approved, displaying the QR Code, having your place published after we assess it, and being found and read by every traveller. Tuggi also takes no cut of your sales, and you pay for nobody's access — the one who pays for Tuggi is the traveller. There is one paid part of the partnership, outside that list, and we go over it with you.",
       "q2": "Do I have to change anything in how I work?",
       "a2": "Two things: the QR Code on display where the traveller is already looking — the menu, the front desk, the counter, the back of the seat — and the story of your place, told to us once. Beyond that, it requires no integration with your system, no equipment and no software for your staff to operate.",
       "q3": "Will my place really get into Tuggi?",
@@ -292,7 +292,7 @@
   "Segments": {
     "commercial": {
       "title": "How your revenue share works",
-      "lead": "You offer Tuggi to your customer at no cost at all. When they subscribe, part of the sale comes back to you. No upfront investment and no risk.",
+      "lead": "You offer Tuggi to your customer. When they buy, part of the sale comes back to you.",
       "note": "The percentage is set in the commercial agreement."
     },
     "steps": {

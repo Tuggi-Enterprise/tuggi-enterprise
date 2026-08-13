@@ -218,7 +218,7 @@
     "hero": {
       "eyebrow": "Para quien recibe turistas",
       "title": "Aparece ante el turista que ya está en tu calle",
-      "subtitle": "Tu negocio puede formar parte de la historia de esa calle: todo turista de Tuggi encuentra y lee tu local, y quien lleva la guía encendida lo escucha. Ser aliado no te cuesta nada."
+      "subtitle": "Tu negocio puede formar parte de la historia de esa calle: todo turista de Tuggi encuentra y lee tu local, y quien lleva la guía encendida lo escucha. Ningún plan de Tuggi te esconde del turista."
     },
     "grid": {
       "title": "Elige tu tipo de negocio",
@@ -231,7 +231,7 @@
     "seo": {
       "primaryTerm": "programa de alianzas",
       "title": "Programa de alianzas para quien recibe turistas",
-      "description": "Restaurantes, hoteles, transfers y alquiler de coches: mira cómo tu negocio puede aparecer ante el turista que ya usa Tuggi en tu calle. Sin coste para ti."
+      "description": "Restaurantes, hoteles, transfers y alquiler de coches: mira cómo tu negocio puede aparecer ante el turista que ya usa Tuggi en tu calle, con el plan que tenga."
     },
     "cta": {
       "action": "Quiero aparecer en Tuggi"
@@ -245,7 +245,7 @@
     "FAQ": {
       "title": "Las preguntas que más nos hacen",
       "q1": "¿Cuánto cuesta?",
-      "a1": "Nada. No compras nada, no pagas mensualidad y no recibes factura de Tuggi. Tuggi tampoco se queda con parte de tus ventas: lo que vendes sigue siendo íntegramente tuyo. Quien paga por Tuggi es el turista, y de su compra sale tu participación en los ingresos.",
+      "a1": "Aparecer en Tuggi no cuesta nada: registrarte, ser aprobado, mostrar el Código QR, tener tu local publicado tras la evaluación y ser encontrado y leído por todo turista. Tuggi tampoco se queda con parte de tus ventas, y tú no pagas el acceso de nadie: quien paga por Tuggi es el turista. Hay una parte de la alianza que es de pago, fuera de esa lista, y la vemos contigo.",
       "q2": "¿Tengo que cambiar algo en mi operación?",
       "a2": "Dos cosas: el Código QR a la vista donde el turista ya mira —la carta, la recepción, el mostrador, el respaldo del asiento— y la historia de tu local, contada una vez. Fuera de eso, no exige integración con tu sistema, ni equipos, ni software que tu equipo tenga que manejar.",
       "q3": "¿Mi local entra de verdad en Tuggi?",
@@ -292,7 +292,7 @@
   "Segments": {
     "commercial": {
       "title": "Cómo funciona tu participación en los ingresos",
-      "lead": "Ofreces Tuggi a tu cliente sin ningún coste. Cuando se suscribe, una parte de la venta vuelve a ti. Sin inversión inicial y sin riesgo.",
+      "lead": "Ofreces Tuggi a tu cliente. Cuando compra, una parte de la venta vuelve a ti.",
       "note": "El porcentaje se define en el acuerdo comercial."
     },
     "steps": {

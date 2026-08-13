@@ -218,7 +218,7 @@
     "hero": {
       "eyebrow": "Para quem recebe turista",
       "title": "Apareça para o turista que já está na sua rua",
-      "subtitle": "O seu negócio pode fazer parte da história dessa rua: todo turista do Tuggi encontra e lê o seu local, e quem está com o guia ligado ouve. Ser parceiro não custa nada para você."
+      "subtitle": "O seu negócio pode fazer parte da história dessa rua: todo turista do Tuggi encontra e lê o seu local, e quem está com o guia ligado ouve. Nenhum plano do Tuggi esconde você do turista."
     },
     "grid": {
       "title": "Escolha o seu tipo de negócio",
@@ -231,7 +231,7 @@
     "seo": {
       "primaryTerm": "programa de parceria",
       "title": "Programa de parceria para quem recebe turista",
-      "description": "Restaurantes, hotéis, transfers e locadoras: veja como o seu negócio pode aparecer para o turista que já usa o Tuggi na sua rua. Sem custo para você."
+      "description": "Restaurantes, hotéis, transfers e locadoras: veja como o seu negócio pode aparecer para o turista que já usa o Tuggi na sua rua, em qualquer plano dele."
     },
     "cta": {
       "action": "Quero aparecer no Tuggi"
@@ -245,7 +245,7 @@
     "FAQ": {
       "title": "As perguntas que a gente mais ouve",
       "q1": "Quanto custa?",
-      "a1": "Nada. Você não compra nada, não paga mensalidade e não recebe fatura da Tuggi. A Tuggi também não fica com parte das suas vendas: o que você vende continua inteiro seu. Quem paga pelo Tuggi é o turista — e é da compra dele que sai a sua participação na receita.",
+      "a1": "Aparecer no Tuggi não custa nada: cadastrar-se, ser aprovado, exibir o QR Code, ter o seu local publicado depois da avaliação e ser encontrado e lido por todo turista. A Tuggi também não fica com parte das suas vendas, e você não paga pelo acesso de ninguém — quem paga pelo Tuggi é o turista. Existe uma parte paga na parceria, fora dessa lista, e a gente conversa sobre ela com você.",
       "q2": "Vou precisar mudar alguma coisa na minha operação?",
       "a2": "Duas coisas: o QR Code exposto onde o turista já olha — o cardápio, a recepção, o balcão, o encosto do banco — e a história do seu lugar contada uma vez para a gente. Fora isso, não exige integração com o seu sistema, nem equipamento, nem software para a sua equipe operar.",
       "q3": "O meu lugar entra mesmo no Tuggi?",
@@ -292,7 +292,7 @@
   "Segments": {
     "commercial": {
       "title": "Como funciona a sua participação na receita",
-      "lead": "Você oferece o Tuggi ao seu cliente sem custo nenhum. Quando ele assina, uma parte da venda volta para você. Sem investimento inicial e sem risco.",
+      "lead": "Você oferece o Tuggi ao seu cliente. Quando ele compra, uma parte da venda volta para você.",
       "note": "O percentual é definido em acordo comercial."
     },
     "steps": {

@@ -6,7 +6,9 @@ import { LOCALES } from "../../src/i18n/locales";
 
 /**
  * The ladder of the partner offer — criteria 6 and 23 to 27 of §9 of
- * `docs/design/spec-lp-parcerias-conversao-2026-08.md` (card #306).
+ * `docs/design/spec-lp-parcerias-conversao-2026-08.md` (card #306), and the four
+ * criteria the §0.6 delta of that same spec added for the paid band (card #316,
+ * in the second block of the file).
  *
  * ---------------------------------------------------------------------------
  * What a ladder is, and why it is worth five tests
@@ -85,8 +87,38 @@ function offerCopy(locale: string): [string, string][] {
   ];
 }
 
-/** Every stem of "to hear" in the four languages. See the header on `escuch`. */
-const HEARING = /\b(ouv\w*|escut\w*|escuch\w*|hear\w*|listen\w*|ascolt\w*|udit\w*)\b/i;
+/**
+ * The scope of criteria 28 to 31 — `Partners.*` plus **all** of `Segments.*`,
+ * not only its steps. The band of `BR-B2B-016` is a fact about the partnership,
+ * so it reaches every surface that recruits a partner, and the key that carried
+ * a banned absolute was `Segments.commercial.lead`: a namespace no page mounts
+ * today and that the narrower scope of criterion 23 never looked at.
+ */
+function partnerCopy(locale: string): [string, string][] {
+  const messages = messagesFor(locale);
+  return [
+    ...leaves(messages["Partners"] as Messages, "Partners."),
+    ...leaves(messages["Segments"] as Messages, "Segments."),
+  ];
+}
+
+/**
+ * Every stem of "to hear", by language. Criterion 23 runs the union of all four
+ * against every file on purpose — a verb that slips in from another language is
+ * still a claim of listening — while criterion 28 reads a file with the stems of
+ * its own language. One map, two readings, so a stem is added in one place.
+ *
+ * See the header on `escuch`; the Italian `sent-` is the same trap by another
+ * road, and neither is reachable from `escut\w*` or `ascolt\w*`.
+ */
+const HEARING_STEMS: Record<string, string> = {
+  pt: "ouv\\w*|escut\\w*",
+  en: "hear\\w*|listen\\w*",
+  es: "escuch\\w*|oye|oír|oíd\\w*",
+  it: "ascolt\\w*|sent[eiao]\\w*|udit\\w*",
+};
+
+const HEARING = new RegExp(`\\b(${Object.values(HEARING_STEMS).join("|")})\\b`, "i");
 
 /** The mark that says the traveller has a paid session running. */
 const GUIDE_ON: Record<string, string> = {
@@ -170,9 +202,13 @@ test.describe("BR-MONETIZACAO-055 and 056 — the offer is a ladder, not a promi
       ["a figure of audience or outcome", /turistas por mês|travellers per month|%/i],
     ];
 
+    // Criterion 30 of the #316 delta widened these five to the scope of the
+    // criteria below — all of `Segments.*` — and left criterion 23 where it is:
+    // a pattern of words is language-blind about who the subject of the verb is,
+    // and two segment cards depend on that difference. These five do not.
     for (const [family, pattern] of BANNED) {
       test(`BR-B2B-015: the ${locale} offer copy carries no claim of ${family}`, () => {
-        const offenders = offerCopy(locale)
+        const offenders = partnerCopy(locale)
           .filter(([, value]) => pattern.test(value))
           .map(([key, value]) => `${key}: ${value}`);
         expect(offenders).toEqual([]);
@@ -218,6 +254,225 @@ test.describe("BR-MONETIZACAO-055 and 056 — the offer is a ladder, not a promi
     );
     expect(alive.length, `${HEARING_EXEMPT} no longer needs its waiver`).toBeGreaterThan(0);
   });
+});
+
+/* ---------------------------------------------------------------------------
+ * The paid band — criteria 28 to 31 of §9 of the same spec (card #316).
+ *
+ * `BR-B2B-016` says the offer to the establishment has two bands: for free Tuggi
+ * says only the name of the place, for a charge the name and a description. The
+ * page used to answer the question about cost with an absolute denial, and three
+ * of its four clauses described what the paid band does — false, in the highest
+ * weight question of the funnel, in four languages at once.
+ *
+ * `BR-B2B-015` item 4 replaced the absolute with a denial that names its own
+ * scope, item 8 made the mention of the band obligatory wherever that denial is
+ * made — and forbade describing it — and its first edge case is the structural
+ * one: the scene and the denial of cost never share a promise, because together
+ * they promise that the narrated story is free, which nobody decided.
+ *
+ * `BR-MONETIZACAO-056` is what survives the band intact and what the hero now
+ * states from the negative: no state of the traveller changes what he reads, so
+ * no plan hides the partner. It is an invariant, and the band never resolves in
+ * reading time (`BR-B2B-016` item 4).
+ *
+ * All four count, and all four were run in both directions: nothing against the
+ * copy of §5.10, and against the copy published before it every language answers.
+ * A criterion that does not fail the known defect is not a criterion.
+ * ------------------------------------------------------------------------- */
+
+/** The scene, by language: the condition of criterion 23 or a verb of hearing. */
+function sceneMark(locale: string): RegExp {
+  return new RegExp(`${GUIDE_ON[locale]}|\\b(${HEARING_STEMS[locale]})\\b`, "i");
+}
+
+/** Cost, by language, as the merchant would read it — noun and verb alike. */
+const COST_MARK: Record<string, RegExp> = {
+  pt: /\b(cust\w*|cobra\w*|pag\w*|grátis|gratuit\w*|mensalidade|fatura\w*|taxa\w*|investiment\w*)\b/i,
+  en: /\b(cost\w*|charg\w*|pay\w*|paid|free|fee|invoice\w*|investment\w*)\b/i,
+  es: /\b(cuest\w*|cost\w*|cobra\w*|pag\w*|gratis|gratuit\w*|cuota\w*|factura\w*|tarifa\w*|inversión)\b/i,
+  it: /\b(cost\w*|pag\w*|gratis|gratuit\w*|canone|fattur\w*|tariff\w*|investiment\w*)\b/i,
+};
+
+/**
+ * A unit of rendering: the keys the reader takes in as one promise. Entries are
+ * whole keys or prefixes, and every unit has to resolve to at least one key —
+ * a unit emptied by a rename passes without asking anything.
+ */
+const RENDERING_UNITS: Record<string, string[]> = {
+  hero: [
+    "Partners.hero.eyebrow",
+    "Partners.hero.title",
+    "Partners.hero.subtitle",
+    "Partners.cta.action",
+  ],
+  grid: ["Partners.grid."],
+  mechanism: ["Segments.steps."],
+  "faq-title": ["Partners.FAQ.title"],
+  form: ["Partners.form.title", "Partners.form.body"],
+  meta: ["Partners.seo.title", "Partners.seo.description"],
+  "commercial-model": ["Segments.commercial."],
+  ...Object.fromEntries(
+    [1, 2, 3, 4, 5, 6].map((n) => [`faq-${n}`, [`Partners.FAQ.q${n}`, `Partners.FAQ.a${n}`]])
+  ),
+};
+
+/**
+ * The mention of the band, by language — criterion 29. The word for the charge
+ * is not the one the rule uses: its natural translation carries recurrence in
+ * two of the four languages, and recurrence is undecided.
+ */
+const PAID_BAND: Record<string, RegExp> = {
+  pt: /\bparte paga\b/i,
+  en: /\bpaid part\b/i,
+  es: /\bes de pago\b/i,
+  it: /\ba pagamento\b/i,
+};
+
+/** Where the single mention lives, and the only surface that reverses the risk. */
+const PAID_BAND_KEY = "Partners.FAQ.a1";
+
+/**
+ * Criterion 30, by noun rather than by construction, and that is the whole
+ * lesson: the previous shape of this guard read the Portuguese verb and ran
+ * green over the Spanish sentence, which denies the same facts with other verbs.
+ * A guard that answers in one language is worse than no guard.
+ */
+const ABSOLUTE_COST_DENIAL: Record<string, RegExp[]> = {
+  pt: [
+    /\bmensalidade\b/i,
+    /\bfatura\w*/i,
+    /taxa de adesão/i,
+    /\binvestimento\b/i,
+    /de graça/i,
+    /\bgrátis\b/i,
+    /gratuit\w*/i,
+    /não (?:paga|compra|gasta) nada/i,
+    /sem custo(?: nenhum)?/i,
+    /sem taxa/i,
+    /sem fatura/i,
+    /nenhum investimento/i,
+  ],
+  en: [
+    /monthly fee/i,
+    /\binvoice\w*/i,
+    /sign-?up fee/i,
+    /setup fee/i,
+    /\binvestment\b/i,
+    /\bfree\b/i,
+    /free of charge/i,
+    /(?:you )?(?:pay|buy|spend) nothing/i,
+    /no cost/i,
+    /100% free/i,
+    /no invoice/i,
+    /no investment/i,
+  ],
+  es: [
+    /\bmensualidad\w*/i,
+    /\bfactura\w*/i,
+    /cuota de alta/i,
+    /\binversión\b/i,
+    /\bgratis\b/i,
+    /gratuit\w*/i,
+    /no (?:pagas|compras|gastas) nada/i,
+    /sin (?:ning[uú]n )?coste/i,
+    /sin (?:ning[uú]n )?costo/i,
+    /100% gratis/i,
+    /sin cuota/i,
+    /sin factura/i,
+    /sin inversión/i,
+  ],
+  it: [
+    /\bcanone\b/i,
+    /\bfattur\w*/i,
+    /quota di iscrizione/i,
+    /\binvestimento\b/i,
+    /\bgratis\b/i,
+    /gratuit\w*/i,
+    /non (?:paghi|compri|spendi) (?:nulla|niente)/i,
+    /senza costi/i,
+    /senza alcun costo/i,
+    /100% gratuito/i,
+    /senza fattura/i,
+  ],
+};
+
+/**
+ * Criterion 31. `BR-B2B-016` items 6 and 7: the band is mentioned and never
+ * described, and what is not decided is not deduced from here — no price, no
+ * currency, no recurrence, no commercial name.
+ *
+ * The one trap is Italian, and it is why the banned pattern names the plan: the
+ * mention of criterion 29 is the two words on their own, and shortening the ban
+ * to them fails the mention the rule makes obligatory. Lengthening the mention
+ * to the banned pair publishes a commercial name. The two live side by side.
+ */
+const PRICE_AND_PLAN: Record<string, RegExp[]> = {
+  pt: [/R\$/, /€/, /US\$/, /\/mês/i, /por mês/i, /plano pago/i, /pacote pago/i, /upgrade/i, /mensalidade/i],
+  en: [/R\$/, /€/, /US\$/, /\/month/i, /per month/i, /paid plan/i, /paid package/i, /upgrade/i, /monthly fee/i],
+  es: [/R\$/, /€/, /US\$/, /\/mes/i, /al mes/i, /plan de pago/i, /paquete de pago/i, /upgrade/i, /cuota mensual/i],
+  it: [/R\$/, /€/, /US\$/, /\/mese/i, /al mese/i, /piano a pagamento/i, /pacchetto a pagamento/i, /upgrade/i, /canone/i],
+};
+
+function keysMatching(copy: [string, string][], patterns: RegExp[]): string[] {
+  return copy
+    .filter(([, value]) => patterns.some((pattern) => pattern.test(value)))
+    .map(([key, value]) => {
+      const hits = patterns.filter((pattern) => pattern.test(value)).map(String);
+      return `${key} — ${hits.join(", ")}`;
+    });
+}
+
+test.describe("BR-B2B-016 — the partnership has a paid band, and the page mentions it once", () => {
+  for (const locale of LOCALES) {
+    // Criterion 28. The scene and the denial of cost are each true on their
+    // own; the conjunction is the promise nobody made.
+    test(`BR-B2B-015 first edge case: no ${locale} unit carries the scene and cost at once`, () => {
+      const copy = new Map(partnerCopy(locale));
+      const scene = sceneMark(locale);
+      const cost = COST_MARK[locale];
+
+      const offenders: string[] = [];
+      for (const [unit, members] of Object.entries(RENDERING_UNITS)) {
+        const keys = [...copy.keys()].filter((key) =>
+          members.some((member) => key === member || key.startsWith(member))
+        );
+        expect(keys.length, `${locale}: unit "${unit}" resolves to no key`).toBeGreaterThan(0);
+
+        // The one named exception is the same as criterion 23's, and for the
+        // same reason: there the one doing the hearing is the Tuggi team.
+        const withScene = keys.filter(
+          (key) => key !== HEARING_EXEMPT && scene.test(copy.get(key) as string)
+        );
+        const withCost = keys.filter((key) => cost.test(copy.get(key) as string));
+        if (withScene.length > 0 && withCost.length > 0) {
+          offenders.push(`${unit}: scene in ${withScene.join(", ")}; cost in ${withCost.join(", ")}`);
+        }
+      }
+      expect(offenders).toEqual([]);
+    });
+
+    // Criterion 29, and it is the only check of this spec where the absence is
+    // the defect: omitting the band is as far outside the ceiling as describing
+    // it, and a second mention becomes a description by accumulation.
+    test(`BR-B2B-015 item 8: ${locale} mentions the paid band exactly once, in the cost answer`, () => {
+      const mentions = partnerCopy(locale)
+        .filter(([key]) => key.startsWith("Partners."))
+        .filter(([, value]) => PAID_BAND[locale].test(value))
+        .map(([key]) => key);
+      expect(mentions).toEqual([PAID_BAND_KEY]);
+    });
+
+    // Criterion 30.
+    test(`BR-B2B-015 items 4 and 5: no ${locale} absolute denial of cost survives`, () => {
+      expect(keysMatching(partnerCopy(locale), ABSOLUTE_COST_DENIAL[locale])).toEqual([]);
+    });
+
+    // Criterion 31.
+    test(`BR-B2B-016 items 6 and 7: ${locale} publishes no price, recurrence or plan name`, () => {
+      expect(keysMatching(partnerCopy(locale), PRICE_AND_PLAN[locale])).toEqual([]);
+    });
+  }
 });
 
 test.describe("BR-B2B-010 item 7 — half 1 is legible on the page that states half 2", () => {

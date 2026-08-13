@@ -1057,29 +1057,24 @@ const CLAIM_FAMILIES: ClaimFamily[] = [
           "money flow the rules do back, and it runs outwards.",
       },
       {
-        keys: ["Segments.steps.s3Body", "Partners.seo.description"],
+        keys: ["Segments.steps.s3Body"],
         why:
-          "The same Italian word for the same fact, published by #195: " +
-          '"acquisto del turista" is what the *traveller* buys, and it is the ' +
-          "input of the partner's revenue share (BR-B2B-007 item 4, BR-B2B-005). " +
-          "The pattern reads the verb and not who pays, which is why " +
-          "Fleets.Financial.col3Desc is waived above for the same word — the " +
-          "vocabulary of the two is deliberately identical (copy doc §2, step " +
-          "three). Nothing here is bought, licensed or invoiced by the partner: " +
-          'the hub states the opposite in every locale ("it costs you nothing").',
+          "The same Italian word for the same fact, published by #195: what the " +
+          "*traveller* buys is the input of the partner's revenue share " +
+          "(BR-B2B-007 item 4, BR-B2B-005). The pattern reads the verb and not who " +
+          "pays, which is why Fleets.Financial.col3Desc is waived above for the " +
+          "same word — the vocabulary of the two is deliberately identical (copy " +
+          "doc §2, step three). Nothing here is bought, licensed or invoiced by " +
+          "the partner. Partners.seo.description was waived alongside this key " +
+          "until #316 rewrote its closing clause: the word is gone from all four " +
+          "locales, and a waiver that covers nothing is a hole waiting for the " +
+          "next sentence.",
       },
-      {
-        keys: ["Partners.FAQ.a1"],
-        why:
-          "The answer to \"what does it cost\", and it is the negation of this " +
-          "family in three of the four languages at once: the partner receives no " +
-          "invoice, and the Italian names the *traveller's* purchase as the source " +
-          "of the revenue share. BR-B2B-004 items 2 and 3 and BR-B2B-015 item 4 " +
-          "back every clause of it, including the strongest one the operator " +
-          "released in #306 — Tuggi keeps no share of what the merchant sells. " +
-          "Same polarity problem as Segments.commercial.lead below, same money " +
-          "flow as Segments.steps.s3Body above.",
-      },
+      // Partners.FAQ.a1 was waived here for the invoice it denied and for the
+      // Italian purchase it named. #316 rewrote the answer under BR-B2B-015
+      // items 4 and 8 — the denial is now scoped to a named list and neither
+      // word survives in any locale — so the waiver goes with the sentence that
+      // needed it.
       {
         keys: ["Partners.FAQ.a6"],
         why:
@@ -1092,12 +1087,12 @@ const CLAIM_FAMILIES: ClaimFamily[] = [
       {
         keys: ["Segments.commercial.lead"],
         why:
-          '"No upfront investment" is the negation of the claim this family bans, ' +
-          "not the claim: it states BR-B2B-004 items 2 and 3 — the partner buys " +
-          "nothing, licenses nothing and is invoiced for nothing. The pattern reads " +
-          "the word and not its polarity, which is the same reason Legal.Terms is " +
-          "waived above. The sentence is the operator's own, published by `design` " +
-          "(#195) and reproduced in spec §5.3 as copy that is not to be rewritten.",
+          "The Italian verb of buying, and the buyer is the *traveller* — the same " +
+          "fact and the same money flow as Segments.steps.s3Body above " +
+          "(BR-B2B-007 item 4, BR-B2B-005). The denial of investment this waiver " +
+          "used to cover is gone: #316 cut it under BR-B2B-015 item 4, which bans " +
+          "it in letter, and the sentence now states the revenue share and nothing " +
+          "else.",
       },
     ],
   },
@@ -1123,17 +1118,11 @@ const CLAIM_FAMILIES: ClaimFamily[] = [
           "user is solely responsible for driving and TUGGI is not liable. s8Item4 " +
           "is Apple's and Google's product-liability clause.",
       },
-      {
-        keys: ["Segments.commercial.lead"],
-        why:
-          "This family is about safety, liability and distraction — the driving " +
-          'outcomes no BR-* backs. The "no risk" here is commercial and it is the ' +
-          "same fact as the sentence before it: the partner pays nothing, so he has " +
-          "nothing at stake (BR-B2B-004 items 2 and 3). Operator's own words, " +
-          "published by `design` in #195 and fixed in spec §5.3. Reported to " +
-          "`produto` in #193 rather than trimmed here, because narrowing the " +
-          "pattern to physical safety is a change to the family, not to the copy.",
-      },
+      // Segments.commercial.lead was waived here for a commercial denial of risk,
+      // reported to `produto` in #193 rather than trimmed, because narrowing the
+      // pattern to physical safety would have been a change to the family. #316
+      // removed the clause under BR-B2B-015 item 4 — alone it reads as the
+      // promise of outcome item 7 forbids — so the family gets the key back.
     ],
   },
   {
