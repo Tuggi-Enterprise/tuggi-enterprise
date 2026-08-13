@@ -508,8 +508,22 @@ export function PartnerLeadForm({ title, body }: PartnerLeadFormProps) {
                             className="font-semibold text-tuggi-primary-text underline underline-offset-2"
                           >
                             {chunks}
-                            {" "}
-                            <span className="sr-only">{t("consentLinkNewTab")}</span>
+                            {/* The separator belongs to the hidden half, not to
+                                the link's own text. As a sibling of both it was
+                                underlined, and it pushed the sentence's full
+                                stop away from the last glyph in all four
+                                locales — "Leggi l'Informativa sulla Privacy ."
+                                Deleting it outright is not the fix either:
+                                accname 1.2 step 2F.ii.c says only "append the
+                                result to the accumulated text", and the note of
+                                18 January 2024 records that whether engines
+                                join those strings with a space is still open at
+                                the ARIA WG. Chromium inserts one; nothing
+                                promises that VoiceOver's engine does. So the
+                                space is in the DOM, where every engine reads
+                                it, and inside the span, where nothing paints
+                                it. */}
+                            <span className="sr-only">{` ${t("consentLinkNewTab")}`}</span>
                           </Link>
                         ),
                       })}

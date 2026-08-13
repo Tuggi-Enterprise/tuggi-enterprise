@@ -321,6 +321,53 @@ test.describe("spec §3 — validation, consent and focus", () => {
     await expect(page.locator(`#${describedBy}`)).toBeVisible();
   });
 
+  for (const locale of LOCALES) {
+    test(`SC 2.4.4: the consent link announces the new tab as a separate word in ${locale}`, async ({
+      page,
+    }) => {
+      // #304, second half. The separator between the policy title and the
+      // `sr-only` warning used to sit between them as a sibling: underlined,
+      // and pushing the sentence's full stop off the last glyph. It moved into
+      // the hidden span instead of being deleted, and the two reads below are
+      // the two halves of that — the underline stops at the title, the DOM
+      // still carries the space.
+      //
+      // The accessible name is deliberately **not** the assertion that proves
+      // this. Chromium joins adjacent inline children with a space of its own,
+      // so `toHaveAccessibleName` stays green with the separator deleted —
+      // measured, not assumed. accname 1.2 step 2F.ii.c only says "append the
+      // result to the accumulated text", and its note of 18 January 2024 says
+      // the ARIA WG is still considering whether to join with spaces. An
+      // engine that follows the letter of the step reads
+      // "Privacy Policyopens in a new tab", so the space belongs in the DOM.
+      const messages = messagesFor(locale);
+      const title = at(messages, "Partners.form.consent").match(
+        /<policy>([^<]+)<\/policy>/
+      )![1];
+      const newTab = at(messages, "Partners.form.consentLinkNewTab");
+
+      await page.goto(hubUrl(locale));
+      const link = page.locator(`${FORM} a[href*="privacy-policy"]`);
+
+      // What every engine reads, before any of them normalizes it.
+      expect(await link.textContent()).toBe(`${title} ${newTab}`);
+
+      // The visible half: what the underline covers is the title and nothing
+      // else. `textContent` above includes the hidden span, so this read is
+      // over the element's own text nodes.
+      const underlined = await link.evaluate((element) =>
+        Array.from(element.childNodes)
+          .filter((node) => node.nodeType === Node.TEXT_NODE)
+          .map((node) => node.textContent)
+          .join("")
+      );
+      expect(underlined).toBe(title);
+
+      // And what this engine announces, which is the requirement itself.
+      await expect(link).toHaveAccessibleName(`${title} ${newTab}`);
+    });
+  }
+
   test("spec §3.7: the contrast of the error text and of the field border is the measured one", async ({
     page,
   }) => {
@@ -482,6 +529,38 @@ test.describe("BR-USUARIO-028 item 1 — the field and the policy ship together"
       // Item 5: the contact is never used for a recurring channel, and the
       // policy has to say so.
       expect(item.toLowerCase()).toMatch(/newsletter/);
+    });
+
+    test(`BR-USUARIO-028: no clause denies the IP without saying where, in ${locale}`, () => {
+      // #304. The sentence used to read "we do not store the IP", full stop,
+      // and it was true of the lead row and false of the site: the attribution
+      // route writes `ip_address` and `user_agent` into `drive.click_fingerprints`.
+      // A negative with no scope speaks for the whole site, so what this asserts
+      // is not a wording — it is that the scope travels with the denial. Any
+      // clause of the policy that denies the IP has to name what the denial is
+      // about (contato / details / contacto / contatto) in the same clause.
+      // One token per locale, spelled out: `contat[ot]o` reads as if it covered
+      // both Romance spellings and covers neither of the seven-letter ones.
+      const SCOPE = /\bcontato\b|\bdetails\b|\bcontacto\b|\bcontatto\b/i;
+      const DENIAL = /\b(n[ãa]o|no|not|never|nunca|non|mai|sin|senza|without)\b/i;
+      const IP = /\bIP\b/;
+
+      const privacy = (messagesFor(locale)["Legal"] as Messages)["Privacy"] as Messages;
+      const unscoped: string[] = [];
+
+      for (const [key, value] of Object.entries(privacy)) {
+        // A clause ends at the punctuation that closes a thought — full stop,
+        // semicolon or the colon that introduces one. Not the comma: "we store
+        // that city, not the IP address" is a single clause, and splitting on
+        // commas would tear the scope off the denial it qualifies.
+        for (const clause of String(value).split(/[.;:]/)) {
+          if (IP.test(clause) && DENIAL.test(clause) && !SCOPE.test(clause)) {
+            unscoped.push(`${key}: ${clause.trim()}`);
+          }
+        }
+      }
+
+      expect(unscoped).toEqual([]);
     });
 
     test(`BR-USUARIO-029: no Partners.* string promises a deadline in ${locale}`, () => {
