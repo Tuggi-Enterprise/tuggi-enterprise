@@ -129,18 +129,38 @@ test.describe("#295 — the phone reaches the column in the only shape it accept
 
   test("#295: every business type the form offers is inside the column's domain", () => {
     // `inbound_leads_business_type_dominio` is a closed list, and a value
-    // outside it is a 23514 — a 500 on the route and a lead lost.
+    // outside it is a 23514 — a 500 on the route and a lead lost. Transcribed
+    // from `pg_get_constraintdef` after migration `20260812150000` (#302), the
+    // same list the double in `mock-supabase-server.mjs` enforces.
     const domain = [
       "restaurant_bar",
       "hotel_inn",
       "tours_activities",
       "transfer",
       "car_rental",
+      "motorhome",
       "other",
     ];
     for (const option of LEAD_BUSINESS_TYPES) {
       expect(domain, option).toContain(businessTypeCode(option));
     }
+  });
+
+  test("BR-B2B-013 / #302: motorhome is written as motorhome, and no segment borrows another's code", () => {
+    // Being inside the domain was never enough: `motorhome` mapped to `other`
+    // for as long as the CHECK had no code for it, and every such lead reached
+    // the column as a segment nobody typed. `other` written by the map and
+    // `other` chosen by the visitor are the same text, and the form keeps no
+    // copy of what was selected — the row cannot be reclassified afterwards,
+    // only guessed at.
+    expect(businessTypeCode("motorhome")).toBe("motorhome");
+
+    // The assertion that would have caught it the day the map was written: it
+    // is injective. A segment sharing a code with another one is a declaration
+    // the database can no longer give back, so a segment with no code of its
+    // own is a migration to ask for — never a neighbouring bucket to borrow.
+    const codes = LEAD_BUSINESS_TYPES.map((option) => businessTypeCode(option));
+    expect(new Set(codes).size, codes.join(", ")).toBe(codes.length);
   });
 });
 
@@ -264,6 +284,31 @@ test.describe("BR-USUARIO-029 — the lead is stored on the channel the prospect
     });
     expect(response.status()).toBe(400);
     expect((await response.json()).error).toBe("invalid_business_type");
+  });
+
+  test("BR-B2B-013 / #302: a motorhome lead reaches the column as motorhome", async ({
+    request,
+  }) => {
+    // The end of the path the unit assertion above only covers halfway: the
+    // route accepts the wire value, the double applies the real CHECK, and the
+    // stored row carries the segment the prospect declared. Against a double
+    // that still knew six codes this is a 23514 — a 500 on the route and a lead
+    // lost, which is what production would have answered.
+    const fullName = uniqueName("motorhome");
+    const response = await request.post("/api/leads", {
+      data: {
+        lead_type: "B2B_PARTNER",
+        full_name: fullName,
+        email: "dono@example.com",
+        business_type: "motorhome",
+        locale: "pt",
+      },
+    });
+    expect(response.status()).toBe(201);
+
+    const [row] = await storedLeads(request, fullName);
+    expect(row, "no row reached campaign.inbound_leads").toBeTruthy();
+    expect(row.business_type).toBe("motorhome");
   });
 });
 

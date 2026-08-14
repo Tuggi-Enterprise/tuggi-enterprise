@@ -9,26 +9,27 @@
  *
  * **In `campaign.inbound_leads.business_type` the value is a language-neutral
  * code**, fixed by the CHECK constraint `inbound_leads_business_type_dominio`
- * (migration `20260812130000`, card #295). The column is not free text: a value
- * outside the six below is rejected by Postgres, and a rejection on this route
+ * (migration `20260812150000`, card #302, which widened the domain the
+ * migration of #295 first created). The column is not free text: a value
+ * outside the list below is rejected by Postgres, and a rejection on this route
  * is a lead nobody ever calls back.
  *
  * So the translation lives here, in one place, and `POST /api/leads` is the
  * only caller — nothing else needs to know the database's spelling.
  *
  * ---------------------------------------------------------------------------
- * The gap this map has, and it is deliberate rather than hidden
+ * The property to keep: this map is injective
  * ---------------------------------------------------------------------------
  *
- * `motorhome` has **no code of its own** in the CHECK. The domain was derived
- * from the list in the body of #294 — which named "receptivo e passeios" (a
- * segment that did not exist) and omitted motorhome (one that did) — and the
- * spec corrected the *form's* list without the database following. Mapping it
- * to `car_rental` would file a motorhome rental as a car rental, which is a
- * fact nobody typed; `other` says the honest thing, which is that the database
- * has no bucket for it yet. Extending the domain is `data`'s (a two-line
- * migration, per the reasoning in #295 for choosing `text` + CHECK over an
- * enum) and is reported in the comment of #294.
+ * Two form values that collapse into one code make the segment the prospect
+ * declared unrecoverable — `other` written by this map and `other` chosen by
+ * the visitor are the same text, and the form keeps no copy of the original,
+ * so a row filed that way can only ever be guessed at. That is exactly what
+ * happened while `motorhome` had no code of its own (#302), and it is what
+ * `tests/e2e/partner-lead-form.spec.ts` now asserts over the whole map.
+ *
+ * A segment added here with no code in the CHECK is therefore a migration to
+ * ask `data` for, not a neighbouring bucket to borrow.
  */
 import type { SegmentKey } from "./segments";
 import { SEGMENTS } from "./segments";
@@ -46,6 +47,7 @@ export type BusinessTypeCode =
   | "tours_activities"
   | "transfer"
   | "car_rental"
+  | "motorhome"
   | "other";
 
 /** Wire value → column value. Total by construction: a new segment is a compile error here. */
@@ -55,9 +57,7 @@ const DB_CODE: Record<LeadBusinessType, BusinessTypeCode> = {
   receptive: "tours_activities",
   transfer: "transfer",
   "car-rental": "car_rental",
-  // See the header: no bucket in the CHECK yet, and `other` is the value that
-  // does not claim something the visitor did not say.
-  motorhome: "other",
+  motorhome: "motorhome",
   other: "other",
 };
 

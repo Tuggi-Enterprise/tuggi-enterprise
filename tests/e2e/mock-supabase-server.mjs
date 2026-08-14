@@ -92,7 +92,14 @@ const fingerprintsByPartner = new Map();
 const inboundLeads = [];
 
 /**
- * The three CHECK constraints of the real table, migration `20260812130000`.
+ * The three CHECK constraints of the real table, as migration `20260812150000`
+ * (card #302) leaves them — it widened the business-type domain that migration
+ * `20260812130000` (card #295) had created.
+ *
+ * The domain below is transcribed from `pg_get_constraintdef` on purpose and is
+ * **not** derived from `src/lib/business-types.ts`: deriving it would make the
+ * double agree with whatever the app produces, which is the one thing it exists
+ * to disagree with.
  *
  * The double enforces them **on purpose**: production refuses a malformed row
  * with SQLSTATE 23514, PostgREST turns that into a 400, and `/api/leads` turns
@@ -110,6 +117,7 @@ function checkViolation(row) {
     "tours_activities",
     "transfer",
     "car_rental",
+    "motorhome",
     "other",
   ];
   if (row.business_type != null && !domain.includes(row.business_type)) {
