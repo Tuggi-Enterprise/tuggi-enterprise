@@ -8,7 +8,14 @@ import { CONTENT_LANGUAGES } from "./product-facts";
 
 export const APP_NAME = "TUGGI";
 export const SITE_URL = "https://www.tuggi.app";
-export const SUPPORT_EMAIL = "support@tuggi.app";
+/**
+ * The one mailbox the company actually reads (confirmed by the operator on
+ * 2026-08-14). `legal@`, `press@`, `accessibility@` and the English `support@`
+ * were all published without ever existing — see #325. Any other `@tuggi.app`
+ * address, here or in `src/messages/*.json`, fails
+ * `tests/e2e/contact-address.spec.ts` (BR-USUARIO-028).
+ */
+export const SUPPORT_EMAIL = "suporte@tuggi.app";
 
 export const APP_STORE_URL = "https://apps.apple.com/app/tuggi-drive/id6744379818";
 export const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.tuggidrive.app";

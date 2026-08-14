@@ -545,7 +545,7 @@
       "slaTitle": "Sales SLA",
       "slaValue": "Our enterprise experts typically respond within 24 business hours.",
       "pressTitle": "Press & Partnerships",
-      "pressValue": "press@tuggi.app"
+      "pressValue": "suporte@tuggi.app"
     },
     "Success": {
       "title": "Request received.",
@@ -595,7 +595,7 @@
       "s8Item5": "<strong>Legal Compliance:</strong> You represent and warrant that (i) you are not located in a country subject to a U.S. Government embargo or designated as a “terrorist supporting” country; and (ii) you are not listed on any U.S. Government list of prohibited or restricted parties.",
       "s8Item6": "<strong>Third Party Beneficiary:</strong> You acknowledge and agree that Apple and Google, and their subsidiaries, are third-party beneficiaries of these Terms, and have the right to enforce these Terms against you.",
       "s9Title": "9. Developer Contact Information",
-      "s9Text": "TUGGI Technologies Ltda. São Paulo, SP, Brazil. Email: legal@tuggi.app"
+      "s9Text": "TUGGI Technologies Ltda. São Paulo, SP, Brazil. Email: suporte@tuggi.app"
     },
     "Privacy": {
       "title": "Privacy Policy",
@@ -624,7 +624,7 @@
       "s5ItemO2": "Data Deletion Page",
       "s5ItemO3": " or use the native function within the app.",
       "s5ItemLead1": "<strong>Removal of the business contact details you left in a form on this site</strong>, even if you have never had an account in the app. Write to ",
-      "s5ItemLeadEmail": "legal@tuggi.app",
+      "s5ItemLeadEmail": "suporte@tuggi.app",
       "s5ItemLead2": " asking for removal: we close any contact cycle under way and delete your details from our business contact list. The data deletion page is only for app accounts.",
       "s6Title": "6. Contacting the Data Protection Officer (DPO)",
       "s6P1": "If you have questions about this policy or the processing of your data, please contact our Data Protection Officer (DPO) through our ",
@@ -681,7 +681,7 @@
       "s4Desc": "Beyond technical accessibility, TUGGI acts as an agent of social inclusion. We democratize access to culture by decentralizing tourism. By redirecting flow from saturated areas to peripheral zones, we foster the local creative economy, giving a voice to the native historians, actors, and guides who build our narratives.",
       "s3Item1": "<strong>Report a Barrier:</strong> If you encounter any access difficulties on our website or app, please contact us through our Contact page, selecting the \"Support / Accessibility\" option.",
       "s3Item2": "<strong>Commitment:</strong> We analyze each report with technical priority to ensure that TUGGI continues to be the cultural co-pilot for everyone, without exception.",
-      "contactEmail": "accessibility@tuggi.app"
+      "contactEmail": "suporte@tuggi.app"
     }
   },
   "CookieBanner": {

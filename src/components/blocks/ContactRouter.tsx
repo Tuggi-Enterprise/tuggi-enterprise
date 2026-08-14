@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { Building2, Car, UserCircle2, Mail, Info, Loader2 } from "lucide-react";
 import { sendGAEvent } from "@next/third-parties/google";
+import { SUPPORT_EMAIL } from "@/lib/app-meta";
 
 type TriageState = "B2G" | "B2B" | "B2C" | null;
 
@@ -290,7 +291,7 @@ export function ContactRouter() {
                         {t("B2C.desc")}
                       </p>
                       <a 
-                        href="mailto:support@tuggi.app"
+                        href={`mailto:${SUPPORT_EMAIL}`}
                         onClick={() => sendGAEvent({ event: 'contact_support' })}
                         className="inline-flex items-center justify-center bg-emerald-500 text-white font-bold py-4 px-10 rounded-xl hover:bg-emerald-600 transition-colors shadow-lg shadow-emerald-500/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50"
                       >

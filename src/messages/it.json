@@ -545,7 +545,7 @@
       "slaTitle": "SLA Vendite",
       "slaValue": "I nostri esperti enterprise rispondono di solito entro 24 ore lavorative.",
       "pressTitle": "Stampa e Partnership",
-      "pressValue": "press@tuggi.app"
+      "pressValue": "suporte@tuggi.app"
     },
     "Success": {
       "title": "Richiesta ricevuta.",
@@ -595,7 +595,7 @@
       "s8Item5": "<strong>Conformità Legale:</strong> Dichiari e garantisci che (i) non ti trovi in un paese soggetto a un embargo del Governo degli Stati Uniti o designato come paese “che sostiene il terrorismo”; e (ii) non sei incluso in alcun elenco del Governo degli Stati Uniti di parti vietate o soggette a restrizioni.",
       "s8Item6": "<strong>Beneficiario Terzo:</strong> Riconosci e accetti che Apple e Google, e le loro controllate, sono beneficiari terzi dei presenti Termini e hanno il diritto di farli valere nei tuoi confronti.",
       "s9Title": "9. Informazioni di Contatto dello Sviluppatore",
-      "s9Text": "TUGGI Technologies Ltda. San Paolo, SP, Brasile. Email: legal@tuggi.app"
+      "s9Text": "TUGGI Technologies Ltda. San Paolo, SP, Brasile. Email: suporte@tuggi.app"
     },
     "Privacy": {
       "title": "Informativa sulla Privacy",
@@ -624,7 +624,7 @@
       "s5ItemO2": "Pagina di Cancellazione dei Dati",
       "s5ItemO3": " o usa la funzione nativa all'interno dell'app.",
       "s5ItemLead1": "<strong>La rimozione del contatto commerciale che hai lasciato in un modulo del sito</strong>, anche se non hai mai avuto un account nell'app. Scrivi a ",
-      "s5ItemLeadEmail": "legal@tuggi.app",
+      "s5ItemLeadEmail": "suporte@tuggi.app",
       "s5ItemLead2": " chiedendo la rimozione: chiudiamo il contatto in corso e cancelliamo i tuoi dati dal nostro elenco di contatti commerciali. La pagina di cancellazione dei dati serve solo per gli account dell'app.",
       "s6Title": "6. Contattare il Responsabile della Protezione dei Dati (DPO)",
       "s6P1": "Se hai domande su questa informativa o sul trattamento dei tuoi dati, contatta il nostro Responsabile della Protezione dei Dati (DPO) tramite la nostra pagina ",
@@ -681,7 +681,7 @@
       "s4Desc": "Oltre all'accessibilità tecnica, TUGGI agisce come agente di inclusione sociale. Democratizziamo l'accesso alla cultura decentralizzando il turismo. Reindirizzando il flusso dalle aree sature verso le zone periferiche, sosteniamo l'economia creativa locale, dando voce agli storici, agli attori e alle guide locali che costruiscono i nostri racconti.",
       "s3Item1": "<strong>Segnala una Barriera:</strong> Se incontri difficoltà di accesso sul nostro sito web o app, contattaci tramite la nostra pagina Contatti, selezionando l'opzione \"Supporto / Accessibilità\".",
       "s3Item2": "<strong>Impegno:</strong> Analizziamo ogni segnalazione con priorità tecnica per garantire che TUGGI continui a essere il copilota culturale per tutti, senza eccezioni.",
-      "contactEmail": "accessibility@tuggi.app"
+      "contactEmail": "suporte@tuggi.app"
     }
   },
   "CookieBanner": {

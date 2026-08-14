@@ -545,7 +545,7 @@
       "slaTitle": "SLA de Vendas",
       "slaValue": "Nossos especialistas corporativos geralmente respondem em até 24 horas úteis.",
       "pressTitle": "Imprensa e Parcerias",
-      "pressValue": "press@tuggi.app"
+      "pressValue": "suporte@tuggi.app"
     },
     "Success": {
       "title": "Solicitação recebida.",
@@ -595,7 +595,7 @@
       "s8Item5": "<strong>Conformidade Legal:</strong> Você declara e garante que (i) não está localizado em um país sujeito a embargo do governo dos EUA ou designado como país apoiador de terroristas; e (ii) não consta em nenhuma lista de partes proibidas ou restritas do governo dos EUA.",
       "s8Item6": "<strong>Beneficiário Terceiro:</strong> Você reconhece e concorda que a Apple e o Google, e suas subsidiárias, são beneficiários terceiros destes Termos e têm o direito de fazer cumprir estes Termos contra você.",
       "s9Title": "9. Informações de Contato do Desenvolvedor",
-      "s9Text": "TUGGI Technologies Ltda. São Paulo, SP, Brasil. E-mail: legal@tuggi.app"
+      "s9Text": "TUGGI Technologies Ltda. São Paulo, SP, Brasil. E-mail: suporte@tuggi.app"
     },
     "Privacy": {
       "title": "Política de Privacidade",
@@ -624,7 +624,7 @@
       "s5ItemO2": "Página de Exclusão de Dados",
       "s5ItemO3": " ou utilize a função nativa dentro do aplicativo.",
       "s5ItemLead1": "<strong>A remoção do contato comercial que você deixou num formulário do site</strong>, mesmo que você nunca tenha tido uma conta no aplicativo. Escreva para ",
-      "s5ItemLeadEmail": "legal@tuggi.app",
+      "s5ItemLeadEmail": "suporte@tuggi.app",
       "s5ItemLead2": " pedindo a remoção: encerramos o contato em andamento e apagamos os seus dados da nossa lista de contatos comerciais. A página de exclusão de dados serve só para contas do aplicativo.",
       "s6Title": "6. Contato do Encarregado de Dados (DPO)",
       "s6P1": "Se você tiver dúvidas sobre esta política ou sobre o tratamento dos seus dados, entre em contato com o nosso Data Protection Officer (DPO) através da nossa página de ",
@@ -681,7 +681,7 @@
       "s4Desc": "Além da acessibilidade técnica, o TUGGI atua como um agente de inclusão social. Nós democratizamos o acesso à cultura descentralizando o turismo. Ao redirecionar o fluxo de áreas saturadas para zonas periféricas, fomentamos a economia criativa local, dando voz aos historiadores, atores e guias nativos que constroem nossas narrativas.",
       "s3Item1": "<strong>Reportar Barreira:</strong> Se você encontrar qualquer dificuldade de acesso em nosso site ou aplicativo, por favor, entre em contato conosco através da nossa página de Contato, selecionando a opção \"Suporte / Acessibilidade\".",
       "s3Item2": "<strong>Compromisso:</strong> Analisamos cada reporte com prioridade técnica para garantir que o TUGGI continue sendo o copiloto cultural de todos, sem exceção.",
-      "contactEmail": "accessibility@tuggi.app"
+      "contactEmail": "suporte@tuggi.app"
     }
   },
   "CookieBanner": {
