@@ -428,8 +428,8 @@
       "periodOnce": "pagamento unico",
       "periodYear": "all’anno",
       "freeTitle": "Gratis",
-      "free1": "24 ore di audio illimitato al download",
-      "free2": "Dopo le 24h, storie gratis limitate al giorno",
+      "free1": "Inizia con la guida completa: la attivi tu nell'app",
+      "free2": "Poi l'app resta gratis con storie ogni giorno",
       "free3": "Senza carta",
       "freeAction": "Inizia gratis",
       "annualNote": "Esplori tutto l’anno? Il pass annuale è disponibile nell’app."
@@ -461,7 +461,7 @@
     },
     "PlansHero": {
       "title": "Scegli il tuo pass di viaggio",
-      "subtitle": "Scarica e ricevi 24 ore di audio illimitato, senza carta e senza abbonarti a nulla. È la nostra idea di libertà: esplorare quanto vuoi prima di decidere. Poi un pass sblocca tutto quando vuoi.",
+      "subtitle": "Scarica e inizia senza carta e senza abbonarti a nulla. La guida completa la attivi tu, dentro l'app — e poi l'app resta gratis, con storie ogni giorno.",
       "appStoreAlt": "Scarica TUGGI sull'App Store",
       "playStoreAlt": "Scarica TUGGI su Google Play"
     },
@@ -495,12 +495,12 @@
       "footnote": "TUGGI funziona insieme alla tua app di navigazione e alla tua musica."
     },
     "Sticky": {
-      "text": "Inizia gratis — 24h illimitate",
+      "text": "Inizia gratis — senza carta",
       "cta": "Scarica"
     },
     "PlansExplainer": {
       "title": "Come funzionano i piani di TUGGI",
-      "p1": "Puoi usare TUGGI gratis: al download hai 24 ore di audio illimitato, senza carta e senza abbonarti a nulla. Dopo, l’app resta gratuita con un numero limitato di storie al giorno, così esplori con calma prima di decidere.",
+      "p1": "Puoi usare TUGGI gratis: lo scarichi e la guida completa la sblocchi tu, con un tocco, dentro l'app — senza carta e senza abbonarti a nulla. Dopo, l'app resta gratuita con un numero limitato di storie al giorno, così esplori con calma prima di decidere.",
       "p2": "Quando vuoi ascoltare senza limiti, scegli un pass a pagamento unico: quello da 7 giorni per un viaggio breve, o quello da 30 giorni per vacanze più lunghe. Sono a pagamento unico, senza rinnovo automatico. Chi viaggia tutto l’anno trova il piano annuale nell’app.",
       "p3": "Ogni pass include mappe e audio 100% offline, sottotitoli sincronizzati e tutte le {contentLanguages} lingue. I prezzi variano per paese e vedi il prezzo esatto sull’App Store o su Google Play prima di confermare. Non viene addebitato nulla senza la tua conferma nello store."
     }
@@ -727,7 +727,7 @@
     "homeTitle": "Audioguida di Viaggio — Storie che Partono Mentre Passi | TUGGI",
     "homeDescription": "TUGGI ti racconta la storia di ogni luogo ad alta voce mentre passi, comunque tu viaggi. Un'audioguida di viaggio autoguidata, offline e nella tua lingua. Inizia gratis.",
     "driveTitle": "Piani e Prezzi - Pass di Viaggio",
-    "driveDescription": "Inizia gratis con 24h di audio illimitato. Pass di 7 o 30 giorni a pagamento unico, senza rinnovo automatico, e piano annuale. Prezzo locale su App Store e Google Play.",
+    "driveDescription": "Inizia gratis, senza carta: la guida completa la attivi dentro l'app. Pass a pagamento unico, senza rinnovo automatico. Prezzo locale su App Store e Google Play.",
     "techTitle": "Come Funziona TUGGI - Audio Attivato dal GPS, Offline",
     "techDescription": "Dentro TUGGI: come il GPS attiva ogni storia, come capisce da che lato stai passando e come continua a suonare offline su iOS e Android.",
     "purposeTitle": "Il Nostro Scopo",
