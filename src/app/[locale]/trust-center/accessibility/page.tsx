@@ -83,7 +83,16 @@ export default async function AccessibilityPage({ params }: { params: Promise<{ 
           <li>{t.rich("s3Item1", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
           <li>{t.rich("s3Item2", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
         </ul>
+        {/*
+          BR-COMUNICACAO-006 item 6 — the address is the reporting channel, so it
+          says what it is for. The separator stays outside the anchor (it would
+          join the underline and the accessible name), the intro and the link
+          share one `<p>` (WCAG 2.2 2.4.4 Link Purpose in Context, level A), and
+          nothing follows the anchor: contact-address.spec.ts reads the tail of
+          the published text.
+        */}
         <p>
+          {t("contactIntro")}{" "}
           <a href={`mailto:${t("contactEmail")}`} className="text-tuggi-primary-text font-bold hover:underline">
             {t("contactEmail")}
           </a>

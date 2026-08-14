@@ -544,7 +544,7 @@
       "hqValue": "San Paolo, SP, Brasile",
       "slaTitle": "SLA Vendite",
       "slaValue": "I nostri esperti enterprise rispondono di solito entro 24 ore lavorative.",
-      "pressTitle": "Stampa e Partnership",
+      "pressTitle": "Stampa, Partnership e Supporto",
       "pressValue": "suporte@tuggi.app"
     },
     "Success": {
@@ -578,7 +578,7 @@
       "s3Item1": "<strong>Segnali di Posizione:</strong> Il nostro motore di trigger spaziale dipende da segnali GPS di terze parti e da mappatura collaborativa (come OpenStreetMap). Non garantiamo un'accuratezza assoluta dei trigger nelle aree d'ombra della rete, come tunnel o valli profonde.",
       "s3Item2": "<strong>Contenuti Assistiti dall'IA:</strong> I nostri racconti audio sono compilati e generati usando una combinazione di curatela manuale e modelli avanzati di Intelligenza Artificiale (IA). Il contenuto narrato è di natura culturale ed educativa. TUGGI fornisce il contenuto \"così com'è\" e non garantisce un'accuratezza accademica, storica o geografica assoluta, e non è responsabile per eventuali discrepanze fattuali.",
       "s4Title": "4. Segnalazione e Correzione dei Contenuti (Safe Harbor)",
-      "s4Text": "Ci impegniamo a mantenere un ambiente culturale rispettoso e accurato. Se trovi informazioni errate, imprecisioni culturali o se sei il proprietario di un luogo e desideri richiedere la rimozione di un Punto di Interesse (POI), usa il nostro Canale di Supporto nella pagina Contatti (selezionando l'opzione \"Turista / Supporto\"). Il nostro team esamina tutti i feedback e si riserva il diritto di correggere, modificare o rimuovere i trigger a propria esclusiva discrezione.",
+      "s4Text": "Ci impegniamo a mantenere un ambiente culturale rispettoso e accurato. Se trovi informazioni errate, imprecisioni culturali o se sei il proprietario di un luogo e desideri richiedere la rimozione di un Punto di Interesse (POI), usa la nostra pagina Contatti, scegliendo il profilo che ti corrisponde. Il nostro team esamina tutti i feedback e si riserva il diritto di correggere, modificare o rimuovere i trigger a propria esclusiva discrezione.",
       "s5Title": "5. Condotta Civica e Uso Pubblico",
       "s5Text": "Quando usi l'applicazione sui mezzi pubblici, sui percorsi pedonali o su veicoli condivisi, ti chiediamo di usare le cuffie o di ottenere il previo consenso degli altri passeggeri.",
       "s6Title": "6. Abbonamenti, Travel Pass e Rimborsi",
@@ -629,7 +629,7 @@
       "s6Title": "6. Contattare il Responsabile della Protezione dei Dati (DPO)",
       "s6P1": "Se hai domande su questa informativa o sul trattamento dei tuoi dati, contatta il nostro Responsabile della Protezione dei Dati (DPO) tramite la nostra pagina ",
       "s6P2": "Contatti",
-      "s6P3": ", selezionando l'opzione Supporto.",
+      "s6P3": ", scegliendo il profilo che ti corrisponde.",
       "s7Title": "7. Privacy dei Minori",
       "s7Text": "TUGGI non raccoglie consapevolmente dati da bambini di età inferiore a 13 anni senza il consenso dei genitori. Se scopriamo di aver raccolto tali dati, adotteremo misure per cancellarli immediatamente."
     },
@@ -679,8 +679,9 @@
       "s3Intro": "L'accessibilità è un processo continuo. Riconosciamo che c'è sempre margine di miglioramento e siamo pronti ad ascoltare i nostri utenti.",
       "s4Title": "4. Inclusione Culturale e Impatto Sociale",
       "s4Desc": "Oltre all'accessibilità tecnica, TUGGI agisce come agente di inclusione sociale. Democratizziamo l'accesso alla cultura decentralizzando il turismo. Reindirizzando il flusso dalle aree sature verso le zone periferiche, sosteniamo l'economia creativa locale, dando voce agli storici, agli attori e alle guide locali che costruiscono i nostri racconti.",
-      "s3Item1": "<strong>Segnala una Barriera:</strong> Se incontri difficoltà di accesso sul nostro sito web o app, contattaci tramite la nostra pagina Contatti, selezionando l'opzione \"Supporto / Accessibilità\".",
+      "s3Item1": "<strong>Segnala una Barriera:</strong> Se incontri difficoltà di accesso sul nostro sito web o nell'app, raccontaci in quale pagina o schermata è successo, che cosa stavi cercando di fare e con che cosa navighi, come screen reader, tastiera o ingrandimento.",
       "s3Item2": "<strong>Impegno:</strong> Analizziamo ogni segnalazione con priorità tecnica per garantire che TUGGI continui a essere il copilota culturale per tutti, senza eccezioni.",
+      "contactIntro": "Per segnalare una barriera, scrivi a:",
       "contactEmail": "suporte@tuggi.app"
     }
   },

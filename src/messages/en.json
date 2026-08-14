@@ -544,7 +544,7 @@
       "hqValue": "São Paulo, SP, Brazil",
       "slaTitle": "Sales SLA",
       "slaValue": "Our enterprise experts typically respond within 24 business hours.",
-      "pressTitle": "Press & Partnerships",
+      "pressTitle": "Press, Partnerships & Support",
       "pressValue": "suporte@tuggi.app"
     },
     "Success": {
@@ -578,7 +578,7 @@
       "s3Item1": "<strong>Location Signals:</strong> Our spatial trigger engine depends on third-party GPS signals and collaborative mapping (such as OpenStreetMap). We do not guarantee absolute trigger accuracy in network shadow areas, such as tunnels or deep valleys.",
       "s3Item2": "<strong>AI-Assisted Content:</strong> Our audio narratives are compiled and generated using a combination of manual curation and advanced Artificial Intelligence (AI) models. The narrated content is cultural and educational in nature. TUGGI provides the content \"as-is\" and does not guarantee absolute academic, historical, or geographical accuracy, and is not responsible for factual discrepancies.",
       "s4Title": "4. Content Reporting and Corrections (Safe Harbor)",
-      "s4Text": "We are committed to maintaining a respectful and accurate cultural environment. If you find incorrect information, cultural inaccuracies, or if you are the owner of a location and wish to request the removal of a Point of Interest (POI), use our Support Channel on the Contact page (selecting the \"Tourist / Support\" option). Our team reviews all feedback and reserves the right to correct, alter, or remove triggers at our sole discretion.",
+      "s4Text": "We are committed to maintaining a respectful and accurate cultural environment. If you find incorrect information, cultural inaccuracies, or if you are the owner of a location and wish to request the removal of a Point of Interest (POI), use our Contact page, choosing the profile that describes you. Our team reviews all feedback and reserves the right to correct, alter, or remove triggers at our sole discretion.",
       "s5Title": "5. Civic Conduct and Public Use",
       "s5Text": "When using the application in public transport, pedestrian paths, or shared vehicles, we request the use of headphones or the prior consent of other passengers.",
       "s6Title": "6. Subscriptions, Travel Passes, and Refunds",
@@ -629,7 +629,7 @@
       "s6Title": "6. Contacting the Data Protection Officer (DPO)",
       "s6P1": "If you have questions about this policy or the processing of your data, please contact our Data Protection Officer (DPO) through our ",
       "s6P2": "Contact",
-      "s6P3": " page, by selecting the Support option.",
+      "s6P3": " page, by choosing the profile that describes you.",
       "s7Title": "7. Children's Privacy",
       "s7Text": "TUGGI does not knowingly collect data from children under 13 without parental consent. If we discover we have collected such data, we will take steps to delete it immediately."
     },
@@ -679,8 +679,9 @@
       "s3Intro": "Accessibility is an ongoing process. We recognize that there is always room for improvement and are ready to listen to our users.",
       "s4Title": "4. Cultural Inclusion and Social Impact",
       "s4Desc": "Beyond technical accessibility, TUGGI acts as an agent of social inclusion. We democratize access to culture by decentralizing tourism. By redirecting flow from saturated areas to peripheral zones, we foster the local creative economy, giving a voice to the native historians, actors, and guides who build our narratives.",
-      "s3Item1": "<strong>Report a Barrier:</strong> If you encounter any access difficulties on our website or app, please contact us through our Contact page, selecting the \"Support / Accessibility\" option.",
+      "s3Item1": "<strong>Report a Barrier:</strong> If you run into an access difficulty on our website or app, tell us which page or screen it happened on, what you were trying to do, and what you navigate with, such as a screen reader, the keyboard or zoom.",
       "s3Item2": "<strong>Commitment:</strong> We analyze each report with technical priority to ensure that TUGGI continues to be the cultural co-pilot for everyone, without exception.",
+      "contactIntro": "To report a barrier, write to:",
       "contactEmail": "suporte@tuggi.app"
     }
   },

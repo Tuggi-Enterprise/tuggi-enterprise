@@ -544,7 +544,7 @@
       "hqValue": "São Paulo, SP, Brasil",
       "slaTitle": "SLA de Vendas",
       "slaValue": "Nossos especialistas corporativos geralmente respondem em até 24 horas úteis.",
-      "pressTitle": "Imprensa e Parcerias",
+      "pressTitle": "Imprensa, Parcerias e Suporte",
       "pressValue": "suporte@tuggi.app"
     },
     "Success": {
@@ -578,7 +578,7 @@
       "s3Item1": "<strong>Sinais de Localização:</strong> Nosso motor de gatilhos espaciais depende de sinais de GPS de terceiros e mapeamento colaborativo (como o OpenStreetMap). Não garantimos a precisão absoluta do gatilho em áreas de sombra de rede, como túneis ou vales profundos.",
       "s3Item2": "<strong>Conteúdo Assistido por IA:</strong> Nossas narrativas em áudio são compiladas e geradas usando uma combinação de curadoria manual e modelos avançados de Inteligência Artificial (IA). O conteúdo narrado possui caráter cultural e de entretenimento. A TUGGI fornece o conteúdo \"no estado em que se encontra\" (as-is) e não garante precisão acadêmica, histórica ou geográfica absoluta, não se responsabilizando por divergências factuais.",
       "s4Title": "4. Reporte de Conteúdo e Correções (Safe Harbor)",
-      "s4Text": "Estamos comprometidos em manter um ambiente cultural respeitoso e preciso. Caso encontre informações incorretas, imprecisões culturais, ou caso seja o proprietário de um local e deseje solicitar a remoção de um Ponto de Interesse (POI), utilize nosso Canal de Suporte na página de Contato (selecionando a opção \"Turista / Suporte\"). Nossa equipe analisa todos os feedbacks e reserva-se o direito de corrigir, alterar ou remover gatilhos a nosso exclusivo critério.",
+      "s4Text": "Estamos comprometidos em manter um ambiente cultural respeitoso e preciso. Caso encontre informações incorretas, imprecisões culturais, ou caso seja o proprietário de um local e deseje solicitar a remoção de um Ponto de Interesse (POI), fale conosco pela página de Contato, escolhendo o perfil que descreve você. Nossa equipe analisa todos os feedbacks e reserva-se o direito de corrigir, alterar ou remover gatilhos a nosso exclusivo critério.",
       "s5Title": "5. Conduta Cívica e Uso em Público",
       "s5Text": "Ao utilizar o aplicativo em transporte público, vias de pedestres ou veículos compartilhados, solicitamos o uso de fones de ouvido ou o consentimento prévio dos demais passageiros.",
       "s6Title": "6. Assinaturas, Passes de Viagem e Reembolsos",
@@ -629,7 +629,7 @@
       "s6Title": "6. Contato do Encarregado de Dados (DPO)",
       "s6P1": "Se você tiver dúvidas sobre esta política ou sobre o tratamento dos seus dados, entre em contato com o nosso Data Protection Officer (DPO) através da nossa página de ",
       "s6P2": "Contato",
-      "s6P3": ", selecionando a opção de Suporte.",
+      "s6P3": ", escolhendo o perfil que descreve você.",
       "s7Title": "7. Privacidade Infantil",
       "s7Text": "O TUGGI não coleta intencionalmente dados de crianças menores de 13 anos sem o consentimento dos pais ou responsáveis. Se descobrirmos que coletamos tais dados, tomaremos medidas para excluí-los imediatamente."
     },
@@ -679,8 +679,9 @@
       "s3Intro": "A acessibilidade é um processo contínuo. Reconhecemos que sempre há espaço para melhorias e estamos prontos para ouvir nossos usuários.",
       "s4Title": "4. Inclusão Cultural e Impacto Social",
       "s4Desc": "Além da acessibilidade técnica, o TUGGI atua como um agente de inclusão social. Nós democratizamos o acesso à cultura descentralizando o turismo. Ao redirecionar o fluxo de áreas saturadas para zonas periféricas, fomentamos a economia criativa local, dando voz aos historiadores, atores e guias nativos que constroem nossas narrativas.",
-      "s3Item1": "<strong>Reportar Barreira:</strong> Se você encontrar qualquer dificuldade de acesso em nosso site ou aplicativo, por favor, entre em contato conosco através da nossa página de Contato, selecionando a opção \"Suporte / Acessibilidade\".",
+      "s3Item1": "<strong>Reportar Barreira:</strong> Se você encontrar dificuldade de acesso no nosso site ou no aplicativo, conte para nós em que página ou tela aconteceu, o que você tentou fazer e com o que você navega, como leitor de tela, teclado ou ampliação.",
       "s3Item2": "<strong>Compromisso:</strong> Analisamos cada reporte com prioridade técnica para garantir que o TUGGI continue sendo o copiloto cultural de todos, sem exceção.",
+      "contactIntro": "Para reportar uma barreira, escreva para:",
       "contactEmail": "suporte@tuggi.app"
     }
   },
