@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { getSupabaseClient } from "@/lib/supabase-server";
 import {
   businessTypeCode,
   isLeadBusinessType,
@@ -61,14 +61,34 @@ import { PARTNER_LEAD_TYPE } from "@/lib/lead-form";
  * policy says so in four languages (`Legal.Privacy.s1Item4`, BR-USUARIO-028
  * item 1, BR-USUARIO-029), and what the policy denies the payload may not
  * carry.
+ *
+ * ---------------------------------------------------------------------------
+ * This route cannot be deployed before a migration (#132)
+ * ---------------------------------------------------------------------------
+ *
+ * It connects with the publishable key, so the insert is accepted by an RLS
+ * policy, not by a key that skips RLS. That policy — and the INSERT grant on
+ * the ten columns below — is created by the migration of card #132, which is
+ * `data`'s to apply. Until it is applied, `anon` holds no privilege at all on
+ * `campaign.inbound_leads`: every submission would answer 42501 and leave as a
+ * 500, which is the one failure this route may not have. Order, and it does
+ * not commute: **migration applied → variables set on Vercel → deploy**.
  */
 
-const supabaseUrl = process.env.SUPABASE_URL || "";
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
-
-// Ensure it doesn't crash during build if env vars are missing
-const supabase =
-  supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
+/**
+ * The publishable key, and this is the only route in the site that uses it.
+ *
+ * It writes one row and reads nothing back (no `.select()` chained on the
+ * `.insert()`), so what it needs is exactly what an RLS policy on
+ * `campaign.inbound_leads` grants `anon`: INSERT on ten named columns, and
+ * nothing else. A key that bypasses RLS would work here too — and would also
+ * be able to read every lead the table ever collected, from a route that is
+ * reachable by anyone with a browser.
+ *
+ * Built at module scope on purpose: an unset variable fails the build, not the
+ * request. A 500 here is a lead lost.
+ */
+const supabase = getSupabaseClient("publishable");
 
 /** A trimmed string, or null — which is what "absent" means to the CHECK. */
 function text(value: unknown): string | null {
@@ -126,10 +146,6 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: "invalid_business_type" }, { status: 400 });
       }
       businessType = declaredType;
-    }
-
-    if (!supabase) {
-      return NextResponse.json({ error: "internal_error" }, { status: 500 });
     }
 
     const { error } = await supabase

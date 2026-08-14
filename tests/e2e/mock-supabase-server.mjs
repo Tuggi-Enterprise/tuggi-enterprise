@@ -129,6 +129,34 @@ function checkViolation(row) {
   return null;
 }
 
+/**
+ * Which API key the app presented, per `METHOD /path`, last call wins.
+ *
+ * The double does not *check* the key — it records it. The two keys are given
+ * different values by playwright.config.ts, so the value observed here names
+ * the environment variable the code path read, which is the only way to prove
+ * from outside that `/api/leads` connects with the publishable key while the
+ * other three still connect with service_role. Asserting that against a source
+ * comment would prove nothing.
+ */
+const apiKeyByRoute = new Map();
+
+/**
+ * The same, keyed by the lead's email — because `campaign.inbound_leads` is
+ * written by two different routes (`/api/leads` and the fallback of
+ * `/api/data-deletion`) with two different keys, and the path alone cannot
+ * tell them apart.
+ */
+const apiKeyByLeadEmail = new Map();
+
+/** supabase-js sends the key twice: as `apikey` and as a bearer token. */
+function readApiKey(req) {
+  const header = req.headers["apikey"];
+  if (typeof header === "string" && header) return header;
+  const auth = req.headers["authorization"];
+  return typeof auth === "string" ? auth.replace(/^Bearer\s+/i, "") : null;
+}
+
 function sendJson(res, status, body) {
   const json = JSON.stringify(body);
   res.writeHead(status, { "Content-Type": "application/json" });
@@ -154,6 +182,14 @@ function readBody(req) {
 
 const server = http.createServer((req, res) => {
   const url = new URL(req.url ?? "/", `http://${HOST}:${PORT}`);
+
+  // Recorded for every request, including the ones that fall through to 404
+  // (`functions/v1/simple-deletion-request` is one of them, on purpose — see
+  // the data-deletion case in supabase-key-boundary.spec.ts).
+  if (!url.pathname.startsWith("/__")) {
+    const key = readApiKey(req);
+    if (key) apiKeyByRoute.set(`${req.method} ${url.pathname}`, key);
+  }
 
   if (url.pathname === "/rest/v1/click_fingerprints" && req.method === "POST") {
     // PartnerHero fires this on mount (src/app/api/attribution) for every visit
@@ -194,6 +230,10 @@ const server = http.createServer((req, res) => {
           return;
         }
       }
+      const key = readApiKey(req);
+      for (const row of rows) {
+        if (key && row?.email) apiKeyByLeadEmail.set(row.email, key);
+      }
       inboundLeads.push(...rows);
       sendJson(res, 201, { success: true });
     });
@@ -216,6 +256,14 @@ const server = http.createServer((req, res) => {
     const partnerId = url.searchParams.get("partner_id");
     sendJson(res, 200, {
       row: (partnerId && fingerprintsByPartner.get(partnerId)) || null,
+    });
+    return;
+  }
+
+  if (url.pathname === "/__apikeys" && req.method === "GET") {
+    sendJson(res, 200, {
+      byRoute: Object.fromEntries(apiKeyByRoute),
+      byLeadEmail: Object.fromEntries(apiKeyByLeadEmail),
     });
     return;
   }

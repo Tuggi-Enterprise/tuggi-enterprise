@@ -1,13 +1,21 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { getSupabaseClient } from "@/lib/supabase-server";
 
-const supabaseUrl = process.env.SUPABASE_URL || "";
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
-
-// Ensure it doesn't crash during build if env vars are missing
-const supabase = (supabaseUrl && supabaseKey) 
-  ? createClient(supabaseUrl, supabaseKey) 
-  : (null as any);
+/**
+ * service_role, deliberately — not the publishable key `/api/leads` uses.
+ *
+ * Two reasons, and the first one is not about the database. This route's real
+ * work is `functions.invoke`, and `simple-deletion-request` is deployed with
+ * `verify_jwt: true`; a publishable key is not a JWT, and whether the gateway
+ * accepts it as a credential is unmeasured. If it does not, the invoke fails
+ * on every call and *every* deletion request silently degrades into the lead
+ * fallback below instead of sending the email. Second, that fallback is the
+ * last thing standing between a request and being lost, so it may not be the
+ * part that trips on a permission.
+ *
+ * Built at module scope: a missing variable fails the build, not the request.
+ */
+const supabase = getSupabaseClient("serviceRole");
 
 
 export async function POST(req: Request) {

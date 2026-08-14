@@ -1,6 +1,6 @@
 import crypto from "crypto";
 import { setRequestLocale } from "next-intl/server";
-import { getSupabaseServer } from "@/lib/supabase-server";
+import { getSupabaseClient } from "@/lib/supabase-server";
 import { buildAlternates } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
@@ -86,7 +86,12 @@ export default async function UnsubscribePage({
   if (e && s && secret) {
     const email = verify(e, s, secret);
     if (email) {
-      const supabase = getSupabaseServer();
+      // service_role, and there is no alternative here:
+      // marketing.email_unsubscribes has RLS on, zero policies and no grant to
+      // `anon` — with the publishable key this upsert answers 42501, `ok`
+      // turns false, the data subject sees the error screen, and the opt-out
+      // is not recorded at all.
+      const supabase = getSupabaseClient("serviceRole");
       const { error } = await supabase
         .schema("marketing")
         .from("email_unsubscribes")

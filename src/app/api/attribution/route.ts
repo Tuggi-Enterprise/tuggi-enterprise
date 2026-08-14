@@ -1,14 +1,21 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { getSupabaseClient } from "@/lib/supabase-server";
 import { PARTNER_ID_PATTERN } from "@/lib/app-meta";
 
-const supabaseUrl = process.env.SUPABASE_URL || "";
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
-
-// Initialize Supabase admin client
-const supabase = (supabaseUrl && supabaseKey)
-    ? createClient(supabaseUrl, supabaseKey)
-    : null;
+/**
+ * service_role, deliberately — not the publishable key `/api/leads` uses.
+ *
+ * `drive.click_fingerprints` does accept an anonymous insert today
+ * (`WITH CHECK (true)`), so the swap would appear to work. It would also mean
+ * this row could be written without passing through the handler below, and the
+ * handler is the whole point: it is what takes the IP from the edge header
+ * instead of from the caller, which is the fix for a spoof that moved a
+ * partner's commission. Narrowing this key is a separate card with a
+ * `WITH CHECK` of its own to write first.
+ *
+ * Built at module scope: a missing variable fails the build, not the request.
+ */
+const supabase = getSupabaseClient("serviceRole");
 
 /** Free-text fields are stored as written; cap them so a row stays a row. */
 const MAX_FIELD_LENGTH = 512;
@@ -46,10 +53,6 @@ function readClientIp(req: Request): string {
 
 export async function POST(req: Request) {
     try {
-        if (!supabase) {
-            throw new Error("Supabase configuration missing");
-        }
-
         const data = await req.json();
         const partnerId = typeof data?.partner_id === "string" ? data.partner_id.trim() : "";
 

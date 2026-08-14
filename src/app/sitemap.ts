@@ -2,7 +2,7 @@ import { MetadataRoute } from "next";
 import { routing } from "@/i18n/routing";
 import type { StaticAppPathname } from "@/i18n/pathnames";
 import { buildUrl, buildSitemapAlternates, buildSitemapAlternatesFor } from "@/lib/seo";
-import { getSupabaseServer } from "@/lib/supabase-server";
+import { getSupabaseClient } from "@/lib/supabase-server";
 import { TUGGI_PARTNER_ID } from "@/lib/app-meta";
 import {
   getAllRoutes,
@@ -161,7 +161,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Partner download pages: one clean, locale-agnostic URL per approved partner.
   // Wrapped in try/catch so a DB hiccup never fails the sitemap (and the build).
   try {
-    const supabase = getSupabaseServer();
+    // service_role: as `anon` this same query answers zero rows with no error
+    // (see resolvePartner in src/lib/partner.ts), so the sitemap would ship
+    // silently short of every partner URL.
+    const supabase = getSupabaseClient("serviceRole");
     const { data: partners } = await supabase
       .schema("core")
       .from("clients")

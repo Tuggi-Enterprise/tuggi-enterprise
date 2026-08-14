@@ -5,6 +5,12 @@ import { defineConfig, devices } from "@playwright/test";
 // Exported because a spec talks to the double directly (reading back the rows
 // the attribution route stored) — one declaration, not two.
 export const MOCK_SUPABASE_PORT = 4010;
+// Two keys, two values, and they differ only so a test can tell which
+// environment variable a given code path read. The double never checks them —
+// it records them, and supabase-key-boundary.spec.ts reads them back. Exported
+// for the same reason as the port above: one declaration, not two.
+export const E2E_PUBLISHABLE_KEY = "e2e-publishable-key";
+export const E2E_SERVICE_ROLE_KEY = "e2e-service-role-key";
 const APP_PORT = 3100;
 // ...and a build directory of its own, for the same reason. `next build` and
 // `next dev` both own `.next/`: building the suite under a running dev server
@@ -51,7 +57,11 @@ export default defineConfig({
         // next/image remote-pattern host from this) and at request time
         // (src/lib/partner.ts).
         SUPABASE_URL: `http://127.0.0.1:${MOCK_SUPABASE_PORT}`,
-        SUPABASE_SERVICE_ROLE_KEY: "e2e-test-key",
+        // Both are required: src/lib/supabase-server.ts throws on a missing
+        // one, so a build here fails exactly the way a deploy with a missing
+        // Vercel variable would.
+        SUPABASE_PUBLISHABLE_KEY: E2E_PUBLISHABLE_KEY,
+        SUPABASE_SERVICE_ROLE_KEY: E2E_SERVICE_ROLE_KEY,
         NEXT_PUBLIC_BASE_URL: `http://127.0.0.1:${APP_PORT}`,
         TUGGI_DIST_DIR: DIST_DIR,
       },

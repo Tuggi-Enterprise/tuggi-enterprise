@@ -5,10 +5,12 @@
  * next.config.ts and the partner view-model in src/lib/partner.ts. When they
  * drift, the image optimizer answers 400 and the visitor gets a broken image —
  * so both read the host from here, derived from SUPABASE_URL, the same env var
- * getSupabaseServer() connects with.
+ * getSupabaseClient() connects with.
  *
  * NEXT_PUBLIC_SUPABASE_URL is deliberately not used: it is absent from .env and
- * .env.example, and its only reader (src/lib/supabase.ts) has no importers.
+ * from .env.example, so anything derived from it would be an empty string with
+ * no error. Its only reader was a browser client with no importers, deleted
+ * with card #132.
  */
 
 /** Public Storage objects live under this path. Signed and private ones do not. */

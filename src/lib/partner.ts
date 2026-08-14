@@ -1,5 +1,5 @@
 import { cache } from "react";
-import { getSupabaseServer } from "@/lib/supabase-server";
+import { getSupabaseClient } from "@/lib/supabase-server";
 import { isPublicStorageUrl } from "@/lib/storage";
 import { TUGGI_PARTNER_ID } from "@/lib/app-meta";
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -139,7 +139,12 @@ async function resolvePartner(
   dbLang: string
 ): Promise<PartnerData | null> {
   try {
-    const supabase = getSupabaseServer();
+    // service_role, and here it is load-bearing: the only SELECT policy on
+    // `core.clients` requires an admin `cms_users` row or a matching
+    // `auth.uid()`, so as `anon` this query returns zero rows **and no error**
+    // — every partner landing would 404 and drop out of the sitemap with
+    // nothing logged anywhere.
+    const supabase = getSupabaseClient("serviceRole");
     const { data: client, error } = await supabase
       .schema("core")
       .from("clients")
@@ -205,7 +210,11 @@ async function resolveCoupon(
   dbLang: string
 ): Promise<CouponContext | null> {
   try {
-    const supabase = getSupabaseServer();
+    // `get_coupon_preview` is SECURITY DEFINER and `anon` may execute it, so
+    // this one call would survive the publishable key. It stays on
+    // service_role with the rest of the partner page: the reads around it
+    // (`core.clients`, above) do not.
+    const supabase = getSupabaseClient("serviceRole");
     const { data, error } = await supabase
       .schema("drive")
       .rpc("get_coupon_preview", { p_code: rawCode });
