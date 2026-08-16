@@ -1,13 +1,12 @@
 "use client";
 
 import { useRef } from "react";
-import { useTranslations, useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { Check, CheckCircle2, Store } from "lucide-react";
 import { sendGAEvent } from "@next/third-parties/google";
 import { APP_STORE_URL, PLAY_STORE_URL } from "@/lib/app-meta";
-import { formatPrice, type CountryPricing, type PassKey } from "@/lib/pricing";
-import { usePlatform, useGeoPricing, type Platform } from "@/lib/conversionHooks";
+import { usePlatform, type Platform } from "@/lib/conversionHooks";
 import { PRODUCT_FACTS } from "@/lib/product-facts";
 
 const EASE: [number, number, number, number] = [0.21, 0.47, 0.32, 0.98];
@@ -33,44 +32,10 @@ const PRIMARY_FILLED =
 const SECONDARY_LIGHT =
   "block w-full text-center bg-slate-50 text-slate-700 font-semibold py-3 rounded-xl border border-slate-200 hover:bg-slate-100 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-300";
 
-type PassId = "free" | "7d" | "30d";
-
-/** Price with reserved height so nothing shifts while geo resolves (skeleton "—").
- *  `free` renders 0 in the detected currency (needs the currency, so still waits). */
-function PriceSlot({
-  pricing,
-  locale,
-  passKey,
-  free,
-  periodLabel,
-}: {
-  pricing: CountryPricing | null;
-  locale: string;
-  passKey?: PassKey;
-  free?: boolean;
-  periodLabel?: string;
-}) {
-  const amount = free ? 0 : passKey ? pricing?.prices[passKey] : undefined;
-  const price =
-    pricing != null && amount != null ? formatPrice(amount, pricing.currency, locale) : null;
-  return (
-    <div className="min-h-[3rem] mb-6 flex flex-wrap items-baseline gap-x-1.5" aria-live="polite">
-      {price ? (
-        <>
-          <span className="text-3xl font-extrabold text-tuggi-dark">{price}</span>
-          {periodLabel ? <span className="text-sm text-slate-500">{periodLabel}</span> : null}
-        </>
-      ) : (
-        <span
-          className="text-3xl font-extrabold text-slate-300 animate-pulse motion-reduce:animate-none"
-          aria-hidden="true"
-        >
-          —
-        </span>
-      )}
-    </div>
-  );
-}
+/** The GA dimension of `click_pass_cta`, and the catalogue of BR-MONETIZACAO-048.
+ *  It reads `10h`/`25h`/`45h` and no longer `7d`/`30d`: the product is another
+ *  one, and a funnel that kept the old names would compare hours against days. */
+type PassId = "free" | "10h" | "25h" | "45h";
 
 /** One primary CTA (device-appropriate store); Google Play secondary on desktop
  *  only, in a reserved slot so mobile ↔ desktop never shifts height. */
@@ -120,10 +85,60 @@ function PassCta({
   );
 }
 
+/**
+ * One pass: the hour count is the big element, the usage caption sits under it.
+ *
+ * **No price, and no slot reserving room for one** — BR-MONETIZACAO-048's three
+ * Consumables do not exist in either store yet (#297), so publishing a number
+ * here would name a price nobody can be charged. Nothing on the card is
+ * asynchronous any more, which is what retires the `—` skeleton and the
+ * `/api/geo` request the section used to make on load. When #297 lands, the
+ * price returns *below* the caption: the hour count stays the big element,
+ * because it is what tells the three cards apart.
+ *
+ * Title and caption read as one line ("10 horas · um bate e volta"), which is
+ * why the caption is lowercase and unpunctuated — BR-MONETIZACAO-048: a title
+ * without its usage caption is a product the tourist cannot size.
+ */
+function PassCard({
+  platform,
+  pass,
+  title,
+  caption,
+  actionLabel,
+  spotlight,
+  badge,
+}: {
+  platform: Platform;
+  pass: PassId;
+  title: string;
+  caption: string;
+  actionLabel: string;
+  spotlight?: boolean;
+  badge?: string;
+}) {
+  return (
+    <div className={spotlight ? SPOTLIGHT_CARD : LIGHT_CARD}>
+      {badge ? (
+        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-tuggi-primary text-tuggi-dark font-bold text-[10px] uppercase tracking-widest py-1.5 px-6 rounded-full shadow-lg whitespace-nowrap">
+          {badge}
+        </div>
+      ) : null}
+      <h3 className="text-3xl font-extrabold text-tuggi-dark">{title}</h3>
+      <p className="mt-1 mb-8 text-sm text-slate-500 flex-1">{caption}</p>
+      <PassCta
+        platform={platform}
+        pass={pass}
+        actionLabel={actionLabel}
+        primaryClass={spotlight ? PRIMARY_FILLED : PRIMARY_OUTLINE}
+        secondaryClass={SECONDARY_LIGHT}
+      />
+    </div>
+  );
+}
+
 export function DrivePricing() {
   const t = useTranslations("Drive.Pricing");
-  const locale = useLocale();
-  const pricing = useGeoPricing();
   const platform = usePlatform();
   const viewedRef = useRef(false);
 
@@ -133,12 +148,25 @@ export function DrivePricing() {
     sendGAEvent({ event: "view_pricing" });
   };
 
+  // `data-section` and not a copy locator: the guard in
+  // tests/e2e/hour-catalogue.spec.ts measures this section's geometry in four
+  // languages, and anchoring it on the headline would make the assertion move
+  // with every translation — the mistake routing.spec.ts already pays for.
   return (
-    <section className="py-24 bg-white border-y border-gray-100">
+    <section data-section="drive-pricing" className="py-24 bg-white border-y border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        {/* Section header + price anchor */}
+        {/* Section header + price anchor.
+            The promise is the `h2` and the section name is the eyebrow, not the
+            other way round: what converts is the sentence, so it is the largest
+            element and the heading of the section. One `h2` per section (WCAG
+            2.2 SC 1.3.1) — the eyebrow is a `p`, never a heading. Nothing here
+            clamps, truncates or fixes a height: the headline grows downward,
+            which is what keeps it whole down to 320 px (SC 1.4.10). */}
         <div className="text-center mb-8">
+          <p className="text-sm font-bold uppercase tracking-widest text-tuggi-primary-text mb-3">
+            {t("kicker")}
+          </p>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-tuggi-dark tracking-tight mb-4">
             {t("title")}
           </h2>
@@ -156,22 +184,72 @@ export function DrivePricing() {
           ))}
         </div>
 
-        {/* Cards: Free · 7-Day (spotlight) · 30-Day */}
         <motion.div
           variants={container}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-80px" }}
           onViewportEnter={onPricingInView}
-          className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch"
         >
+          {/* The three passes — BR-MONETIZACAO-048, in catalogue order.
+              Three columns and not four: a fourth would narrow the column that
+              converts and cancel the spotlight's `lg:scale-105`. `Explorar` is
+              the wide card below, so on a phone the visitor no longer meets a
+              free card as the first thing under a headline about not spending.
+              DOM order is visual order at both widths — no `order-*` reversing
+              keyboard and screen-reader reading. */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
 
-          {/* ── Free ── */}
-          <motion.div variants={item} className="flex">
+            <motion.div variants={item} className="flex">
+              <PassCard
+                platform={platform}
+                pass="10h"
+                title={t("pass1Title")}
+                caption={t("pass1Desc")}
+                actionLabel={t("pass1Action")}
+              />
+            </motion.div>
+
+            {/* `recommended`, not "most popular": the three Consumables have
+                never been sold, so popularity is a claim with no data behind
+                it. An editorial recommendation is true by construction. */}
+            <motion.div variants={item} className="flex relative z-10">
+              <PassCard
+                platform={platform}
+                pass="25h"
+                title={t("pass2Title")}
+                caption={t("pass2Desc")}
+                actionLabel={t("pass2Action")}
+                spotlight
+                badge={t("recommended")}
+              />
+            </motion.div>
+
+            <motion.div variants={item} className="flex">
+              <PassCard
+                platform={platform}
+                pass="45h"
+                title={t("pass3Title")}
+                caption={t("pass3Desc")}
+                actionLabel={t("pass3Action")}
+              />
+            </motion.div>
+
+          </div>
+
+          {/* Said once, under the three cards, instead of nine repeated bullets
+              — BR-MONETIZACAO-061 (single purchase) and 052 (hours from
+              different passes add up, with no cap). */}
+          <p className="text-center text-sm text-tuggi-slate mt-8">{t("passesNote")}</p>
+
+          {/* ── Explorar — the free tier, wide, below the passes ── */}
+          <motion.div variants={item} className="mt-8">
             <div className={LIGHT_CARD}>
-              <h3 className="text-xl font-bold text-tuggi-dark mb-2">{t("freeTitle")}</h3>
-              <PriceSlot pricing={pricing} locale={locale} free />
-              <ul className="space-y-4 mb-8 text-slate-600 flex-1 text-sm">
+              <div className="flex flex-wrap items-baseline gap-x-3">
+                <h3 className="text-xl font-bold text-tuggi-dark">{t("freeTitle")}</h3>
+                <span className="text-xl font-extrabold text-tuggi-dark">{t("freePrice")}</span>
+              </div>
+              <ul className="mt-6 mb-8 grid gap-4 md:grid-cols-3 text-slate-600 text-sm">
                 {["free1", "free2", "free3"].map((k) => (
                   <li key={k} className="flex items-start gap-3">
                     <CheckCircle2 className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
@@ -179,74 +257,21 @@ export function DrivePricing() {
                   </li>
                 ))}
               </ul>
-              <PassCta
-                platform={platform}
-                pass="free"
-                actionLabel={t("freeAction")}
-                primaryClass={PRIMARY_OUTLINE}
-                secondaryClass={SECONDARY_LIGHT}
-              />
-            </div>
-          </motion.div>
-
-          {/* ── 7-Day Pass (Spotlight) ── */}
-          <motion.div variants={item} className="flex relative z-10">
-            <div className={SPOTLIGHT_CARD}>
-              <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-tuggi-primary text-tuggi-dark font-bold text-[10px] uppercase tracking-widest py-1.5 px-6 rounded-full shadow-lg whitespace-nowrap">
-                {t("mostPopular")}
+              <div className="md:max-w-xs">
+                <PassCta
+                  platform={platform}
+                  pass="free"
+                  actionLabel={t("freeAction")}
+                  primaryClass={PRIMARY_OUTLINE}
+                  secondaryClass={SECONDARY_LIGHT}
+                />
               </div>
-              <h3 className="text-xl font-bold text-tuggi-dark mb-2">{t("pass1Title")}</h3>
-              <PriceSlot pricing={pricing} locale={locale} passKey="d7" periodLabel={t("periodOnce")} />
-              <p className="text-slate-500 mb-6 text-sm leading-relaxed">{t("pass1Desc")}</p>
-              <ul className="space-y-4 mb-8 text-slate-600 flex-1 text-sm font-medium">
-                {["pass1Feat1", "pass1Feat2", "pass1Feat3"].map((k) => (
-                  <li key={k} className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-tuggi-primary-text flex-shrink-0 mt-0.5" aria-hidden="true" />
-                    <span>{t(k, PRODUCT_FACTS)}</span>
-                  </li>
-                ))}
-              </ul>
-              <PassCta
-                platform={platform}
-                pass="7d"
-                actionLabel={t("pass1Action")}
-                primaryClass={PRIMARY_FILLED}
-                secondaryClass={SECONDARY_LIGHT}
-              />
             </div>
           </motion.div>
-
-          {/* ── 30-Day Pass ── */}
-          <motion.div variants={item} className="flex">
-            <div className={LIGHT_CARD}>
-              <h3 className="text-xl font-bold text-tuggi-dark mb-2">{t("pass2Title")}</h3>
-              <PriceSlot pricing={pricing} locale={locale} passKey="d30" periodLabel={t("periodOnce")} />
-              <p className="text-slate-500 mb-6 text-sm leading-relaxed">{t("pass2Desc")}</p>
-              <ul className="space-y-4 mb-8 text-slate-600 flex-1 text-sm">
-                {["pass2Feat1", "pass2Feat2", "pass2Feat3"].map((k) => (
-                  <li key={k} className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
-                    <span>{t(k, PRODUCT_FACTS)}</span>
-                  </li>
-                ))}
-              </ul>
-              <PassCta
-                platform={platform}
-                pass="30d"
-                actionLabel={t("pass2Action")}
-                primaryClass={PRIMARY_OUTLINE}
-                secondaryClass={SECONDARY_LIGHT}
-              />
-            </div>
-          </motion.div>
-
         </motion.div>
 
-        {/* Quiet annual pointer (no link, no button) */}
-        <p className="text-center text-sm text-tuggi-slate mt-8">{t("annualNote")}</p>
-
-        {/* Store note — price source of truth */}
-        <p className="text-center text-tuggi-slate text-sm mt-4 flex items-center justify-center gap-1.5">
+        {/* Store note — now the only place the page speaks about price at all */}
+        <p className="text-center text-tuggi-slate text-sm mt-8 flex items-center justify-center gap-1.5">
           <Store className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
           {t("storeNote")}
         </p>

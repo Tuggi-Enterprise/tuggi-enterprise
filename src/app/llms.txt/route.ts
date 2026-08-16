@@ -77,7 +77,8 @@ export function GET() {
 
 Key facts:
 - Category: travel app / self-guided audio tours / cultural audio guide
-- Platforms: iOS and Android — free to download, optional Travel Passes (7-day, 30-day, annual)
+- Platforms: iOS and Android — free to download
+- Passes: optional Tuggi Passes of 10, 25 or 45 hours of use — one-time purchase, the hours do not expire
 - Works offline; audio triggers automatically by location; ${CONTENT_LANGUAGES} languages with captions
 - Not a navigation app — it runs alongside your GPS and music and narrates the places you pass
 - App Store: ${APP_STORE_URL}

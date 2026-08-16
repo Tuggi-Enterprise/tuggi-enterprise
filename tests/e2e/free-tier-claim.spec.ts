@@ -92,15 +92,12 @@ const SELLS_AS_WELL = new Set(["Metadata.driveDescription"]);
 const PROSE_FILES = ["src/app/llms.txt/route.ts", "src/lib/app-meta.ts"];
 
 /**
- * One line of /llms.txt still sells the passes by day, which is
- * BR-MONETIZACAO-062 item 3 and belongs to #312, not here — it is listed so
- * this guard can be red for everything else. The assertion below fails when an
- * entry stops matching, so fixing the line deletes the entry instead of leaving
- * a dead exemption behind.
+ * There is no known gap left. One line of /llms.txt used to sell the passes by
+ * day and was carried here as a named exemption while #312 was open; #312
+ * rewrote it into hours, so the exemption was deleted rather than left behind
+ * as a dead permission — which is what its own comment asked for. The sweep
+ * below now covers both prose files whole.
  */
-const KNOWN_GAP = [
-  { file: "src/app/llms.txt/route.ts", contains: "optional Travel Passes", card: "#312" },
-];
 
 // Stems, not words: the four languages conjugate the trigger ("você baixa",
 // "lo scarichi", "la descargas") and a word list catches the infinitive only.
@@ -173,7 +170,6 @@ test.describe("BR-MONETIZACAO-062 item 2 — the download grants nothing, and no
       proseWithoutComments(file)
         .split("\n")
         .forEach((line, index) => {
-          if (KNOWN_GAP.some((gap) => gap.file === file && line.includes(gap.contains))) return;
           for (const sentence of sentences(line)) {
             if (TRIGGER.test(sentence) && QUANTITY.test(sentence)) {
               offenders.push(`${file}:${index + 1}: ${sentence.trim()}`);
@@ -185,15 +181,11 @@ test.describe("BR-MONETIZACAO-062 item 2 — the download grants nothing, and no
     expect(offenders).toEqual([]);
   });
 
-  test("BR-MONETIZACAO-062 item 3: the day-priced passes in /llms.txt are still the only gap, and still there", () => {
-    for (const gap of KNOWN_GAP) {
-      expect(
-        proseWithoutComments(gap.file),
-        `${gap.file} no longer contains "${gap.contains}". If ${gap.card} rewrote it, delete ` +
-          "this entry from KNOWN_GAP so the sweep covers the file whole.",
-      ).toContain(gap.contains);
-    }
-  });
+  // The third test of this describe was the KNOWN_GAP assertion, and it died
+  // with the gap. What replaces it is not a second ruler here — item 3 is swept
+  // whole, over the message files *and* these two prose files, by
+  // `tests/e2e/hour-catalogue.spec.ts` (#312). Repeating it in this file would
+  // be CLAUDE.md §6's "segunda implementação da mesma decisão".
 });
 
 /* ---------------------------------------------------------------------------

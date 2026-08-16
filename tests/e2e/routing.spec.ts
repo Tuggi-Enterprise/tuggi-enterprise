@@ -380,10 +380,15 @@ test("the four download CTAs in the chrome point at the Tuggi landing", async ({
 
 test.describe("main menu", () => {
   const EXPECTED_LABELS: Record<SiteLocale, string[]> = {
-    pt: ["Parcerias", "Destinos", "Tecnologia", "Planos", "Áudio-guias", "Propósito"],
-    en: ["Partners", "Destinations", "Technology", "Plans", "Audio Guides", "Purpose"],
-    es: ["Alianzas", "Destinos", "Tecnología", "Planes", "Audioguías", "Propósito"],
-    it: ["Partner", "Destinazioni", "Tecnologia", "Piani", "Audioguide", "Il nostro scopo"],
+    // The fourth label was "Planos"/"Plans"/"Planes"/"Piani" until #312.
+    // BR-MONETIZACAO-061: the passes are Consumables and do not renew, and
+    // "plano" imports the anxiety of an automatic renewal into a product that
+    // has none. The key stays `navPlans` — this list transcribes what the
+    // visitor reads, not what the code calls it.
+    pt: ["Parcerias", "Destinos", "Tecnologia", "Passes", "Áudio-guias", "Propósito"],
+    en: ["Partners", "Destinations", "Technology", "Passes", "Audio Guides", "Purpose"],
+    es: ["Alianzas", "Destinos", "Tecnología", "Pases", "Audioguías", "Propósito"],
+    it: ["Partner", "Destinazioni", "Tecnologia", "Pass", "Audioguide", "Il nostro scopo"],
   };
 
   test("the six labels exist in the four message files, in menu order", () => {

@@ -91,5 +91,13 @@ export const APP_FEATURES = [
   "Screen-off playback while you drive, walk, or cycle",
   "Works offline — download routes in advance, no roaming",
   `Audio in ${CONTENT_LANGUAGES} languages with synchronized closed captions`,
-  "Free to start; optional 7-day, 30-day, or annual Travel Pass",
+  // BR-MONETIZACAO-048 and 061: three Consumables, named by hours, one-time
+  // purchase. BR-MONETIZACAO-050: the balance has no validity, which is why the
+  // sentence says so instead of naming a window.
+  //
+  // "do not expire" and not the `design`'s "never expire" (#312): this string
+  // reaches SoftwareApplication.featureList, which the layout serves on *every*
+  // page, and partner-claims.spec.ts bans an unbacked absolute there with no
+  // waiver path for prose. Same fact, same strength, one word apart.
+  "Free to start; optional Tuggi Passes of 10, 25 or 45 hours of use that do not expire",
 ];

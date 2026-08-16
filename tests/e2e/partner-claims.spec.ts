@@ -984,6 +984,16 @@ const CLAIM_FAMILIES: ClaimFamily[] = [
           "site has to agree with the store. Reported, not cut.",
       },
       {
+        keys: ["Metadata.driveTitle", "Metadata.driveDescription", "Home.FAQ.a2"],
+        why:
+          'The "never" is "the hours never expire", and BR-MONETIZACAO-050 is behind ' +
+          "it: purchased balance has no validity, because App Store Review Guideline " +
+          "3.1.1 forbids expiring credit bought as a Consumable. It is the same fact " +
+          "the `Drive` waiver above covers, in the three keys that carry it from " +
+          "outside that namespace — the page title, its description and the home FAQ. " +
+          "An absolute with a rule behind it is what this family says it does not ban.",
+      },
+      {
         keys: ["NotFound.subtitle"],
         why:
           "404 copy about the traveller's freedom to go anywhere, not a capability " +
@@ -1055,6 +1065,21 @@ const CLAIM_FAMILIES: ClaimFamily[] = [
           'The Italian "acquisti" there is the *traveller\'s* purchases feeding the ' +
           "partner's revenue share — BR-B2B-007 item 4 and BR-B2B-005, the one " +
           "money flow the rules do back, and it runs outwards.",
+      },
+      {
+        keys: [
+          "Drive.Pricing.pass1Action",
+          "Drive.Pricing.pass2Action",
+          "Drive.Pricing.pass3Action",
+          "Drive.Pricing.storeNote",
+        ],
+        why:
+          'The Italian "Acquista 10 ore nell\'app" is the *traveller* buying a pass ' +
+          "inside the app — the same word, for the same money flow, as the two " +
+          "waivers below. Nothing here is bought, licensed or invoiced by a partner: " +
+          "the passes are sold to the tourist by the store (BR-MONETIZACAO-048 and " +
+          "061), and B2B partners distribute without paying (BR-B2B-004). The pattern " +
+          "reads the verb, not who pays.",
       },
       {
         keys: ["Segments.steps.s3Body"],

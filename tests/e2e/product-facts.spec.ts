@@ -427,9 +427,13 @@ const PUBLISHED_ON: Record<string, string[]> = {
     "SEO_COVERAGE.description",
     "SEO_COVERAGE.ogTitle",
   ],
+  // `Drive.Pricing.pass2Feat3` ("todos os {contentLanguages} idiomas incluídos")
+  // left with #312: the pass cards lost their bullets when the catalogue became
+  // hours, and what was common to all three moved to `Drive.Features`. The key
+  // does not exist any more, so this is a deletion, not a waiver — the four
+  // sentences below still carry the figure onto this page.
   "/drive": [
     "Drive.Features.feat3Desc",
-    "Drive.Pricing.pass2Feat3",
     "Drive.FAQ.a4",
     "Drive.Comparison.langTuggi",
     "Drive.PlansExplainer.p3",
