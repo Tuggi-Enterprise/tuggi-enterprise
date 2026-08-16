@@ -1,12 +1,13 @@
 "use client";
 
 import { useRef } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { Check, CheckCircle2, Store } from "lucide-react";
 import { sendGAEvent } from "@next/third-parties/google";
 import { APP_STORE_URL, PLAY_STORE_URL } from "@/lib/app-meta";
-import { usePlatform, type Platform } from "@/lib/conversionHooks";
+import { usePlatform, useGeoPricing, type Platform } from "@/lib/conversionHooks";
+import { formatPrice, type PassKey } from "@/lib/pricing";
 import { PRODUCT_FACTS } from "@/lib/product-facts";
 
 const EASE: [number, number, number, number] = [0.21, 0.47, 0.32, 0.98];
@@ -34,8 +35,10 @@ const SECONDARY_LIGHT =
 
 /** The GA dimension of `click_pass_cta`, and the catalogue of BR-MONETIZACAO-048.
  *  It reads `10h`/`25h`/`45h` and no longer `7d`/`30d`: the product is another
- *  one, and a funnel that kept the old names would compare hours against days. */
-type PassId = "free" | "10h" | "25h" | "45h";
+ *  one, and a funnel that kept the old names would compare hours against days.
+ *  `PassKey` is the same three strings in `lib/pricing.ts` — the funnel and the
+ *  price table name the passes once, not twice. */
+type PassId = "free" | PassKey;
 
 /** One primary CTA (device-appropriate store); Google Play secondary on desktop
  *  only, in a reserved slot so mobile ↔ desktop never shifts height. */
@@ -86,15 +89,26 @@ function PassCta({
 }
 
 /**
- * One pass: the hour count is the big element, the usage caption sits under it.
+ * One pass: the hour count is the big element, the caption under it, the price
+ * under the caption, the CTA last. DOM order is reading order.
  *
- * **No price, and no slot reserving room for one** — BR-MONETIZACAO-048's three
- * Consumables do not exist in either store yet (#297), so publishing a number
- * here would name a price nobody can be charged. Nothing on the card is
- * asynchronous any more, which is what retires the `—` skeleton and the
- * `/api/geo` request the section used to make on load. When #297 lands, the
- * price returns *below* the caption: the hour count stays the big element,
- * because it is what tells the three cards apart.
+ * The price is the *second* element, never the first: it is the hour count that
+ * tells the three cards apart, and the price is the consequence of it. Its
+ * `text-xl font-extrabold text-tuggi-dark` is the token `freePrice` already
+ * uses on the `Explorar` card below — so "Grátis" and "R$ 9,90" carry the same
+ * weight, which is the comparison the page wants made. Not `text-tuggi-primary`
+ * (#00a8e8 on white measures 2.70:1 and fails SC 1.4.3 — DS-COR-002).
+ *
+ * **The slot is never empty, and there is no skeleton.** `priceInStore` is the
+ * resting state, the server-rendered state and the no-JS state (#191), and the
+ * amount replaces it when the geo resolves in one of the three base markets of
+ * BR-MONETIZACAO-069. Fixed 28 px in both states, so the swap shifts nothing.
+ *
+ * No `aria-live` and no `aria-busy`, on purpose: WCAG 2.2 *Understanding SC
+ * 4.1.3* covers waiting states, progress and errors and excludes content that
+ * arrives. There is no waiting state here — the slot always says something —
+ * and a live region would announce the same change three times for something
+ * the visitor did not ask for.
  *
  * Title and caption read as one line ("10 horas · um bate e volta"), which is
  * why the caption is lowercase and unpunctuated — BR-MONETIZACAO-048: a title
@@ -105,6 +119,8 @@ function PassCard({
   pass,
   title,
   caption,
+  price,
+  priceInStore,
   actionLabel,
   spotlight,
   badge,
@@ -113,6 +129,10 @@ function PassCard({
   pass: PassId;
   title: string;
   caption: string;
+  /** The formatted amount, or `null` outside the three base markets — which
+   *  includes "not resolved yet" and every failure of `/api/geo`. */
+  price: string | null;
+  priceInStore: string;
   actionLabel: string;
   spotlight?: boolean;
   badge?: string;
@@ -125,7 +145,18 @@ function PassCard({
         </div>
       ) : null}
       <h3 className="text-3xl font-extrabold text-tuggi-dark">{title}</h3>
-      <p className="mt-1 mb-8 text-sm text-slate-500 flex-1">{caption}</p>
+      <p className="mt-1 mb-4 text-sm text-slate-500 flex-1">{caption}</p>
+      {/* `data-price-slot` and not a class: the height guard in
+          tests/e2e/base-market-price.spec.ts measures this box in both states,
+          and a locator built on Tailwind classes would move with the styling
+          instead of with the thing being asserted. */}
+      <div data-price-slot className="flex items-center mb-4 min-h-[1.75rem]">
+        {price ? (
+          <span className="text-xl font-extrabold text-tuggi-dark">{price}</span>
+        ) : (
+          <span className="text-base font-semibold text-tuggi-slate">{priceInStore}</span>
+        )}
+      </div>
       <PassCta
         platform={platform}
         pass={pass}
@@ -139,8 +170,19 @@ function PassCard({
 
 export function DrivePricing() {
   const t = useTranslations("Drive.Pricing");
+  const locale = useLocale();
   const platform = usePlatform();
+  // One resolution for the whole section: the market is a property of the
+  // visitor, not of the card, so the three cards and the store note are always
+  // in the same state and change in the same render — never two jumps.
+  const pricing = useGeoPricing();
   const viewedRef = useRef(false);
+
+  /** The published amount, or `null` outside the three base markets of
+   *  BR-MONETIZACAO-069 — no conversion, no estimate, no "from" price
+   *  borrowed from another market. `Intl` formats it in the page locale. */
+  const priceOf = (pass: PassKey): string | null =>
+    pricing ? formatPrice(pricing.prices[pass], pricing.currency, locale) : null;
 
   const onPricingInView = () => {
     if (viewedRef.current) return;
@@ -174,9 +216,15 @@ export function DrivePricing() {
           <p className="mt-3 text-sm text-tuggi-slate max-w-xl mx-auto">{t("anchor")}</p>
         </div>
 
-        {/* Risk-reversal chips (hero keeps its own copy) */}
+        {/* Risk-reversal chips (hero keeps its own copy).
+            Two chips, and the numbering starts at `chip2` because `chip1`
+            ("Sem cartão") left with #372: 60 px above three published amounts
+            it reads as a claim about *the purchase*, and buying in either store
+            requires a payment method on file. The claim survives whole in
+            `free3`, inside the `Explorar` card, where it is about the free tier
+            and true — the two were the same string in all four languages. */}
         <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mb-14 text-sm font-semibold text-tuggi-slate">
-          {[t("chip1"), t("chip2"), t("chip3")].map((chip) => (
+          {[t("chip2"), t("chip3")].map((chip) => (
             <span key={chip} className="flex items-center gap-2">
               <Check className="w-4 h-4 text-emerald-500" aria-hidden="true" />
               {chip}
@@ -206,6 +254,8 @@ export function DrivePricing() {
                 pass="10h"
                 title={t("pass1Title")}
                 caption={t("pass1Desc")}
+                price={priceOf("10h")}
+                priceInStore={t("priceInStore")}
                 actionLabel={t("pass1Action")}
               />
             </motion.div>
@@ -219,6 +269,8 @@ export function DrivePricing() {
                 pass="25h"
                 title={t("pass2Title")}
                 caption={t("pass2Desc")}
+                price={priceOf("25h")}
+                priceInStore={t("priceInStore")}
                 actionLabel={t("pass2Action")}
                 spotlight
                 badge={t("recommended")}
@@ -231,6 +283,8 @@ export function DrivePricing() {
                 pass="45h"
                 title={t("pass3Title")}
                 caption={t("pass3Desc")}
+                price={priceOf("45h")}
+                priceInStore={t("priceInStore")}
                 actionLabel={t("pass3Action")}
               />
             </motion.div>
@@ -270,10 +324,17 @@ export function DrivePricing() {
           </motion.div>
         </motion.div>
 
-        {/* Store note — now the only place the page speaks about price at all */}
+        {/* Store note — one sentence per state, from the same `pricing` above,
+            so the note and the three amounts change in a single render.
+            Two keys and not one: in a base market the note has to *back* the
+            number on the screen ("these are the prices the stores charge
+            here"), and outside it has to explain that the amount is a property
+            of each store's country ("each country has its own price"). A single
+            sentence that served both would make the published number look
+            provisional. Default on the server: the no-price one. */}
         <p className="text-center text-tuggi-slate text-sm mt-8 flex items-center justify-center gap-1.5">
           <Store className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
-          {t("storeNote")}
+          {pricing ? t("storeNoteWithPrice") : t("storeNoteNoPrice")}
         </p>
 
       </div>

@@ -53,13 +53,16 @@ import { localizedPathname } from "../../src/i18n/pathnames";
  *    today.
  *
  * ---------------------------------------------------------------------------
- * And no price, while #297 is open
+ * And the price, which came back on 2026-08-16 — but only in three markets
  * ---------------------------------------------------------------------------
  *
- * The three Consumables do not exist in either store yet, so the page publishes
- * no amount at all: the store note carries the price information on its own.
- * A number here would name a price nobody can be charged, in a section whose
- * whole job is to be trusted about what things cost.
+ * #312 shipped this section with no amount at all, while #297 was open. #372
+ * put the number back in the three base markets of BR-MONETIZACAO-069 (BRL, USD
+ * and EUR) and nowhere else. What stays true here is that **no amount is born
+ * in a message file**: the numbers live in `src/lib/pricing.ts`, under the rule,
+ * and the copy points at the store. The rendered half of that promise — which
+ * market publishes a number and which one may not — is
+ * tests/e2e/base-market-price.spec.ts.
  */
 
 const REPO_ROOT = path.resolve(__dirname, "../..");
@@ -294,12 +297,12 @@ test.describe("BR-MONETIZACAO-050 and 052 — the two promises the hour model ma
 });
 
 /* ---------------------------------------------------------------------------
- * 3. No price, while #297 is open
+ * 3. No amount is born in the copy, and both store notes point at the store
  * ------------------------------------------------------------------------- */
 
-test.describe("BR-MONETIZACAO-048 — the page publishes no amount, and says where the amount is", () => {
+test.describe("BR-MONETIZACAO-069 — the amount lives in the price table, never in a string", () => {
   for (const locale of LOCALES) {
-    test(`BR-MONETIZACAO-048: no pricing string in ${locale}.json carries a price`, () => {
+    test(`BR-MONETIZACAO-069: no pricing string in ${locale}.json carries a price`, () => {
       const offenders = flatten(messagesFor(locale))
         .filter(([key]) => key.startsWith("Drive.Pricing."))
         .filter(([, value]) => PRICE.test(value))
@@ -307,30 +310,62 @@ test.describe("BR-MONETIZACAO-048 — the page publishes no amount, and says whe
 
       expect(
         offenders,
-        "The three Consumables do not exist in either store yet (#297). A number here " +
-          "names a price nobody can be charged; the store note carries the price " +
-          "information on its own.",
+        "A price typed into a translation is a number the price table does not know " +
+          "about: it survives a market it does not belong to, it is never formatted by " +
+          "Intl, and it drifts from BR-MONETIZACAO-048 the day the table changes. The " +
+          "amounts come from src/lib/pricing.ts and only there.",
       ).toEqual([]);
     });
 
-    test(`BR-MONETIZACAO-048: the store note in ${locale} points at the store for the price`, () => {
-      const note = messageAt(locale, "Drive.Pricing.storeNote");
-      expect(note, `Drive.Pricing.storeNote is missing from ${locale}.json`).toBeTruthy();
-      expect(note!, "the store note names neither store").toMatch(/App Store/);
-      expect(note!, "the store note names neither store").toMatch(/Google Play/);
-      expect(note!, "the store note carries a price of its own").not.toMatch(PRICE);
+    for (const key of ["storeNoteWithPrice", "storeNoteNoPrice"] as const) {
+      test(`BR-MONETIZACAO-069: ${key} in ${locale} points at the store for the price`, () => {
+        const note = messageAt(locale, `Drive.Pricing.${key}`);
+        expect(note, `Drive.Pricing.${key} is missing from ${locale}.json`).toBeTruthy();
+        expect(note!, "the store note names neither store").toMatch(/App Store/);
+        expect(note!, "the store note names neither store").toMatch(/Google Play/);
+        expect(note!, "the store note carries a price of its own").not.toMatch(PRICE);
+      });
+    }
+
+    test(`BR-MONETIZACAO-069: Drive.Pricing.storeNote is gone from ${locale}.json`, () => {
+      // It was written for a page with no price at all and contradicts the
+      // priced state ("each pass shows its price in the store", under a
+      // printed price). Two states, two sentences — and a key nothing renders
+      // is copy that lies about what the page says.
+      expect(
+        messageAt(locale, "Drive.Pricing.storeNote"),
+        "storeNote was replaced by storeNoteWithPrice and storeNoteNoPrice (#372)",
+      ).toBeUndefined();
     });
   }
 
-  test("BR-MONETIZACAO-048: the component itself hard-codes no amount", () => {
+  test("BR-MONETIZACAO-069: the component itself hard-codes no amount", () => {
+    // The assertion this replaces said the component reads no price map at all
+    // — true while #312 held the number back, a lie the moment #372 put it
+    // back. What has to stay true is narrower and is the actual promise: the
+    // component prints what the table gives it, and invents no number of its
+    // own. Which *markets* may show one is base-market-price.spec.ts.
     const component = fs
       .readFileSync(path.join(REPO_ROOT, "src/components/blocks/DrivePricing.tsx"), "utf8")
       .replace(/\/\*[\s\S]*?\*\//g, " ")
       .replace(/(^|[^:])\/\/.*$/gm, "$1");
 
-    expect(component, "the pricing component reads a price map again").not.toMatch(
-      /useGeoPricing|formatPrice/,
+    // `PRICE` is the ruler for prose and would fire on this file's own
+    // furniture — `min-h-[1.75rem]` and the framer durations are decimals with
+    // two places and neither is money. In code the ruler is a currency mark or
+    // one of the six amounts of BR-MONETIZACAO-048, typed out.
+    expect(component, "a currency mark is typed into the pricing component").not.toMatch(
+      /R\$|US\$|\bUSD\b|\bBRL\b|\bEUR\b|€|£|\$\s?\d/,
     );
+    expect(component, "an amount of the price table is typed into the component").not.toMatch(
+      /\b(?:9[.,]90?|19[.,]90?|29[.,]90?|2[.,]99|5[.,]99|9[.,]99)\b/,
+    );
+    expect(
+      component,
+      "the component builds a price string by hand instead of formatting it with Intl " +
+        "— that breaks `en` (R$9.90) and `es`/`it` (9,90 BRL), and the screen reader " +
+        "loses the currency",
+    ).toMatch(/formatPrice\(/);
   });
 });
 
@@ -354,8 +389,14 @@ const SECTION_KEYS = [
   "pass3Desc",
   "pass3Action",
   "recommended",
+  // The resting state, which is what a local build serves: no
+  // `x-vercel-ip-country` header means no base market, so the slot says
+  // `priceInStore` and the note is the no-price one. `storeNoteWithPrice` is
+  // deliberately absent from this list — it is served only in a base market,
+  // and base-market-price.spec.ts is where that is asserted.
+  "priceInStore",
   "passesNote",
-  "storeNote",
+  "storeNoteNoPrice",
   "freeTitle",
   "freePrice",
   "freeAction",
@@ -391,9 +432,13 @@ test.describe("BR-MONETIZACAO-048 — /drive serves the hour catalogue in four l
       expect(section, "the pricing section still offers the annual subscription").not.toMatch(
         ANNUAL_PRODUCT,
       );
-      expect(section, "the pricing section publishes an amount while #297 is open").not.toMatch(
-        PRICE,
-      );
+      // BR-MONETIZACAO-069: this build answers /api/geo with no country, so
+      // the visitor is in no base market and no amount may be published. If a
+      // fallback market ever comes back, this is where it surfaces.
+      expect(
+        section,
+        "the pricing section publishes an amount outside the three base markets",
+      ).not.toMatch(PRICE);
     });
 
     test(`BR-MONETIZACAO-062 item 3: nothing on /${locale}/drive announces access in days`, async ({

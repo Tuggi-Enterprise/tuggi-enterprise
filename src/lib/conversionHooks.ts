@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useSyncExternalStore } from "react";
-import { resolvePricing, type CountryPricing } from "@/lib/pricing";
+import { resolvePricing, type BaseMarketPricing } from "@/lib/pricing";
 
 export type Platform = "ios" | "android" | "desktop";
 
@@ -30,22 +30,31 @@ export function usePlatform(): Platform {
 
 /**
  * Fetch the visitor's country once (from the edge /api/geo route) and resolve
- * the local pricing. Returns null until resolved so the UI can reserve space
- * and show a skeleton. Failure falls back to the global (US) tier — the card
- * never breaks.
+ * the base-market price — BR-MONETIZACAO-069.
+ *
+ * `null` is the resting answer and it means one thing on purpose: **no price to
+ * publish**. Not resolved yet, geo down, response malformed, country outside
+ * the three base markets — the card renders the same store note for all of
+ * them, so the caller has one branch and no state to distinguish. Until
+ * 2026-08-16 the failure path called `resolvePricing(null)` and landed on a US
+ * tier, which is the fallback the rule now forbids: no error path may end in a
+ * number.
  */
-export function useGeoPricing(): CountryPricing | null {
-  const [pricing, setPricing] = useState<CountryPricing | null>(null);
+export function useGeoPricing(): BaseMarketPricing | null {
+  const [pricing, setPricing] = useState<BaseMarketPricing | null>(null);
 
   useEffect(() => {
     let alive = true;
     fetch("/api/geo")
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error("geo failed"))))
-      .then((data: { country?: string }) => {
-        if (alive) setPricing(resolvePricing(data?.country));
+      .then((data: unknown) => {
+        // Shape-checked, not trusted: a 200 carrying HTML, a number or a
+        // missing field must reach the store note, not `resolvePricing`.
+        const country = (data as { country?: unknown } | null)?.country;
+        if (alive) setPricing(typeof country === "string" ? resolvePricing(country) : null);
       })
       .catch(() => {
-        if (alive) setPricing(resolvePricing(null));
+        if (alive) setPricing(null);
       });
     return () => {
       alive = false;

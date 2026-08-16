@@ -1071,7 +1071,10 @@ const CLAIM_FAMILIES: ClaimFamily[] = [
           "Drive.Pricing.pass1Action",
           "Drive.Pricing.pass2Action",
           "Drive.Pricing.pass3Action",
-          "Drive.Pricing.storeNote",
+          // One note per market state since #372, both opening on the same
+          // Italian "L'acquisto si fa dentro l'app" the single note carried.
+          "Drive.Pricing.storeNoteWithPrice",
+          "Drive.Pricing.storeNoteNoPrice",
         ],
         why:
           'The Italian "Acquista 10 ore nell\'app" is the *traveller* buying a pass ' +
