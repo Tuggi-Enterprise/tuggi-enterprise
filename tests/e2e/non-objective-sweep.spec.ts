@@ -98,7 +98,24 @@ const UI_NAVIGATION: RegExp[] = [
   /voiceover|talkback|screen\s*readers?|leitor(?:es)?\s+de\s+tela|lector(?:es)?\s+de\s+pantalla|lettori?\s+di\s+schermo/i,
 ];
 
-function routingOffense(text: string): string | null {
+/**
+ * A fourth sense, and the only one that is a **different word** rather than a
+ * different claim: `navegador` is Portuguese and Spanish for *web browser*, and
+ * the `\bnavega\w*` prefix above reaches it. `Legal.Privacy.s1Item7` declares
+ * the user-agent kept in the contract acceptance trail (BR-USUARIO-031 item 1)
+ * — "a identificação que o navegador declara" — which is a personal-data
+ * declaration, not a claim that Tuggi routes anybody anywhere.
+ *
+ * Removed from the text before matching, instead of excluding the whole string
+ * the way the three senses above do. An exclusion returns `null` for the
+ * entire value, so a sentence that named a browser *and* claimed routing would
+ * stop being read at all; deleting the browser noun leaves every other routing
+ * word in the same string still matchable.
+ */
+const BROWSER_NOUN = /\bnavegador(?:es)?\b/gi;
+
+function routingOffense(value: string): string | null {
+  const text = value.replace(BROWSER_NOUN, "");
   const hit = text.match(ROUTING_WORD);
   if (!hit) return null;
   if (BREADCRUMB.test(text)) return null;

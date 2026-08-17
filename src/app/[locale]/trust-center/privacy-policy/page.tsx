@@ -52,6 +52,26 @@ export default async function PrivacyPolicyPage({ params }: { params: Promise<{ 
               two channels (the phone call included), the limit of the cycle and
               the way out. Card #294. */}
           <li>{t.rich("s1Item4", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
+          {/* One item per surface, not one item per subject — BR-USUARIO-028
+              item 6, corollary. `s1Item4` above used to open with "the
+              partnerships form" and was therefore read as covering all three
+              public collections; its scope is now the form on the partnerships
+              page of this site, which is what keeps the city/IP negative and
+              the 4-attempts cycle of BR-USUARIO-029 attached to the only
+              collection they are true for.
+
+              `s1Item5` and `s1Item6` are the CMS proposal form
+              (BR-USUARIO-030: the two blocks of data, the four purposes, the
+              hashed address of the public door, and the destination of the
+              story). `s1Item7` is the acceptance trail (BR-USUARIO-031: the IP
+              is kept as it is, and the purpose is probatory).
+
+              `/contact` posts to the same route and is still undeclared — it
+              waits on a purpose from `produto` — card #344 names it as the
+              next card, and this one does not invent an `s1Item8`. */}
+          <li>{t.rich("s1Item5", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
+          <li>{t.rich("s1Item6", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
+          <li>{t.rich("s1Item7", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
         </ul>
       </section>
 
@@ -99,6 +119,19 @@ export default async function PrivacyPolicyPage({ params }: { params: Promise<{ 
             {t.rich("s5ItemLead1", { strong: (chunks) => <strong>{chunks}</strong> })}
             <a href={`mailto:${t("s5ItemLeadEmail")}`}>{t("s5ItemLeadEmail")}</a>
             {t("s5ItemLead2")}
+          </li>
+          {/* BR-USUARIO-030 item 7 and BR-USUARIO-031 item 6: the way out of
+              the proposal form is the same address as the item above — one
+              owner for it, `s5ItemLeadEmail`, so a new mailbox cannot be
+              introduced by copy — and its reach is smaller. Removal reaches
+              what the partnership under way does not need; the acceptance
+              trail of a signed contract stays, and `s5ItemPartner2` says so
+              without the "all your data will be erased" euphemism that
+              BR-USUARIO-031 item 6 forbids. */}
+          <li>
+            {t.rich("s5ItemPartner1", { strong: (chunks) => <strong>{chunks}</strong> })}
+            <a href={`mailto:${t("s5ItemLeadEmail")}`}>{t("s5ItemLeadEmail")}</a>
+            {t("s5ItemPartner2")}
           </li>
         </ul>
       </section>

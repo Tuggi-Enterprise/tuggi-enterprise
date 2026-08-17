@@ -535,7 +535,83 @@ test.describe("#191 — the form with no JavaScript", () => {
   });
 });
 
+/* --------------------------------------------------------------------------
+ * BR-USUARIO-028 item 6 — the IP denial and its scope
+ * ------------------------------------------------------------------------ */
+
+/** What the denial has to be about, one token per locale. */
+const IP_SCOPE = /\bcontato\b|\bdetails\b|\bcontacto\b|\bcontatto\b/i;
+const IP_DENIAL = /\b(n[ãa]o|no|not|never|nunca|non|mai|sin|senza|without)\b/i;
+const IP_WORD = /\bIP\b/;
+
+/**
+ * The other admissible form of the same requirement, and the one
+ * BR-USUARIO-028 item 6 actually writes down: *"não guardamos X **junto com**
+ * Y"* — affirm what is kept, then deny the rest, in one clause. `s1Item5`
+ * ("we store a code calculated from the IP address, and not the address") and
+ * `s1Item7` ("the IP address is stored as it is, and not turned into a code")
+ * are that form, and neither can be read as the site-wide promise #304 was.
+ *
+ * **Position is the whole point.** The bare defect — "não guardamos o endereço
+ * de IP", and its passive twin "o endereço de IP não é guardado" — puts the
+ * denial *first*, so requiring the storage verb before it keeps both red.
+ * A noun list cannot do this job: it knew `contato` because there was one
+ * collection, and the two collections of BR-USUARIO-030 and BR-USUARIO-031
+ * are scoped by a count and by a record.
+ */
+const IP_KEPT = /\b(guarda\w*|conserv\w*|stor\w*|keep\w*|kept)\b/i;
+
+function affirmsBeforeDenying(clause: string): boolean {
+  const kept = clause.search(IP_KEPT);
+  const denial = clause.search(IP_DENIAL);
+  return kept >= 0 && denial >= 0 && kept < denial;
+}
+
+/**
+ * #304. The sentence used to read "we do not store the IP", full stop, and it
+ * was true of the lead row and false of the site: the attribution route writes
+ * `ip_address` and `user_agent` into `drive.click_fingerprints`. So what this
+ * asserts is not a wording — it is that the scope travels with the denial.
+ */
+function unscopedIpDenials(privacy: Messages): string[] {
+  const unscoped: string[] = [];
+  for (const [key, value] of Object.entries(privacy)) {
+    // A clause ends at the punctuation that closes a thought — full stop,
+    // semicolon or the colon that introduces one. Not the comma: "we store
+    // that city, not the IP address" is a single clause, and splitting on
+    // commas would tear the scope off the denial it qualifies.
+    for (const clause of String(value).split(/[.;:]/)) {
+      if (!IP_WORD.test(clause) || !IP_DENIAL.test(clause)) continue;
+      if (IP_SCOPE.test(clause) || affirmsBeforeDenying(clause)) continue;
+      unscoped.push(`${key}: ${clause.trim()}`);
+    }
+  }
+  return unscoped;
+}
+
 test.describe("BR-USUARIO-028 item 1 — the field and the policy ship together", () => {
+  /**
+   * Positive control, because the check above grew a second way to pass and a
+   * ruler that stopped catching the #304 shape would be green for the wrong
+   * reason. The four sentences are the defect itself, in both voices — the
+   * active one that was published and the passive one that puts a storage verb
+   * in the clause *after* the denial.
+   */
+  test("BR-USUARIO-028 item 6: the bare IP denial is still caught, in every voice", () => {
+    const defects: Messages = {
+      pt: "Não guardamos o endereço de IP.",
+      ptPassive: "O endereço de IP não é guardado.",
+      en: "We do not store the IP address.",
+      enPassive: "The IP address is not stored.",
+      es: "No guardamos la dirección IP.",
+      it: "Non conserviamo l'indirizzo IP.",
+    };
+
+    expect(unscopedIpDenials(defects).map((hit) => hit.split(":")[0])).toEqual(
+      Object.keys(defects),
+    );
+  });
+
   for (const locale of LOCALES) {
     test(`the policy declares the business contact category in ${locale}`, async ({ page }) => {
       // Criterion 25: without this line in all four languages the phone field
@@ -550,9 +626,18 @@ test.describe("BR-USUARIO-028 item 1 — the field and the policy ship together"
 
       // Criterion 28: the way out is clickable, is the same string in the label
       // and in the href, and is not the account deletion page.
+      // Two items name the address since #344: the lead way out
+      // (BR-USUARIO-029 item 6) and the proposal way out (BR-USUARIO-030
+      // item 7), and both read it from `s5ItemLeadEmail` — one owner for the
+      // address. So the assertion is over every link that carries it, not over
+      // "the" link: a second one that drifted to another mailbox is exactly
+      // what #325 cost, and `.first()` would not see it.
       const address = at(messages, "Legal.Privacy.s5ItemLeadEmail");
-      const link = page.getByRole("link", { name: address });
-      await expect(link).toHaveAttribute("href", `mailto:${address}`);
+      const links = page.getByRole("link", { name: address });
+      await expect(links).toHaveCount(2);
+      for (const link of await links.all()) {
+        await expect(link).toHaveAttribute("href", `mailto:${address}`);
+      }
       // The account route still exists, as a **separate** item: the way out of
       // a lead is not the way out of an account (BR-USUARIO-029 item 6). The
       // footer links there too, so the count is taken inside the policy.
@@ -577,35 +662,15 @@ test.describe("BR-USUARIO-028 item 1 — the field and the policy ship together"
     });
 
     test(`BR-USUARIO-028: no clause denies the IP without saying where, in ${locale}`, () => {
-      // #304. The sentence used to read "we do not store the IP", full stop,
-      // and it was true of the lead row and false of the site: the attribution
-      // route writes `ip_address` and `user_agent` into `drive.click_fingerprints`.
-      // A negative with no scope speaks for the whole site, so what this asserts
-      // is not a wording — it is that the scope travels with the denial. Any
-      // clause of the policy that denies the IP has to name what the denial is
-      // about (contato / details / contacto / contatto) in the same clause.
-      // One token per locale, spelled out: `contat[ot]o` reads as if it covered
-      // both Romance spellings and covers neither of the seven-letter ones.
-      const SCOPE = /\bcontato\b|\bdetails\b|\bcontacto\b|\bcontatto\b/i;
-      const DENIAL = /\b(n[ãa]o|no|not|never|nunca|non|mai|sin|senza|without)\b/i;
-      const IP = /\bIP\b/;
-
       const privacy = (messagesFor(locale)["Legal"] as Messages)["Privacy"] as Messages;
-      const unscoped: string[] = [];
+      const unscoped = unscopedIpDenials(privacy);
 
-      for (const [key, value] of Object.entries(privacy)) {
-        // A clause ends at the punctuation that closes a thought — full stop,
-        // semicolon or the colon that introduces one. Not the comma: "we store
-        // that city, not the IP address" is a single clause, and splitting on
-        // commas would tear the scope off the denial it qualifies.
-        for (const clause of String(value).split(/[.;:]/)) {
-          if (IP.test(clause) && DENIAL.test(clause) && !SCOPE.test(clause)) {
-            unscoped.push(`${key}: ${clause.trim()}`);
-          }
-        }
-      }
-
-      expect(unscoped).toEqual([]);
+      expect(
+        unscoped,
+        "BR-USUARIO-028 item 6: a denial with no scope speaks for the whole site. " +
+          "Either name the collection in the clause, or affirm what is kept about " +
+          "the address before denying the rest — never the bare denial.",
+      ).toEqual([]);
     });
 
     test(`BR-USUARIO-029: no Partners.* string promises a deadline in ${locale}`, () => {
