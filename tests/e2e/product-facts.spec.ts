@@ -141,6 +141,30 @@ function looseFigures(text: string): string[] {
   return hits;
 }
 
+/**
+ * Message keys where a matched figure is NOT a product figure, one entry with its reason.
+ *
+ * The mechanism is deliberate and the same one `no-hardcoded-copy.spec.ts` uses: a waiver is an
+ * act with a sentence attached, and the second test below refuses a waiver that no longer
+ * matches anything — so a key cannot leave permission behind it.
+ *
+ * What may go here is only what the ruler at the top already excepts by class and cannot
+ * recognise by pattern. It is NOT the place for a figure the copy should not have published.
+ */
+const FIGURE_WAIVERS: { key: string; why: string }[] = [
+  {
+    key: "PartnerProposal.fields.tax_id.help",
+    why:
+      'The year a Brazilian statute changed, not the year the Tuggi started operating. ' +
+      '"Desde 2026 o CNPJ pode ter letras" describes Instrução Normativa RFB nº 2.229/2024, ' +
+      "in force from 31/07/2026 — the same class the ruler already excepts as a version or " +
+      'standard number ("WCAG 2.1 AA"). BR-COMUNICACAO-002 item 6 is about OUR operating ' +
+      "date, and this sentence is about the Receita Federal's calendar. The copy is the " +
+      "`design`'s, and it is the sentence that stops a merchant with a letter in his CNPJ " +
+      "from believing the field is broken.",
+  },
+];
+
 /* ---------------------------------------------------------------------------
  * Reading the repository
  * ------------------------------------------------------------------------- */
@@ -196,8 +220,10 @@ function placeholdersIn(text: string): string[] {
 test.describe("BR-COMUNICACAO-002 / BR-IDIOMA-001 — no product figure in loose text", () => {
   for (const locale of LOCALES) {
     test(`BR-COMUNICACAO-002: src/messages/${locale}.json publishes no figure of its own`, () => {
+      const waived = new Set(FIGURE_WAIVERS.map((entry) => entry.key));
       const offenders: string[] = [];
       for (const [key, value] of flatMessages(locale)) {
+        if (waived.has(key)) continue;
         for (const hit of looseFigures(value)) {
           offenders.push(`${key} — "${hit}"`);
         }
@@ -211,6 +237,17 @@ test.describe("BR-COMUNICACAO-002 / BR-IDIOMA-001 — no product figure in loose
       ).toEqual([]);
     });
   }
+
+  test("BR-COMUNICACAO-002: every figure waiver still matches a figure that exists", () => {
+    // A waiver that stopped matching is permission left lying around: the next sentence written
+    // under that key would inherit it. It has to fail when its reason expires.
+    const stale = FIGURE_WAIVERS.filter(({ key }) => {
+      const value = flatMessages("pt").get(key);
+      return !value || looseFigures(value).length === 0;
+    }).map(({ key }) => key);
+
+    expect(stale, "waivers that no longer waive anything").toEqual([]);
+  });
 
   test("BR-COMUNICACAO-002: no component, route or lib constant carries one either", () => {
     const offenders: string[] = [];

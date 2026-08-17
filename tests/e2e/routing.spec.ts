@@ -47,7 +47,26 @@ function hasPage(internalRoute: string): boolean {
   return fs.existsSync(path.join(dir, "page.tsx"));
 }
 
-const ROUTABLE = STATIC_ROUTES.filter(hasPage);
+/**
+ * Routes that have a page, serve ONE locale, and are `noindex`.
+ *
+ * They are out of the hreflang sweep below, and the reason is that the sweep's
+ * two assertions are both false for them by design rather than by accident:
+ * three of the four URLs answer a redirect instead of a 200, and the page
+ * declares no `alternates` at all, because hreflang on a `noindex` page is a
+ * contradictory signal and three of the four would point at a redirect.
+ *
+ * The proposal is the only one today. What replaces the sweep for it is
+ * `tests/e2e/partner-proposal.spec.ts`, which asserts the redirect, the
+ * `noindex` and the ABSENCE of any alternate — so the exemption is not a hole,
+ * it is a different ruler. A route added here without that spec is a route
+ * nobody checks.
+ */
+const SINGLE_LOCALE_ROUTES = ["/partners/proposal"];
+
+const ROUTABLE = STATIC_ROUTES.filter(
+  (route) => hasPage(route) && !SINGLE_LOCALE_ROUTES.includes(route)
+);
 
 function url(locale: string, internalRoute: string): string {
   const slug = localizedPathname(locale, internalRoute);

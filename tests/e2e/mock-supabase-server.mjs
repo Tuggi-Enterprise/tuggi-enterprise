@@ -142,6 +142,71 @@ function checkViolation(row) {
 const apiKeyByRoute = new Map();
 
 /**
+ * Rows the app inserted into core.partner_form_submissions, readable back over
+ * `GET /__proposals`. What matters about a proposal is the row that got
+ * *stored*, and above all which COLUMNS it carries: `tax_id_normalized` is
+ * filled by a column DEFAULT, not by `GENERATED ALWAYS`, so a caller that sends
+ * it overwrites the deduplication key of that company and nothing complains.
+ * The only way to see that from outside is to read the payload back.
+ */
+const proposals = [];
+
+/**
+ * The double refuses `tax_id_normalized` the way the real table would refuse an
+ * unknown column — 42703 — rather than accepting it. Production would ACCEPT it
+ * (the column exists), which is the whole problem; a fixture that accepts it too
+ * would let the defect pass the suite green, so this one is deliberately
+ * stricter than production on exactly the one column the route may not write.
+ */
+const SUBMISSION_ALLOWED_COLUMNS = new Set(["answers", "status", "submitted_at", "updated_at"]);
+
+/**
+ * `core.record_partner_form_attempt`, as a counter of timestamps per client
+ * hash. It is the barrier the public route stands behind, so the double
+ * implements the count instead of always answering `allowed: true`: a mock that
+ * never says no would leave the one refusal this route exists for untested.
+ */
+const attemptsByHash = new Map();
+
+function recordAttempt(clientHash, windowSeconds, maxAttempts) {
+  const now = Date.now();
+  const floor = now - windowSeconds * 1000;
+  const kept = (attemptsByHash.get(clientHash) ?? []).filter((at) => at > floor);
+
+  if (kept.length >= maxAttempts) {
+    attemptsByHash.set(clientHash, kept);
+    const oldest = Math.min(...kept);
+    return {
+      allowed: false,
+      retry_after_seconds: Math.max(1, Math.ceil((oldest + windowSeconds * 1000 - now) / 1000)),
+    };
+  }
+
+  kept.push(now);
+  attemptsByHash.set(clientHash, kept);
+  return { allowed: true, retry_after_seconds: 0 };
+}
+
+/**
+ * CNPJs that `core.clients` already holds, in the two shapes a stored value can
+ * have — normalized by the form, and masked by whoever typed the row by hand.
+ * `cnpjLookupValues` asks for both, and the fixture answers on either, because
+ * matching one shape only is how the same company gets registered twice.
+ */
+const REGISTERED_TAX_IDS = new Set(["90021382000122", "90.021.382/0001-22"]);
+
+/** `tax_id=in.("a","b")` → ["a", "b"]. */
+function readInFilter(url, column) {
+  const raw = url.searchParams.get(column);
+  if (!raw?.startsWith("in.")) return null;
+  return raw
+    .slice(3)
+    .replace(/^\(|\)$/g, "")
+    .split(",")
+    .map((value) => value.trim().replace(/^"|"$/g, ""));
+}
+
+/**
  * The same, keyed by the lead's email — because `campaign.inbound_leads` is
  * written by two different routes (`/api/leads` and the fallback of
  * `/api/data-deletion`) with two different keys, and the path alone cannot
@@ -240,9 +305,68 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  if (url.pathname === "/rest/v1/rpc/record_partner_form_attempt" && req.method === "POST") {
+    readBody(req).then((raw) => {
+      let args;
+      try {
+        args = JSON.parse(raw);
+      } catch {
+        sendJson(res, 400, { code: "PGRST102", message: "malformed body" });
+        return;
+      }
+      sendJson(
+        res,
+        200,
+        recordAttempt(args.p_client_hash, args.p_window_seconds, args.p_max_attempts)
+      );
+    });
+    return;
+  }
+
+  if (url.pathname === "/rest/v1/partner_form_submissions" && req.method === "POST") {
+    readBody(req).then((raw) => {
+      let rows = [];
+      try {
+        const parsed = JSON.parse(raw);
+        rows = Array.isArray(parsed) ? parsed : [parsed];
+      } catch {
+        sendJson(res, 400, { code: "PGRST102", message: "malformed body" });
+        return;
+      }
+      for (const row of rows) {
+        const unknown = Object.keys(row).find((key) => !SUBMISSION_ALLOWED_COLUMNS.has(key));
+        if (unknown) {
+          sendJson(res, 400, {
+            code: "42703",
+            message: `mock-supabase-server refuses column "${unknown}" on partner_form_submissions`,
+          });
+          return;
+        }
+      }
+      proposals.push(...rows);
+      // `.select("id").single()` asks for the object, not an array.
+      sendJson(res, 201, { id: `44444444-4444-4444-8444-${String(proposals.length).padStart(12, "0")}` });
+    });
+    return;
+  }
+
   // Drain the request body so clients that stream a POST payload (the rpc
   // call below) don't hang waiting on us to read it.
   req.resume();
+
+  if (url.pathname === "/__proposals" && req.method === "GET") {
+    // `trade_name` and not `tax_id`: Playwright reuses a running webServer between local runs,
+    // so these rows survive the suite. A probe that is unique per run is the only filter that
+    // does not make the second run of the day fail on the first run's data — and a CNPJ cannot
+    // be unique per run, because it has to be a valid one.
+    const tradeName = url.searchParams.get("trade_name");
+    sendJson(res, 200, {
+      rows: tradeName
+        ? proposals.filter((row) => row?.answers?.trade_name === tradeName)
+        : proposals,
+    });
+    return;
+  }
 
   if (url.pathname === "/__leads" && req.method === "GET") {
     const fullName = url.searchParams.get("full_name");
@@ -275,6 +399,16 @@ const server = http.createServer((req, res) => {
   }
 
   if (url.pathname === "/rest/v1/clients" && req.method === "GET") {
+    // The proposal's `lookupTaxId` asks a different question of the same table:
+    // "is any of these shapes already a client?", with `.in()` and `.limit(1)`,
+    // so the answer is an ARRAY and never the `.single()` 406 below.
+    const taxIds = readInFilter(url, "tax_id");
+    if (taxIds) {
+      const hit = taxIds.some((value) => REGISTERED_TAX_IDS.has(value));
+      sendJson(res, 200, hit ? [{ id: "55555555-5555-4555-8555-555555555555" }] : []);
+      return;
+    }
+
     const slug = readEqFilter(url, "slug");
     const client = slug ? CLIENTS_BY_SLUG[slug] : null;
     if (!client) {

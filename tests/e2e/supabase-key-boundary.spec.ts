@@ -157,6 +157,28 @@ test.describe("each consumer connects with the key it is entitled to", () => {
     expect(byLeadEmail[email]).toBe(E2E_SERVICE_ROLE_KEY);
   });
 
+  test("the partnership proposal writes core with the service-role key", async ({ request }) => {
+    // The one route on the site where a key that BYPASSES RLS sits behind a door with no
+    // credential at all, and it is not a preference: measured on the live database on
+    // 2026-08-17, the five tables of this pipeline have RLS on with ZERO policies and grants
+    // only to `service_role`, and `core.record_partner_form_attempt` is SECURITY INVOKER. The
+    // publishable key reaches none of it — the INSERT would answer 42501 and the rate-limit RPC
+    // would answer nothing, which means nobody counted, which means nobody limited.
+    //
+    // Swapping this for a `SECURITY DEFINER` RPC granted to `anon` was deferred by scope in
+    // #396, not by merit. The day it lands, this expectation is what has to change first.
+    const response = await request.post("/api/partner-proposal", {
+      headers: { "x-forwarded-for": "203.0.113.90" },
+      data: { answers: { trade_name: "Key Boundary Probe" } },
+    });
+    // Refused for missing fields, and that is enough: the attempt counter runs BEFORE the body
+    // is parsed, so the RPC was already called with whichever key this route holds.
+    expect(response.status()).toBe(400);
+
+    const { byRoute } = await observedKeys(request);
+    expect(byRoute["POST /rest/v1/rpc/record_partner_form_attempt"]).toBe(E2E_SERVICE_ROLE_KEY);
+  });
+
   test("the partner landing reads core.clients with the service-role key", async ({
     page,
     request,

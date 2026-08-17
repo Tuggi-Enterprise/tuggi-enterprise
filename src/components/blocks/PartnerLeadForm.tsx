@@ -8,6 +8,7 @@ import { Link } from "@/i18n/routing";
 import { LEAD_BUSINESS_TYPES, type LeadBusinessType } from "@/lib/business-types";
 import { toE164 } from "@/lib/phone";
 import { LEAD_FORM_ID, PARTNER_LEAD_TYPE } from "@/lib/lead-form";
+import { PROPOSAL_ROUTE, proposalIsReachable } from "@/lib/partner-proposal/link";
 
 /**
  * The partnership lead form — §3 of
@@ -551,6 +552,43 @@ export function PartnerLeadForm({ title, body }: PartnerLeadFormProps) {
               </form>
             )}
           </div>
+
+          {/*
+            The bridge to the partnership proposal (#396) — a LINE OF TEXT, never a
+            second button.
+
+            This page has one destination by a decision that is registered: the hero,
+            the six cards and the mechanism band all point at this form, and
+            `SegmentCta` is deliberately not mounted here because a second target with
+            the weight of a button divides the funnel. So the bridge sits below the
+            white card, outside the `<form>`, in both states of the block, and takes
+            the same treatment as the policy link above it.
+
+            Below and not above: whoever has already spoken to the commercial team
+            scrolls to the form, because the form is the only destination of the page.
+            It is here that they need to be diverted, before sending a duplicate lead.
+            Above the card, the line would steal from the visitor who is cold — and the
+            cold visitor is this block's whole public.
+
+            `pt` ONLY, and that is the rule rather than a translation gap: the proposal
+            asks for a CNPJ with a check digit, a Brazilian UF and a CEP, so the same
+            line in `en`, `es` or `it` would be a path to a task its reader cannot
+            finish (`DS-COMPONENTE-026`).
+          */}
+          {proposalIsReachable(locale) ? (
+            <p className="mt-6 text-base text-tuggi-slate leading-relaxed">
+              {t.rich("proposalBridge", {
+                proposal: (chunks) => (
+                  <Link
+                    href={PROPOSAL_ROUTE}
+                    className="font-semibold text-tuggi-primary-text underline underline-offset-2"
+                  >
+                    {chunks}
+                  </Link>
+                ),
+              })}
+            </p>
+          ) : null}
         </div>
       </div>
     </section>

@@ -91,6 +91,41 @@ const TRANSLATED_ROUTES = {
 } as const satisfies Record<string, Record<SiteLocale, string>>;
 
 /**
+ * The partnership proposal (#396) — the leaf only.
+ *
+ * It lives under the hub, so the four words above it are NOT retyped here: the
+ * entry is composed from `TRANSLATED_ROUTES["/partners"]`, and renaming the hub
+ * moves the proposal with it. `it` reuses `proposta` because that is the word
+ * the Italian privacy policy already publishes, and `es` reuses `propuesta` for
+ * the same reason.
+ *
+ * The static file `partners/proposal/page.tsx` wins over the dynamic
+ * `partners/[segment]/page.tsx` in the App Router, so the route keeps resolving
+ * after a segment is published — and none of the six segment slugs is one of
+ * these words.
+ *
+ * Declared in four locales because this map is typed
+ * `Record<SiteLocale, string>` and does not take half a route. The PAGE answers
+ * in `pt` and redirects the other three, which is a different question — see
+ * `src/lib/partner-proposal/link.ts`.
+ */
+const PROPOSAL_LEAF = {
+  pt: "proposta",
+  en: "proposal",
+  es: "propuesta",
+  it: "proposta",
+} as const satisfies Record<SiteLocale, string>;
+
+const proposalPathnames = {
+  "/partners/proposal": Object.fromEntries(
+    LOCALES.map((locale) => [
+      locale,
+      `${TRANSLATED_ROUTES["/partners"][locale]}/${PROPOSAL_LEAF[locale]}`,
+    ])
+  ) as Record<SiteLocale, string>,
+};
+
+/**
  * Segment routes, derived — never written by hand.
  *
  * A published segment's internal pathname (`/partners/car-rental`) matches the
@@ -117,6 +152,7 @@ export function buildSegmentPathnames(
 export const pathnames = {
   ...sharedSlugPathnames,
   ...TRANSLATED_ROUTES,
+  ...proposalPathnames,
   ...buildSegmentPathnames(SEGMENTS),
 } satisfies Record<string, PathnameEntry>;
 

@@ -16,6 +16,19 @@
   --color-tuggi-dark: #0b1220;
   --color-tuggi-slate: #5b6472;
   --color-tuggi-bg: #f7f9fc;
+  /* The two colours a form needs and the palette above never had (DS-COR-001).
+     Both are measured, and both already exist as literals inside
+     components/blocks/PartnerLeadForm.tsx — the partnership proposal of #396
+     needed the same two, and a second file typing the same hex is how a
+     measured value becomes an approximate one. Unifying the older component on
+     these tokens is a design card, not this one.
+     #b91c1c on white is 6.47:1, so an error message clears SC 1.4.3 as text.
+     #64748b on white is 4.76:1, which is what a resting control border needs:
+     inside a white card the border is the ONLY thing identifying the control,
+     and SC 1.4.11 asks 3:1 of it. Tailwind's border-slate-200 measures 1.23:1
+     and is why this token exists rather than a utility class. */
+  --color-tuggi-error: #b91c1c;
+  --color-tuggi-border: #64748b;
 }
 
 body {

@@ -275,16 +275,71 @@ test.describe("copy does not live in code", () => {
   });
 });
 
+/**
+ * Keys that exist in `pt.json` and MUST NOT exist in the other three.
+ *
+ * Parity is the rule; this is the one shape that is deliberately outside it, and
+ * it is not a translation backlog. The partnership proposal (#396) asks for a
+ * CNPJ with a check digit, a Brazilian UF and an eight-digit CEP, so an
+ * establishment reading the site in Italian cannot finish it. Under
+ * `DS-COMPONENTE-026` the page therefore serves `pt` and redirects the other
+ * three, and the bridge on the landing page renders only in `pt` — which makes
+ * these keys unreachable in en/es/it. A key nobody can read is an orphan
+ * (CLAUDE.md §6), and 339 translated strings for a door the reader cannot walk
+ * through is work thrown away.
+ *
+ * The list is asserted in BOTH directions below: present in `pt`, absent
+ * everywhere else. So the day the proposal is opened to another country, adding
+ * the translations is not enough — this entry has to come out, and the person
+ * doing it is told by a red test instead of by luck.
+ */
+const PT_ONLY_PREFIXES = [
+  { prefix: "PartnerProposal.", reason: "the proposal page serves pt and redirects en/es/it" },
+  {
+    prefix: "Partners.form.proposalBridge",
+    reason: "the bridge to the proposal renders only where the proposal can be completed",
+  },
+];
+
+function isPtOnly(key: string): boolean {
+  return PT_ONLY_PREFIXES.some(({ prefix }) => key === prefix || key.startsWith(prefix));
+}
+
 test.describe("the four message files stay in step", () => {
   // A missing key does not break the next-intl build: the page renders the key
   // path itself, in production, silently. Only a test catches it.
-  const reference = flatKeys(messagesFor("pt")).sort();
+  const reference = flatKeys(messagesFor("pt")).filter((key) => !isPtOnly(key)).sort();
 
   for (const locale of LOCALES) {
     test(`BR-IDIOMA-001 item 3: ${locale}.json carries the same keys as pt.json`, () => {
-      expect(flatKeys(messagesFor(locale)).sort()).toEqual(reference);
+      expect(flatKeys(messagesFor(locale)).filter((key) => !isPtOnly(key)).sort()).toEqual(
+        reference,
+      );
     });
   }
+
+  test("DS-COMPONENTE-026: the pt-only keys are in pt.json and in no other locale", () => {
+    const inPt = flatKeys(messagesFor("pt")).filter(isPtOnly);
+    // An empty exemption would make the filter above waive nothing and pass
+    // silently; the list has to still match something to be a list.
+    for (const { prefix } of PT_ONLY_PREFIXES) {
+      expect(inPt.filter((key) => key === prefix || key.startsWith(prefix)).length, prefix)
+        .toBeGreaterThan(0);
+    }
+
+    const leaked: string[] = [];
+    for (const locale of LOCALES.filter((one) => one !== "pt")) {
+      for (const key of flatKeys(messagesFor(locale)).filter(isPtOnly)) {
+        leaked.push(`${locale}.json: ${key}`);
+      }
+    }
+    expect(
+      leaked,
+      "A translated copy of these keys is a promise the surface does not keep: the " +
+        "page redirects to pt and the bridge is not rendered. Opening the proposal to " +
+        "another country removes the entry from PT_ONLY_PREFIXES first.",
+    ).toEqual([]);
+  });
 
   /**
    * BR-COMUNICACAO-002 item 2: the count of mapped points never travels with a
