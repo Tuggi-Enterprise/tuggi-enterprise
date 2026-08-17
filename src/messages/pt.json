@@ -964,9 +964,10 @@
     "pauseAudio": "Pausar áudio"
   },
   "PartnerProposal": {
+    "title": "Proposta de parceria",
     "lede": "Este formulário é para o estabelecimento que já conversou com a Tuggi. Se você ainda não falou com a gente, comece por aqui: <lp>deixe o seu contato na página de parcerias</lp>.",
     "seo": {
-      "title": "Proposta de parceria — Tuggi",
+      "title": "Proposta de parceria",
       "description": "O formulário que o estabelecimento preenche depois de conversar com a Tuggi, com os dados do negócio e a história do lugar."
     },
     "progress": "Passo {current} de {total}",

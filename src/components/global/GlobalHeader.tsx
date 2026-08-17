@@ -8,6 +8,7 @@ import Image from "next/image";
 import { ChevronDown, Menu, X, Smartphone } from "lucide-react";
 import { VISIBLE_NAV_ITEMS } from "@/lib/nav";
 import type { SiteLocale } from "@/i18n/locales";
+import { localesServedOn } from "@/i18n/served-locales";
 
 /**
  * The stops a focus trap has to cycle through. Deliberately narrow: everything
@@ -47,12 +48,18 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
     menuButtonRef.current?.focus();
   }, []);
 
-  const locales: { code: SiteLocale; label: string }[] = [
+  const LOCALE_LABELS: { code: SiteLocale; label: string }[] = [
     { code: "en", label: "EN" },
     { code: "es", label: "ES" },
     { code: "pt", label: "PT" },
     { code: "it", label: "IT" },
   ];
+
+  // Only the languages this route can be read in — `localesServedOn` owns which those are, and
+  // the header does not spell out a second copy of that decision (#403). Offering a destination
+  // that redirects back to where you already are is a no-op control with a flash of URL.
+  const served = localesServedOn(pathname);
+  const locales = LOCALE_LABELS.filter((one) => served.includes(one.code));
 
   // Close menus on route change
   useEffect(() => {

@@ -666,3 +666,67 @@ test.describe("BR-B2B-026: the proposal takes the number the site taught one cli
     expect(phoneProblems(example!), `the help's example "${example}" must be accepted`).toEqual([]);
   });
 });
+
+/* -------------------------------------------------------------------------- */
+/* 9. The page names itself, and offers no language it cannot serve (#403)    */
+/* -------------------------------------------------------------------------- */
+
+test.describe("the proposal says what it is", () => {
+  test("the tab names the page once and the brand once", async ({ request }) => {
+    const html = await (await request.get(PROPOSAL_URL)).text();
+    const title = html.match(/<title>([^<]*)<\/title>/)?.[1];
+
+    // The layout already appends the brand (`template: "%s | TUGGI"`), so a `seo.title` that
+    // names it again ships "Proposta de parceria — Tuggi | TUGGI". No other page of the site
+    // names the brand in its own title.
+    expect(title, "the served <title>").toBe("Proposta de parceria | TUGGI");
+  });
+
+  test("DS-COMPONENTE-026: the <h1> is the page, not the step, and the hierarchy has no jump", async ({
+    page,
+  }) => {
+    await page.goto(PROPOSAL_URL);
+
+    const h1 = page.locator("main h1");
+    await expect(h1, "one page, one <h1>").toHaveCount(1);
+    await expect(h1).toHaveText("Proposta de parceria");
+
+    // The step title is what used to be the <h1>: it changes on every click, so a visitor who
+    // arrived from "envie a proposta do seu estabelecimento" read "O seu estabelecimento" as the
+    // name of the page and never saw the words they had clicked.
+    const stepTitle = page.locator("main h2").first();
+    await expect(stepTitle).toHaveText("O seu estabelecimento");
+
+    const levels = await page
+      .locator("main h1, main h2, main h3, main h4, main h5, main h6")
+      .evaluateAll((nodes) => nodes.map((node) => Number(node.tagName.slice(1))));
+    expect(levels[0], "the first heading of the page is the <h1>").toBe(1);
+    for (let i = 1; i < levels.length; i++) {
+      // SC 1.3.1: a level may close as many as it likes and open exactly one at a time.
+      expect(levels[i] - levels[i - 1], `heading ${i} jumps from h${levels[i - 1]}`).toBeLessThan(2);
+    }
+  });
+});
+
+test.describe("DS-COMPONENTE-026: the language switcher offers what the route serves", () => {
+  test("the proposal offers one language, and it is the one it answers in", async ({ page }) => {
+    await page.goto(PROPOSAL_URL);
+    await page.locator("[data-locale-trigger]").click();
+
+    const options = page.locator("[data-locale-panel] a");
+    // Three of the four used to change the URL and land back here: a no-op control with a flash
+    // of URL reads as a broken site, and it is the same defect DS-COMPONENTE-026 names — a path
+    // offered where the destination does not exist.
+    await expect(options, "only the language this route serves").toHaveCount(1);
+    await expect(options).toHaveText(PROPOSAL_LOCALE.toUpperCase());
+  });
+
+  test("a route that serves the four still offers the four", async ({ page }) => {
+    await page.goto(urlFor("pt", "/partners"));
+    await page.locator("[data-locale-trigger]").click();
+
+    // THE MUTATION THIS CATCHES: making the switcher single-locale everywhere instead of on the
+    // route that needs it. `localesServedOn` is the predicate, and it answers per route.
+    await expect(page.locator("[data-locale-panel] a")).toHaveCount(LOCALES.length);
+  });
+});

@@ -172,7 +172,7 @@ export function PartnerProposalForm({ contactEmail }: { contactEmail: string }) 
 
   if (submitted) {
     return (
-      <main className={PAGE_SHELL}>
+      <div className={PAGE_SHELL}>
         <div className={CARD}>
           <h1 className="flex items-center gap-2 text-2xl font-bold text-tuggi-dark">
             <CheckCircle2 className="h-6 w-6 text-tuggi-primary-text" aria-hidden="true" />
@@ -182,14 +182,27 @@ export function PartnerProposalForm({ contactEmail }: { contactEmail: string }) 
             {t("states.successBody", { email: submitted.contactEmail ?? "" })}
           </p>
         </div>
-      </main>
+      </div>
     );
   }
 
   const stepProblems = problems;
 
+  /* A <div> and not a <main>: `src/app/[locale]/layout.tsx` already opens
+     `<main id="main-content">` around every page, so a <main> here nested a second
+     landmark of the same role inside it (SC 1.3.1) — the same correction
+     `src/app/[locale]/trust-center/layout.tsx` carries, and for the same reason. */
   return (
-    <main className={PAGE_SHELL}>
+    <div className={PAGE_SHELL}>
+      {/* The page says what it is, once, and it is the only <h1> here (#403).
+          The step titles below are <h2>: they name the step, they change on every
+          click, and a heading that changes under the visitor never told them which
+          page they are on — the merchant arrives from "envie a proposta do seu
+          estabelecimento" and used to read "O seu estabelecimento" as the top
+          heading. Nothing else on this surface may be an <h1>; the success screen
+          is one because it replaces this whole tree. */}
+      <h1 className="mb-2 text-3xl font-bold text-tuggi-dark">{t("title")}</h1>
+
       {/* DS-COMPONENTE-026, the way back — before the first field, in DOM order. */}
       <p className="mb-6 text-base text-tuggi-slate leading-relaxed">
         {t.rich("lede", {
@@ -295,7 +308,7 @@ export function PartnerProposalForm({ contactEmail }: { contactEmail: string }) 
       <div className={CARD}>
         {step <= 3 ? (
           <>
-            <h1 className="text-2xl font-bold text-tuggi-dark">{t(`step${step}.title`)}</h1>
+            <h2 className="text-2xl font-bold text-tuggi-dark">{t(`step${step}.title`)}</h2>
             <p className="mt-2 text-base text-tuggi-slate leading-relaxed">
               {t(`step${step}.subtitle`)}
             </p>
@@ -362,14 +375,16 @@ export function PartnerProposalForm({ contactEmail }: { contactEmail: string }) 
 
         {step === 4 ? (
           <>
-            <h1 className="text-2xl font-bold text-tuggi-dark">{t("step4.title")}</h1>
+            <h2 className="text-2xl font-bold text-tuggi-dark">{t("step4.title")}</h2>
             <p className="mt-2 text-base text-tuggi-slate leading-relaxed">{t("step4.subtitle")}</p>
             {[1, 2, 3].map((reviewStep) => (
               <section key={reviewStep} className="mt-6 border-t border-tuggi-border pt-4">
                 <div className="flex items-center justify-between gap-3">
-                  <h2 className="text-lg font-semibold text-tuggi-dark">
+                  {/* One level under the review's own <h2>: these repeat the three
+                      step titles inside step 4, so they are its children. */}
+                  <h3 className="text-lg font-semibold text-tuggi-dark">
                     {t(`step${reviewStep}.title`)}
-                  </h2>
+                  </h3>
                   <button type="button" className={BUTTON_QUIET} onClick={() => goToStep(reviewStep)}>
                     {t("actions.edit")}
                   </button>
@@ -434,7 +449,7 @@ export function PartnerProposalForm({ contactEmail }: { contactEmail: string }) 
           </>
         )}
       </div>
-    </main>
+    </div>
   );
 
   function renderFields(currentStep: PartnerField["step"]) {
