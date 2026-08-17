@@ -144,19 +144,20 @@ const apiKeyByRoute = new Map();
 /**
  * Rows the app inserted into core.partner_form_submissions, readable back over
  * `GET /__proposals`. What matters about a proposal is the row that got
- * *stored*, and above all which COLUMNS it carries: `tax_id_normalized` is
- * filled by a column DEFAULT, not by `GENERATED ALWAYS`, so a caller that sends
- * it overwrites the deduplication key of that company and nothing complains.
- * The only way to see that from outside is to read the payload back.
+ * *stored*, and above all which COLUMNS it carries and what is inside
+ * `answers.tax_id` — the value the deduplication key is computed FROM. The only
+ * way to see either from outside is to read the payload back.
  */
 const proposals = [];
 
 /**
- * The double refuses `tax_id_normalized` the way the real table would refuse an
- * unknown column — 42703 — rather than accepting it. Production would ACCEPT it
- * (the column exists), which is the whole problem; a fixture that accepts it too
- * would let the defect pass the suite green, so this one is deliberately
- * stricter than production on exactly the one column the route may not write.
+ * The double refuses any column outside this list — 42703, "unknown column".
+ * Production refuses `tax_id_normalized` too, with a different code (428C9,
+ * "cannot insert into a generated column"): the column is `GENERATED ALWAYS ...
+ * STORED`, measured on the live database on 2026-08-17. Same verdict, different
+ * SQLSTATE, and the fixture is not trying to reproduce the code — it is here so
+ * that a route which starts naming the deduplication key fails a test instead of
+ * finding out in production.
  */
 const SUBMISSION_ALLOWED_COLUMNS = new Set(["answers", "status", "submitted_at", "updated_at"]);
 

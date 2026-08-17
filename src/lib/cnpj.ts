@@ -61,6 +61,24 @@ export function normalizeCnpj(value: string): string {
 }
 
 /**
+ * The characters a CNPJ is made of, and NOTHING else: uppercase `[A-Z0-9]`, no mask, no space,
+ * no tab, no underscore, no zero-width anything.
+ *
+ * THIS IS THE ONE EXPRESSION, and it is one because two of them is what #398 was: the validation
+ * stripped `[^A-Z0-9]` before checking the digits while the write only called `normalizeCnpj`,
+ * which strips `.` `/` `-` and no more. `12ABC34501DE3 5` therefore passed validation and was
+ * stored with the space inside, so the "already a client" refusal — the third barrier of the
+ * public route — stopped matching and the CMS conference screen told the reviewer there was no
+ * existing client. Anything that asks "which characters of this input are the CNPJ" asks here.
+ *
+ * `normalizeCnpj` stays what it is: uppercase plus the printed mask, the shape a person typed.
+ * This function is that, reduced to what may be compared or stored.
+ */
+export function cnpjCharacters(value: string): string {
+  return normalizeCnpj(value).replace(/[^A-Z0-9]/g, "");
+}
+
+/**
  * Computes the two check digits of a 12-character CNPJ root.
  * Throws when the root is not a valid root — same contract as the reference.
  */
@@ -148,7 +166,7 @@ export function formatCnpj(value: string): string {
  * so a pasted `12.ABC.345/01DE-35` lands whole.
  */
 export function maskCnpjInput(value: string): string {
-  const clean = normalizeCnpj(value).replace(/[^A-Z0-9]/g, "");
+  const clean = cnpjCharacters(value);
   const root = clean.slice(0, BASE_LENGTH).replace(/[^A-Z0-9]/g, "");
   const digits = clean.slice(BASE_LENGTH, CNPJ_LENGTH).replace(/\D/g, "");
   return formatCnpj(root + digits);
@@ -156,7 +174,7 @@ export function maskCnpjInput(value: string): string {
 
 /** How many characters are still missing, for the "Faltam {n}" error of the spec. */
 export function cnpjCharactersMissing(value: string): number {
-  return Math.max(0, CNPJ_LENGTH - normalizeCnpj(value).replace(/[^A-Z0-9]/g, "").length);
+  return Math.max(0, CNPJ_LENGTH - cnpjCharacters(value).length);
 }
 
 /**

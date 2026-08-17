@@ -327,6 +327,55 @@ test.describe("BR-B2B-026 item 2: the CNPJ is what keeps a company from entering
     expect(stored.rows, "a registered company writes no row").toEqual([]);
   });
 
+  test("BR-B2B-026 item 2: a CNPJ carrying an invisible character is stored clean", () => {
+    // The four shapes measured on the real modules in #398. Each one passed `validateAnswers`
+    // — which strips `[^A-Z0-9]` before checking the digits — and was then STORED by a second
+    // expression that only removed `.` `/` `-`. Nothing was too long either: `12ABC34501DE3 5`
+    // is 15 characters against a `maxLength` of 18.
+    const DIRTY: Record<string, string> = {
+      space: "12ABC34501DE3 5",
+      tab: "12ABC34501DE3\t5",
+      underscore: "12ABC_34501DE35",
+      // Escapes, not the characters themselves: a literal zero-width or non-breaking
+      // character in a source file is invisible to the next reader and to every diff.
+      "zero width": "12ABC34501DE3\u200B5",
+      "non-breaking space": "12ABC34501DE3\u00A05",
+    };
+
+    for (const [name, typed] of Object.entries(DIRTY)) {
+      const answers = normalizeAnswers({ tax_id: typed });
+      // THE MUTATION THIS CATCHES: put `normalizeCnpj` back in `normalizeAnswers` and the value
+      // stored keeps the rubbish — which is what made the "already a client" refusal stop
+      // matching and the CMS conference screen report no existing client.
+      expect(answers?.tax_id, `${name} must not survive into the stored value`).toBe(
+        "12ABC34501DE35"
+      );
+      expect(validateAnswers(answers!).filter((p) => p.field === "tax_id")).toEqual([]);
+    }
+  });
+
+  test("BR-B2B-026 item 2: a registered CNPJ typed with a space is still refused with 409", async ({
+    request,
+  }) => {
+    const mark = probe("registered-space");
+    const response = await submit(
+      request,
+      mark,
+      // The same company as the 409 test above, typed by somebody who fumbled the keyboard —
+      // or by somebody who worked out that a space was enough to walk past the third barrier.
+      validAnswers({ tax_id: "9002138200012 2", trade_name: mark })
+    );
+
+    expect(response.status(), await response.text()).toBe(409);
+    expect(await response.json()).toMatchObject({ error: "tax_id_registered", field: "tax_id" });
+
+    const stored = await (await request.get(`${MOCK_BASE}/__proposals?trade_name=${mark}`)).json();
+    // The whole cost of #398 in one assertion: before the fix this answered 200, wrote the row,
+    // and a stranger had a proposal in the queue under a partner's CNPJ that no lookup by shape
+    // would ever find again.
+    expect(stored.rows, "a registered company writes no row, however it was typed").toEqual([]);
+  });
+
   test("an invalid CNPJ is refused before anything is written", async ({ request }) => {
     const response = await submit(
       request,
@@ -413,7 +462,7 @@ test.describe("the per-address limit is the barrier in front of a service_role w
 });
 
 /* -------------------------------------------------------------------------- */
-/* 6. What the INSERT carries — the DEFAULT that a caller can overwrite       */
+/* 6. What the INSERT carries — the key the write may not name                */
 /* -------------------------------------------------------------------------- */
 
 test.describe("the write never touches the deduplication key", () => {
@@ -431,12 +480,12 @@ test.describe("the write never touches the deduplication key", () => {
     const stored = await (await request.get(`${MOCK_BASE}/__proposals?trade_name=${mark}`)).json();
     expect(stored.rows.length).toBe(1);
 
-    // `core.partner_form_submissions.tax_id_normalized` is filled by a column DEFAULT and NOT by
-    // `GENERATED ALWAYS` — measured on the live database on 2026-08-17. A DEFAULT only applies
-    // when the INSERT omits the column, so a caller that sends it wins: the row keeps whatever
-    // the caller said, and the CMS's `tax_id_normalized=eq.<key>` filter stops finding the
-    // duplicate. The code reads identically in both cases, which is why this is a test and not
-    // a comment.
+    // `core.partner_form_submissions.tax_id_normalized` is `GENERATED ALWAYS ... STORED` —
+    // measured on the live database on 2026-08-17, and the migration that created it carries a
+    // probe for the same thing. Postgres refuses an INSERT that supplies a generated column
+    // (428C9), so naming it here would not corrupt the deduplication key: it would 500 every
+    // submission. Either way the write has no business naming it, and this is the assertion that
+    // says so out loud (#398 fixed the three places that claimed the column was a DEFAULT).
     expect(Object.keys(stored.rows[0]).sort()).toEqual([...SUBMISSION_COLUMNS].sort());
     expect(Object.keys(stored.rows[0])).not.toContain("tax_id_normalized");
   });

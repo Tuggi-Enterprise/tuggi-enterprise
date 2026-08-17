@@ -18,7 +18,7 @@
  */
 
 import { PARTNER_FORM_FIELDS, type PartnerField, type PartnerFieldId } from "./fields";
-import { isValidCnpj, normalizeCnpj } from "@/lib/cnpj";
+import { cnpjCharacters, isValidCnpj } from "@/lib/cnpj";
 
 export type PartnerAnswers = Partial<Record<PartnerFieldId, string>>;
 
@@ -71,7 +71,7 @@ export function validateAnswers(answers: PartnerAnswers): FieldProblem[] {
         }
         break;
       case "cnpj": {
-        const clean = normalizeCnpj(raw).replace(/[^A-Z0-9]/g, "");
+        const clean = cnpjCharacters(raw);
         if (clean.length !== 14) problems.push({ field: field.id, code: "cnpj_incomplete" });
         else if (!isValidCnpj(clean)) problems.push({ field: field.id, code: "cnpj_invalid" });
         break;
@@ -146,7 +146,16 @@ function parseDraft(input: unknown): Record<string, string> | null {
 }
 
 /**
- * Normalises what gets persisted: trims, uppercases the CNPJ, strips unknown keys.
+ * Normalises what gets persisted: trims, reduces the CNPJ to its characters, strips unknown keys.
+ *
+ * THE CNPJ GOES THROUGH `cnpjCharacters`, THE SAME EXPRESSION `validateAnswers` CHECKS. Until
+ * #398 this line called `normalizeCnpj`, which only strips `.` `/` `-`: a CNPJ typed with a
+ * space, a tab, an underscore or a zero-width character passed validation (which strips
+ * `[^A-Z0-9]` first) and was stored with the rubbish inside. The refusal of a CNPJ already in
+ * `core.clients` matches by shape, so it stopped firing — and the CMS conference screen, asking
+ * the same question of the same value, told the reviewer there was no client to merge with. Two
+ * expressions for one fact; there is one now, and `docs/contracts/partner-proposal-answers.md`
+ * §2.1 is what it has to satisfy.
  *
  * `null` means the body is not answers, and the caller has to refuse it. It used to return `{}`
  * there, which the route then saved OVER the draft and confirmed with a 200: one non-string
@@ -163,7 +172,7 @@ export function normalizeAnswers(input: unknown): PartnerAnswers | null {
     if (raw === undefined) continue;
     const value = raw.trim();
     if (!value) continue;
-    answers[field.id] = field.type === "cnpj" ? normalizeCnpj(value) : value;
+    answers[field.id] = field.type === "cnpj" ? cnpjCharacters(value) : value;
   }
   return answers;
 }

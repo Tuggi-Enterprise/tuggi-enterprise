@@ -97,13 +97,14 @@ export type CreateProposalOutcome =
  * The columns this route writes, and the whole list. Exported because a test asserts the INSERT
  * payload against it rather than against a comment.
  *
- * `tax_id_normalized` IS NOT HERE, AND MAY NEVER BE. That column is filled by a column DEFAULT —
- * measured on the live database on 2026-08-17, and *not* `GENERATED ALWAYS`, which is what a
- * reader assumes from the name. A DEFAULT only applies when the INSERT omits the column, so a
- * caller that sends it wins: the row keeps whatever the caller said, the deduplication key for
- * that company becomes whatever a client typed, and the CMS's `tax_id_normalized=eq.<key>`
- * filter stops finding the duplicate. The write reads identically in both cases, which is why
- * this is pinned by a test and not by care.
+ * `tax_id_normalized` IS NOT HERE, AND MAY NEVER BE. That column is `GENERATED ALWAYS ... STORED`
+ * — measured on the live database on 2026-08-17 (`attgenerated = 's'`, `column_default = NULL`),
+ * and migration `20260814140000_issue341_proposta_do_parceiro_em_formulario_unico` says the same,
+ * probe included. #396 wrote "column DEFAULT" here and #398 put it back: the difference matters
+ * to whoever reads this before adding a fifth column. An INSERT that supplies a generated column
+ * is REFUSED by Postgres (428C9), so the deduplication key cannot be overwritten by a caller —
+ * this list stays four names long because the write has no business naming the key, and the test
+ * exists so a fifth name is a red build here rather than a 500 in production.
  */
 export const SUBMISSION_COLUMNS = ["answers", "status", "submitted_at", "updated_at"] as const;
 
