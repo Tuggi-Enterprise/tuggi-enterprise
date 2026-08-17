@@ -23,8 +23,21 @@ import { cnpjCharacters, isValidCnpj } from "@/lib/cnpj";
 export type PartnerAnswers = Partial<Record<PartnerFieldId, string>>;
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-/** Ten or eleven digits: a Brazilian number with area code, mask or no mask. */
-const PHONE_DIGITS = /^\d{10,11}$/;
+/**
+ * A Brazilian number with area code, mask or no mask, and the country code optional — #402.
+ *
+ * `55` IS ACCEPTED BECAUSE THE SITE TEACHES IT. `Partners.form.whatsappHint`, on the landing page
+ * one click before this form, publishes `+55 21 90000-0000` as the example; ten-or-eleven digits
+ * alone refused that exact number and answered "Escreva o telefone com DDD" to somebody who had
+ * just written one. The two surfaces are pinned together by a test — the published example has to
+ * pass this pattern — so editing either side without the other goes red instead of shipping.
+ *
+ * This form may take both shapes where the landing page may not: it is Brazil-only by
+ * construction (CNPJ with a check digit, UF, eight-digit CEP), so a `55` in front is this
+ * country's code and not another one's. The landing page talks to somebody who has not said
+ * where they are, which is why it asks for the country code and `src/lib/phone.ts` requires it.
+ */
+const PHONE_DIGITS = /^(55)?\d{10,11}$/;
 const POSTAL_CODE_DIGITS = /^\d{8}$/;
 
 export interface FieldProblem {

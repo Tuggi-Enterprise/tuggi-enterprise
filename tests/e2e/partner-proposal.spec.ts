@@ -11,7 +11,11 @@ import {
   PARTNER_FIELD_IDS,
   PARTNER_FORM_FIELDS,
 } from "../../src/lib/partner-proposal/fields";
-import { normalizeAnswers, validateAnswers } from "../../src/lib/partner-proposal/schema";
+import {
+  normalizeAnswers,
+  validateAnswers,
+  type FieldProblem,
+} from "../../src/lib/partner-proposal/schema";
 import {
   HASH_SECRET_VAR,
   SUBMISSION_COLUMNS,
@@ -586,5 +590,79 @@ test.describe("BR-B2B-022 / BR-USUARIO-030: the list of what is asked", () => {
     // keys depending on which end normalised it.
     expect(answers?.tax_id).toBe("12ABC34501DE35");
     expect(validateAnswers(answers!).filter((p) => p.field === "tax_id")).toEqual([]);
+  });
+});
+
+/* -------------------------------------------------------------------------- */
+/* 8. The telephone — one journey, one format (#402)                          */
+/* -------------------------------------------------------------------------- */
+
+/** What this form says about one telephone, and nothing about the other twenty fields. */
+function phoneProblems(typed: string): FieldProblem[] {
+  const answers = normalizeAnswers(validAnswers({ representative_phone: typed }));
+  return validateAnswers(answers!).filter((problem) => problem.field === "representative_phone");
+}
+
+test.describe("BR-B2B-026: the proposal takes the number the site taught one click earlier", () => {
+  test("BR-B2B-026: every shape of a Brazilian number is accepted, with or without +55", () => {
+    const ACCEPTED = [
+      "+55 21 90000-0000",
+      "+5521900000000",
+      "55 21 90000-0000",
+      "(21) 90000-0000",
+      "21900000000",
+      "(22) 3333-4444",
+      "2233334444",
+    ];
+    for (const typed of ACCEPTED) {
+      expect(phoneProblems(typed), `${typed} must be accepted`).toEqual([]);
+    }
+
+    // The floor did not move: a number without the area code is still refused, which is what
+    // `errors.phone_short` says — and, since this change, all it says.
+    //
+    // What is NOT asserted, deliberately: that a foreign number is refused. `+1 555 000 0000`
+    // is eleven digits and so is a Brazilian mobile with its area code, so counting digits
+    // cannot tell them apart — it could not before this change either. The field asks for a
+    // number the team can call about this partnership; whether the establishment is in Brazil
+    // is decided by the CNPJ, which has a check digit.
+    for (const typed of ["90000-0000", "900000000"]) {
+      expect(phoneProblems(typed), `${typed} must still be refused`).toEqual([
+        { field: "representative_phone", code: "phone_short" },
+      ]);
+    }
+  });
+
+  test("BR-B2B-026: the example published on the landing page passes this form's validation", () => {
+    // THE POINT OF THIS TEST IS THE JOIN, not either side. `Partners.form.whatsappHint` is the
+    // hint under the telephone field of the landing form, one click before this one, and it
+    // publishes a number with the country code. Until #402 this form answered "Escreva o
+    // telefone com DDD" to that exact number — a message that denied what the person had just
+    // done and asked for a correction they had already made.
+    const hint = flatten(messagesFor("pt").Partners as Record<string, unknown>).get(
+      "form.whatsappHint"
+    );
+    expect(hint, "Partners.form.whatsappHint exists in pt.json").toBeTruthy();
+
+    const example = hint!.match(/\+\d[\d\s()-]*\d/)?.[0];
+    expect(example, `the hint publishes a number to copy — got "${hint}"`).toBeTruthy();
+
+    // Editing either side alone turns this red: change the hint's example to a shape the form
+    // refuses, or narrow `PHONE_DIGITS` back, and the divergence is caught here instead of by a
+    // merchant on step 2 of 4.
+    expect(phoneProblems(example!), `the published example "${example}" must be accepted`).toEqual(
+      []
+    );
+  });
+
+  test("BR-B2B-026: the field's own help carries an example this form accepts", () => {
+    const help = flatten(messagesFor("pt").PartnerProposal).get(
+      "fields.representative_phone.help"
+    );
+    expect(help, "the telephone field explains its format").toBeTruthy();
+
+    const example = help!.match(/\d[\d\s()-]*\d/)?.[0];
+    expect(example, `the help publishes an example — got "${help}"`).toBeTruthy();
+    expect(phoneProblems(example!), `the help's example "${example}" must be accepted`).toEqual([]);
   });
 });

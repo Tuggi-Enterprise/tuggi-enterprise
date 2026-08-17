@@ -1090,7 +1090,7 @@
       },
       "representative_phone": {
         "label": "Telefone com WhatsApp",
-        "help": "A gente usa para falar sobre esta parceria. Não entra em lista de mensagens.",
+        "help": "Com DDD. Exemplo: 21 90000-0000. A gente usa para falar sobre esta parceria, e não entra em lista de mensagens.",
         "requiredError": "Preencha o telefone com WhatsApp."
       },
       "story_founder": {
