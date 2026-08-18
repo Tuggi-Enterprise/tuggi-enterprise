@@ -1,8 +1,17 @@
 import { test, expect, type APIRequestContext } from "@playwright/test";
 import { E2E_EDGE_SHARED_SECRET, MOCK_SUPABASE_PORT } from "../../playwright.config";
 import { PLAY_STORE_URL } from "../../src/lib/app-meta";
-import { ATTRIBUTION_COOKIE, UUID_PATTERN } from "../../src/lib/attribution";
-import { CONSENT_GRANTED, CONSENT_KEY, attributionGateOf } from "../../src/lib/consent";
+import {
+  ATTRIBUTION_COOKIE,
+  UUID_PATTERN,
+  serializeAttribution,
+} from "../../src/lib/attribution";
+import {
+  ATTRIBUTION_GATE_ENDPOINT,
+  CONSENT_GRANTED,
+  CONSENT_KEY,
+  attributionGateOf,
+} from "../../src/lib/consent";
 import {
   TERRITORIES_WITHOUT_PRIOR_CONSENT,
   VERCEL_COUNTRY_HEADER,
@@ -296,5 +305,157 @@ test.describe("the partner page in a gated territory", () => {
       "href",
       PLAY_STORE_URL
     );
+  });
+});
+
+/* ---------------------------------------------------------------------------
+ * 4. The verdict the PAGE asks for, and the tourist who crossed a border
+ * ------------------------------------------------------------------------- */
+
+/**
+ * `POST /api/attribution` gates the CAPTURE, and until now that was the whole
+ * gate. It cannot reach the case below: a first touch planted lawfully in
+ * Brazil, carried in `tuggi_attr` for 90 days, and READ on a later visit from
+ * Portugal. Art. 5(3) reaches any storage OR ACCESS on the terminal equipment
+ * (item 3, the EU/EEA line) — the licence the write had does not travel with
+ * the tourist — so the read has to ask again, and asking is what
+ * `GET /api/attribution/gate` is for.
+ *
+ * The two channels of BR-B2B-002 are built from that one value, so gating the
+ * read shuts both: no `referrer` on the Play link and nothing in the pasteboard
+ * (the iOS half is proved on an emulated iPhone in
+ * `tests/e2e/clipboard-attribution.spec.ts`). That is item 6 by construction —
+ * there is no second door to keep shut.
+ */
+
+/** A first touch this browser is already carrying when the page opens. */
+const SEEDED_PARTNER_ID = "77777777-7777-4777-8777-777777777777";
+const SEEDED_CLICK_ID = "88888888-8888-4888-8888-888888888888";
+
+async function seedFirstTouch(page: import("@playwright/test").Page): Promise<void> {
+  await page.context().addCookies([
+    {
+      name: ATTRIBUTION_COOKIE,
+      // Percent-encoded the way `NextResponse.cookies.set` puts it on the wire,
+      // so this is the same string the reader would have found in production.
+      value: encodeURIComponent(
+        serializeAttribution({
+          partner_id: SEEDED_PARTNER_ID,
+          click_id: SEEDED_CLICK_ID,
+          ts: new Date().toISOString(),
+        })
+      ),
+      // Domain and path rather than a URL: cookies ignore the port, and the
+      // port of the harness is `playwright.config.ts`'s to own.
+      domain: "127.0.0.1",
+      path: "/",
+    },
+  ]);
+}
+
+/** Every Play exit of the current page — hidden ones included, because a token
+ *  sitting in the DOM has already been built out of the cookie. */
+async function playHrefs(page: import("@playwright/test").Page): Promise<string[]> {
+  return await page
+    .locator('a[href*="play.google.com"]')
+    .evaluateAll((nodes) => nodes.map((n) => (n as HTMLAnchorElement).href));
+}
+
+/** True once every Play exit carries the seeded token — and false while the
+ *  page has no Play exit at all, so an empty page can never pass by default. */
+async function everyPlayExitCarriesTheToken(page: import("@playwright/test").Page) {
+  const hrefs = await playHrefs(page);
+  return hrefs.length > 0 && hrefs.every((h) => h.includes(`tuggi_click_${SEEDED_CLICK_ID}`));
+}
+
+test.describe("GET /api/attribution/gate answers the same question the capture asks", () => {
+  test.use({ extraHTTPHeaders: { "x-forwarded-for": "198.51.100.223" } });
+
+  test("BR-USUARIO-033: the verdict follows territory and consent, and nothing else", async ({
+    request,
+  }) => {
+    const verdict = async (headers: Record<string, string>) => {
+      const res = await request.get(ATTRIBUTION_GATE_ENDPOINT, { headers });
+      expect(res.status()).toBe(200);
+      // `no-store` is not decoration: every page of this site is CDN-cached and
+      // this is the one per-visitor answer on it.
+      expect(res.headers()["cache-control"]).toContain("no-store");
+      return (await res.json()).allowed;
+    };
+
+    expect(await verdict({ [VERCEL_COUNTRY_HEADER]: OPEN_TERRITORY })).toBe(true);
+    expect(await verdict({ [VERCEL_COUNTRY_HEADER]: GATED_TERRITORY })).toBe(false);
+    expect(
+      await verdict({
+        [VERCEL_COUNTRY_HEADER]: GATED_TERRITORY,
+        cookie: `${CONSENT_KEY}=${CONSENT_GRANTED}`,
+      })
+    ).toBe(true);
+
+    // Item 2: no signal is not a guess at Brazil.
+    expect(await verdict({})).toBe(false);
+
+    // And the territory is not the visitor's to choose: without `x-tuggi-edge`
+    // a Cloudflare header is an ordinary client header. This is the reason the
+    // route runs on Node instead of reusing `/api/geo`, which runs on the edge,
+    // cannot verify the proof, and therefore reads the permissive side.
+    expect(
+      await verdict({ "cf-ipcountry": OPEN_TERRITORY, [VERCEL_COUNTRY_HEADER]: GATED_TERRITORY })
+    ).toBe(false);
+  });
+});
+
+test.describe("a first touch the browser already carries", () => {
+  test("BR-USUARIO-033: in a gated territory it is not read, and no exit carries it", async ({
+    page,
+  }) => {
+    await page.setExtraHTTPHeaders({
+      "x-forwarded-for": "198.51.100.224",
+      [VERCEL_COUNTRY_HEADER]: GATED_TERRITORY,
+    });
+    await seedFirstTouch(page);
+    await page.goto("/en");
+    await page.waitForLoadState("networkidle");
+
+    // The cookie is still there — the gate is about ACCESS, not deletion, and
+    // item 9 is explicit that a row already written does not become unlawful.
+    // What changed is that nothing on the page is built out of it.
+    expect(
+      (await page.context().cookies()).find((c) => c.name === ATTRIBUTION_COOKIE)
+    ).toBeDefined();
+    const hrefs = await playHrefs(page);
+    expect(hrefs.length, "the page under test has no Play exit to prove anything with").toBeGreaterThan(0);
+    for (const href of hrefs) {
+      expect(href, "a Play exit carried the token in a gated territory").toBe(PLAY_STORE_URL);
+    }
+  });
+
+  test("BR-USUARIO-033, BR-B2B-002: in an ungated territory the same cookie still pays the partner", async ({
+    page,
+  }) => {
+    // The control, and it is what makes the test above worth anything: a build
+    // that simply never reads the cookie passes the gated case and fails here.
+    await page.setExtraHTTPHeaders({
+      "x-forwarded-for": "198.51.100.225",
+      [VERCEL_COUNTRY_HEADER]: OPEN_TERRITORY,
+    });
+    await seedFirstTouch(page);
+    await page.goto("/en");
+
+    await expect.poll(() => everyPlayExitCarriesTheToken(page)).toBe(true);
+  });
+
+  test("BR-USUARIO-033: consent reopens the door in the gated territory", async ({ page }) => {
+    await page.setExtraHTTPHeaders({
+      "x-forwarded-for": "198.51.100.226",
+      [VERCEL_COUNTRY_HEADER]: GATED_TERRITORY,
+    });
+    await seedFirstTouch(page);
+    await page.context().addCookies([
+      { name: CONSENT_KEY, value: CONSENT_GRANTED, domain: "127.0.0.1", path: "/" },
+    ]);
+    await page.goto("/en");
+
+    await expect.poll(() => everyPlayExitCarriesTheToken(page)).toBe(true);
   });
 });

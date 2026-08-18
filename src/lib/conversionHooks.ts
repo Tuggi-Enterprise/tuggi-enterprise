@@ -3,6 +3,7 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { resolvePricing, type BaseMarketPricing } from "@/lib/pricing";
 import { clickToken, readStoredAttribution } from "@/lib/attribution";
+import { useAttributionAllowed } from "@/components/global/AttributionGateProvider";
 
 export type Platform = "ios" | "android" | "desktop";
 
@@ -79,9 +80,27 @@ export function useGeoPricing(): BaseMarketPricing | null {
  * `useSyncExternalStore` and not `useState` + `useEffect`: same reason as
  * `usePlatform` above, and the snapshot is a string, so the identity check
  * React runs on every render is stable.
+ *
+ * AND THE READ ITSELF IS GATED — BR-USUARIO-033, items 2, 3 and 5. Reading a
+ * cookie is ACCESS to information on the terminal equipment, which art. 5(3)
+ * of the ePrivacy Directive reaches on its own terms; the licence the write
+ * had in Brazil does not travel with the tourist to Portugal. So the snapshot
+ * that touches `document.cookie` is only installed once the server has said
+ * yes (`useAttributionAllowed`), and until then — and forever, in a gated
+ * territory without consent — this hook answers null WITHOUT having read
+ * anything. Null is the answer a visitor nobody referred already gets, so
+ * every caller downstream already handles it: the Play link is the bare store
+ * URL and `clickToken` has nothing to put in the pasteboard.
+ *
+ * THIS IS THE ONLY DOOR, AND THAT IS ITEM 6 BY CONSTRUCTION. Both channels are
+ * built from this one value, so there is no second place to keep shut.
  */
 export function useAttributionClickId(): string | null {
-  return useSyncExternalStore(noopSubscribe, clientClickId, serverClickId);
+  const allowed = useAttributionAllowed();
+  // Two module-level snapshots and not a closure: `useSyncExternalStore` calls
+  // getSnapshot on every render and compares the result, so an unstable
+  // identity here loops. These two flip only when the verdict does.
+  return useSyncExternalStore(noopSubscribe, allowed ? clientClickId : serverClickId, serverClickId);
 }
 
 const clientClickId = (): string | null => readStoredAttribution()?.click_id ?? null;
@@ -117,10 +136,12 @@ export const CLIPBOARD_WRITE_GRACE_MS = 300;
  * WHY IT IS SAFE WITHOUT A SECOND CONSENT DECISION — BR-USUARIO-033, item 5.
  * Writing to the pasteboard is writing to the device, so it may not happen in
  * a gated territory without consent. It cannot: the gate runs on the server
- * (`attributionGateOf`, `src/lib/consent.ts`), a refused capture plants no
- * `tuggi_attr` cookie, `useAttributionClickId` therefore answers null and
- * `clickToken` answers null. There is no second door to keep shut, which is
- * item 6's own argument for building it this way.
+ * (`attributionGateOf`, `src/lib/consent.ts`) and `useAttributionClickId`
+ * answers null unless it said yes — whether the refusal happened at the
+ * capture, which plants no `tuggi_attr` cookie, or on a later visit from a
+ * gated territory, where the cookie is there and is not read. Either way
+ * `clickToken` answers null and there is nothing to write. There is no second
+ * door to keep shut, which is item 6's own argument for building it this way.
  *
  * AND NOTHING IS INVENTED WHEN THERE IS NO CLICK. Not the partner id, not the
  * slug: `clickToken` accepts a UUID or nothing, so the app can never read a

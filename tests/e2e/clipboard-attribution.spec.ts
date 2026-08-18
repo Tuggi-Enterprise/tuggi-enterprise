@@ -290,7 +290,18 @@ test.describe("every App Store CTA writes the token, inside the tap", () => {
     // The campaign layout's App Store badge, and the floating CTA that assigns
     // window.location — the two the contract already named.
     await page.goto(CAMPAIGN_PATH);
-    await expect.poll(async () => await storedClickId(page)).toBe(clickId);
+    // Waits for the CONSENT VERDICT, not for the cookie — BR-USUARIO-033. The
+    // cookie is already on the device (`captureFirstTouch` planted it), so
+    // polling it proves nothing: since the gate landed, the read of that cookie
+    // waits on one same-origin GET, and a tap fired before the answer arrives
+    // finds no click id and writes nothing. That resting state is deliberate
+    // (fail closed), so the wait belongs in the test. The band's Play href is
+    // the same verdict made observable, on the same page and out of the same
+    // value.
+    const bandPlayHref = page.locator('[data-block="band"] a[href*="play.google.com"]');
+    await expect
+      .poll(async () => (await bandPlayHref.getAttribute("href")) ?? "")
+      .toContain(`tuggi_click_${clickId}`);
     // Scoped to the printed piece's download band: this page also carries the
     // site footer, which the partner layout keeps in the DOM and out of sight.
     await page.locator(`[data-block="band"] a[href="${APP_STORE_URL}"]`).click();
@@ -434,6 +445,92 @@ test.describe("in a territory that requires consent", () => {
     expect(writes.length).toBe(tapped);
     for (const write of writes) {
       expect(write).toEqual({ text: `tuggi_click_${clickId}`, insideTap: true });
+    }
+  });
+});
+
+/* ---------------------------------------------------------------------------
+ * 5. The tourist who crossed a border between the capture and the download
+ * ------------------------------------------------------------------------- */
+
+/**
+ * The case the capture gate cannot reach — BR-USUARIO-033, item 3.
+ *
+ * Everything above section 4 proves is about a first touch that never gets
+ * planted. This is the other half: it WAS planted, lawfully, in Brazil, and it
+ * lives in `tuggi_attr` for 90 days. Art. 5(3) reaches any storage OR ACCESS on
+ * the terminal equipment, so reading that cookie in Portugal is a gated
+ * operation of its own, and writing the token it yields into the pasteboard is
+ * a second one. The licence the write had does not travel with the tourist.
+ *
+ * Both channels are built from that single read (`useAttributionClickId`), so
+ * one door shuts both — item 6, honoured by there being no second door.
+ */
+test.describe("a first touch carried across a border", () => {
+  const SEEDED_CLICK_ID = "88888888-8888-4888-8888-888888888888";
+
+  const seedFirstTouch = (page: Page) =>
+    page.context().addCookies([
+      {
+        name: ATTRIBUTION_COOKIE,
+        value: encodeURIComponent(
+          serializeAttribution({
+            partner_id: "77777777-7777-4777-8777-777777777777",
+            click_id: SEEDED_CLICK_ID,
+            ts: new Date().toISOString(),
+          })
+        ),
+        domain: "127.0.0.1",
+        path: "/",
+      },
+    ]);
+
+  test("BR-USUARIO-033: in a gated territory no App Store exit writes it", async ({ page }) => {
+    await page.setExtraHTTPHeaders({
+      "x-forwarded-for": "198.51.100.233",
+      "x-vercel-ip-country": "PT",
+    });
+    const writes = await spyOnClipboard(page);
+    await stubTheStores(page);
+    await seedFirstTouch(page);
+
+    await page.goto("/en");
+    await page.waitForLoadState("networkidle");
+
+    // The cookie is still on the device and still holds a valid click id — the
+    // gate is about access, not deletion. What must not happen is the read.
+    expect(await storedClickId(page)).toBe(SEEDED_CLICK_ID);
+    expect(await tapEveryAppStoreLink(page)).toBeGreaterThan(0);
+    expect(writes, "the pasteboard was written in a gated territory").toEqual([]);
+  });
+
+  test("BR-B2B-002: the same cookie, in an ungated territory, still writes it", async ({ page }) => {
+    // The control. A build that stopped reading the cookie at all would pass
+    // the test above and fail this one; a build that ignores the verdict
+    // passes this one and fails the one above. Neither passes both.
+    await page.setExtraHTTPHeaders({
+      "x-forwarded-for": "198.51.100.234",
+      "x-vercel-ip-country": "BR",
+    });
+    const writes = await spyOnClipboard(page);
+    await stubTheStores(page);
+    await seedFirstTouch(page);
+
+    await page.goto("/en");
+    // Wait for the verdict on the DOM and not by tapping in a poll: a poll that
+    // taps would tap twice and the write count would stop meaning anything. The
+    // Play exit of the same page is the same verdict, observable.
+    await expect
+      .poll(async () =>
+        (await page.locator('a[href*="play.google.com"]').first().getAttribute("href")) ?? ""
+      )
+      .toContain(`tuggi_click_${SEEDED_CLICK_ID}`);
+
+    const tapped = await tapEveryAppStoreLink(page);
+    expect(tapped).toBeGreaterThan(0);
+    expect(writes.length).toBe(tapped);
+    for (const write of writes) {
+      expect(write).toEqual({ text: `tuggi_click_${SEEDED_CLICK_ID}`, insideTap: true });
     }
   });
 });

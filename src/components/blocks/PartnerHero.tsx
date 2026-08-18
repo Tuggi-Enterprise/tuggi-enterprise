@@ -365,6 +365,18 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
    */
   useEffect(() => {
     if (storedClickId) return;
+    // AND IT DOES NOT WAIT FOR THE CONSENT VERDICT — BR-USUARIO-033. Since
+    // that verdict gates the READ of `tuggi_attr` (`useAttributionClickId`),
+    // `storedClickId` is null for one same-origin round trip on every load,
+    // and a visitor who already holds a first touch therefore sends one POST
+    // he used to skip. The route answers it from his own cookie without
+    // writing a row. Holding the capture until the verdict instead was tried
+    // and reverted: it put that round trip in FRONT of the capture of a
+    // first-touch visitor, which is the tourist who just scanned the QR and
+    // the one whose commission is actually at stake. The gate loses nothing by
+    // this — the server refuses the POST on its own (`attributionGateOf`, and
+    // it runs before anything else), so a refused visit still gets no row, no
+    // cookie and no click id.
     // The internal Tuggi client refers nobody, and a malformed id can never
     // match an install: neither is worth a row.
     if (!isAttributablePartnerId(partnerId)) return;

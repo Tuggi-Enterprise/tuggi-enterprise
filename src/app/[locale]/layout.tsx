@@ -12,6 +12,7 @@ import MicrosoftClarity from "@/components/global/MicrosoftClarity";
 import GoogleAnalyticsWrapper from "@/components/global/GoogleAnalyticsWrapper";
 import ApolloTracker from "@/components/global/ApolloTracker";
 import { CookieBanner } from "@/components/global/CookieBanner";
+import { AttributionGateProvider } from "@/components/global/AttributionGateProvider";
 import { JsonLd } from "@/components/global/JsonLd";
 import { buildAlternates } from "@/lib/seo";
 import "@/app/globals.css";
@@ -89,12 +90,19 @@ export default async function RootLayout({
           {tA11y("skipToContent")}
         </a>
         <NextIntlClientProvider messages={messages} locale={locale}>
-          <GlobalHeader currentLocale={locale} />
-          <main id="main-content" className="min-h-screen bg-tuggi-bg">
-            {children}
-          </main>
-          <FatFooter />
-          <CookieBanner />
+          {/* Wraps everything that can carry a store CTA — BR-USUARIO-033.
+              The verdict of the gate is asked once per page load from here, so
+              it is in hand before the tourist taps; a CTA rendered outside this
+              boundary still reads the closed answer (see the provider). The
+              children stay server components: they are passed as a prop. */}
+          <AttributionGateProvider>
+            <GlobalHeader currentLocale={locale} />
+            <main id="main-content" className="min-h-screen bg-tuggi-bg">
+              {children}
+            </main>
+            <FatFooter />
+            <CookieBanner />
+          </AttributionGateProvider>
           <JsonLd locale={locale} />
         </NextIntlClientProvider>
         <GoogleAnalyticsWrapper gaId="G-LFFNJDG7TJ" />

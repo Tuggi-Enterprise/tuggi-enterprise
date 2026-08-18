@@ -33,6 +33,17 @@ export const CONSENT_KEY = "tuggi_cookie_consent";
  *  flag and the literal `"false"` — is "not yet", which is not consent. */
 export const CONSENT_GRANTED = "true";
 
+/**
+ * The one door where a browser asks whether it may READ its own first touch —
+ * `src/app/api/attribution/gate/route.ts`, and BR-USUARIO-033 items 1, 2 and 5.
+ *
+ * Named here rather than typed at each end because the two ends are a route
+ * handler and a React provider that never meet, and a path that drifts fails
+ * as a 404 — which the provider treats as "not allowed", so the drift would
+ * cost every partner every commission and nothing would go red.
+ */
+export const ATTRIBUTION_GATE_ENDPOINT = "/api/attribution/gate";
+
 /** A year, the lifetime `CookieBanner` gives the answer in both stores. */
 export const CONSENT_MAX_AGE_SECONDS = 31536000;
 
