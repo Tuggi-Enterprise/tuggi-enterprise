@@ -24,7 +24,7 @@
  * actually written.
  */
 
-import { createHmac } from "node:crypto";
+import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 import { getSupabaseClient } from "@/lib/supabase-server";
 
 /**
@@ -41,25 +41,122 @@ export interface RateLimitDecision {
 }
 
 /**
- * Which address a request came from, and it is read in the topology we
- * actually run.
+ * The environment variable holding the secret that PROVES a request reached
+ * this Function through our own Cloudflare edge, and the header that carries
+ * it.
  *
- * CLOUDFLARE PROXIES VERCEL for tuggi.app — `dig` answers Cloudflare ranges and
- * the response carries `server: cloudflare` next to `x-vercel-id`. So
- * `x-forwarded-for` at the Function is the Cloudflare edge, and
+ * A Transform Rule on Cloudflare SETS `x-tuggi-edge` on every request it
+ * forwards to the origin (Cloudflare, *Request header modification*, consulted
+ * 2026-08-18: "Set the value of an HTTP request header to a literal string
+ * value, overwriting its previous value"). Overwriting is the load-bearing
+ * word: a visitor who sends the header themselves has it replaced on the
+ * proxied path, and a caller who reaches the origin directly does not know the
+ * value to send.
+ *
+ * Both are exported because the operator has to configure the two ends by
+ * name, and `docs/dev/2026-08-18-borda-confiavel-cf-connecting-ip.md` cites
+ * these constants rather than repeating the strings.
+ */
+export const EDGE_SECRET_VAR = "TUGGI_EDGE_SHARED_SECRET";
+export const EDGE_PROOF_HEADER = "x-tuggi-edge";
+
+/**
+ * Read once, at module scope — the same shape as every other configured value
+ * in this repo (`src/lib/supabase-server.ts`): what a request is allowed to
+ * assert cannot depend on when it arrived.
+ *
+ * UNSET IS A LEGAL STATE, and it is the SAFE one: with no secret there is no
+ * proof to check, so `cf-connecting-ip` is ignored entirely and the address
+ * falls back to what Vercel guarantees. The inverse — trusting the header
+ * because the variable is missing — is the misconfiguration that reopens the
+ * spoof, so it is not reachable from here.
+ */
+const EDGE_SHARED_SECRET = (process.env[EDGE_SECRET_VAR] ?? "").trim();
+
+/**
+ * A per-process key for the comparison below. It is not a secret of the
+ * product and never leaves this process: HMAC-ing both sides under it makes
+ * them fixed-length, which is what `timingSafeEqual` requires, and hides the
+ * LENGTH of the presented value as well as its bytes. Comparing with `===`
+ * returns on the first differing byte and hands an attacker the value one
+ * character at a time.
+ */
+const COMPARISON_KEY = randomBytes(32);
+
+function equalsInConstantTime(presented: string, expected: string): boolean {
+  const digest = (value: string) =>
+    createHmac("sha256", COMPARISON_KEY).update(value, "utf8").digest();
+  return timingSafeEqual(digest(presented), digest(expected));
+}
+
+/** Logged once per process: a flood of identical lines helps nobody. */
+let missingEdgeSecretReported = false;
+
+/**
+ * Whether this request carries the proof that it came through our edge.
+ *
+ * No proof is not an error — the origin is reachable directly, and that path
+ * is served normally, just without any claim about who the caller is.
+ */
+function cameThroughOurEdge(headers: Headers, edgeSharedSecret: string): boolean {
+  const presented = headers.get(EDGE_PROOF_HEADER)?.trim();
+  if (!presented) return false;
+
+  if (!edgeSharedSecret) {
+    if (!missingEdgeSecretReported) {
+      missingEdgeSecretReported = true;
+      console.error(
+        `[rate-limit] ${EDGE_SECRET_VAR} is not set — ${EDGE_PROOF_HEADER} cannot be verified, ` +
+          `so cf-connecting-ip is being ignored and x-forwarded-for is used instead`
+      );
+    }
+    return false;
+  }
+
+  return equalsInConstantTime(presented, edgeSharedSecret);
+}
+
+/**
+ * Which address a request came from, and it is read in the topology we
+ * actually run — which has TWO ways in, not one.
+ *
+ * WHY `CF-Connecting-IP` IS NOT TRUSTWORTHY ON ITS OWN, and this is the part
+ * that reads backwards. Cloudflare does proxy tuggi.app, and on that path
+ * `x-forwarded-for` at the Function is the Cloudflare edge while
  * `CF-Connecting-IP` is the visitor (developers.cloudflare.com, "Restoring
- * original visitor IPs"). Reading the wrong one put 172.69/172.71/162.158
- * addresses in every stored fingerprint and gave every visitor behind one edge
- * node the same rate-limit bucket.
+ * original visitor IPs"). That is true and it is not enough: THE ORIGIN IS
+ * ALSO REACHABLE WITHOUT CLOUDFLARE. Measured 2026-08-18 —
+ * `https://tuggi-enterprise.vercel.app/` answers 307 with `server: Vercel` and
+ * no `cf-ray`. On that path `CF-Connecting-IP` is an ordinary client header
+ * and arrives exactly as the caller typed it, so reading it first let anyone
+ * file a capture under a victim's address and, because the rate-limit bucket
+ * is keyed on the same value, mint a fresh 30/h budget per request by changing
+ * one header.
+ *
+ * So the header is honoured only against PROOF: `x-tuggi-edge` carrying the
+ * shared secret above. Without the proof the order is the one Vercel
+ * guarantees — `x-forwarded-for`, then `x-real-ip` (vercel.com/docs/headers/
+ * request-headers, consulted 2026-08-18: Vercel "overwrite[s] the
+ * `X-Forwarded-For` header and do[es] not forward external IPs… to prevent IP
+ * spoofing", and `x-real-ip` "is identical").
  *
  * `x-forwarded-for` is a list when there are proxies in front and the first
- * entry is the client; `x-real-ip` is the local fallback. None of the three is
- * taken from the request body — a caller choosing its own address is the spoof
- * that moved a partner's commission once already.
+ * entry is the client. None of the three is taken from the request body
+ * — a caller choosing its own address is the spoof that moved a partner's
+ * commission once already.
+ *
+ * @param edgeSharedSecret Only the test passes this. Production callers pass
+ * the headers and nothing else, so the secret is the one read from the
+ * environment at module scope; the parameter exists because the four cases
+ * (valid proof, absent secret, wrong proof, no proof at all) cannot otherwise
+ * be exercised in one process. It is never derived from the request.
  */
-export function clientAddressOf(headers: Headers): string {
+export function clientAddressOf(
+  headers: Headers,
+  edgeSharedSecret: string = EDGE_SHARED_SECRET
+): string {
   const candidates = [
-    headers.get("cf-connecting-ip"),
+    cameThroughOurEdge(headers, edgeSharedSecret) ? headers.get("cf-connecting-ip") : null,
     headers.get("x-forwarded-for")?.split(",")[0],
     headers.get("x-real-ip"),
   ];

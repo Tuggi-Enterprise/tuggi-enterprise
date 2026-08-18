@@ -1,5 +1,5 @@
 import { test, expect, type APIRequestContext, type Page } from "@playwright/test";
-import { MOCK_SUPABASE_PORT } from "../../playwright.config";
+import { E2E_EDGE_SHARED_SECRET, MOCK_SUPABASE_PORT } from "../../playwright.config";
 import {
   PLAY_STORE_URL,
   TUGGI_PARTNER_ID,
@@ -226,7 +226,7 @@ test.describe("/api/attribution", () => {
     expect(row!.timezone).toBeNull();
   });
 
-  test("the IP comes from the Cloudflare header, not from the chain behind it", async ({
+  test("BR-B2B-002: the IP comes from the Cloudflare header, and only against proof of our edge", async ({
     request,
   }) => {
     // Cloudflare proxies our Vercel deployment, so `x-forwarded-for` at the
@@ -237,6 +237,7 @@ test.describe("/api/attribution", () => {
 
     const res = await request.post("/api/attribution", {
       headers: {
+        "x-tuggi-edge": E2E_EDGE_SHARED_SECRET,
         "CF-Connecting-IP": visitor,
         "x-forwarded-for": "172.69.0.1, 10.0.0.1",
       },
@@ -246,6 +247,41 @@ test.describe("/api/attribution", () => {
 
     const row = await storedFingerprint(request, partnerId);
     expect(row!.ip_address).toBe(visitor);
+
+  });
+
+  test("BR-B2B-002: without that proof the same header buys nothing", async ({ request }) => {
+    // THE ORIGIN ANSWERS WITHOUT CLOUDFLARE. Measured 2026-08-18: the
+    // .vercel.app URL replies with `server: Vercel` and no `cf-ray`, and on
+    // that path `CF-Connecting-IP` is whatever the caller typed. Honouring it
+    // filed a capture under a victim's address — the probabilistic leg of
+    // §7 then credits the partner for that person's install — and, because the
+    // counter is keyed on the same value, handed out a fresh 30/h budget on
+    // every request by changing one header.
+    //
+    // A separate test because the `request` fixture keeps a cookie jar: the
+    // capture above is a first touch, and a second call carrying its cookie
+    // would be answered from the cookie and write no row at all.
+    const partnerId = uniquePartnerId();
+    const chain = "198.51.100.24"; // its own counter, not a neighbour's
+    const victim = "203.0.113.7";
+
+    const res = await request.post("/api/attribution", {
+      headers: {
+        "CF-Connecting-IP": victim,
+        "x-forwarded-for": `${chain}, 10.0.0.1`,
+      },
+      data: { partner_id: partnerId, user_agent: "e2e-attribution" },
+    });
+    expect(res.status()).toBe(201);
+
+    // What Vercel guarantees, and it is the only address here nobody chose:
+    // Vercel "overwrite[s] the `X-Forwarded-For` header and do[es] not forward
+    // external IPs… to prevent IP spoofing" (vercel.com/docs/headers/
+    // request-headers, consulted 2026-08-18).
+    const row = await storedFingerprint(request, partnerId);
+    expect(row!.ip_address).toBe(chain);
+    expect(row!.ip_address).not.toBe(victim);
   });
 
   test("a client_ip in the body is ignored", async ({ request }) => {
@@ -314,7 +350,7 @@ test.describe("/api/attribution", () => {
 
     const post = () =>
       request.post("/api/attribution", {
-        headers: { "CF-Connecting-IP": address },
+        headers: { "x-tuggi-edge": E2E_EDGE_SHARED_SECRET, "CF-Connecting-IP": address },
         data: { partner_id: uniquePartnerId(), user_agent: "e2e-flood" },
       });
 

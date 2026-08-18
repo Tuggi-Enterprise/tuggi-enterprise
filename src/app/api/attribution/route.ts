@@ -71,12 +71,14 @@ function readText(value: unknown, fallback: string): string {
  *
  * `clientAddressOf` is the single owner of that reading, shared with the rate
  * limiter so the row and the counter can never disagree about who called. It
- * reads `CF-Connecting-IP` first because Cloudflare proxies our Vercel
- * deployment: before that, every row here stored a Cloudflare edge address —
- * personal data with no use, which is the worst of both worlds. The body is
- * never read for this: accepting `client_ip` once let anyone pair a partner of
- * their choosing with a victim's address and take the commission for someone
- * else's install.
+ * prefers `CF-Connecting-IP` — Cloudflare proxies our deployment, and before
+ * that every row here stored a Cloudflare edge address, personal data with no
+ * use — but ONLY when the request proves it came through that edge, because
+ * the origin is also reachable without Cloudflare and there the header is
+ * whatever the caller typed. The rule and the proof live there, once. The body
+ * is never read for this either: accepting `client_ip` once let anyone pair a
+ * partner of their choosing with a victim's address and take the commission
+ * for someone else's install.
  *
  * The column is NOT NULL, so a request with no edge header at all (only
  * possible off-platform) stores loopback rather than refusing the capture.
