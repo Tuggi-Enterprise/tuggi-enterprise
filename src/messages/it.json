@@ -395,8 +395,8 @@
     },
     "Pricing": {
       "kicker": "Pass Tuggi",
-      "title": "Consumi solo mentre sei in movimento.",
-      "subtitle": "Le tue ore non scadono. Fermati quando vuoi e riprendi al prossimo viaggio.",
+      "title": "Consumi solo con la guida accesa.",
+      "subtitle": "Le tue ore non scadono. Spegni la guida quando vuoi e riprendi al prossimo viaggio.",
       "anchor": "Meno di un singolo tour guidato — e racconta tutto il tuo viaggio.",
       "chip2": "Pagamento unico",
       "chip3": "Senza rinnovo automatico",
@@ -430,7 +430,7 @@
     "FAQ": {
       "title": "Domande Frequenti",
       "q1": "TUGGI è gratis?",
-      "a1": "Sì. Inizia gratis, con storie ogni giorno. Per ascoltare senza limite giornaliero, un Pass Tuggi ti dà 10, 25 o 45 ore di utilizzo — pagamento unico, e le ore scorrono solo quando sei in movimento.",
+      "a1": "Sì. Inizia gratis, con storie ogni giorno. Per ascoltare senza limite giornaliero, un Pass Tuggi ti dà 10, 25 o 45 ore di utilizzo — pagamento unico, e le ore scorrono solo con la guida accesa.",
       "q2": "TUGGI funziona offline?",
       "a2": "Sì. Scarica un percorso in anticipo e ascolta senza segnale — senza costi di roaming.",
       "q3": "In cosa è diverso TUGGI da Google Maps o da un GPS?",
@@ -488,7 +488,7 @@
     "PlansExplainer": {
       "title": "Come funzionano i Pass Tuggi",
       "p1": "Puoi usare TUGGI gratis: lo scarichi e la guida completa la sblocchi tu, con un tocco, dentro l'app — senza carta e senza abbonarti a nulla. Dopo, l'app resta gratuita con un numero limitato di storie al giorno, così esplori con calma prima di decidere.",
-      "p2": "Quando vuoi ascoltare senza limite giornaliero, scegli un pass: 10 ore per una gita di un giorno, 25 per un weekend, 45 per un viaggio intero. Sono ore di utilizzo, non giorni sul calendario — il tempo scorre solo mentre sei in movimento, e quello che avanza aspetta il prossimo viaggio. Pagamento unico, senza rinnovo automatico.",
+      "p2": "Quando vuoi ascoltare senza limite giornaliero, scegli un pass: 10 ore per una gita di un giorno, 25 per un weekend, 45 per un viaggio intero. Sono ore di utilizzo, non giorni sul calendario — il tempo scorre solo con la guida accesa, e quello che avanza aspetta il prossimo viaggio. Pagamento unico, senza rinnovo automatico.",
       "p3": "Ogni pass include mappe e audio 100% offline, sottotitoli sincronizzati e tutte le {contentLanguages} lingue. I prezzi variano per paese e vedi il prezzo esatto sull’App Store o su Google Play prima di confermare. Non viene addebitato nulla senza la tua conferma nello store."
     }
   },

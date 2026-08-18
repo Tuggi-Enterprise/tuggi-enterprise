@@ -395,8 +395,8 @@
     },
     "Pricing": {
       "kicker": "Tuggi Passes",
-      "title": "You only spend while you're moving.",
-      "subtitle": "Your hours never expire. Stop whenever you like, pick up on your next trip.",
+      "title": "You only spend with the guide on.",
+      "subtitle": "Your hours never expire. Turn the guide off whenever you like, pick up on your next trip.",
       "anchor": "Less than a single guided tour — and it narrates your whole trip.",
       "chip2": "One-time payment",
       "chip3": "No auto-renewal",
@@ -430,7 +430,7 @@
     "FAQ": {
       "title": "Frequently Asked Questions",
       "q1": "Is TUGGI free?",
-      "a1": "Yes. Start free, with stories every day. To listen without a daily limit, a Tuggi Pass gives you 10, 25 or 45 hours of use — one-time payment, and the hours only run while you're moving.",
+      "a1": "Yes. Start free, with stories every day. To listen without a daily limit, a Tuggi Pass gives you 10, 25 or 45 hours of use — one-time payment, and the hours only run with the guide on.",
       "q2": "Does TUGGI work offline?",
       "a2": "Yes. Download a route in advance and listen with no signal — no roaming charges.",
       "q3": "How is TUGGI different from Google Maps or a GPS?",
@@ -488,7 +488,7 @@
     "PlansExplainer": {
       "title": "How Tuggi Passes work",
       "p1": "You can use TUGGI for free: download it, and the full guide is unlocked by you, with one tap, inside the app — no card and nothing to sign up for. After that, the app stays free with a limited number of stories a day, so you explore at your own pace before deciding.",
-      "p2": "When you want to listen without a daily limit, pick a pass: 10 hours for a day trip, 25 for a weekend, 45 for a full trip. These are hours of use, not days on a calendar — the time only runs while you're moving, and whatever is left waits for your next trip. One-time payment, no auto-renewal.",
+      "p2": "When you want to listen without a daily limit, pick a pass: 10 hours for a day trip, 25 for a weekend, 45 for a full trip. These are hours of use, not days on a calendar — the time only runs with the guide on, and whatever is left waits for your next trip. One-time payment, no auto-renewal.",
       "p3": "Every pass includes fully offline maps and audio, synchronized captions and all {contentLanguages} languages. Prices vary by country, and you see the exact price in the App Store or Google Play before you confirm. Nothing is charged without your confirmation in the store."
     }
   },

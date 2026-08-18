@@ -395,8 +395,8 @@
     },
     "Pricing": {
       "kicker": "Pases Tuggi",
-      "title": "Solo gastas mientras estás en movimiento.",
-      "subtitle": "Tus horas no caducan. Para cuando quieras y sigue en el próximo viaje.",
+      "title": "Solo gastas con la guía encendida.",
+      "subtitle": "Tus horas no caducan. Apaga la guía cuando quieras y sigue en el próximo viaje.",
       "anchor": "Menos que un solo tour guiado — y narra todo tu viaje.",
       "chip2": "Pago único",
       "chip3": "Sin renovación automática",
@@ -430,7 +430,7 @@
     "FAQ": {
       "title": "Preguntas Frecuentes",
       "q1": "¿TUGGI es gratis?",
-      "a1": "Sí. Empieza gratis, con historias cada día. Para escuchar sin límite diario, un Pase Tuggi te da 10, 25 o 45 horas de uso — pago único, y las horas solo corren cuando estás en movimiento.",
+      "a1": "Sí. Empieza gratis, con historias cada día. Para escuchar sin límite diario, un Pase Tuggi te da 10, 25 o 45 horas de uso — pago único, y las horas solo corren con la guía encendida.",
       "q2": "¿TUGGI funciona sin conexión?",
       "a2": "Sí. Descarga la ruta con antelación y escucha sin señal — sin cargos por itinerancia.",
       "q3": "¿En qué se diferencia TUGGI de Google Maps o un GPS?",
@@ -488,7 +488,7 @@
     "PlansExplainer": {
       "title": "Cómo funcionan los Pases Tuggi",
       "p1": "Puedes usar TUGGI gratis: lo descargas y la guía completa la desbloqueas tú, con un toque, dentro de la app — sin tarjeta y sin suscribirte a nada. Después, la app sigue siendo gratuita con un número limitado de historias al día, así exploras a tu ritmo antes de decidir.",
-      "p2": "Cuando quieras escuchar sin límite diario, elige un pase: 10 horas para una escapada de un día, 25 para un fin de semana, 45 para un viaje completo. Son horas de uso, no días de calendario — el tiempo solo corre mientras estás en movimiento, y lo que sobre espera al próximo viaje. Pago único, sin renovación automática.",
+      "p2": "Cuando quieras escuchar sin límite diario, elige un pase: 10 horas para una escapada de un día, 25 para un fin de semana, 45 para un viaje completo. Son horas de uso, no días de calendario — el tiempo solo corre con la guía encendida, y lo que sobre espera al próximo viaje. Pago único, sin renovación automática.",
       "p3": "Todos los pases incluyen mapas y audio 100% sin conexión, subtítulos sincronizados y los {contentLanguages} idiomas. Los precios varían según el país y ves el precio exacto en la App Store o Google Play antes de confirmar. No se cobra nada sin tu confirmación en la tienda."
     }
   },
