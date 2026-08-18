@@ -10,8 +10,10 @@ import {
   buildPlayStoreUrl,
   isAttributablePartnerId,
 } from "@/lib/app-meta";
-import { clickToken } from "@/lib/attribution";
-import { useAttributionClickId } from "@/lib/conversionHooks";
+import {
+  useAttributionClickId,
+  writeClickTokenToClipboard,
+} from "@/lib/conversionHooks";
 import { COOKIE_BANNER_HEIGHT_VAR } from "@/components/global/CookieBanner";
 import { PartnerCampaignHero } from "./PartnerCampaignHero";
 
@@ -446,26 +448,16 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
   };
 
   /**
-   * The iOS half of the attribution, and it has to happen HERE.
+   * The iOS half of the attribution, and it has to happen inside the gesture.
+   * The rule, the WebKit quote and the 300 ms grace live with the write itself
+   * (`writeClickTokenToClipboard`, `src/lib/conversionHooks.ts`), which every
+   * App Store CTA of the site now calls — this page was one of two that did.
    *
-   * WebKit rejects `clipboard.writeText` called outside a user gesture, in so
-   * many words: "A call to clipboard.write or clipboard.writeText outside the
-   * scope of a user gesture (such as click or touch event handlers) will
-   * result in the immediate rejection of the promise"
-   * (webkit.org/blog/10855/async-clipboard-api). It used to run inside the
-   * mount effect with an empty `catch`, so the promise was rejected on every
-   * iPhone and swallowed on every iPhone: the channel never worked once.
-   *
-   * The write is started synchronously inside the handler — no `await` before
-   * it — and the navigation waits at most a moment for it, so a clipboard that
-   * never settles cannot strand the visitor on this page.
+   * It passes its own `clickId` and not `useAttributionClipboardWrite()`: on a
+   * first visit the capture answers before this component re-reads the cookie,
+   * so `capturedClickId` is the only id there is for that first tap.
    */
-  const writeClipboardToken = async (): Promise<void> => {
-    const token = clickToken(clickId);
-    if (!token || !navigator.clipboard?.writeText) return;
-    const written = navigator.clipboard.writeText(token).catch(() => {});
-    await Promise.race([written, new Promise((resolve) => setTimeout(resolve, 300))]);
-  };
+  const writeClipboardToken = (): Promise<void> => writeClickTokenToClipboard(clickId);
 
   const handleRedirect = async () => {
     setIsRedirecting(true);

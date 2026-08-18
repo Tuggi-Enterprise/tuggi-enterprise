@@ -3,7 +3,11 @@
 import { useEffect, useState } from "react";
 import { sendGAEvent } from "@next/third-parties/google";
 import { APP_STORE_URL, buildPlayStoreUrl } from "@/lib/app-meta";
-import { useAttributionClickId, usePlatform } from "@/lib/conversionHooks";
+import {
+  useAttributionClickId,
+  useAttributionClipboardWrite,
+  usePlatform,
+} from "@/lib/conversionHooks";
 
 interface StickyCtaProps {
   /** Short line of copy, already translated. */
@@ -28,6 +32,7 @@ interface StickyCtaProps {
 export function StickyCta({ text, cta, afterId, untilId, placement }: StickyCtaProps) {
   const platform = usePlatform();
   const clickId = useAttributionClickId();
+  const writeClipboardToken = useAttributionClipboardWrite();
   const [pastHero, setPastHero] = useState(false);
   const [finalInView, setFinalInView] = useState(false);
 
@@ -49,8 +54,11 @@ export function StickyCta({ text, cta, afterId, untilId, placement }: StickyCtaP
 
   const visible = pastHero && !finalInView;
   const store = platform === "android" ? "play_store" : "app_store";
-  // The Android leg carries the first touch (BR-B2B-002); iOS has no referrer
-  // channel and rides on the clipboard written by the partner page's CTA.
+  // The Android leg carries the first touch in the Play referrer (BR-B2B-002);
+  // iOS has no referrer channel, so this bar writes the same token to the
+  // pasteboard inside the tap (contract §5). It used to rely on the partner
+  // page having written it, which credited nobody for a visitor who scanned a
+  // QR and left from any other page of the site.
   const href = platform === "android" ? buildPlayStoreUrl(clickId) : APP_STORE_URL;
 
   return (
@@ -68,7 +76,10 @@ export function StickyCta({ text, cta, afterId, untilId, placement }: StickyCtaP
           target="_blank"
           rel="noopener noreferrer"
           tabIndex={visible ? undefined : -1}
-          onClick={() => sendGAEvent({ event: "click_store", placement, store })}
+          onClick={() => {
+            if (href === APP_STORE_URL) void writeClipboardToken();
+            sendGAEvent({ event: "click_store", placement, store });
+          }}
           className="shrink-0 rounded-xl bg-tuggi-primary text-tuggi-dark font-bold px-5 py-2.5 text-sm transition-transform active:scale-95 motion-reduce:active:scale-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
         >
           {cta}

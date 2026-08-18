@@ -4,15 +4,21 @@ import { useTranslations } from "next-intl";
 import { DriveHeroAnimator } from "./DriveHeroAnimator";
 import { sendGAEvent } from "@next/third-parties/google";
 import Image from "next/image";
-import { buildPlayStoreUrl } from "@/lib/app-meta";
-import { useAttributionClickId } from "@/lib/conversionHooks";
+import { APP_STORE_URL, buildPlayStoreUrl } from "@/lib/app-meta";
+import {
+  useAttributionClickId,
+  useAttributionClipboardWrite,
+} from "@/lib/conversionHooks";
 
 export function DriveHero() {
   const t = useTranslations("Drive.Hero");
-  // This badge had the store URL typed into the JSX, outside the SSOT of
-  // lib/app-meta — so it was the one CTA that could not carry a referrer even
-  // after every other one did (BR-B2B-002).
+  // Both badges had their store URL typed into the JSX, outside the SSOT of
+  // lib/app-meta — so this was the one section that could not carry a token
+  // even after every other one did (BR-B2B-002). The Play half was brought
+  // back into `buildPlayStoreUrl` first; the App Store half is here, and with
+  // it the pasteboard write iOS depends on (contract §5).
   const clickId = useAttributionClickId();
+  const writeClipboardToken = useAttributionClipboardWrite();
 
   return (
     <section className="bg-tuggi-bg pt-32 pb-24 overflow-hidden relative">
@@ -30,10 +36,13 @@ export function DriveHero() {
             
             <div className="flex flex-row gap-4 items-center">
               <a 
-                href="https://apps.apple.com/app/tuggi-drive/id6744379818"
+                href={APP_STORE_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() => sendGAEvent({ event: 'click_download', value: 'app_store' })}
+                onClick={() => {
+                  void writeClipboardToken();
+                  sendGAEvent({ event: 'click_download', value: 'app_store' });
+                }}
                 className="hover:opacity-80 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text rounded-xl shrink-0"
               >
                 <Image 

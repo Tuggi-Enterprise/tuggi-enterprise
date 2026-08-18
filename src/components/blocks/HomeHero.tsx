@@ -5,7 +5,10 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { sendGAEvent } from "@next/third-parties/google";
 import { APP_STORE_URL, buildPlayStoreUrl } from "@/lib/app-meta";
-import { useAttributionClickId } from "@/lib/conversionHooks";
+import {
+  useAttributionClickId,
+  useAttributionClipboardWrite,
+} from "@/lib/conversionHooks";
 import { PhoneFrame } from "./PhoneFrame";
 import { PRODUCT_FACTS } from "@/lib/product-facts";
 
@@ -44,9 +47,12 @@ const BADGE_LINK =
  */
 export function HomeHero() {
   const t = useTranslations("Home.Hero");
-  // The Play link carries this visitor's first touch when there is one
-  // (BR-B2B-002); with no cookie it is the bare store URL, as before.
+  // The Play link carries this visitor's first touch when there is one, and the
+  // App Store badge writes the same token to the pasteboard inside the tap —
+  // iOS has no install-referrer equivalent (BR-B2B-002, contract §5). With no
+  // first touch both are the bare store URL and nothing is written.
   const clickId = useAttributionClickId();
+  const writeClipboardToken = useAttributionClipboardWrite();
 
   return (
     <section className="bg-tuggi-bg pt-28 pb-20 lg:pt-32 lg:pb-28 overflow-hidden">
@@ -66,7 +72,10 @@ export function HomeHero() {
                 href={APP_STORE_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() => sendGAEvent({ event: "click_store_badge", value: "app_store" })}
+                onClick={() => {
+                  void writeClipboardToken();
+                  sendGAEvent({ event: "click_store_badge", value: "app_store" });
+                }}
                 className={BADGE_LINK}
               >
                 <Image
