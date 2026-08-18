@@ -15,6 +15,10 @@ import {
   serializeAttribution,
   UUID_PATTERN,
 } from "../../src/lib/attribution";
+import {
+  CAPTURE_LIMIT_PER_WINDOW,
+  ECHO_LIMIT_PER_WINDOW,
+} from "../../src/lib/attribution-limits";
 
 /**
  * Attribution of a download to the partner who caused it — the only reason
@@ -68,6 +72,18 @@ const uniquePartnerId = () =>
   `44444444-4444-4444-8444-${Math.floor(Math.random() * 0xffffffffffff)
     .toString(16)
     .padStart(12, "0")}`;
+
+/**
+ * An address this test run owns, so a budget assertion measures its own count.
+ *
+ * The double's counter is process-wide and outlives a reused mock server
+ * (`reuseExistingServer`), and `DELETE /__attempts` clears EVERY key — a clear
+ * landing mid-flood in another worker is what made an earlier version of the
+ * barrier test measure the wrong thing. A fresh address per test needs neither.
+ * 198.18.0.0/15 is the benchmarking range of RFC 2544: never a real visitor.
+ */
+const uniqueAddress = () =>
+  `198.18.${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 256)}`;
 
 /**
  * Follows the store link the CTA opens without leaving the harness: the CTA
@@ -359,39 +375,134 @@ test.describe("/api/attribution", () => {
     expect(await storedFingerprint(request, TUGGI_PARTNER_ID)).toBeNull();
   });
 
-  test("an address that keeps writing is refused: this door has a barrier now", async ({
+  test("BR-B2B-002: an address that keeps writing is refused: this door has a barrier now", async ({
     request,
   }) => {
     // A public route in front of a `service_role` write, and `service_role`
     // ignores RLS: this limit is the only barrier left. It had none — the
     // fingerprint table was an open pipe for anyone who could POST.
     //
-    // Its own CF address, so the counter under test is this test's and not the
-    // one the rest of the suite shares.
-    const address = "198.51.100.140";
-    // The double's counter is process-wide and survives a reused mock server,
-    // so this test clears it — and it is the ONLY one here that does: a clear
-    // running in another worker mid-flood is what made an earlier version of
-    // this test measure the wrong thing.
-    await request.delete(`${MOCK_BASE}/__attempts`);
-
-    const post = () =>
+    // THE FLOOD CARRIES A MALFORMED PARTNER ON PURPOSE, and not because the
+    // refusal is what is measured — it is not, every one of these answers 400.
+    // Two things ride on it: the attempt is counted BEFORE the body is parsed,
+    // so a flood of junk is counted like any other (the same order the other
+    // public door of the site keeps); and a 400 plants no `tuggi_attr`, so the
+    // request context does not start carrying a first touch halfway through and
+    // silently turn the rest of the flood into reads, which are a different
+    // budget entirely.
+    const address = uniqueAddress();
+    const post = (partnerId: string) =>
       request.post("/api/attribution", {
         headers: { "x-tuggi-edge": E2E_EDGE_SHARED_SECRET, "CF-Connecting-IP": address },
-        data: { partner_id: uniquePartnerId(), user_agent: "e2e-flood" },
+        data: { partner_id: partnerId, user_agent: "e2e-flood" },
       });
 
-    expect((await post()).status()).toBe(201);
-
-    let refused = 0;
-    for (let i = 0; i < 40; i++) {
-      const res = await post();
-      if (res.status() === 429) {
-        refused++;
-        expect(res.headers()["retry-after"]).toBeTruthy();
-      }
+    for (let i = 0; i < CAPTURE_LIMIT_PER_WINDOW; i++) {
+      const res = await post("not-a-uuid");
+      expect(res.status(), `attempt ${i + 1}`).toBe(400);
     }
-    expect(refused).toBeGreaterThan(0);
+
+    // The one after the budget is a PERFECTLY GOOD capture, and it is refused:
+    // what ran out is the address's allowance, not this caller's correctness.
+    const partnerId = uniquePartnerId();
+    const refused = await post(partnerId);
+    expect(refused.status()).toBe(429);
+    expect(await refused.json()).toMatchObject({ error: "too_many_captures" });
+    expect(Number(refused.headers()["retry-after"])).toBeGreaterThan(0);
+    expect(await storedFingerprint(request, partnerId)).toBeNull();
+  });
+
+  /* -----------------------------------------------------------------------
+   * The two budgets: a read may not spend what a first touch needs
+   * --------------------------------------------------------------------- */
+
+  test("BR-B2B-002: a request that writes nothing does not spend a first touch's budget", async ({
+    request,
+  }) => {
+    // THE DEFECT THIS PINS. The counter used to run above both branches, so a
+    // visitor who already held `tuggi_attr` — who gets his own click id echoed
+    // back and causes no row at all — consumed one of the 30/h of the address.
+    // Behind the shared Wi-Fi of a rental desk or a hotel lobby that address is
+    // dozens of tourists, and since the consent gate (BR-USUARIO-033) made
+    // `PartnerHero` post on every load of an already-attributed visitor, a
+    // reload was quietly spending the first touch of a stranger. The first
+    // touch is the commission, and losing it is silent.
+    const address = uniqueAddress();
+    const carried = {
+      partner_id: uniquePartnerId(),
+      click_id: uniquePartnerId().replace("4444-4444", "4444-8888"),
+      ts: new Date().toISOString(),
+    };
+    const cookie = `${ATTRIBUTION_COOKIE}=${encodeURIComponent(serializeAttribution(carried))}`;
+
+    // More reads than the whole write budget, from one address.
+    for (let i = 0; i < CAPTURE_LIMIT_PER_WINDOW + 5; i++) {
+      const res = await request.post("/api/attribution", {
+        headers: { "x-tuggi-edge": E2E_EDGE_SHARED_SECRET, "CF-Connecting-IP": address, cookie },
+        data: { partner_id: uniquePartnerId(), user_agent: "e2e-echo" },
+      });
+      expect(res.status(), `read ${i + 1}`).toBe(200);
+      const body = await res.json();
+      expect(body.click_id).toBe(carried.click_id);
+      expect(body.first_touch).toBe(false);
+    }
+
+    // And the tourist who arrives next, with no cookie, still gets his row.
+    const partnerId = uniquePartnerId();
+    const firstTouch = await request.post("/api/attribution", {
+      headers: { "x-tuggi-edge": E2E_EDGE_SHARED_SECRET, "CF-Connecting-IP": address },
+      data: { partner_id: partnerId, user_agent: "e2e-first-touch" },
+    });
+    expect(firstTouch.status()).toBe(201);
+    expect(await storedFingerprint(request, partnerId)).not.toBeNull();
+  });
+
+  test("BR-B2B-002: the read has a ceiling of its own, so a forged cookie is not an open door", async ({
+    request,
+  }) => {
+    // The cookie is the client's, and `parseAttribution` can only ask it to be
+    // two well-formed UUIDs — so anyone can forge one and reach the branch that
+    // skips the write budget. That trade is deliberate (a forged cookie buys a
+    // reply repeating what the caller sent, and no row), but the branch may not
+    // be a path through a public door with NO ceiling: the route stands in
+    // front of a `service_role` write.
+    test.setTimeout(120_000);
+
+    const address = uniqueAddress();
+    const forged = {
+      partner_id: uniquePartnerId(),
+      click_id: uniquePartnerId().replace("4444-4444", "4444-9999"),
+      ts: new Date().toISOString(),
+    };
+    const cookie = `${ATTRIBUTION_COOKIE}=${encodeURIComponent(serializeAttribution(forged))}`;
+    const read = () =>
+      request.post("/api/attribution", {
+        headers: { "x-tuggi-edge": E2E_EDGE_SHARED_SECRET, "CF-Connecting-IP": address, cookie },
+        data: { partner_id: uniquePartnerId(), user_agent: "e2e-forged" },
+      });
+
+    for (let i = 0; i < ECHO_LIMIT_PER_WINDOW; i++) {
+      expect((await read()).status(), `read ${i + 1}`).toBe(200);
+    }
+
+    const refused = await read();
+    expect(refused.status()).toBe(429);
+    // Named apart from `too_many_captures`: the log has to be able to tell
+    // someone farming rows from a lobby full of tourists reloading.
+    expect(await refused.json()).toMatchObject({ error: "too_many_reads" });
+    expect(Number(refused.headers()["retry-after"])).toBeGreaterThan(0);
+    // Nothing was ever written for the partner the forged cookie names.
+    expect(await storedFingerprint(request, forged.partner_id)).toBeNull();
+
+    // AND IT CANNOT BE USED AS A DENIAL EITHER: the budget it exhausted is not
+    // the one a real first touch from the same address needs.
+    const partnerId = uniquePartnerId();
+    const firstTouch = await request.post("/api/attribution", {
+      headers: { "x-tuggi-edge": E2E_EDGE_SHARED_SECRET, "CF-Connecting-IP": address },
+      data: { partner_id: partnerId, user_agent: "e2e-first-touch" },
+    });
+    expect(firstTouch.status()).toBe(201);
+    expect(await storedFingerprint(request, partnerId)).not.toBeNull();
   });
 });
 

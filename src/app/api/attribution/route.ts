@@ -11,7 +11,8 @@ import {
   serializeAttribution,
   UUID_PATTERN,
 } from "@/lib/attribution";
-import { clientAddressOf, registerAttempt, requestCameThroughOurEdge } from "@/lib/rate-limit";
+import { clientAddressOf, requestCameThroughOurEdge } from "@/lib/rate-limit";
+import { registerCaptureAttempt, registerEchoAttempt } from "@/lib/attribution-limits";
 import { attributionGateOf } from "@/lib/consent";
 
 /**
@@ -23,8 +24,9 @@ import { attributionGateOf } from "@/lib/consent";
  *   1. decides whether it may capture at all — BR-USUARIO-033 gates the whole
  *      thing on the visitor's territory, and this is the FIRST step because a
  *      refusal must not even count the caller (contract §10);
- *   2. counts the caller (this is a public door in front of a `service_role`
- *      write, and it had no barrier at all);
+ *   2. counts the caller, against the budget of what he is actually asking for
+ *      (this is a public door in front of a `service_role` write, and it had no
+ *      barrier at all — see the two branches in the handler);
  *   3. writes ONE row in `drive.click_fingerprints` and answers with its id —
  *      the `click_id`, which is what travels through the store instead of the
  *      partner's UUID (contract §1);
@@ -48,26 +50,17 @@ const supabase = getSupabaseClient("serviceRole");
 /** Free-text fields are stored as written; cap them so a row stays a row. */
 const MAX_FIELD_LENGTH = 512;
 
-/**
- * How often one address may open a click row: 30 in an hour.
- *
- * The legitimate shape is one visitor, one row, once — the cookie below means
- * a returning visitor does not write again. The generous ceiling is for the
- * hotel lobby and the restaurant Wi-Fi, where a whole coach of tourists scans
- * the same printed QR from behind one NAT address within minutes. Mass
- * planting of rows to farm the probabilistic match is orders of magnitude
- * above this.
- */
-const CAPTURE_LIMIT_PER_WINDOW = 30;
-const CAPTURE_WINDOW_SECONDS = 60 * 60;
-
-/** Its own budget, so a tourist's scan cannot lock a partner out of the proposal form. */
-const CAPTURE_BUCKET = "attribution";
-
 function readText(value: unknown, fallback: string): string {
   if (typeof value !== "string") return fallback;
   const trimmed = value.trim();
   return trimmed ? trimmed.slice(0, MAX_FIELD_LENGTH) : fallback;
+}
+
+/** Whether the visitor reached us over TLS — the edge says so in a header. */
+function isHttps(req: Request): boolean {
+  const proto = req.headers.get("x-forwarded-proto")?.split(",")[0]?.trim().toLowerCase();
+  if (proto) return proto === "https";
+  return new URL(req.url).protocol === "https:";
 }
 
 /**
@@ -87,16 +80,23 @@ function readText(value: unknown, fallback: string): string {
  * The column is NOT NULL, so a request with no edge header at all (only
  * possible off-platform) stores loopback rather than refusing the capture.
  */
-/** Whether the visitor reached us over TLS — the edge says so in a header. */
-function isHttps(req: Request): boolean {
-  const proto = req.headers.get("x-forwarded-proto")?.split(",")[0]?.trim().toLowerCase();
-  if (proto) return proto === "https";
-  return new URL(req.url).protocol === "https:";
-}
-
 function readClientIp(req: Request): string {
   const address = clientAddressOf(req.headers);
   return address === "unknown" ? "127.0.0.1" : address;
+}
+
+/**
+ * The refusal of a caller over its budget, in the shape `captureFirstTouch`
+ * already understands: a 429 is never retried by it, which is exactly what a
+ * limit is for. The `error` names WHICH budget ran out — the two are counted
+ * apart, so an answer that could not say which one would make the log unable to
+ * tell "someone is farming rows" from "a lobby full of tourists is reloading".
+ */
+function tooManyRequests(error: string, retryAfterSeconds: number): NextResponse {
+  return NextResponse.json(
+    { error, retryAfterSeconds },
+    { status: 429, headers: { "retry-after": String(retryAfterSeconds) } }
+  );
 }
 
 /**
@@ -141,19 +141,46 @@ export async function POST(req: Request) {
 
     const address = readClientIp(req);
 
-    const limit = await registerAttempt({
-      bucket: CAPTURE_BUCKET,
-      clientAddress: address,
-      windowSeconds: CAPTURE_WINDOW_SECONDS,
-      maxAttempts: CAPTURE_LIMIT_PER_WINDOW,
-    });
-    if (!limit.allowed) {
+    // FIRST TOUCH, ENFORCED ON THE SERVER (BR-B2B-002). The browser also skips
+    // the call when it already holds a cookie, but that check is a page away
+    // from the write and this one is not: a visitor who scanned a second QR
+    // gets the id of the FIRST click back, no second row is written, and the
+    // second partner earns nothing from a visit it did not cause.
+    //
+    // AND IT IS DECIDED BEFORE THE WRITE BUDGET IS TOUCHED. Do not "simplify"
+    // this by counting once, above both branches — that is what it used to do,
+    // and it is a defect: a request that writes NOTHING was spending a slot of
+    // the 30/h that belongs to first touches. Since the consent gate
+    // (BR-USUARIO-033) put the reading of `tuggi_attr` behind a same-origin
+    // verdict, `PartnerHero` posts on every load of an already-attributed
+    // visitor, so on the shared Wi-Fi of a rental desk a reload was quietly
+    // spending a stranger's first touch — and a first touch lost is a
+    // commission lost, with nothing in the log to say so.
+    //
+    // The read is counted too, just against its own budget (`ECHO_BUCKET`), and
+    // that is deliberate: the cookie is the client's, anyone can forge two
+    // well-formed UUIDs and land here, so this branch may not be the one path
+    // through a public door with no ceiling at all. What the forger gets is his
+    // own value echoed back and no row; what he does not get is the write
+    // budget of the address he shares. The reasoning for both numbers is in
+    // `@/lib/attribution-limits`.
+    const existing = parseAttribution(readCookie(req.headers.get("cookie"), ATTRIBUTION_COOKIE));
+    if (existing) {
+      const echo = await registerEchoAttempt(address);
+      if (!echo.allowed) return tooManyRequests("too_many_reads", echo.retryAfterSeconds);
+
       return NextResponse.json(
-        { error: "too_many_captures", retryAfterSeconds: limit.retryAfterSeconds },
-        { status: 429, headers: { "retry-after": String(limit.retryAfterSeconds) } }
+        { click_id: existing.click_id, partner_id: existing.partner_id, first_touch: false },
+        { status: 200 }
       );
     }
 
+    const limit = await registerCaptureAttempt(address);
+    if (!limit.allowed) return tooManyRequests("too_many_captures", limit.retryAfterSeconds);
+
+    // The body is read AFTER the write is counted, so a flood of malformed
+    // bodies is counted like any other attempt — same order as the other public
+    // door of this site (`/api/partner-proposal`).
     const data = await req.json();
     const partnerId = typeof data?.partner_id === "string" ? data.partner_id.trim() : "";
 
@@ -164,19 +191,6 @@ export async function POST(req: Request) {
     // can only ever credit us to ourselves.
     if (!isAttributablePartnerId(partnerId)) {
       return NextResponse.json({ error: "Invalid partner_id" }, { status: 400 });
-    }
-
-    // FIRST TOUCH, ENFORCED ON THE SERVER (BR-B2B-002). The browser also skips
-    // the call when it already holds a cookie, but that check is a page away
-    // from the write and this one is not: a visitor who scanned a second QR
-    // gets the id of the FIRST click back, no second row is written, and the
-    // second partner earns nothing from a visit it did not cause.
-    const existing = parseAttribution(readCookie(req.headers.get("cookie"), ATTRIBUTION_COOKIE));
-    if (existing) {
-      return NextResponse.json(
-        { click_id: existing.click_id, partner_id: existing.partner_id, first_touch: false },
-        { status: 200 }
-      );
     }
 
     const { data: inserted, error } = await supabase
