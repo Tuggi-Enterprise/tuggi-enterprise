@@ -2,7 +2,11 @@
 
 import { type ReactNode } from "react";
 import { APP_STORE_URL, buildPlayStoreUrl } from "@/lib/app-meta";
-import { useAttributionClickId, usePlatform } from "@/lib/conversionHooks";
+import {
+  useAttributionClickId,
+  useAttributionClipboardWrite,
+  usePlatform,
+} from "@/lib/conversionHooks";
 
 /**
  * Locale-agnostic Tuggi landing (middleware resolves the language per request).
@@ -38,8 +42,11 @@ export function AppDownloadButton({
   // resolved on hydration — same behaviour as the effect this replaced, without
   // the setState-in-effect the linter was flagging.
   const platform = usePlatform();
-  // The Android leg carries this visitor's first touch (BR-B2B-002).
+  // The Android leg carries this visitor's first touch in the Play referrer;
+  // the iOS leg has no such channel and carries it in the pasteboard, written
+  // inside the tap below (BR-B2B-002, contract §5).
   const clickId = useAttributionClickId();
+  const writeClipboardToken = useAttributionClipboardWrite();
 
   const href =
     platform === "ios"
@@ -51,6 +58,10 @@ export function AppDownloadButton({
   const isStore = href.startsWith("http");
 
   const handleClick = () => {
+    // Started before the analytics call, and never awaited: this handler is the
+    // user gesture WebKit requires, and the badge opens a new tab, so the write
+    // settles with this document still alive.
+    if (href === APP_STORE_URL) void writeClipboardToken();
     try {
       const target = !isStore
         ? "tuggi_landing"

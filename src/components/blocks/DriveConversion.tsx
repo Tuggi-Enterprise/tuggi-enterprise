@@ -5,15 +5,21 @@ import { Compass } from "lucide-react";
 import { sendGAEvent } from "@next/third-parties/google";
 import Image from "next/image";
 import { APP_STORE_URL, buildPlayStoreUrl } from "@/lib/app-meta";
-import { useAttributionClickId } from "@/lib/conversionHooks";
+import {
+  useAttributionClickId,
+  useAttributionClipboardWrite,
+} from "@/lib/conversionHooks";
 
 export function DriveConversion() {
   const t = useTranslations("Drive.Conversion");
-  // The Play link carries this visitor's first touch when there is one
-  // (BR-B2B-002); with no cookie it is the bare store URL, as before.
+  // The Play link carries this visitor's first touch when there is one, and the
+  // App Store badge writes the same token to the pasteboard inside the tap —
+  // iOS has no install-referrer equivalent (BR-B2B-002, contract §5).
   const clickId = useAttributionClickId();
+  const writeClipboardToken = useAttributionClipboardWrite();
 
   const onStore = (store: "app_store" | "play_store") => {
+    if (store === "app_store") void writeClipboardToken();
     // Preserve the legacy event; add the new placement-tagged one.
     sendGAEvent({ event: "click_download", value: store === "play_store" ? "google_play" : "app_store" });
     sendGAEvent({ event: "click_store", placement: "final", store });

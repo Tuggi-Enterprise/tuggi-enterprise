@@ -10,8 +10,10 @@ import {
   buildPlayStoreUrl,
   isAttributablePartnerId,
 } from "@/lib/app-meta";
-import { clickToken } from "@/lib/attribution";
-import { useAttributionClickId } from "@/lib/conversionHooks";
+import {
+  useAttributionClickId,
+  writeClickTokenToClipboard,
+} from "@/lib/conversionHooks";
 import { COOKIE_BANNER_HEIGHT_VAR } from "@/components/global/CookieBanner";
 import { PartnerCampaignHero } from "./PartnerCampaignHero";
 
@@ -363,6 +365,18 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
    */
   useEffect(() => {
     if (storedClickId) return;
+    // AND IT DOES NOT WAIT FOR THE CONSENT VERDICT — BR-USUARIO-033. Since
+    // that verdict gates the READ of `tuggi_attr` (`useAttributionClickId`),
+    // `storedClickId` is null for one same-origin round trip on every load,
+    // and a visitor who already holds a first touch therefore sends one POST
+    // he used to skip. The route answers it from his own cookie without
+    // writing a row. Holding the capture until the verdict instead was tried
+    // and reverted: it put that round trip in FRONT of the capture of a
+    // first-touch visitor, which is the tourist who just scanned the QR and
+    // the one whose commission is actually at stake. The gate loses nothing by
+    // this — the server refuses the POST on its own (`attributionGateOf`, and
+    // it runs before anything else), so a refused visit still gets no row, no
+    // cookie and no click id.
     // The internal Tuggi client refers nobody, and a malformed id can never
     // match an install: neither is worth a row.
     if (!isAttributablePartnerId(partnerId)) return;
@@ -446,26 +460,16 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
   };
 
   /**
-   * The iOS half of the attribution, and it has to happen HERE.
+   * The iOS half of the attribution, and it has to happen inside the gesture.
+   * The rule, the WebKit quote and the 300 ms grace live with the write itself
+   * (`writeClickTokenToClipboard`, `src/lib/conversionHooks.ts`), which every
+   * App Store CTA of the site now calls — this page was one of two that did.
    *
-   * WebKit rejects `clipboard.writeText` called outside a user gesture, in so
-   * many words: "A call to clipboard.write or clipboard.writeText outside the
-   * scope of a user gesture (such as click or touch event handlers) will
-   * result in the immediate rejection of the promise"
-   * (webkit.org/blog/10855/async-clipboard-api). It used to run inside the
-   * mount effect with an empty `catch`, so the promise was rejected on every
-   * iPhone and swallowed on every iPhone: the channel never worked once.
-   *
-   * The write is started synchronously inside the handler — no `await` before
-   * it — and the navigation waits at most a moment for it, so a clipboard that
-   * never settles cannot strand the visitor on this page.
+   * It passes its own `clickId` and not `useAttributionClipboardWrite()`: on a
+   * first visit the capture answers before this component re-reads the cookie,
+   * so `capturedClickId` is the only id there is for that first tap.
    */
-  const writeClipboardToken = async (): Promise<void> => {
-    const token = clickToken(clickId);
-    if (!token || !navigator.clipboard?.writeText) return;
-    const written = navigator.clipboard.writeText(token).catch(() => {});
-    await Promise.race([written, new Promise((resolve) => setTimeout(resolve, 300))]);
-  };
+  const writeClipboardToken = (): Promise<void> => writeClickTokenToClipboard(clickId);
 
   const handleRedirect = async () => {
     setIsRedirecting(true);

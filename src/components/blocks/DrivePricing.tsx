@@ -8,6 +8,7 @@ import { sendGAEvent } from "@next/third-parties/google";
 import { APP_STORE_URL, buildPlayStoreUrl } from "@/lib/app-meta";
 import {
   useAttributionClickId,
+  useAttributionClipboardWrite,
   useGeoPricing,
   usePlatform,
   type Platform,
@@ -60,14 +61,20 @@ function PassCta({
   primaryClass: string;
   secondaryClass: string;
 }) {
-  // Both legs of this CTA carry the first touch on Android (BR-B2B-002); iOS
-  // has no referrer channel and rides on the clipboard the partner page writes.
+  // Both legs of this CTA carry the first touch on Android, in the Play
+  // referrer (BR-B2B-002). iOS has no referrer channel, so the App Store leg
+  // writes the same token to the pasteboard inside the tap (contract §5): it
+  // used to depend on the partner page having written it, which credited
+  // nobody for a visitor who left from the pricing page.
   const clickId = useAttributionClickId();
+  const writeClipboardToken = useAttributionClipboardWrite();
   const playHref = buildPlayStoreUrl(clickId);
   const primaryStore = platform === "android" ? "play_store" : "app_store";
   const primaryHref = platform === "android" ? playHref : APP_STORE_URL;
-  const fire = (store: "app_store" | "play_store") =>
+  const fire = (store: "app_store" | "play_store") => {
+    if (store === "app_store") void writeClipboardToken();
     sendGAEvent({ event: "click_pass_cta", pass, store });
+  };
 
   return (
     <div className="flex flex-col gap-2 mt-2">
