@@ -86,13 +86,16 @@ export default async function PrivacyPolicyPage({ params }: { params: Promise<{ 
               transmission to Google rides in section 3, because that is the
               section a reader goes to for third parties.
 
-              THE SENTENCE STILL SAYS 90, AND THE COOKIE NO LONGER DOES. The
-              cookie fell to 30 days so that it can never outlive the row it
-              names (`ATTRIBUTION_RETENTION_DAYS`, and the reason is written
-              there). `s1Item8` carries the old figure in all four locales:
-              rewriting it is `design`'s, and BR-USUARIO-032 items 1, 3 and 6
-              still declare 90, which is `produto`'s to move first. Until both
-              land, this page publishes a longer life than the cookie has. */}
+              THE ITEM ALSO CARRIES THE GATE, because without it the first
+              sentence is false for most of the world. BR-USUARIO-033 item 1:
+              the capture runs unasked only in Brazil and the United States,
+              and everywhere else it waits for the consent flag
+              (`attributionGateOf`) — so the item says the record is created
+              only after the visitor accepts, and that until then there is
+              neither row nor cookie. The undetermined territory is gated too
+              (item 2), which is the safe side of what this text announces.
+              BR-USUARIO-032 items 1, 3 and 6 still declare 90 days; that is
+              `produto`'s to move, and it does not hold this page. */}
           <li>{t.rich("s1Item8", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
         </ul>
       </section>
