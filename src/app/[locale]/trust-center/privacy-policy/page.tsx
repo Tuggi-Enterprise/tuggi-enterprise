@@ -78,12 +78,21 @@ export default async function PrivacyPolicyPage({ params }: { params: Promise<{ 
               estimated: the row in `drive.click_fingerprints`
               (`src/app/api/attribution/route.ts` — IP from the edge, user
               agent, language, timezone, partner and time), the first-party
-              cookie `tuggi_attr` of 90 days
-              (`ATTRIBUTION_COOKIE_MAX_AGE_SECONDS`), and the retention of
+              cookie `tuggi_attr` of 30 days
+              (`ATTRIBUTION_COOKIE_MAX_AGE_SECONDS`, derived from
+              `ATTRIBUTION_RETENTION_DAYS`), and the retention of
               `drive.cleanup_stale_fingerprints`: IP and user agent nulled at
               48 h, row gone at 30 days, from the daily pg_cron job. The
               transmission to Google rides in section 3, because that is the
-              section a reader goes to for third parties. */}
+              section a reader goes to for third parties.
+
+              THE SENTENCE STILL SAYS 90, AND THE COOKIE NO LONGER DOES. The
+              cookie fell to 30 days so that it can never outlive the row it
+              names (`ATTRIBUTION_RETENTION_DAYS`, and the reason is written
+              there). `s1Item8` carries the old figure in all four locales:
+              rewriting it is `design`'s, and BR-USUARIO-032 items 1, 3 and 6
+              still declare 90, which is `produto`'s to move first. Until both
+              land, this page publishes a longer life than the cookie has. */}
           <li>{t.rich("s1Item8", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
         </ul>
       </section>

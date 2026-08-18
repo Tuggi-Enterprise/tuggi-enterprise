@@ -133,7 +133,9 @@ test.describe("each consumer connects with the key it is entitled to", () => {
       // this suite fires a capture from loopback, and the route allows 30 per
       // address per hour: sharing that budget made this assertion depend on the
       // order the workers happened to run in.
-      headers: { "x-forwarded-for": "198.51.100.201" },
+      // The territory too: since BR-USUARIO-033 a capture with no resolvable
+      // country is gated, and a gated request never reaches the key under test.
+      headers: { "x-forwarded-for": "198.51.100.201", "x-vercel-ip-country": "BR" },
       data: { partner_id: partnerId, user_agent: "key-boundary-probe" },
     });
     expect(response.status()).toBe(201);

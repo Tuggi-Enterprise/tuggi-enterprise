@@ -20,12 +20,31 @@
 export const ATTRIBUTION_COOKIE = "tuggi_attr";
 
 /**
- * 90 days. Longer than the 30-day retention of `drive.click_fingerprints`
- * (contract §8) on purpose: after the row expires the cookie still names the
- * partner, and it is the cookie — not the row — that keeps a second QR from
- * overwriting the first while the visitor is still deciding to install.
+ * How long an attribution lives, in days — ONE number for the cookie and for
+ * the row, because they are two halves of the same fact.
+ *
+ * It is the retention of `drive.click_fingerprints` (contract §8;
+ * BR-USUARIO-032, item 3; and a declared safeguard of the legitimate-interest
+ * assessment BR-USUARIO-034, item 5(b) — shortening it is free, LENGTHENING IT
+ * REQUIRES REDOING THAT ASSESSMENT). The cron that prunes the rows lives in the
+ * database and is `data`'s; what this side owes is to never outlive it.
+ *
+ * IT USED TO BE 90 HERE AND 30 THERE, and the gap was not conservative, it was
+ * backwards. From day 31 to day 90 the cookie still refused a second partner's
+ * capture — first touch, correctly — while the `click_id` it carried pointed at
+ * a row that had already been deleted, so it credited nobody. Partner B lost an
+ * attribution it had earned to a partner A that could no longer receive it. A
+ * cookie that outlives the row it names is not a longer window, it is a window
+ * that is closed at both ends.
  */
-export const ATTRIBUTION_COOKIE_MAX_AGE_SECONDS = 90 * 24 * 60 * 60;
+export const ATTRIBUTION_RETENTION_DAYS = 30;
+
+/**
+ * The same number, in the unit `Set-Cookie` speaks. Derived, never retyped:
+ * this pair is exactly the shape of the `kRetryDelayMs` defect (2.0 in one
+ * file, 2000.0 in another, with the comment next to the wrong one).
+ */
+export const ATTRIBUTION_COOKIE_MAX_AGE_SECONDS = ATTRIBUTION_RETENTION_DAYS * 24 * 60 * 60;
 
 /** The one string that crosses the store, in both channels — contract §2. */
 export const CLICK_REFERRER_PREFIX = "tuggi_click_";

@@ -11,20 +11,24 @@ import {
   serializeAttribution,
   UUID_PATTERN,
 } from "@/lib/attribution";
-import { clientAddressOf, registerAttempt } from "@/lib/rate-limit";
+import { clientAddressOf, registerAttempt, requestCameThroughOurEdge } from "@/lib/rate-limit";
+import { attributionGateOf } from "@/lib/consent";
 
 /**
  * The capture of a partner click — BR-B2B-002, and the contract is
  * `docs/contracts/atribuicao-de-parceiro.md`.
  *
- * It does three things, and the order matters:
+ * It does four things, and the order matters:
  *
- *   1. counts the caller (this is a public door in front of a `service_role`
+ *   1. decides whether it may capture at all — BR-USUARIO-033 gates the whole
+ *      thing on the visitor's territory, and this is the FIRST step because a
+ *      refusal must not even count the caller (contract §10);
+ *   2. counts the caller (this is a public door in front of a `service_role`
  *      write, and it had no barrier at all);
- *   2. writes ONE row in `drive.click_fingerprints` and answers with its id —
+ *   3. writes ONE row in `drive.click_fingerprints` and answers with its id —
  *      the `click_id`, which is what travels through the store instead of the
  *      partner's UUID (contract §1);
- *   3. keeps that first touch in a cookie and NEVER overwrites it, which is
+ *   4. keeps that first touch in a cookie and NEVER overwrites it, which is
  *      what makes the rule first touch instead of last touch (contract §9).
  *
  * service_role, deliberately — not the publishable key `/api/leads` uses.
@@ -95,8 +99,46 @@ function readClientIp(req: Request): string {
   return address === "unknown" ? "127.0.0.1" : address;
 }
 
+/**
+ * The consent gate — BR-USUARIO-033 — and it runs before anything else.
+ *
+ * Refused, nothing happens: no row, no cookie, and therefore no `click_id` for
+ * the caller to put in the Play referrer or in the clipboard. The answer is a
+ * typed 200 and not an error, because refusing is the correct outcome and the
+ * page has nothing to retry (a 4xx would earn a second attempt from
+ * `captureFirstTouch`, which retries once on a non-OK status).
+ *
+ * Not even the rate-limit counter is written on a refusal: the visitor who is
+ * not being captured also does not need a hashed record of their address, and
+ * this branch touches no database at all.
+ */
+function refuseWithoutConsent(): NextResponse {
+  return NextResponse.json(
+    { click_id: null, partner_id: null, first_touch: false, consent_required: true },
+    { status: 200 }
+  );
+}
+
 export async function POST(req: Request) {
   try {
+    const edgeProven = requestCameThroughOurEdge(req.headers);
+    const gate = attributionGateOf(req.headers, edgeProven);
+
+    // THE SIGNAL BR-USUARIO-033 ASKS FOR. An undetermined territory is gated,
+    // and a gate that closes silently is a capture that stops paying partners
+    // with nobody noticing. Logged on EVERY occurrence and not once per
+    // process: here the frequency IS the finding — a handful of lines is a
+    // proxy or a bot, a flood is a broken edge configuration. No IP, no user
+    // agent, no partner: the counting BR-USUARIO-033 item 7 permits is
+    // aggregate, and nothing here can re-find the person.
+    if (!gate.country) {
+      console.warn(
+        "[attribution] territory not determined — capture gated (BR-USUARIO-033)",
+        { edgeProven }
+      );
+    }
+    if (!gate.allowed) return refuseWithoutConsent();
+
     const address = readClientIp(req);
 
     const limit = await registerAttempt({

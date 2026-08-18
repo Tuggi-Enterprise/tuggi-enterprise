@@ -172,6 +172,24 @@ export function clientAddressOf(
 }
 
 /**
+ * Whether this request proved it reached us through our own Cloudflare edge.
+ *
+ * The same proof `clientAddressOf` demands, exposed because a SECOND fact of
+ * the request depends on it: which country header may be believed
+ * (`src/lib/territory.ts`). One proof, read one way — a caller that decided
+ * "came through the edge" on its own would be the second opinion this module
+ * exists to prevent.
+ *
+ * @param edgeSharedSecret Only the test passes this; see `clientAddressOf`.
+ */
+export function requestCameThroughOurEdge(
+  headers: Headers,
+  edgeSharedSecret: string = EDGE_SHARED_SECRET
+): boolean {
+  return cameThroughOurEdge(headers, edgeSharedSecret);
+}
+
+/**
  * The counter's key for one address inside one bucket: HMAC-SHA-256 under a
  * server secret.
  *

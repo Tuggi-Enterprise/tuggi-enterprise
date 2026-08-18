@@ -8,6 +8,7 @@ import {
 import {
   ATTRIBUTION_COOKIE,
   ATTRIBUTION_COOKIE_MAX_AGE_SECONDS,
+  ATTRIBUTION_RETENTION_DAYS,
   normalizeLanguage,
   normalizeTimezone,
   parseAttribution,
@@ -34,10 +35,29 @@ import {
  *     replaced the first in every channel: it implemented last touch.
  */
 
-/** Fixture partners. See mock-supabase-server.mjs. */
-const CAMPAIGN_PATH = "/d/e2e-com-logo";
+/**
+ * EVERY REQUEST OF THIS FILE DECLARES A TERRITORY, and that is not decoration.
+ * Since BR-USUARIO-033 the capture is gated on where the visitor is, and a
+ * local build carries no `x-vercel-ip-country` at all — which the rule treats
+ * as "not determined", which is gated. Brazil is the territory this file is
+ * about: it is exempt from prior consent (item 1) and it is the only place with
+ * partners today. The gate itself is `attribution-consent-gate.spec.ts`.
+ */
+test.use({ extraHTTPHeaders: { "x-vercel-ip-country": "BR" } });
+
+/**
+ * Fixture partners. See mock-supabase-server.mjs.
+ *
+ * `?lang=en` is not decoration either: `/d/<slug>` carries no locale prefix on
+ * purpose (the printed QR must not embed one), so `src/middleware.ts` picks the
+ * language, and the territory declared above is one of the things it picks it
+ * from — Brazil serves the page in Portuguese and every English assertion below
+ * stops matching. The query parameter is the documented override and it is the
+ * highest-priority one.
+ */
+const CAMPAIGN_PATH = "/d/e2e-com-logo?lang=en";
 const CAMPAIGN_PARTNER_ID = "22222222-2222-4222-8222-222222222222";
-const PLAIN_PATH = "/d/e2e-sem-logo";
+const PLAIN_PATH = "/d/e2e-sem-logo?lang=en";
 /** No partner at all: the plain /download page, reached without ?ID=. */
 const NO_PARTNER_PATH = "/en/download";
 
@@ -174,6 +194,13 @@ test.describe("/api/attribution", () => {
     const setCookie = res.headers()["set-cookie"] ?? "";
     expect(setCookie).toContain(`${ATTRIBUTION_COOKIE}=`);
     expect(setCookie).toContain(`Max-Age=${ATTRIBUTION_COOKIE_MAX_AGE_SECONDS}`);
+    // ...and that constant is the RETENTION, not a number of its own. The
+    // cookie used to live 90 days over a row deleted at 30 (BR-USUARIO-032,
+    // item 3): from day 31 the cookie still refused a second partner's capture
+    // while the click it named no longer existed, so partner B lost an
+    // attribution it had earned to a partner A that could no longer be paid.
+    expect(ATTRIBUTION_RETENTION_DAYS, "BR-USUARIO-032 item 3: the row is pruned at 30 days").toBe(30);
+    expect(ATTRIBUTION_COOKIE_MAX_AGE_SECONDS).toBe(ATTRIBUTION_RETENTION_DAYS * 24 * 60 * 60);
     expect(setCookie.toLowerCase()).toContain("samesite=lax");
     expect(setCookie.toLowerCase()).toContain("path=/");
     // Readable by the document on purpose: every store CTA of the site is a
@@ -369,9 +396,15 @@ test.describe("/api/attribution", () => {
 });
 
 test.describe("every way out of the site carries the first touch", () => {
-  // Its own edge address: these tests load real pages, and the bucket they
-  // spend must not be the one every other spec of the suite is spending.
-  test.use({ extraHTTPHeaders: { "CF-Connecting-IP": "198.51.100.201" } });
+  // Its own address: these tests load real pages, and the bucket they spend
+  // must not be the one every other spec of the suite is spending. It is
+  // `x-forwarded-for` and not `CF-Connecting-IP`, which since 806cf45 is
+  // ignored without the edge proof and left these tests back on the shared
+  // loopback bucket. `test.use` REPLACES the option, so the territory above has
+  // to be repeated here.
+  test.use({
+    extraHTTPHeaders: { "x-forwarded-for": "198.51.100.211", "x-vercel-ip-country": "BR" },
+  });
 
   test("BR-B2B-002: the campaign badge and the floating CTA carry the captured click", async ({
     page,
@@ -442,21 +475,23 @@ test.describe("every way out of the site carries the first touch", () => {
 });
 
 test.describe("a partner slug that no longer resolves", () => {
-  test.use({ extraHTTPHeaders: { "CF-Connecting-IP": "198.51.100.202" } });
+  test.use({
+    extraHTTPHeaders: { "x-forwarded-for": "198.51.100.212", "x-vercel-ip-country": "BR" },
+  });
 
   test("BR-B2B-001: it still offers the app, and stays out of the index", async ({ page }) => {
     // The QR only ever attributed. A slug that was renamed, retired or printed
     // with a typo costs the partner the credit — it must not also cost the
     // tourist the download, which is what the 404 did: it offers the home page
     // and support, and no store link anywhere.
-    const response = await page.goto("/d/nao-existe-2026");
+    const response = await page.goto("/d/nao-existe-2026?lang=en");
     expect(response?.status()).toBe(200);
 
     expect(await storeUrlFromCta(page)).toBe(PLAY_STORE_URL);
   });
 
   test("BR-B2B-001: nothing is credited to a partner we could not resolve", async ({ page }) => {
-    await page.goto("/d/nao-existe-2026");
+    await page.goto("/d/nao-existe-2026?lang=en");
     await page.waitForLoadState("networkidle");
 
     expect((await storedAttribution(page)).cookie).toBeUndefined();

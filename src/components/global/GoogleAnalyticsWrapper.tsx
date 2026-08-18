@@ -2,13 +2,13 @@
 
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { useState, useEffect } from "react";
+import { consentGranted, storedConsent } from "@/lib/consent";
 
 export default function GoogleAnalyticsWrapper({ gaId }: { gaId: string }) {
   const [hasConsent, setHasConsent] = useState(false);
 
   useEffect(() => {
-    const consent = localStorage.getItem("tuggi_cookie_consent");
-    if (consent === "true") {
+    if (consentGranted(storedConsent())) {
       setHasConsent(true);
     }
   }, []);
