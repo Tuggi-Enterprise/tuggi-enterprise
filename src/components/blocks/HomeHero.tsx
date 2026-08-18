@@ -4,7 +4,8 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { sendGAEvent } from "@next/third-parties/google";
-import { APP_STORE_URL, PLAY_STORE_URL } from "@/lib/app-meta";
+import { APP_STORE_URL, buildPlayStoreUrl } from "@/lib/app-meta";
+import { useAttributionClickId } from "@/lib/conversionHooks";
 import { PhoneFrame } from "./PhoneFrame";
 import { PRODUCT_FACTS } from "@/lib/product-facts";
 
@@ -43,6 +44,9 @@ const BADGE_LINK =
  */
 export function HomeHero() {
   const t = useTranslations("Home.Hero");
+  // The Play link carries this visitor's first touch when there is one
+  // (BR-B2B-002); with no cookie it is the bare store URL, as before.
+  const clickId = useAttributionClickId();
 
   return (
     <section className="bg-tuggi-bg pt-28 pb-20 lg:pt-32 lg:pb-28 overflow-hidden">
@@ -75,7 +79,7 @@ export function HomeHero() {
               </a>
 
               <a
-                href={PLAY_STORE_URL}
+                href={buildPlayStoreUrl(clickId)}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => sendGAEvent({ event: "click_store_badge", value: "play_store" })}

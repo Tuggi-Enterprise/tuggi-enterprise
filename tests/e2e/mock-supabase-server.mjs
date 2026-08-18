@@ -17,6 +17,7 @@
 // `next start` boots, and torn down with it. Run it by hand for debugging:
 //   MOCK_SUPABASE_PORT=4010 node tests/e2e/mock-supabase-server.mjs
 import http from "node:http";
+import { randomUUID } from "node:crypto";
 
 const PORT = Number(process.env.MOCK_SUPABASE_PORT || 4010);
 // The welcome audio is served by the app under test itself (public/audio), so
@@ -258,19 +259,30 @@ const server = http.createServer((req, res) => {
   }
 
   if (url.pathname === "/rest/v1/click_fingerprints" && req.method === "POST") {
-    // PartnerHero fires this on mount (src/app/api/attribution) for every visit
-    // with a partnerId. The body is kept so the attribution tests can read back
-    // what was stored; see fingerprintsByPartner.
+    // PartnerHero fires this once per first touch (src/app/api/attribution).
+    // The body is kept so the attribution tests can read back what was stored;
+    // see fingerprintsByPartner.
+    //
+    // IT ANSWERS WITH THE STORED ROW, and that is not cosmetic: the route asks
+    // for `.select("id").single()` because the id IS the deliverable — the
+    // click_id that travels through the store. A double that answered
+    // `{ success: true }` would make the route look broken in exactly the way
+    // the old design was, so it mirrors PostgREST: a single object when the
+    // caller accepts `vnd.pgrst.object`, an array otherwise.
     readBody(req).then((raw) => {
+      const stored = [];
       try {
         const rows = JSON.parse(raw);
         for (const row of Array.isArray(rows) ? rows : [rows]) {
-          if (row?.partner_id) fingerprintsByPartner.set(row.partner_id, row);
+          const withId = { id: randomUUID(), created_at: new Date().toISOString(), ...row };
+          if (row?.partner_id) fingerprintsByPartner.set(row.partner_id, withId);
+          stored.push(withId);
         }
       } catch {
         // Malformed body is the app's problem, not the double's — still answer.
       }
-      sendJson(res, 201, { success: true });
+      const single = (req.headers.accept ?? "").includes("vnd.pgrst.object");
+      sendJson(res, 201, single ? (stored[0] ?? null) : stored);
     });
     return;
   }
@@ -382,6 +394,15 @@ const server = http.createServer((req, res) => {
     sendJson(res, 200, {
       row: (partnerId && fingerprintsByPartner.get(partnerId)) || null,
     });
+    return;
+  }
+
+  // The attempt counter is process-wide and outlives a test run when the mock
+  // is reused (playwright.config.ts, reuseExistingServer). A spec that asserts
+  // the refusal has to start from a known count, so it can clear its own key.
+  if (url.pathname === "/__attempts" && req.method === "DELETE") {
+    attemptsByHash.clear();
+    sendJson(res, 200, { cleared: true });
     return;
   }
 

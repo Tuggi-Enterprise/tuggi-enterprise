@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
-import { APP_STORE_URL, PLAY_STORE_URL } from "@/lib/app-meta";
+import { type ReactNode } from "react";
+import { APP_STORE_URL, buildPlayStoreUrl } from "@/lib/app-meta";
+import { useAttributionClickId, usePlatform } from "@/lib/conversionHooks";
 
 /**
  * Locale-agnostic Tuggi landing (middleware resolves the language per request).
@@ -32,18 +33,20 @@ export function AppDownloadButton({
   children,
   eventLabel,
 }: AppDownloadButtonProps) {
-  const [href, setHref] = useState(TUGGI_LANDING);
+  // `usePlatform` and not a fourth copy of the UA sniff: its server snapshot is
+  // "desktop", so the SSR href stays the /d/tuggi landing and the store URL is
+  // resolved on hydration — same behaviour as the effect this replaced, without
+  // the setState-in-effect the linter was flagging.
+  const platform = usePlatform();
+  // The Android leg carries this visitor's first touch (BR-B2B-002).
+  const clickId = useAttributionClickId();
 
-  useEffect(() => {
-    const ua =
-      navigator.userAgent || (navigator as unknown as { vendor?: string }).vendor || "";
-    if (/iPad|iPhone|iPod/.test(ua) && !(window as unknown as { MSStream?: unknown }).MSStream) {
-      setHref(APP_STORE_URL);
-    } else if (/android/i.test(ua)) {
-      setHref(PLAY_STORE_URL);
-    }
-    // desktop: keep the /d/tuggi landing fallback
-  }, []);
+  const href =
+    platform === "ios"
+      ? APP_STORE_URL
+      : platform === "android"
+        ? buildPlayStoreUrl(clickId)
+        : TUGGI_LANDING;
 
   const isStore = href.startsWith("http");
 

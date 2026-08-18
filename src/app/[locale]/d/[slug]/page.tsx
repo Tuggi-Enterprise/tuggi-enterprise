@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { notFound } from "next/navigation";
 import { cookies, headers } from "next/headers";
 import { PartnerHeroWrapper } from "@/components/blocks/PartnerHeroWrapper";
 import { resolvePartnerOrCoupon } from "@/lib/partner";
@@ -43,7 +42,8 @@ export async function generateMetadata({
   const dbLang = await resolveDbLang(locale, lang);
   const resolved = await resolvePartnerOrCoupon(slug, dbLang);
 
-  // Unknown slug → the page will 404; keep it out of the index.
+  // Unknown slug → the page still serves the plain download LP (see below),
+  // and that LP is the same on every dead slug: keep it out of the index.
   if (!resolved) {
     return { robots: { index: false, follow: false } };
   }
@@ -100,7 +100,30 @@ export default async function PartnerSlugPage({
 
   const dbLang = await resolveDbLang(locale, lang);
   const resolved = await resolvePartnerOrCoupon(slug, dbLang);
-  if (!resolved) notFound();
+
+  /**
+   * A SLUG THAT NO LONGER RESOLVES STILL GETS THE APP — BR-B2B-001.
+   *
+   * This used to `notFound()`, and the 404 offers the home page and support:
+   * no store link anywhere on it. But the person reading it is holding a
+   * printed QR in a restaurant — a partner who left, a slug that was renamed,
+   * a card printed with a typo — and they wanted the app, not the company.
+   * Sending them to a 404 loses the install; the QR only ever attributed, so
+   * losing the attribution is not a reason to lose the download too.
+   *
+   * It renders the plain download page, the same one `/download` serves with
+   * no partner: no partner name, no capture, no referrer — nothing is credited
+   * to a partner we could not resolve. `generateMetadata` keeps it out of the
+   * index, which is what stops `/d/<anything>` from becoming an unbounded
+   * surface of thin pages.
+   */
+  if (!resolved) {
+    return (
+      <main>
+        <PartnerHeroWrapper partnerData={null} />
+      </main>
+    );
+  }
 
   const { partner, coupon } = resolved;
 

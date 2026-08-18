@@ -11,11 +11,11 @@ interface PartnerCampaignHeroProps {
   sealUrl: string;
   partnerName: string;
   /**
-   * Resolved partner UUID. Only used to build the Play badge's link: the badges
-   * are a real way out of this page, so they carry the same install referrer as
-   * the floating CTA (see buildPlayStoreUrl).
+   * The click id captured for this visit, or null. Only used to build the Play
+   * badge's link: the badges are a real way out of this page, so they carry the
+   * same install referrer as the floating CTA (see buildPlayStoreUrl).
    */
-  partnerId?: string;
+  clickId?: string | null;
   /** The shared audio player card, owned by PartnerHero — behaviour is not duplicated here. */
   audioSlot?: ReactNode;
   /** The partner's own welcome text, rendered by PartnerHero with its collapse control. */
@@ -75,7 +75,7 @@ function WaveDivider() {
 export function PartnerCampaignHero({
   sealUrl,
   partnerName,
-  partnerId,
+  clickId,
   audioSlot,
   descriptionSlot,
   onStoreClick,
@@ -246,7 +246,7 @@ export function PartnerCampaignHero({
                 />
               </a>
               <a
-                href={buildPlayStoreUrl(partnerId)}
+                href={buildPlayStoreUrl(clickId)}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => onStoreClick("play_store")}

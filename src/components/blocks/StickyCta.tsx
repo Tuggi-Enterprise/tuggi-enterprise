@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { sendGAEvent } from "@next/third-parties/google";
-import { APP_STORE_URL, PLAY_STORE_URL } from "@/lib/app-meta";
-import { usePlatform } from "@/lib/conversionHooks";
+import { APP_STORE_URL, buildPlayStoreUrl } from "@/lib/app-meta";
+import { useAttributionClickId, usePlatform } from "@/lib/conversionHooks";
 
 interface StickyCtaProps {
   /** Short line of copy, already translated. */
@@ -27,6 +27,7 @@ interface StickyCtaProps {
  */
 export function StickyCta({ text, cta, afterId, untilId, placement }: StickyCtaProps) {
   const platform = usePlatform();
+  const clickId = useAttributionClickId();
   const [pastHero, setPastHero] = useState(false);
   const [finalInView, setFinalInView] = useState(false);
 
@@ -48,7 +49,9 @@ export function StickyCta({ text, cta, afterId, untilId, placement }: StickyCtaP
 
   const visible = pastHero && !finalInView;
   const store = platform === "android" ? "play_store" : "app_store";
-  const href = platform === "android" ? PLAY_STORE_URL : APP_STORE_URL;
+  // The Android leg carries the first touch (BR-B2B-002); iOS has no referrer
+  // channel and rides on the clipboard written by the partner page's CTA.
+  const href = platform === "android" ? buildPlayStoreUrl(clickId) : APP_STORE_URL;
 
   return (
     <div

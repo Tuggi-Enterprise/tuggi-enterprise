@@ -3,7 +3,8 @@
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { sendGAEvent } from "@next/third-parties/google";
-import { APP_STORE_URL, PLAY_STORE_URL } from "@/lib/app-meta";
+import { APP_STORE_URL, buildPlayStoreUrl } from "@/lib/app-meta";
+import { useAttributionClickId } from "@/lib/conversionHooks";
 
 const BADGE_LINK =
   "hover:-translate-y-0.5 hover:opacity-90 active:scale-[0.97] transition-[transform,opacity] duration-150 " +
@@ -17,6 +18,9 @@ const BADGE_LINK =
  */
 export function DrivePlansHero() {
   const t = useTranslations("Drive.PlansHero");
+  // The Play link carries this visitor's first touch when there is one
+  // (BR-B2B-002); with no cookie it is the bare store URL, as before.
+  const clickId = useAttributionClickId();
 
   return (
     <section id="drive-hero" className="bg-tuggi-bg pt-28 pb-16 lg:pt-32 lg:pb-20">
@@ -45,7 +49,7 @@ export function DrivePlansHero() {
             />
           </a>
           <a
-            href={PLAY_STORE_URL}
+            href={buildPlayStoreUrl(clickId)}
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => sendGAEvent({ event: "click_store", placement: "hero", store: "play_store" })}

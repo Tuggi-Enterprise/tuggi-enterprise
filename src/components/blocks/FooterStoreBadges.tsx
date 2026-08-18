@@ -2,10 +2,20 @@
 
 import Image from "next/image";
 import { sendGAEvent } from "@next/third-parties/google";
-import { APP_STORE_URL, PLAY_STORE_URL } from "@/lib/app-meta";
+import { APP_STORE_URL, buildPlayStoreUrl } from "@/lib/app-meta";
+import { useAttributionClickId } from "@/lib/conversionHooks";
 
-/** Footer store badges with placement-tagged analytics (`click_store`). */
+/**
+ * Footer store badges with placement-tagged analytics (`click_store`).
+ *
+ * The Play badge carries the install referrer of this visitor's first touch
+ * (BR-B2B-002): the footer is on every page, so it is a real way out of the
+ * site for someone who scanned a QR and then browsed — and a way out with no
+ * referrer is a commission the partner never sees.
+ */
 export function FooterStoreBadges() {
+  const clickId = useAttributionClickId();
+
   return (
     <div className="flex flex-col gap-3 mt-6">
       <a
@@ -24,7 +34,7 @@ export function FooterStoreBadges() {
         />
       </a>
       <a
-        href={PLAY_STORE_URL}
+        href={buildPlayStoreUrl(clickId)}
         target="_blank"
         rel="noopener noreferrer"
         onClick={() => sendGAEvent({ event: "click_store", placement: "footer", store: "play_store" })}

@@ -31,8 +31,8 @@
  * Logs carry the outcome and nothing else — no e-mail, no CNPJ, no answers, no address.
  */
 
-import { createHmac } from "node:crypto";
 import { getSupabaseClient } from "@/lib/supabase-server";
+import { registerAttempt } from "@/lib/rate-limit";
 import type { PartnerAnswers } from "./schema";
 import { cnpjLookupValues } from "@/lib/cnpj";
 
@@ -186,50 +186,22 @@ export interface SubmissionLimitDecision {
 export async function registerSubmissionAttempt(
   clientAddress: string
 ): Promise<SubmissionLimitDecision> {
-  const clientHash = hashClientAddress(clientAddress);
-  if (!clientHash) {
-    console.error(`[partner-proposal] ${HASH_SECRET_VAR} is not configured — the submission was refused`);
-    return { allowed: false, retryAfterSeconds: SUBMISSION_WINDOW_SECONDS };
-  }
-
-  const { data, error } = await service().rpc("record_partner_form_attempt", {
-    p_client_hash: clientHash,
-    p_window_seconds: SUBMISSION_WINDOW_SECONDS,
-    p_max_attempts: SUBMISSION_LIMIT_PER_WINDOW,
+  // The mechanism is `@/lib/rate-limit`, shared with the other public door of
+  // this site; the bucket is empty here so the hash of an address stays byte
+  // for byte what it was, and the rows already counted keep their key.
+  return registerAttempt({
+    bucket: "",
+    clientAddress,
+    windowSeconds: SUBMISSION_WINDOW_SECONDS,
+    maxAttempts: SUBMISSION_LIMIT_PER_WINDOW,
   });
-
-  const decision = Array.isArray(data) ? data[0] : data;
-
-  if (error || !decision || typeof decision.allowed !== "boolean") {
-    console.error("[partner-proposal] submission limit could not be consulted");
-    return { allowed: false, retryAfterSeconds: SUBMISSION_WINDOW_SECONDS };
-  }
-
-  return {
-    allowed: decision.allowed,
-    retryAfterSeconds:
-      typeof decision.retry_after_seconds === "number"
-        ? decision.retry_after_seconds
-        : SUBMISSION_WINDOW_SECONDS,
-  };
 }
 
 /**
- * The environment variable holding the server-side secret of the key-hash below. Named here
- * because the log line has to say WHICH variable is missing — an operator reading "not
- * configured" learns nothing. It has to be set on Vercel for this repository, and it is the same
- * value the CMS used to hold: the rows in `core.partner_form_attempts` were keyed with it, and a
- * different secret re-keys everybody, which costs at most one window of counting.
- */
-export const HASH_SECRET_VAR = "PARTNER_FORM_HASH_SECRET";
-
-/**
- * The counter's key for one address: HMAC-SHA-256 of the address under a server secret.
- *
- * WHY A SECRET AND NOT A PLAIN DIGEST. A bare `sha256(ip)` is reversible by anybody who gets the
- * table: the whole IPv4 space is 2^32 digests, which is minutes of laptop time, and IPv6
- * assignments in practice are not much better. The secret takes that offline attack away —
- * without it there is nothing to enumerate against.
+ * The key-hash, the address reader and the name of the secret's variable now live in
+ * `@/lib/rate-limit`: the attribution capture is a second anonymous door into a `service_role`
+ * write, and two implementations of "who is calling and how often" is how one of them ends up
+ * without a barrier. Re-exported, not re-implemented — the docstrings of the mechanism are there.
  *
  * WHAT IT IS STILL NOT. This is pseudonymisation, not anonymisation, and calling it anonymous
  * would be the same overclaim with a longer key: the same address always produces the same value
@@ -239,27 +211,8 @@ export const HASH_SECRET_VAR = "PARTNER_FORM_HASH_SECRET";
  * process and not in any log line, and that the table alone reveals nobody. `Legal.Privacy.s1Item5`
  * publishes exactly that, in four languages (BR-USUARIO-028 item 1, BR-USUARIO-030 item 6).
  *
- * NULL, NEVER AN UNSALTED FALLBACK. Returning a plain digest when the secret is missing would be
- * worse than never having had one: the door would stay open, the rows would look identical to the
- * good ones, and nobody would find out until somebody dumped the table. The caller refuses
- * instead — `registerSubmissionAttempt`, and the type is what forces it to.
+ * The secret has to be set on Vercel for this repository, and it is the same value the CMS used
+ * to hold: the rows in `core.partner_form_attempts` were keyed with it, and a different secret
+ * re-keys everybody, which costs at most one window of counting.
  */
-export function hashClientAddress(clientAddress: string): string | null {
-  const secret = (process.env[HASH_SECRET_VAR] ?? "").trim();
-  if (!secret) return null;
-
-  return createHmac("sha256", secret).update((clientAddress ?? "").trim(), "utf8").digest("hex");
-}
-
-/**
- * Which address a request came from. `x-forwarded-for` is a list when there are proxies in
- * front, and the FIRST entry is the client.
- *
- * The address is read, hashed and dropped inside one call chain: it is never stored, never
- * logged and never put in the row — the same promise `/api/leads` keeps about the IP.
- */
-export function clientAddressOf(headers: Headers): string {
-  const forwarded = headers.get("x-forwarded-for") ?? "";
-  const first = forwarded.split(",")[0]?.trim();
-  return first || headers.get("x-real-ip")?.trim() || "unknown";
-}
+export { HASH_SECRET_VAR, clientAddressOf, hashClientAddress } from "@/lib/rate-limit";
