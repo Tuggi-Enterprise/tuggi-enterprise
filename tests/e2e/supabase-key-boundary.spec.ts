@@ -128,6 +128,14 @@ test.describe("each consumer connects with the key it is entitled to", () => {
   test("/api/attribution connects with the service-role key", async ({ request }) => {
     const partnerId = "44444444-4444-4444-8444-444444444444";
     const response = await request.post("/api/attribution", {
+      // Its own address, so this test's 201 is about the KEY and not about who
+      // else captured first. Every browser-driven visit to a partner page in
+      // this suite fires a capture from loopback, and the route allows 30 per
+      // address per hour: sharing that budget made this assertion depend on the
+      // order the workers happened to run in.
+      // The territory too: since BR-USUARIO-033 a capture with no resolvable
+      // country is gated, and a gated request never reaches the key under test.
+      headers: { "x-forwarded-for": "198.51.100.201", "x-vercel-ip-country": "BR" },
       data: { partner_id: partnerId, user_agent: "key-boundary-probe" },
     });
     expect(response.status()).toBe(201);

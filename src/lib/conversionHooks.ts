@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { resolvePricing, type BaseMarketPricing } from "@/lib/pricing";
+import { readStoredAttribution } from "@/lib/attribution";
 
 export type Platform = "ios" | "android" | "desktop";
 
@@ -63,3 +64,25 @@ export function useGeoPricing(): BaseMarketPricing | null {
 
   return pricing;
 }
+
+/**
+ * The click id of this browser's FIRST partner touch, or null — BR-B2B-002.
+ *
+ * Read from the `tuggi_attr` cookie, in the browser and never on the server,
+ * for a reason that is not style: every page that carries a store CTA is
+ * cached by the CDN, and resolving the referrer while rendering would either
+ * serve one visitor's click id to the next or make the whole site
+ * uncacheable. The server snapshot is therefore null — the bare store URL,
+ * which is also what a visitor with no first touch gets — and the link gains
+ * the referrer on hydration.
+ *
+ * `useSyncExternalStore` and not `useState` + `useEffect`: same reason as
+ * `usePlatform` above, and the snapshot is a string, so the identity check
+ * React runs on every render is stable.
+ */
+export function useAttributionClickId(): string | null {
+  return useSyncExternalStore(noopSubscribe, clientClickId, serverClickId);
+}
+
+const clientClickId = (): string | null => readStoredAttribution()?.click_id ?? null;
+const serverClickId = (): string | null => null;

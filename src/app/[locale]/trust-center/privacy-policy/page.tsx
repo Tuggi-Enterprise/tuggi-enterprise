@@ -68,10 +68,35 @@ export default async function PrivacyPolicyPage({ params }: { params: Promise<{ 
 
               `/contact` posts to the same route and is still undeclared — it
               waits on a purpose from `produto` — card #344 names it as the
-              next card, and this one does not invent an `s1Item8`. */}
+              next card, and it takes the next free number, `s1Item9`. */}
           <li>{t.rich("s1Item5", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
           <li>{t.rich("s1Item6", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
           <li>{t.rich("s1Item7", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
+          {/* `s1Item8` is the partner attribution capture — card #443, and the
+              surface is the partner page (`PartnerHero`, `/download` and
+              `/d/[slug]`), not a form. What it declares is measured, not
+              estimated: the row in `drive.click_fingerprints`
+              (`src/app/api/attribution/route.ts` — IP from the edge, user
+              agent, language, timezone, partner and time), the first-party
+              cookie `tuggi_attr` of 30 days
+              (`ATTRIBUTION_COOKIE_MAX_AGE_SECONDS`, derived from
+              `ATTRIBUTION_RETENTION_DAYS`), and the retention of
+              `drive.cleanup_stale_fingerprints`: IP and user agent nulled at
+              48 h, row gone at 30 days, from the daily pg_cron job. The
+              transmission to Google rides in section 3, because that is the
+              section a reader goes to for third parties.
+
+              THE ITEM ALSO CARRIES THE GATE, because without it the first
+              sentence is false for most of the world. BR-USUARIO-033 item 1:
+              the capture runs unasked only in Brazil and the United States,
+              and everywhere else it waits for the consent flag
+              (`attributionGateOf`) — so the item says the record is created
+              only after the visitor accepts, and that until then there is
+              neither row nor cookie. The undetermined territory is gated too
+              (item 2), which is the safe side of what this text announces.
+              BR-USUARIO-032 items 1, 3 and 6 still declare 90 days; that is
+              `produto`'s to move, and it does not hold this page. */}
+          <li>{t.rich("s1Item8", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
         </ul>
       </section>
 
@@ -87,7 +112,13 @@ export default async function PrivacyPolicyPage({ params }: { params: Promise<{ 
         <h2>{t("s3Title")}</h2>
         <ul>
           <li>{t.rich("s3Item1", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
+          {/* `s3Item2` used to say we share data ONLY with infrastructure
+              providers. That absolute stopped being true the moment the
+              `click_id` started riding in the Play Store link, so it now names
+              its own scope inside the clause — the #304 lesson: a negative in
+              this policy is read as speaking for the whole domain. */}
           <li>{t("s3Item2")}</li>
+          <li>{t.rich("s3Item3", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
         </ul>
       </section>
 

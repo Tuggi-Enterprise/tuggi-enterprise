@@ -5,7 +5,13 @@ import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight, AtSign, Check, Copy, Gift, Globe, Loader2, Pause, Play } from "lucide-react";
-import { APP_STORE_URL, buildPlayStoreUrl } from "@/lib/app-meta";
+import {
+  APP_STORE_URL,
+  buildPlayStoreUrl,
+  isAttributablePartnerId,
+} from "@/lib/app-meta";
+import { clickToken } from "@/lib/attribution";
+import { useAttributionClickId } from "@/lib/conversionHooks";
 import { COOKIE_BANNER_HEIGHT_VAR } from "@/components/global/CookieBanner";
 import { PartnerCampaignHero } from "./PartnerCampaignHero";
 
@@ -82,8 +88,77 @@ function SoundWave({ isPlaying, dark = false }: { isPlaying: boolean; dark?: boo
   );
 }
 
+  /**
+ * Records the click and returns its id, or null when it could not be
+ * recorded.
+ *
+ * `keepalive` and a retry, because the failure mode is not theoretical: the
+ * tourist opens the page on roaming data and taps the CTA within seconds,
+ * and a request still in flight when the document goes away is cancelled by
+ * the browser. `keepalive` is what lets it outlive the navigation
+ * (fetch.spec.whatwg.org, §request), and the single retry covers the flaky
+ * first request of a cell handover. A lost POST is a lost commission, and
+ * the old code ignored `response.ok` entirely.
+ *
+ * 429 is not retried: the answer is "you already wrote enough", and trying
+ * again is what the limit exists to stop.
+ *
+ * The IP is not read here — /api/attribution takes it from the edge header,
+ * which is not forgeable by a caller and does not hand every visitor's
+ * address to a third party before they consent to anything.
+ */
+const captureFirstTouch = async (pId: string): Promise<string | null> => {
+  const body = JSON.stringify({
+    partner_id: pId,
+    user_agent: navigator.userAgent,
+    // Sent raw; the route normalises to the primary subtag, so that this
+    // side and the app write the same value for the same language.
+    language: navigator.language,
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+  });
+
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const response = await fetch("/api/attribution", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body,
+        keepalive: true,
+      });
+
+      if (response.status === 429) return null;
+      if (!response.ok) {
+        if (attempt === 0) continue;
+        console.warn("Attribution capture refused", response.status);
+        return null;
+      }
+
+      const payload = (await response.json()) as { click_id?: unknown };
+      return typeof payload?.click_id === "string" ? payload.click_id : null;
+    } catch (err) {
+      if (attempt === 0) continue;
+      console.warn("Attribution capture failed", err);
+    }
+  }
+  return null;
+}
+
 export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps) {
-  const [isLogged, setIsLogged] = useState(false);
+  /**
+   * The id of the click row that credits this visit — the token that travels
+   * through the store (BR-B2B-002, contract §1). Null until the capture
+   * answers, or forever when there is no partner to credit; both cases send
+   * the visitor to the bare store URL, which is the honest link.
+   */
+  const storedClickId = useAttributionClickId();
+  const [capturedClickId, setCapturedClickId] = useState<string | null>(null);
+  const clickId = storedClickId ?? capturedClickId;
+  /**
+   * One capture per page load, not one per mount. The effect below used to
+   * gate on a piece of state, which a remount resets: every re-render that
+   * remounted this tree opened another row for the same visitor.
+   */
+  const captureStartedRef = useRef(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [platform, setPlatform] = useState<"ios" | "android" | "other">("other");
 
@@ -273,14 +348,29 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
       setPlatform("android");
     }
 
-    if (partnerId && !isLogged) {
-      captureFingerprint(partnerId);
-    }
-
     return () => {
       document.body.classList.remove('no-layout');
     };
-  }, [partnerId]);
+  }, []);
+
+  /**
+   * FIRST TOUCH, AND ONLY THE FIRST — BR-B2B-002.
+   *
+   * A browser that already carries `tuggi_attr` keeps the partner it arrived
+   * with: the second QR does not overwrite it, does not open a second row, and
+   * the store link this page builds still names the first partner. Without
+   * this the site implemented last touch, which is the opposite of the rule.
+   */
+  useEffect(() => {
+    if (storedClickId) return;
+    // The internal Tuggi client refers nobody, and a malformed id can never
+    // match an install: neither is worth a row.
+    if (!isAttributablePartnerId(partnerId)) return;
+    if (captureStartedRef.current) return;
+    captureStartedRef.current = true;
+
+    captureFirstTouch(partnerId).then(setCapturedClickId);
+  }, [partnerId, storedClickId]);
 
   // countdown state removed. The redirection is purely manual now to generate desire. 
   
@@ -355,52 +445,38 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
     window.location.href = `https://tuggi.app/redeem?code=${encodeURIComponent(coupon.code)}`;
   };
 
-  const captureFingerprint = async (pId: string) => {
-    // ✅ CLIPBOARD: Write partner_id to clipboard immediately.
-    // App reads this on first launch (Layer 1 attribution).
-    // Survives network changes (WiFi → 4G) unlike IP fingerprinting.
-    try {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        await navigator.clipboard.writeText(pId);
-      }
-    } catch {
-      // Silent fail — fingerprint fallback covers this case
-    }
-
-    // ✅ FINGERPRINT: Record click in DB for server-side matching.
-    // The IP is not read here: /api/attribution takes it from the edge header,
-    // which is the same public IP an IP-echo service would report, is not
-    // forgeable by a caller, and does not hand every visitor's address to a
-    // third party we have no data agreement with before they consent to
-    // anything.
-    try {
-      const response = await fetch("/api/attribution", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          partner_id: pId,
-          user_agent: navigator.userAgent,
-          language: navigator.language,
-          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        }),
-      });
-
-      if (response.ok) {
-        setIsLogged(true);
-      }
-    } catch (err) {
-      console.warn("Fingerprint capture failed, clipboard fallback active.", err);
-    }
+  /**
+   * The iOS half of the attribution, and it has to happen HERE.
+   *
+   * WebKit rejects `clipboard.writeText` called outside a user gesture, in so
+   * many words: "A call to clipboard.write or clipboard.writeText outside the
+   * scope of a user gesture (such as click or touch event handlers) will
+   * result in the immediate rejection of the promise"
+   * (webkit.org/blog/10855/async-clipboard-api). It used to run inside the
+   * mount effect with an empty `catch`, so the promise was rejected on every
+   * iPhone and swallowed on every iPhone: the channel never worked once.
+   *
+   * The write is started synchronously inside the handler — no `await` before
+   * it — and the navigation waits at most a moment for it, so a clipboard that
+   * never settles cannot strand the visitor on this page.
+   */
+  const writeClipboardToken = async (): Promise<void> => {
+    const token = clickToken(clickId);
+    if (!token || !navigator.clipboard?.writeText) return;
+    const written = navigator.clipboard.writeText(token).catch(() => {});
+    await Promise.race([written, new Promise((resolve) => setTimeout(resolve, 300))]);
   };
 
-  const handleRedirect = () => {
+  const handleRedirect = async () => {
     setIsRedirecting(true);
     trackEvent("download_page_cta_click", { target_store: platform === "ios" ? "app_store" : "play_store" });
 
     // iOS has no install-referrer equivalent — attribution there rides on the
-    // clipboard + fingerprint pair written by captureFingerprint.
+    // clipboard, written inside this gesture and nowhere else.
+    if (platform === "ios") await writeClipboardToken();
+
     const targetUrl =
-      platform === "ios" ? APP_STORE_URL : buildPlayStoreUrl(partnerId);
+      platform === "ios" ? APP_STORE_URL : buildPlayStoreUrl(clickId);
 
     window.location.href = targetUrl;
   };
@@ -584,10 +660,15 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
         <PartnerCampaignHero
           sealUrl={partnerData!.logoUrl!}
           partnerName={partnerData!.name ?? ""}
-          partnerId={partnerId}
+          clickId={clickId}
           audioSlot={audioCard}
           descriptionSlot={descriptionBlock}
-          onStoreClick={(store) => trackEvent("download_page_store_badge_click", { target_store: store })}
+          onStoreClick={(store) => {
+            trackEvent("download_page_store_badge_click", { target_store: store });
+            // The App Store badge is the iOS way out of this page, so it writes
+            // the same clipboard token the floating CTA does — inside the tap.
+            if (store === "app_store") void writeClipboardToken();
+          }}
         />
         {floatingCta}
       </section>

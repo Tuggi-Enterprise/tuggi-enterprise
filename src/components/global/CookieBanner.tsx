@@ -3,6 +3,13 @@
 import { useState, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  CONSENT_GRANTED,
+  CONSENT_KEY,
+  CONSENT_MAX_AGE_SECONDS,
+  consentAnswered,
+  storedConsent,
+} from "@/lib/consent";
 
 /**
  * How much room the consent banner is taking at the bottom of the viewport,
@@ -24,8 +31,7 @@ export const CookieBanner = () => {
   const t = useTranslations("CookieBanner");
 
   useEffect(() => {
-    const consent = localStorage.getItem("tuggi_cookie_consent");
-    if (!consent) {
+    if (!consentAnswered(storedConsent())) {
       setShowBanner(true);
     }
   }, []);
@@ -57,18 +63,29 @@ export const CookieBanner = () => {
     };
   }, [showBanner]);
 
-  const handleAccept = () => {
-    localStorage.setItem("tuggi_cookie_consent", "true");
-    document.cookie = "tuggi_cookie_consent=true; path=/; max-age=31536000";
+  /**
+   * Both stores, always together, and the cookie is not redundant: the three
+   * tracker components read `localStorage` in the browser, and the attribution
+   * gate of BR-USUARIO-033 is decided on the SERVER, which can only see a
+   * cookie. Writing one without the other makes half the site believe the
+   * visitor never answered.
+   */
+  const remember = (answer: string) => {
+    localStorage.setItem(CONSENT_KEY, answer);
+    document.cookie = `${CONSENT_KEY}=${answer}; path=/; max-age=${CONSENT_MAX_AGE_SECONDS}; samesite=lax`;
     setShowBanner(false);
-    // Reload to fire GA if needed, or we can use a state to render GA in the layout
+  };
+
+  const handleAccept = () => {
+    remember(CONSENT_GRANTED);
+    // The reload is what turns the answer into behaviour: the trackers mount
+    // on it, and on a partner page the attribution capture runs again — this
+    // time past the gate, since the request now carries the cookie above.
     window.location.reload();
   };
 
   const handleDecline = () => {
-    localStorage.setItem("tuggi_cookie_consent", "false");
-    document.cookie = "tuggi_cookie_consent=false; path=/; max-age=31536000";
-    setShowBanner(false);
+    remember("false");
   };
 
   return (

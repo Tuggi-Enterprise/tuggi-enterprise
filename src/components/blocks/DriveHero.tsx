@@ -4,9 +4,15 @@ import { useTranslations } from "next-intl";
 import { DriveHeroAnimator } from "./DriveHeroAnimator";
 import { sendGAEvent } from "@next/third-parties/google";
 import Image from "next/image";
+import { buildPlayStoreUrl } from "@/lib/app-meta";
+import { useAttributionClickId } from "@/lib/conversionHooks";
 
 export function DriveHero() {
   const t = useTranslations("Drive.Hero");
+  // This badge had the store URL typed into the JSX, outside the SSOT of
+  // lib/app-meta — so it was the one CTA that could not carry a referrer even
+  // after every other one did (BR-B2B-002).
+  const clickId = useAttributionClickId();
 
   return (
     <section className="bg-tuggi-bg pt-32 pb-24 overflow-hidden relative">
@@ -40,7 +46,7 @@ export function DriveHero() {
               </a>
               
               <a 
-                href="https://play.google.com/store/apps/details?id=com.tuggidrive.app"
+                href={buildPlayStoreUrl(clickId)}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => sendGAEvent({ event: 'click_download', value: 'google_play' })}

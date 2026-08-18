@@ -1,4 +1,5 @@
 import { CONTENT_LANGUAGES } from "./product-facts";
+import { clickToken, UUID_PATTERN } from "./attribution";
 
 /**
  * Single source of truth for app-level metadata.
@@ -41,8 +42,7 @@ export const TUGGI_PARTNER_ID = "8be94d35-282d-46bf-bc12-6fcd2f83a432";
  * used. Same UUID shape the app's InstallReferrerService parses out of the Play
  * referrer: anything else can never match an install, whatever we store.
  */
-export const PARTNER_ID_PATTERN =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+export const PARTNER_ID_PATTERN = UUID_PATTERN;
 
 /** True when an install by this visitor may be credited to `id`. */
 export function isAttributablePartnerId(
@@ -53,21 +53,32 @@ export function isAttributablePartnerId(
 }
 
 /**
- * The Play Store URL for a download, carrying the install referrer whenever the
- * visit is attributable. `referrer=partner_id_<uuid>` is what Android hands the
- * app through InstallReferrerClient on first launch — the one attribution
- * channel that survives the network changing between the QR scan and the
- * install, so a link that drops it is a lost commission, silently.
+ * The Play Store URL for a download, carrying the install referrer whenever
+ * this visitor has a captured click — `referrer=tuggi_click_<uuid>`, the token
+ * of contract §2. Android hands it to the app through InstallReferrerClient on
+ * first launch, and it is the one attribution channel that survives the
+ * network changing between the QR scan and the install, so a link that drops it
+ * is a lost commission, silently.
+ *
+ * IT TAKES THE CLICK ID AND NOT THE PARTNER ID, since #4xx. The click id is the
+ * primary key of the row this visit wrote, so the app's match becomes a lookup
+ * instead of a guess, the row can be marked as consumed (which is what kills
+ * reuse behind a NAT), the attribution keeps its provenance, and a partner's
+ * UUID stops being printed on public material. The app still parses the legacy
+ * `partner_id_<uuid>` for the pieces already in the field — it is the site that
+ * stops emitting it.
  *
  * Single owner on purpose. This rule used to be written inline inside the
  * partner page's floating CTA; the campaign band's Play badge linked to the
  * bare PLAY_STORE_URL, and every install started from that badge landed
- * unattributed. Both call this now, and so does anything added later.
+ * unattributed. Every store CTA of the site calls this now — `useAttributionClickId`
+ * hands them the id — and so does anything added later.
  */
-export function buildPlayStoreUrl(partnerId?: string | null): string {
-  if (!isAttributablePartnerId(partnerId)) return PLAY_STORE_URL;
+export function buildPlayStoreUrl(clickId?: string | null): string {
+  const token = clickToken(clickId);
+  if (!token) return PLAY_STORE_URL;
   // PLAY_STORE_URL already carries `?id=`, hence the `&`.
-  return `${PLAY_STORE_URL}&referrer=${encodeURIComponent(`partner_id_${partnerId}`)}`;
+  return `${PLAY_STORE_URL}&referrer=${encodeURIComponent(token)}`;
 }
 
 /** Public social profiles for schema.org `sameAs`. */

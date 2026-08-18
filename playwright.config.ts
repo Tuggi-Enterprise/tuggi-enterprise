@@ -18,6 +18,14 @@ export const E2E_SERVICE_ROLE_KEY = "e2e-service-role-key";
  * recognises a repeat caller.
  */
 export const E2E_PARTNER_FORM_HASH_SECRET = "e2e-partner-form-hash-secret";
+/**
+ * The shared secret that proves a request reached the origin through our own
+ * Cloudflare edge (`src/lib/rate-limit.ts`, `EDGE_SECRET_VAR`). Set here so the
+ * suite can drive both sides of the decision: a request that carries it in
+ * `x-tuggi-edge` has its `CF-Connecting-IP` honoured, and one that does not is
+ * read from `x-forwarded-for` no matter what it claims.
+ */
+export const E2E_EDGE_SHARED_SECRET = "e2e-edge-shared-secret";
 const APP_PORT = 3100;
 // ...and a build directory of its own, for the same reason. `next build` and
 // `next dev` both own `.next/`: building the suite under a running dev server
@@ -75,6 +83,9 @@ export default defineConfig({
         // A fixed value here so the hash of one address is stable across the run
         // and the double can count repeats the way the RPC does.
         PARTNER_FORM_HASH_SECRET: E2E_PARTNER_FORM_HASH_SECRET,
+        // Unset, this would degrade to reading `x-forwarded-for` — safe, and
+        // the suite would then be unable to prove the honoured half.
+        TUGGI_EDGE_SHARED_SECRET: E2E_EDGE_SHARED_SECRET,
         TUGGI_DIST_DIR: DIST_DIR,
       },
       stdout: "pipe",

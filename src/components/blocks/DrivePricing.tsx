@@ -5,8 +5,13 @@ import { useLocale, useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { Check, CheckCircle2, Store } from "lucide-react";
 import { sendGAEvent } from "@next/third-parties/google";
-import { APP_STORE_URL, PLAY_STORE_URL } from "@/lib/app-meta";
-import { usePlatform, useGeoPricing, type Platform } from "@/lib/conversionHooks";
+import { APP_STORE_URL, buildPlayStoreUrl } from "@/lib/app-meta";
+import {
+  useAttributionClickId,
+  useGeoPricing,
+  usePlatform,
+  type Platform,
+} from "@/lib/conversionHooks";
 import { formatPrice, type PassKey } from "@/lib/pricing";
 import { PRODUCT_FACTS } from "@/lib/product-facts";
 
@@ -55,8 +60,12 @@ function PassCta({
   primaryClass: string;
   secondaryClass: string;
 }) {
+  // Both legs of this CTA carry the first touch on Android (BR-B2B-002); iOS
+  // has no referrer channel and rides on the clipboard the partner page writes.
+  const clickId = useAttributionClickId();
+  const playHref = buildPlayStoreUrl(clickId);
   const primaryStore = platform === "android" ? "play_store" : "app_store";
-  const primaryHref = platform === "android" ? PLAY_STORE_URL : APP_STORE_URL;
+  const primaryHref = platform === "android" ? playHref : APP_STORE_URL;
   const fire = (store: "app_store" | "play_store") =>
     sendGAEvent({ event: "click_pass_cta", pass, store });
 
@@ -74,7 +83,7 @@ function PassCta({
       <div className="min-h-[2.75rem]">
         {platform === "desktop" && (
           <a
-            href={PLAY_STORE_URL}
+            href={playHref}
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => fire("play_store")}

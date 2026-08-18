@@ -2,6 +2,7 @@
 
 import Script from "next/script";
 import { useEffect, useState } from "react";
+import { consentGranted, storedConsent } from "@/lib/consent";
 
 export default function MicrosoftClarity({ id }: { id: string }) {
   // Only load Clarity AFTER the user accepts cookies — same gate as GA/Apollo.
@@ -10,7 +11,7 @@ export default function MicrosoftClarity({ id }: { id: string }) {
   const [hasConsent, setHasConsent] = useState(false);
 
   useEffect(() => {
-    if (localStorage.getItem("tuggi_cookie_consent") === "true") {
+    if (consentGranted(storedConsent())) {
       setHasConsent(true);
     }
   }, []);
