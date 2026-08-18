@@ -19,9 +19,8 @@ import { writeClickTokenToClipboard } from "../../src/lib/conversionHooks";
  *  1. THE WRITE HAPPENS INSIDE THE GESTURE. WebKit rejects
  *     `clipboard.writeText` called outside a user gesture and the `catch` that
  *     wrapped it swallowed the rejection, so the channel never worked once.
- *     `navigator.userActivation.isActive`, captured at the moment of the call,
- *     is what tells a handler apart from an effect — a mount-effect write
- *     records `false` here and the test fails.
+ *     What tells a handler apart from an effect is `insideTap` below, and it
+ *     is not the obvious signal — see the field's own note.
  *  2. IT HAPPENS AT EVERY WAY OUT, not only on the partner page. It used to
  *     live in `PartnerHero` and in the campaign badge alone, so a tourist who
  *     scanned the QR and then downloaded from the home page, the footer, the
@@ -55,8 +54,20 @@ const TOUR_PATH = "/en/tours/brazil/as-maravilhas-do-rio-em-um-dia";
 
 interface ClipboardWrite {
   text: string;
-  /** Whether the browser considered a user gesture active AT THE CALL. */
-  gesture: boolean;
+  /**
+   * Whether the call happened while a click event was being dispatched — which
+   * is what WebKit means by "within the scope of a user gesture (such as click
+   * or touch event handlers)".
+   *
+   * IT IS NOT `navigator.userActivation`, AND THAT WAS MEASURED. Chromium
+   * grants transient activation to a page it navigated to under automation, so
+   * `userActivation.isActive` reads `true` inside a mount effect for the first
+   * five seconds of the page: a spy that trusted it passed a deliberately
+   * broken build that wrote from `useEffect`. The flag below is raised by a
+   * capture-phase listener and lowered by a task queued from it, so it is up
+   * only while a real click is being handled.
+   */
+  insideTap: boolean;
 }
 
 /**
@@ -77,15 +88,31 @@ async function spyOnClipboard(page: Page): Promise<ClipboardWrite[]> {
   // whole point.
   await page.addInitScript(() => {
     const record = (window as unknown as {
-      __recordClipboardWrite?: (w: { text: string; gesture: boolean }) => void;
+      __recordClipboardWrite?: (w: { text: string; insideTap: boolean }) => void;
     }).__recordClipboardWrite;
+
+    // Up while a click is being dispatched, down on the task queued from the
+    // capture phase — which runs after the whole dispatch, and before anything
+    // a handler may have deferred with a timer of its own.
+    let dispatching = 0;
+    window.addEventListener(
+      "click",
+      () => {
+        dispatching++;
+        setTimeout(() => {
+          dispatching--;
+        }, 0);
+      },
+      true
+    );
+
     const real = navigator.clipboard?.writeText?.bind(navigator.clipboard);
     Object.defineProperty(navigator, "clipboard", {
       configurable: true,
       value: {
         readText: navigator.clipboard?.readText?.bind(navigator.clipboard),
         writeText: (text: string) => {
-          record?.({ text, gesture: navigator.userActivation?.isActive ?? false });
+          record?.({ text, insideTap: dispatching > 0 });
           return real ? real(text) : Promise.resolve();
         },
       },
@@ -233,8 +260,8 @@ test.describe("every App Store CTA writes the token, inside the tap", () => {
       for (const write of writes) {
         expect(write.text).toBe(`tuggi_click_${clickId}`);
         // The one assertion the old code would have failed: a write started
-        // from a mount effect has no activation, and WebKit rejects it.
-        expect(write.gesture).toBe(true);
+        // from a mount effect is not inside a tap, and WebKit rejects it.
+        expect(write.insideTap).toBe(true);
       }
     });
   }
@@ -252,7 +279,7 @@ test.describe("every App Store CTA writes the token, inside the tap", () => {
     await expect(bar).toBeVisible();
     await bar.click();
 
-    expect(writes).toEqual([{ text: `tuggi_click_${clickId}`, gesture: true }]);
+    expect(writes).toEqual([{ text: `tuggi_click_${clickId}`, insideTap: true }]);
   });
 
   test("BR-B2B-002: the partner page's own two exits still write it", async ({ page }) => {
@@ -272,7 +299,7 @@ test.describe("every App Store CTA writes the token, inside the tap", () => {
 
     expect(writes.length).toBe(2);
     for (const write of writes) {
-      expect(write).toEqual({ text: `tuggi_click_${clickId}`, gesture: true });
+      expect(write).toEqual({ text: `tuggi_click_${clickId}`, insideTap: true });
     }
   });
 
@@ -406,7 +433,7 @@ test.describe("in a territory that requires consent", () => {
     expect(tapped).toBeGreaterThan(0);
     expect(writes.length).toBe(tapped);
     for (const write of writes) {
-      expect(write).toEqual({ text: `tuggi_click_${clickId}`, gesture: true });
+      expect(write).toEqual({ text: `tuggi_click_${clickId}`, insideTap: true });
     }
   });
 });
