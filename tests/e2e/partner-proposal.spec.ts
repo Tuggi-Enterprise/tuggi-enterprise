@@ -23,6 +23,7 @@ import {
   hashClientAddress,
 } from "../../src/lib/partner-proposal/proposal-service";
 import { CNPJ_REFERENCE_VECTORS, isValidCnpj, normalizeCnpj } from "../../src/lib/cnpj";
+import { MATERIAL_FIELD_IDS, MATERIAL_KINDS, materialFieldId } from "../../src/lib/partner-proposal/fields";
 
 /**
  * The partnership proposal, moved from `tuggi-cms` to the site — card #396.
@@ -107,6 +108,10 @@ function validAnswers(overrides: Record<string, string> = {}) {
     representative_phone: "(22) 99876-5432",
     story_founder:
       "Meu avô, Antônio, abriu a casa em 1961 num galpão que era da fábrica de guarda-chuvas do bairro.",
+    // At least one kind of material is required — see the block at the end of this file. A
+    // fixture with none would make every submission test below assert against a 400 that has
+    // nothing to do with what it is testing.
+    material_table_display_qty: "12",
     ...overrides,
   };
 }
@@ -525,10 +530,10 @@ test.describe("BR-B2B-022 / BR-USUARIO-030: the list of what is asked", () => {
     expect(forbidden).toEqual([]);
   });
 
-  test("the 21 fields are the ones the CMS reads back, and exactly one story is required", () => {
+  test("the 24 fields are the ones the CMS reads back, and exactly one story is required", () => {
     // The count is the contract's, not a preference: `docs/contracts/partner-proposal-answers.md`
     // lists these ids and the CMS conference indexes `answers` by them.
-    expect(PARTNER_FORM_FIELDS.length).toBe(21);
+    expect(PARTNER_FORM_FIELDS.length).toBe(24);
     const requiredStories = PARTNER_FORM_FIELDS.filter(
       (field) => field.step === 3 && field.required
     ).map((field) => field.id);
@@ -728,5 +733,97 @@ test.describe("DS-COMPONENTE-026: the language switcher offers what the route se
     // THE MUTATION THIS CATCHES: making the switcher single-locale everywhere instead of on the
     // route that needs it. `localesServedOn` is the predicate, and it answers per route.
     await expect(page.locator("[data-locale-panel] a")).toHaveCount(LOCALES.length);
+  });
+});
+
+
+/* -------------------------------------------------------------------------- */
+/* 9. O material de divulgação                                                */
+/* -------------------------------------------------------------------------- */
+
+test.describe("the promotional material the partner asks for", () => {
+  test("BR-B2B-021: a proposal that asks for no material is refused, and the message names the choice", () => {
+    // The establishment's side of the contract IS displaying the material. A partner who
+    // displays nothing cannot sign, so the form is where that is caught — not the conference,
+    // three weeks later, by somebody who has to write and ask.
+    const answers = validAnswers();
+    for (const id of MATERIAL_FIELD_IDS) delete (answers as Record<string, string>)[id];
+
+    const problems = validateAnswers(answers);
+    expect(problems).toContainEqual({ field: MATERIAL_FIELD_IDS[0], code: "material_none" });
+  });
+
+  test("any ONE of the three satisfies the rule, and the other two stay blank", () => {
+    // Blank is a legitimate answer per kind — that is why there is no checkbox beside each
+    // number. What is not legitimate is all three at once.
+    for (const kind of MATERIAL_KINDS) {
+      const answers = validAnswers();
+      for (const id of MATERIAL_FIELD_IDS) delete (answers as Record<string, string>)[id];
+      (answers as Record<string, string>)[materialFieldId(kind)] = "1";
+
+      expect(validateAnswers(answers).filter((p) => p.code === "material_none")).toEqual([]);
+    }
+  });
+
+  test("zero is not an answer: it is the same as blank", () => {
+    const answers = validAnswers({ material_sticker_qty: "0" });
+    for (const id of MATERIAL_FIELD_IDS) {
+      if (id !== "material_sticker_qty") delete (answers as Record<string, string>)[id];
+    }
+    // `0` fails the shape first, and that is deliberate — `quantity_invalid` says what to fix,
+    // where `material_none` would send the person to a different question.
+    const problems = validateAnswers(answers);
+    expect(problems).toContainEqual({ field: "material_sticker_qty", code: "quantity_invalid" });
+    expect(problems.filter((p) => p.code === "material_none")).toEqual([]);
+  });
+
+  test("a quantity that is not a plain count is refused by shape", () => {
+    // All of these fit inside the 4-character limit, so the SHAPE is what has to catch them.
+    // `01` is in the list on purpose: it parses to 1 and would order the right amount, but a
+    // leading zero in a printed order is the kind of thing somebody re-reads as 10.
+    for (const bad of ["1,5", "-3", "0", "01", "1 2"]) {
+      const problems = validateAnswers(validAnswers({ material_sticker_qty: bad }));
+      expect(
+        problems.filter((p) => p.field === "material_sticker_qty" && p.code === "quantity_invalid"),
+        `"${bad}" should be refused by shape`
+      ).toHaveLength(1);
+    }
+  });
+
+  test("a quantity past the limit is refused by length, not by shape", () => {
+    // `12 mesas` is what somebody types when the label asks "em quantas mesas?". It never
+    // reaches the shape check: `too_long` fires first and says how much to cut, which is the
+    // more useful of the two messages. The control strips non-digits as you type, so this
+    // arrives only from a client that is not the form.
+    for (const long of ["12 mesas", "10000"]) {
+      const codes = validateAnswers(validAnswers({ material_sticker_qty: long }))
+        .filter((p) => p.field === "material_sticker_qty")
+        .map((p) => p.code);
+      expect(codes, `"${long}" should be refused`).toEqual(["too_long"]);
+    }
+  });
+
+  test("the three answer keys derive from the kinds the database accepts", () => {
+    // The same vocabulary lives in `partner.material_order_items.kind` (CHECK) and in the CMS
+    // mirror. Typing a fourth id here without widening the CHECK writes a row the database
+    // refuses at promotion time, weeks after the partner answered.
+    expect(MATERIAL_KINDS).toEqual(["sticker", "table_display", "counter_display"]);
+    expect(MATERIAL_FIELD_IDS).toEqual([
+      "material_sticker_qty",
+      "material_table_display_qty",
+      "material_counter_display_qty",
+    ]);
+  });
+
+  test("every material field carries its own copy, like every other field", () => {
+    const pt = JSON.parse(
+      fs.readFileSync(path.join(MESSAGES_DIR, "pt.json"), "utf8")
+    ) as Record<string, any>;
+    for (const id of MATERIAL_FIELD_IDS) {
+      expect(pt.PartnerProposal.fields[id]?.label, `${id} has no label`).toBeTruthy();
+    }
+    expect(pt.PartnerProposal.material?.title).toBeTruthy();
+    expect(pt.PartnerProposal.errors.material_none).toBeTruthy();
+    expect(pt.PartnerProposal.errors.quantity_invalid).toBeTruthy();
   });
 });

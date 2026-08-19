@@ -157,6 +157,23 @@ export function PartnerProposalField({
           />
         );
 
+      case "quantity":
+        return (
+          <input
+            {...shared}
+            // `type="text"` with `inputMode="numeric"`, not `type="number"`. A number input
+            // scrolls its own value when the wheel passes over it, accepts `e` and `-`, and
+            // renders spinners nobody asked for — for a plain count, none of that is worth the
+            // keypad it buys, and `inputMode` buys the keypad anyway.
+            type="text"
+            inputMode="numeric"
+            maxLength={field.maxLength}
+            // Digits only, as the person types: a `12 mesas` typed here would be refused on
+            // submit, and refusing it three screens later is the error this avoids entirely.
+            onChange={(event) => onChange(event.target.value.replace(/\D/g, ""))}
+          />
+        );
+
       case "postal_code":
         return (
           <input
@@ -219,6 +236,13 @@ export function errorMessage(
 ): string {
   if (problem.code === "required") {
     return t(`fields.${field.id}.requiredError`);
+  }
+  // `material_none` is anchored on the first material field, but it is about the THREE of them.
+  // Reading `fields.<id>.requiredError` here would say "how many stickers do you want?" to
+  // somebody whose actual answer is "a table display" — the message has to name the choice, not
+  // the field it happens to hang from.
+  if (problem.code === "material_none") {
+    return t("errors.material_none");
   }
   if (problem.code === "cnpj_incomplete") {
     return t("errors.cnpj_incomplete", { n: cnpjCharactersMissing(value) });

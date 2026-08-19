@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { Fragment, useCallback, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { AlertCircle, CheckCircle2, WifiOff } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
@@ -10,6 +10,7 @@ import {
   PARTNER_FORM_STEP_COUNT,
   fieldsOfStep,
   partnerField,
+  MATERIAL_FIELD_IDS,
   type PartnerField,
   type PartnerFieldId,
 } from "@/lib/partner-proposal/fields";
@@ -454,15 +455,38 @@ export function PartnerProposalForm({ contactEmail }: { contactEmail: string }) 
 
   function renderFields(currentStep: PartnerField["step"]) {
     return fieldsOfStep(currentStep).map((field) => (
-      <PartnerProposalField
-        key={field.id}
-        field={field}
-        value={answers[field.id] ?? ""}
-        problem={stepProblems.find((problem) => problem.field === field.id)}
-        onChange={(value) => setAnswer(field.id, value)}
-        nudge={renderNudge(field)}
-      />
+      <Fragment key={field.id}>
+        {field.id === MATERIAL_FIELD_IDS[0] ? materialHeading() : null}
+        <PartnerProposalField
+          field={field}
+          value={answers[field.id] ?? ""}
+          problem={stepProblems.find((problem) => problem.field === field.id)}
+          onChange={(value) => setAnswer(field.id, value)}
+          nudge={renderNudge(field)}
+        />
+      </Fragment>
     ));
+  }
+
+  /**
+   * The one group heading this form has, and it is a conditional rather than a group system.
+   *
+   * Three quantity boxes landing under `website` with nothing said would read as a form asking
+   * for numbers. What they need is the frame — this is about how the Tuggi shows up in the
+   * establishment, and blank is a legitimate answer for two of the three.
+   *
+   * A generic "field group" concept for a single group would be the layer for a case that does
+   * not exist yet. When there is a second group, this grows into one; today it is one `if`.
+   *
+   * `<h3>`: the step title above it is the `<h2>` (#403), and this sits one level under it.
+   */
+  function materialHeading() {
+    return (
+      <div className="mb-4 mt-8 border-t border-tuggi-border pt-6">
+        <h3 className="text-lg font-semibold text-tuggi-dark">{t("material.title")}</h3>
+        <p className="mt-1 text-sm text-tuggi-slate">{t("material.help")}</p>
+      </div>
+    );
   }
 
   function renderNudge(field: PartnerField) {

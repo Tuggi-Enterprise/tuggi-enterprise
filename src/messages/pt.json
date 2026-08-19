@@ -1017,6 +1017,10 @@
       "beforeSubmit": "Confira o e-mail e o telefone antes de enviar: é por eles que a gente fala com você.",
       "empty": "não preenchido"
     },
+    "material": {
+      "title": "Como o Tuggi vai aparecer no seu estabelecimento",
+      "help": "A gente fornece o material sem custo. Diga quanto precisa de cada um e deixe em branco o que não se aplica — a quantidade final a gente confirma com você antes de produzir."
+    },
     "privacy": {
       "notice": "Os campos deste passo são de uma pessoa, não da empresa. O nome, o cargo, o e-mail e o telefone ficam guardados junto com a sua proposta, e a Tuggi os usa para falar com você sobre esta parceria e para gerar o contrato.",
       "link": "Como tratamos os seus dados"
@@ -1076,6 +1080,18 @@
       "website": {
         "label": "Site"
       },
+      "material_sticker_qty": {
+        "label": "Adesivos — quantos você quer?",
+        "help": "Para a porta, a vitrine ou o balcão."
+      },
+      "material_table_display_qty": {
+        "label": "Displays de mesa — em quantas mesas?",
+        "help": "Um display por mesa. Conte só as mesas onde ele vai ficar."
+      },
+      "material_counter_display_qty": {
+        "label": "Displays de balcão — quantos?",
+        "help": "Para o balcão, a recepção ou o caixa."
+      },
       "representative_name": {
         "label": "Nome completo",
         "help": "Como está no documento de constituição.",
@@ -1130,7 +1146,9 @@
       "cnpj_incomplete": "O CNPJ tem 14 caracteres. {n, plural, one {Falta # caractere} other {Faltam # caracteres}}.",
       "cnpj_invalid": "Este CNPJ não confere. Confira os 14 caracteres — inclusive as letras, se o seu tiver.",
       "postal_code": "O CEP tem 8 números.",
-      "too_long": "Você passou de {max} caracteres. Tire {over} para continuar."
+      "too_long": "Você passou de {max} caracteres. Tire {over} para continuar.",
+      "quantity_invalid": "Escreva só o número, de 1 a 9999. Por exemplo: 12.",
+      "material_none": "Escolha ao menos um material: adesivo, display de mesa ou display de balcão. É ele que leva o turista do seu estabelecimento para o aplicativo."
     },
     "states": {
       "draftResumed": "O que você preencheu em {date} ficou guardado neste aparelho. Continue de onde parou.",

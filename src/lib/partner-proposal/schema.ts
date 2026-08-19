@@ -17,7 +17,12 @@
  * cadence in front of `service_role` — costs more than twenty lines that a test pins.
  */
 
-import { PARTNER_FORM_FIELDS, type PartnerField, type PartnerFieldId } from "./fields";
+import {
+  MATERIAL_FIELD_IDS,
+  PARTNER_FORM_FIELDS,
+  type PartnerField,
+  type PartnerFieldId,
+} from "./fields";
 import { cnpjCharacters, isValidCnpj } from "@/lib/cnpj";
 
 export type PartnerAnswers = Partial<Record<PartnerFieldId, string>>;
@@ -39,6 +44,14 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
  */
 const PHONE_DIGITS = /^(55)?\d{10,11}$/;
 const POSTAL_CODE_DIGITS = /^\d{8}$/;
+/**
+ * A quantity of promotional material: digits only, one to four of them, and never a leading zero.
+ *
+ * `maxLength` already caps the length, so this pattern is here for the SHAPE — `12 mesas`, `1,5`
+ * and `-3` are all inside the limit and none of them is a number anybody can print. Four digits
+ * because an order of five figures is a typo, not an order.
+ */
+const QUANTITY_DIGITS = /^[1-9]\d{0,3}$/;
 
 export interface FieldProblem {
   field: PartnerFieldId;
@@ -50,6 +63,8 @@ export interface FieldProblem {
     | "cnpj_incomplete"
     | "cnpj_invalid"
     | "postal_code"
+    | "quantity_invalid"
+    | "material_none"
     | "too_long";
 }
 
@@ -99,9 +114,39 @@ export function validateAnswers(answers: PartnerAnswers): FieldProblem[] {
           problems.push({ field: field.id, code: "required" });
         }
         break;
+      case "quantity":
+        if (!QUANTITY_DIGITS.test(raw)) {
+          problems.push({ field: field.id, code: "quantity_invalid" });
+        }
+        break;
       default:
         break;
     }
+  }
+
+  /**
+   * The promotional material: EVERY field is optional on its own, and the SUM is not.
+   *
+   * This rule cannot live on a field, which is why it is here and not in the list. Each quantity
+   * is `required: false` because blank means "I do not want this one" — a legitimate answer for
+   * two of the three, and the reason the form has no checkbox beside each number. What is not
+   * legitimate is wanting none of them: the establishment's side of the contract is displaying
+   * the material (BR-B2B-021), so a partner who displays nothing cannot sign.
+   *
+   * The problem is reported on the FIRST material field so the per-step summary has somewhere to
+   * point — a problem with no field is a message the person cannot act on.
+   */
+  const materialAnswered = MATERIAL_FIELD_IDS.some((id) => {
+    const raw = (answers[id] ?? "").trim();
+    return raw !== "" && QUANTITY_DIGITS.test(raw);
+  });
+  const materialAlreadyWrong = problems.some(
+    (problem) => MATERIAL_FIELD_IDS.indexOf(problem.field) >= 0
+  );
+  // Not while one of them is malformed: `quantity_invalid` already says what to fix, and adding
+  // "choose at least one" on top of it asks for something the person was in the middle of doing.
+  if (!materialAnswered && !materialAlreadyWrong) {
+    problems.push({ field: MATERIAL_FIELD_IDS[0], code: "material_none" });
   }
 
   return problems;

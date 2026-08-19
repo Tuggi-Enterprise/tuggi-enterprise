@@ -43,6 +43,9 @@ export type PartnerFieldId =
   | "instagram"
   | "opening_hours"
   | "website"
+  | "material_sticker_qty"
+  | "material_table_display_qty"
+  | "material_counter_display_qty"
   // Step 2 — who answers for the establishment
   | "representative_name"
   | "representative_role"
@@ -62,7 +65,8 @@ export type PartnerFieldType =
   | "cnpj"
   | "postal_code"
   | "select"
-  | "textarea";
+  | "textarea"
+  | "quantity";
 
 export interface PartnerField {
   id: PartnerFieldId;
@@ -75,6 +79,32 @@ export interface PartnerField {
   /** Option ids for a select. The label of each one is a copy key. */
   options?: readonly string[];
 }
+
+/**
+ * The three kinds of promotional material the partner may ask for — and the vocabulary is
+ * shared with the database, not merely similar to it.
+ *
+ * `core.material_order_items.kind` carries these exact three ids in its CHECK, and the field id
+ * of each one is `material_<kind>_qty`, derived below rather than typed out. So a fourth kind is
+ * one edit here, one CHECK widened in the migration, and one line in the CMS mirror; there is no
+ * fourth place where the list could disagree with itself.
+ *
+ * WHY THE COUNTER DISPLAY IS OFFERED TO EVERYONE and not only to hotels: the piece is the same
+ * piece for now (operator, 2026-08-19). A restaurant has a till, a shop has a counter, and
+ * gating the option on `category` would be a rule about a difference that does not exist yet.
+ */
+export const MATERIAL_KINDS = ["sticker", "table_display", "counter_display"] as const;
+export type MaterialKind = (typeof MATERIAL_KINDS)[number];
+
+/** The field id that carries the quantity asked for one kind. */
+export function materialFieldId(kind: MaterialKind): PartnerFieldId {
+  return `material_${kind}_qty` as PartnerFieldId;
+}
+
+export const MATERIAL_FIELD_IDS: readonly PartnerFieldId[] = MATERIAL_KINDS.map(materialFieldId);
+
+/** Up to four digits. A pedido of five figures is a typo, not an order. */
+export const MATERIAL_QUANTITY_MAX_LENGTH = 4;
 
 /** Categories offered in step 1. Ids in English; labels in `src/messages/pt.json`. */
 export const PARTNER_CATEGORIES = [
@@ -104,6 +134,21 @@ export const PARTNER_FORM_FIELDS: readonly PartnerField[] = [
   { id: "instagram", step: 1, type: "text", required: false, maxLength: 60 },
   { id: "opening_hours", step: 1, type: "textarea", required: false, maxLength: 400 },
   { id: "website", step: 1, type: "url", required: false, maxLength: 300 },
+
+  // The promotional material, at the END of step 1 and NOT in a fifth step. Three numbers do
+  // not pay for one more screen to abandon, and the person is already declaring the place.
+  //
+  // NO CHECKBOX BESIDE EACH NUMBER, deliberately: a tick plus a quantity has an invalid state
+  // ("ticked, no number") that the form would then have to explain. Blank IS "I do not want
+  // this one", and `required: false` is what says so per field. What is required is the SUM,
+  // and that rule cannot live on a single field — it is in `validateAnswers`.
+  ...MATERIAL_KINDS.map((kind) => ({
+    id: materialFieldId(kind),
+    step: 1 as const,
+    type: "quantity" as const,
+    required: false,
+    maxLength: MATERIAL_QUANTITY_MAX_LENGTH,
+  })),
 
   { id: "representative_name", step: 2, type: "text", required: true, autoComplete: "name", maxLength: 160 },
   { id: "representative_role", step: 2, type: "text", required: true, autoComplete: "organization-title", maxLength: 120 },
