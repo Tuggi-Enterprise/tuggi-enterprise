@@ -4,7 +4,7 @@
  * The QR on the printed display is not the only way this URL travels: it also
  * gets pasted into WhatsApp and Instagram to promote the event. A generic Tuggi
  * card there says nothing about who is inviting, so when the partner has a seal
- * (core.clients.avatar_url) we draw it next to the partner name.
+ * (partner.clients.avatar_url) we draw it next to the partner name.
  *
  * Most partners have no seal. That case keeps the exact image the route served
  * before this file existed (public/images/og-image-tuggi.jpg), re-encoded by

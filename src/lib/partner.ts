@@ -21,7 +21,7 @@ export interface PartnerData {
   /**
    * Partner seal rendered in the hero lockup next to the Tuggi logo (co-branding:
    * the visitor scanned a QR printed with the partner's mark and needs to see it
-   * again to know the page is the right one). Null unless core.clients.avatar_url
+   * again to know the page is the right one). Null unless partner.clients.avatar_url
    * is a public object in our own Storage — see isPublicStorageUrl.
    */
   logoUrl?: string | null;
@@ -140,13 +140,13 @@ async function resolvePartner(
 ): Promise<PartnerData | null> {
   try {
     // service_role, and here it is load-bearing: the only SELECT policy on
-    // `core.clients` requires an admin `cms_users` row or a matching
+    // `partner.clients` requires an admin `cms_users` row or a matching
     // `auth.uid()`, so as `anon` this query returns zero rows **and no error**
     // — every partner landing would 404 and drop out of the sitemap with
     // nothing logged anywhere.
     const supabase = getSupabaseClient("serviceRole");
     const { data: client, error } = await supabase
-      .schema("core")
+      .schema("partner")
       .from("clients")
       .select(CLIENT_COLUMNS)
       .eq(column, value)
@@ -213,7 +213,7 @@ async function resolveCoupon(
     // `get_coupon_preview` is SECURITY DEFINER and `anon` may execute it, so
     // this one call would survive the publishable key. It stays on
     // service_role with the rest of the partner page: the reads around it
-    // (`core.clients`, above) do not.
+    // (`partner.clients`, above) do not.
     const supabase = getSupabaseClient("serviceRole");
     const { data, error } = await supabase
       .schema("drive")

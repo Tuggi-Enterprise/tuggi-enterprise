@@ -31,7 +31,7 @@ export function getStorageHost(): string | null {
  * True when `url` points at a public object in our own Supabase Storage — the
  * exact set next.config.ts lets next/image optimize.
  *
- * Columns like core.clients.avatar_url are free text typed by an admin in the
+ * Columns like partner.clients.avatar_url are free text typed by an admin in the
  * CMS, so an off-allowlist URL is an expected input, not an anomaly. Callers
  * drop those and fall back to the no-image layout instead of rendering an
  * image the optimizer would refuse.

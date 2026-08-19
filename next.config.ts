@@ -6,7 +6,7 @@ import { MOVED_ROUTES, localizedPathname } from "./src/i18n/pathnames";
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
-// Partner logos (core.clients.avatar_url) are the only remote images the site
+// Partner logos (partner.clients.avatar_url) are the only remote images the site
 // renders. next/image rejects every host absent from this allowlist with a 400,
 // so the list is also the guard on a column an admin types by hand in the CMS.
 // Host derived from SUPABASE_URL — see src/lib/storage.ts, which the runtime

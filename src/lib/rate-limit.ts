@@ -235,7 +235,7 @@ export async function registerAttempt(options: {
   }
 
   const { data, error } = await getSupabaseClient("serviceRole")
-    .schema("core")
+    .schema("partner")
     .rpc("record_partner_form_attempt", {
       p_client_hash: clientHash,
       p_window_seconds: windowSeconds,

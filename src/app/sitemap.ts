@@ -166,7 +166,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // silently short of every partner URL.
     const supabase = getSupabaseClient("serviceRole");
     const { data: partners } = await supabase
-      .schema("core")
+      .schema("partner")
       .from("clients")
       .select("slug, updated_at")
       .eq("status", "approved")

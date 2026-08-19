@@ -370,7 +370,7 @@ test.describe("URLs that live outside the site", () => {
 /**
  * BR-B2B-001 — the partner link is an instrument of attribution: only a
  * partner's own link may claim a download. The Tuggi landing resolves the
- * internal Tuggi client, which is a row in core.clients and not a partner, so
+ * internal Tuggi client, which is a row in partner.clients and not a partner, so
  * nothing is credited and no commission moves.
  *
  * The chrome draws "Download app" four times — the header at two breakpoints,

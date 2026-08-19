@@ -187,7 +187,7 @@ export async function POST(req: Request) {
     // Rejected before the write, not after: a malformed id can never match an
     // install, so the row would only ever be noise in the match window. The
     // internal Tuggi client is refused by the same call — it is a row in
-    // core.clients, it refers nobody, and a fingerprint for it is a row that
+    // partner.clients, it refers nobody, and a fingerprint for it is a row that
     // can only ever credit us to ourselves.
     if (!isAttributablePartnerId(partnerId)) {
       return NextResponse.json({ error: "Invalid partner_id" }, { status: 400 });

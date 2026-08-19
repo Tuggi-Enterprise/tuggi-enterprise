@@ -29,7 +29,7 @@ export const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com
 // or an API route.
 
 /**
- * Internal "Tuggi" client — a real row in core.clients, but not a partner:
+ * Internal "Tuggi" client — a real row in partner.clients, but not a partner:
  * it refers nobody and earns no commission, so its installs stay unattributed.
  * lib/partner.ts reads it from here to render that client as the plain
  * experience (PartnerData.isTuggi).

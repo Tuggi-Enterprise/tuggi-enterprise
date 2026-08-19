@@ -9,7 +9,7 @@
  *
  * THIS FILE IS ONE HALF OF A CROSS-REPOSITORY CONTRACT. The proposal is written here and read
  * in `tuggi-cms` — the conference screen, the regularity band and the promotion all index
- * `core.partner_form_submissions.answers` by these ids. Renaming one, dropping one or changing
+ * `partner.partner_form_submissions.answers` by these ids. Renaming one, dropping one or changing
  * `required` changes what the CMS reads, and the document that says so is
  * `docs/contracts/partner-proposal-answers.md`. The CMS keeps its own copy of the ids it reads
  * (`tuggi-cms/lib/partner-form/fields.ts`); the contract is what keeps the two honest, because
@@ -22,7 +22,7 @@
  *   partner needs Tuggi's account and not the other way round), and `billing_email` is out
  *   because asking for a billing address on a public capture surface implies a charge, which
  *   BR-B2B-015 item 8 and BR-B2B-016 item 6 close.
- * - Nothing here is written to `core.clients` by a public route. The submission is a proposal;
+ * - Nothing here is written to `partner.clients` by a public route. The submission is a proposal;
  *   the promotion is an authenticated act of the team in the CMS (BR-B2B-026, item 4).
  */
 
@@ -132,7 +132,7 @@ export function partnerField(id: PartnerFieldId): PartnerField {
 }
 
 /**
- * Columns of `core.clients` that this surface must never ask for. Kept as data, not as prose
+ * Columns of `partner.clients` that this surface must never ask for. Kept as data, not as prose
  * in a comment, because `tests/e2e/partner-proposal.spec.ts` asserts against it: a field added
  * by copy-paste from the CMS editor fails the suite instead of shipping.
  */

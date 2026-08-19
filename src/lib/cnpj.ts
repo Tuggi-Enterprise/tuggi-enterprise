@@ -12,7 +12,7 @@
  * It arrived here with the partnership proposal (#396), which moved out of the CMS.
  * `tuggi-cms/lib/validation/cnpj.ts` is the same port and stays there for the
  * conference screen and the promotion: the two ends read the same value out of
- * `core.partner_form_submissions.answers`, so they may not disagree about what a
+ * `partner.partner_form_submissions.answers`, so they may not disagree about what a
  * valid CNPJ is. The contract that binds them is
  * `docs/contracts/partner-proposal-answers.md`.
  *
@@ -128,7 +128,7 @@ export function isValidCnpj(cnpj: string): boolean {
  * The shapes one CNPJ can already have in a `tax_id` column, so a lookup by CNPJ matches the
  * company however it was typed.
  *
- * `core.clients.tax_id` holds both: everything written by the proposal is normalised (no
+ * `partner.clients.tax_id` holds both: everything written by the proposal is normalised (no
  * mask, uppercase), and records typed by hand before it existed carry the printed mask.
  * Matching one shape only lets the same company be registered twice, which is the whole point
  * of looking it up. It lives here because "what a stored CNPJ can look like" is one fact, and

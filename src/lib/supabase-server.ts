@@ -17,7 +17,7 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
  *    RLS policy instead of by a key that ignores RLS.
  *  - `/api/attribution`, `/api/data-deletion`, and the reads behind
  *    `/d/<slug>`, the sitemap and `/unsubscribe` still need **service_role**:
- *    `core.clients` has no policy that lets `anon` read it (it would answer
+ *    `partner.clients` has no policy that lets `anon` read it (it would answer
  *    zero rows, with no error, and every partner landing would 404), and
  *    `marketing.email_unsubscribes` has RLS on with no policies at all (it
  *    would answer 42501, and the opt-out would silently not be recorded).

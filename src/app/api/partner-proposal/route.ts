@@ -21,10 +21,10 @@ import { normalizeAnswers, validateAnswers } from "@/lib/partner-proposal/schema
  *      the barrier and there is no second one; see `registerSubmissionAttempt`.
  *   2. The body is validated against the field allowlist before anything is persisted — unknown
  *      keys are stripped, so `commission_rate` posted by hand goes nowhere.
- *   3. A CNPJ that already exists in `core.clients` is refused. That read is the only thing this
+ *   3. A CNPJ that already exists in `partner.clients` is refused. That read is the only thing this
  *      surface asks of the client table, and it answers `registered`/`free`/`unknown` — never a
  *      column.
- *   4. Nothing here writes `core.clients`. The submission is a proposal, and the promotion into
+ *   4. Nothing here writes `partner.clients`. The submission is a proposal, and the promotion into
  *      the live registration is an authenticated act of the team, in the CMS (BR-B2B-026, item 4).
  *
  * THE ORDER OF THE FOUR IS PART OF THE DESIGN, not a style. The limit is registered before the

@@ -263,7 +263,7 @@ export const A11Y_SITE_AUDIT_DATE = "2026-08-06";
  * Hours to a decided outcome on the partner venue triage — **BR-B2B-010 item 4**.
  *
  * Calendar hours, counted from the approval of the *partnership* (the
- * `core.clients.status` transition to 'approved'), not from the partner's
+ * `partner.clients.status` transition to 'approved'), not from the partner's
  * registration. Weekends and holidays do not stop the clock: the operator
  * published the deadline and chose to state it in hours.
  *

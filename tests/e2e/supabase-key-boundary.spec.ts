@@ -19,7 +19,7 @@ import { SUPABASE_KEY_ENV } from "../../src/lib/supabase-server";
  *
  *  - too much power on `/api/leads` and a route anyone can reach is holding a
  *    key that could read every lead ever collected;
- *  - too little power anywhere else and `core.clients` answers zero rows with
+ *  - too little power anywhere else and `partner.clients` answers zero rows with
  *    no error (ten partner landings turn into 404s and vanish from the
  *    sitemap), while `marketing.email_unsubscribes` answers 42501 and the
  *    opt-out is simply not recorded.
@@ -187,7 +187,7 @@ test.describe("each consumer connects with the key it is entitled to", () => {
     expect(byRoute["POST /rest/v1/rpc/record_partner_form_attempt"]).toBe(E2E_SERVICE_ROLE_KEY);
   });
 
-  test("the partner landing reads core.clients with the service-role key", async ({
+  test("the partner landing reads partner.clients with the service-role key", async ({
     page,
     request,
   }) => {

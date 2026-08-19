@@ -165,7 +165,7 @@ function parseDraft(input: unknown): Record<string, string> | null {
  * #398 this line called `normalizeCnpj`, which only strips `.` `/` `-`: a CNPJ typed with a
  * space, a tab, an underscore or a zero-width character passed validation (which strips
  * `[^A-Z0-9]` first) and was stored with the rubbish inside. The refusal of a CNPJ already in
- * `core.clients` matches by shape, so it stopped firing — and the CMS conference screen, asking
+ * `partner.clients` matches by shape, so it stopped firing — and the CMS conference screen, asking
  * the same question of the same value, told the reviewer there was no client to merge with. Two
  * expressions for one fact; there is one now, and `docs/contracts/partner-proposal-answers.md`
  * §2.1 is what it has to satisfy.

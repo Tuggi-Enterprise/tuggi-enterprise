@@ -22,7 +22,7 @@
  *  3. That INSERT is behind a durable per-address limit decided by the database, not by this
  *     process — see `registerSubmissionAttempt`.
  *
- * `core.clients` IS REACHABLE FROM HERE, and in one direction only: `lookupTaxId` asks whether a
+ * `partner.clients` IS REACHABLE FROM HERE, and in one direction only: `lookupTaxId` asks whether a
  * CNPJ is already registered and gets back one of three words. It selects `id`, returns no
  * column to the caller, and has no sibling that writes. The submission is still a proposal, and
  * the promotion into the live record is still an authenticated act of the team in the CMS
@@ -56,7 +56,7 @@ function service() {
  * Whether this CNPJ is already a client of ours — `registered`, `free`, or `unknown` when the
  * question could not be asked.
  *
- * A CNPJ already in `core.clients` is a partner the team has registered, and a second
+ * A CNPJ already in `partner.clients` is a partner the team has registered, and a second
  * registration of the same company through a public form would either duplicate the record or
  * invite somebody to overwrite it. It is refused at the door.
  *
@@ -212,7 +212,7 @@ export async function registerSubmissionAttempt(
  * publishes exactly that, in four languages (BR-USUARIO-028 item 1, BR-USUARIO-030 item 6).
  *
  * The secret has to be set on Vercel for this repository, and it is the same value the CMS used
- * to hold: the rows in `core.partner_form_attempts` were keyed with it, and a different secret
+ * to hold: the rows in `partner.partner_form_attempts` were keyed with it, and a different secret
  * re-keys everybody, which costs at most one window of counting.
  */
 export { HASH_SECRET_VAR, clientAddressOf, hashClientAddress } from "@/lib/rate-limit";

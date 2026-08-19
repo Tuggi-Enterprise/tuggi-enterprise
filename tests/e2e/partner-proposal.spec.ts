@@ -306,11 +306,11 @@ test.describe("BR-B2B-026 item 2: the CNPJ is what keeps a company from entering
     const stored = await (await request.get(`${MOCK_BASE}/__proposals?trade_name=${mark}`)).json();
     expect(stored.rows.length, "the row reached the table").toBe(1);
     // The mask never reaches the column: the CMS filters `tax_id_normalized` and the promotion
-    // matches `core.clients.tax_id`, and both start from this value.
+    // matches `partner.clients.tax_id`, and both start from this value.
     expect(stored.rows[0].answers.tax_id).toBe("12ABC34501DE35");
   });
 
-  test("a CNPJ already in core.clients is refused with 409 and never becomes a row", async ({
+  test("a CNPJ already in partner.clients is refused with 409 and never becomes a row", async ({
     request,
   }) => {
     const mark = probe("registered");
@@ -484,7 +484,7 @@ test.describe("the write never touches the deduplication key", () => {
     const stored = await (await request.get(`${MOCK_BASE}/__proposals?trade_name=${mark}`)).json();
     expect(stored.rows.length).toBe(1);
 
-    // `core.partner_form_submissions.tax_id_normalized` is `GENERATED ALWAYS ... STORED` —
+    // `partner.partner_form_submissions.tax_id_normalized` is `GENERATED ALWAYS ... STORED` —
     // measured on the live database on 2026-08-17, and the migration that created it carries a
     // probe for the same thing. Postgres refuses an INSERT that supplies a generated column
     // (428C9), so naming it here would not corrupt the deduplication key: it would 500 every
