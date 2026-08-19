@@ -160,6 +160,8 @@ export interface SubmissionLimitDecision {
   allowed: boolean;
   /** How long until the oldest attempt in the window falls out of it. */
   retryAfterSeconds: number;
+  /** `limit` when the window is really spent, `unavailable` when nothing could count — #400. */
+  reason?: "limit" | "unavailable";
 }
 
 /**
@@ -195,6 +197,57 @@ export async function registerSubmissionAttempt(
     windowSeconds: SUBMISSION_WINDOW_SECONDS,
     maxAttempts: SUBMISSION_LIMIT_PER_WINDOW,
   });
+}
+
+// ── The funnel count ────────────────────────────────────────────────────────────────────
+
+const FUNNEL_EVENTS_TABLE = "proposal_funnel_events";
+
+/**
+ * How many funnel events one address may record in an hour.
+ *
+ * Two hundred, and the number comes from the form rather than from a feeling: one person filling
+ * the proposal emits about six events — a view per step, the first touch, and the submission — so
+ * 200 is roughly thirty complete passes through the form from one address in one hour. An owner
+ * with several places, on the same Wi-Fi, never sees it; a script gets 200 rows instead of an
+ * unbounded number of them.
+ *
+ * A BUCKET OF ITS OWN, so this budget and the submission's cannot spend each other. The bucket
+ * goes into the key-hash (`@/lib/rate-limit`), which is what keeps them apart.
+ */
+export const FUNNEL_LIMIT_PER_WINDOW = 200;
+export const FUNNEL_BUCKET = "proposal-funnel";
+
+/**
+ * One row of the funnel count. The vocabulary, and what it may never carry, is `funnel.ts`.
+ *
+ * FAILS SILENT, AND THAT IS THE DESIGN. This is the only write in this file whose failure is
+ * not worth telling anybody about: a lost row skews a chart, and a chart is not the product. It
+ * also means the feature is inert rather than broken on an environment where the table has not
+ * been created yet — the migration is `data`'s and lands on its own clock.
+ *
+ * No `select` after the insert: nothing reads the id back, and asking PostgREST to return a row
+ * doubles the round trip of the cheapest write on this site.
+ */
+export async function registerFunnelAttempt(clientAddress: string) {
+  return registerAttempt({
+    bucket: FUNNEL_BUCKET,
+    clientAddress,
+    windowSeconds: SUBMISSION_WINDOW_SECONDS,
+    maxAttempts: FUNNEL_LIMIT_PER_WINDOW,
+  });
+}
+
+export async function recordFunnelEvent(kind: string, step: number | null): Promise<void> {
+  // `.schema("partner")` and NOT the `core` of `service()` above: this table was born in
+  // `partner` (migration `20260819180000`) and has no compatibility view in `core`, because it
+  // has no history to be compatible with. The five tables of the pipeline still answer from
+  // `core` through the views that `20260819170000` will drop; this one never had a reason to.
+  const { error } = await getSupabaseClient("serviceRole")
+    .schema("partner")
+    .from(FUNNEL_EVENTS_TABLE)
+    .insert({ event: kind, step });
+  if (error) console.error("[partner-proposal] funnel event not recorded");
 }
 
 /**

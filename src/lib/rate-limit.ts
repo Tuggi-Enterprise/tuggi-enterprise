@@ -38,6 +38,23 @@ export interface RateLimitDecision {
   allowed: boolean;
   /** How long until the oldest attempt in the window falls out of it. */
   retryAfterSeconds: number;
+  /**
+   * WHY A REFUSAL WAS A REFUSAL, and the two are not the same event to whoever is refused.
+   *
+   * `limit` is the barrier doing its job: this address really has spent its window, and waiting
+   * works. `unavailable` is the counter itself being unable to answer — the secret is missing
+   * from the environment, or the RPC errored — and waiting does NOT work, because nothing is
+   * counting down.
+   *
+   * They used to be indistinguishable to the caller, and #400 is what that cost: a deploy
+   * without `PARTNER_FORM_HASH_SECRET` refuses **100% of proposals** while telling every
+   * restaurant owner to try again in a few minutes. On Vercel that is one environment out of
+   * three — a variable created only in Production leaves every Preview in exactly that state,
+   * and the only evidence is a `console.error` nobody is watching.
+   *
+   * Absent on an allowed decision.
+   */
+  reason?: "limit" | "unavailable";
 }
 
 /**
@@ -231,7 +248,7 @@ export async function registerAttempt(options: {
   const clientHash = hashClientAddress(clientAddress, bucket);
   if (!clientHash) {
     console.error(`[rate-limit] ${HASH_SECRET_VAR} is not configured — ${bucket} was refused`);
-    return { allowed: false, retryAfterSeconds: windowSeconds };
+    return { allowed: false, retryAfterSeconds: windowSeconds, reason: "unavailable" };
   }
 
   const { data, error } = await getSupabaseClient("serviceRole")
@@ -246,7 +263,7 @@ export async function registerAttempt(options: {
 
   if (error || !decision || typeof decision.allowed !== "boolean") {
     console.error(`[rate-limit] ${bucket} limit could not be consulted`);
-    return { allowed: false, retryAfterSeconds: windowSeconds };
+    return { allowed: false, retryAfterSeconds: windowSeconds, reason: "unavailable" };
   }
 
   return {
@@ -255,5 +272,6 @@ export async function registerAttempt(options: {
       typeof decision.retry_after_seconds === "number"
         ? decision.retry_after_seconds
         : windowSeconds,
+    reason: decision.allowed ? undefined : "limit",
   };
 }

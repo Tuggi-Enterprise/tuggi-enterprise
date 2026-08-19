@@ -6,6 +6,14 @@ import { useTranslations } from "next-intl";
 import { BRAZIL_STATES } from "@/lib/brazil-states";
 import { PARTNER_CATEGORIES, type PartnerField } from "@/lib/partner-proposal/fields";
 import { maskCnpjInput, cnpjCharactersMissing, CNPJ_INPUT_PLACEHOLDER } from "@/lib/cnpj";
+import {
+  PHONE_PLACEHOLDER,
+  POSTAL_CODE_PLACEHOLDER,
+  maskPhoneInput,
+  maskPostalCodeInput,
+  normalizeInstagramInput,
+  normalizeWebsiteInput,
+} from "@/lib/partner-proposal/field-format";
 import type { FieldProblem } from "@/lib/partner-proposal/schema";
 import {
   FIELD_CONTROL,
@@ -24,6 +32,22 @@ import {
  *
  * `aria-describedby` points at help and error together, `aria-invalid` marks the field, and the
  * error carries an icon AND text (DS-A11Y-003), never colour alone.
+ *
+ * ---------------------------------------------------------------------------------------------
+ * Two things changed here on 2026-08-19, and both were the same omission
+ * ---------------------------------------------------------------------------------------------
+ *
+ * **`onBlur` is passed now.** It was declared on this component and NO CALLER EVER PASSED IT, so
+ * validation only ran on `Continuar` — while `PartnerLeadForm`, five questions long on the
+ * landing page one click earlier, had validated on blur since #294. The prop was orphan code
+ * (CLAUDE.md §6) with a product cost: a person who fixed an invalid e-mail into a different
+ * invalid e-mail watched the red disappear and found out three screens later.
+ *
+ * **The CEP and the phone got the mask the quantity field already had.** `postal_code` passed
+ * `event.target.value` through untouched — letters, spaces, nine characters of anything — and
+ * `representative_phone` fell through to the default branch with no formatting at all, under a
+ * help line publishing `21 90000-0000` as the shape. The masks are in `field-format.ts`, where a
+ * test can hold them to it.
  */
 
 /** Fraction of the limit at which the remaining budget becomes visible (spec §6). */
@@ -34,9 +58,14 @@ interface PartnerProposalFieldProps {
   value: string;
   problem?: FieldProblem;
   onChange: (value: string) => void;
-  onBlur?: () => void;
+  /** Runs when the field loses focus: this is where per-field validation happens. */
+  onBlur?: (normalized: string) => void;
   /** Rendered under the field: the non-blocking nudges of step 3. */
   nudge?: React.ReactNode;
+  /** Rendered under the control: what the CEP lookup has to say, when it has something. */
+  note?: React.ReactNode;
+  /** `done` on the last field of a step, so the phone keyboard stops offering "next". */
+  last?: boolean;
 }
 
 export function PartnerProposalField({
@@ -46,6 +75,8 @@ export function PartnerProposalField({
   onChange,
   onBlur,
   nudge,
+  note,
+  last,
 }: PartnerProposalFieldProps) {
   const t = useTranslations("PartnerProposal");
   const inputId = `partner-field-${field.id}`;
@@ -76,16 +107,26 @@ export function PartnerProposalField({
 
   const controlClass = `${FIELD_CONTROL}${problem ? ` ${FIELD_CONTROL_INVALID}` : ""}`;
 
-  const shared = {
-    id: inputId,
-    name: field.id,
-    value,
-    onBlur,
-    "aria-invalid": problem ? (true as const) : undefined,
-    "aria-describedby": describedBy || undefined,
-    autoComplete: field.autoComplete,
-    className: controlClass,
-  };
+  /**
+   * The value that leaves the field when focus does, for the two fields whose normalisation is
+   * a blur and not a keystroke.
+   *
+   * `website` gets its scheme here rather than on `change` because prefixing `https://` while
+   * somebody is typing the first letter puts the cursor after a scheme they did not ask for.
+   * `instagram` is normalised on `change` (a paste is one event and the person should see the
+   * handle immediately), so it only passes through unchanged.
+   */
+  function normalizeOnBlur(raw: string): string {
+    if (field.id === "website") return normalizeWebsiteInput(raw);
+    return raw;
+  }
+
+  function handleBlur() {
+    if (!onBlur) return;
+    const normalized = normalizeOnBlur(value);
+    if (normalized !== value) onChange(normalized);
+    onBlur(normalized);
+  }
 
   return (
     <div className="mb-6">
@@ -106,6 +147,7 @@ export function PartnerProposalField({
         </p>
       ) : null}
 
+      {note}
       {nudge}
 
       {problem ? (
@@ -118,13 +160,37 @@ export function PartnerProposalField({
   );
 
   function renderControl() {
+    // `next` on every field but the last of its step: the phone keyboard's action key is the
+    // cheapest "continue" this form has, and without it the key says `return` and does nothing.
+    const shared = {
+      id: inputId,
+      name: field.id,
+      value,
+      onBlur: handleBlur,
+      "aria-invalid": problem ? (true as const) : undefined,
+      "aria-describedby": describedBy || undefined,
+      autoComplete: field.autoComplete,
+      enterKeyHint: last ? ("done" as const) : ("next" as const),
+      className: controlClass,
+    };
+
     switch (field.type) {
       case "textarea":
         // No `maxLength`, deliberately: with it, pasting a long story TRUNCATES IN SILENCE — the
         // person loses the end of their own text without a word, and `errors.too_long`, which
         // says how much to cut, becomes unreachable exactly when it is the right message. The
         // limit is enforced on submit (`validateAnswers`), and the counter above warns first.
-        return <textarea {...shared} rows={3} onChange={(event) => onChange(event.target.value)} />;
+        //
+        // `enterKeyHint` is dropped here: in a textarea the action key inserts a newline, and
+        // labelling it "next" would promise a jump it does not make.
+        return (
+          <textarea
+            {...shared}
+            enterKeyHint={undefined}
+            rows={3}
+            onChange={(event) => onChange(event.target.value)}
+          />
+        );
 
       case "select":
         return (
@@ -181,6 +247,50 @@ export function PartnerProposalField({
             type="text"
             inputMode="numeric"
             maxLength={9}
+            placeholder={POSTAL_CODE_PLACEHOLDER}
+            onChange={(event) => onChange(maskPostalCodeInput(event.target.value))}
+          />
+        );
+
+      case "email":
+        return (
+          <input
+            {...shared}
+            type="email"
+            inputMode="email"
+            // The phone's autocorrect is what turns `contato@bardojoao.com.br` into
+            // `Contato@…`, and an address that lost its case is an address the contract does
+            // not reach.
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
+            maxLength={field.maxLength}
+            onChange={(event) => onChange(event.target.value)}
+          />
+        );
+
+      case "tel":
+        return (
+          <input
+            {...shared}
+            type="tel"
+            inputMode="tel"
+            maxLength={field.maxLength}
+            placeholder={PHONE_PLACEHOLDER}
+            onChange={(event) => onChange(maskPhoneInput(event.target.value))}
+          />
+        );
+
+      case "url":
+        return (
+          <input
+            {...shared}
+            type="text"
+            inputMode="url"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
+            maxLength={field.maxLength}
             onChange={(event) => onChange(event.target.value)}
           />
         );
@@ -189,10 +299,18 @@ export function PartnerProposalField({
         return (
           <input
             {...shared}
-            type={field.type === "email" ? "email" : field.type === "tel" ? "tel" : "text"}
-            inputMode={field.type === "tel" ? "tel" : undefined}
+            type="text"
+            autoCapitalize={field.id === "instagram" ? "none" : undefined}
+            autoCorrect={field.id === "instagram" ? "off" : undefined}
+            spellCheck={field.id === "instagram" ? false : undefined}
             maxLength={field.maxLength}
-            onChange={(event) => onChange(event.target.value)}
+            onChange={(event) =>
+              onChange(
+                field.id === "instagram"
+                  ? normalizeInstagramInput(event.target.value)
+                  : event.target.value
+              )
+            }
           />
         );
     }
@@ -216,6 +334,29 @@ function optionsOf(
     }));
   }
   return (field.options ?? []).map((option) => ({ value: option, label: option }));
+}
+
+/**
+ * What a stored answer LOOKS LIKE on a screen that shows it back — #404.
+ *
+ * The review of step 4 rendered `answers[field.id]` raw, so somebody who had chosen *"Bar ou
+ * café"* read `bar_cafe` on the one screen that says *"confira o que você escreveu"*. A code
+ * identifier where the name of the business should be makes the reader doubt what the system
+ * understood, and the CMS half of the same grid had the same defect with `categoryLabel` already
+ * calculated one line above it.
+ *
+ * Exported because the review grid renders it and a test asserts it: choice fields show the
+ * label, everything else shows what was typed.
+ */
+export function displayAnswer(
+  field: PartnerField,
+  value: string,
+  translate: (key: string) => string
+): string {
+  if (!value) return "";
+  if (field.type !== "select") return value;
+  const option = optionsOf(field, translate).find((candidate) => candidate.value === value);
+  return option ? option.label : value;
 }
 
 /**

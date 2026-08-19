@@ -24,6 +24,29 @@ import {
 } from "../../src/lib/partner-proposal/proposal-service";
 import { CNPJ_REFERENCE_VECTORS, isValidCnpj, normalizeCnpj } from "../../src/lib/cnpj";
 import { MATERIAL_FIELD_IDS, MATERIAL_KINDS, materialFieldId } from "../../src/lib/partner-proposal/fields";
+import {
+  isCompletePostalCode,
+  maskPhoneInput,
+  maskPostalCodeInput,
+  normalizeInstagramInput,
+  normalizeWebsiteInput,
+  postalCodeDigits,
+} from "../../src/lib/partner-proposal/field-format";
+import { readViaCepPayload } from "../../src/lib/partner-proposal/postal-code-lookup";
+import { FUNNEL_KINDS, isFunnelKind, isFunnelStep } from "../../src/lib/partner-proposal/funnel";
+import {
+  FUNNEL_BUCKET,
+  FUNNEL_LIMIT_PER_WINDOW,
+} from "../../src/lib/partner-proposal/proposal-service";
+import { displayAnswer } from "../../src/components/partner-proposal/PartnerProposalField";
+import {
+  ASIDE_CEILING,
+  BREATH_CEILING,
+  asideMarks,
+  hasDash,
+  longestBreath,
+  runningTextOf,
+} from "./support/copy-ruler";
 
 /**
  * The partnership proposal, moved from `tuggi-cms` to the site — card #396.
@@ -825,5 +848,389 @@ test.describe("the promotional material the partner asks for", () => {
     expect(pt.PartnerProposal.material?.title).toBeTruthy();
     expect(pt.PartnerProposal.errors.material_none).toBeTruthy();
     expect(pt.PartnerProposal.errors.quantity_invalid).toBeTruthy();
+  });
+});
+
+/* ---------------------------------------------------------------------------------------------
+ * The pass of 2026-08-19 — usability, copy and measurement
+ *
+ * Everything below is a promise the form now makes that it did not make before, and every one of
+ * them had a cost that was paid by somebody standing behind a counter with a phone.
+ * ------------------------------------------------------------------------------------------- */
+
+test.describe("the field decides itself, and the masks stop the value before the server does", () => {
+  test("a mask exists for every field whose shape the copy publishes", () => {
+    // The CEP had NO filter at all until this date: `onChange` passed the raw value through, so
+    // a letter and nine characters of anything were accepted and only refused on `Continuar`,
+    // three screens from where they were typed — while the quantity field one declaration away
+    // had the filter and the comment saying why.
+    expect(maskPostalCodeInput("abc12345678")).toBe("12345-678");
+    expect(maskPostalCodeInput("12345")).toBe("12345");
+    expect(postalCodeDigits("12345-678")).toBe("12345678");
+    expect(isCompletePostalCode("12345-67")).toBe(false);
+  });
+
+  test("BR-B2B-026: the phone mask is as generous as the validation, and never eats the +55", () => {
+    // #402: the landing page one click earlier publishes `+55 21 90000-0000` as its example, so
+    // a mask that dropped the country code would delete, keystroke by keystroke, the exact
+    // number the site had just taught.
+    expect(maskPhoneInput("21999998888")).toBe("(21) 99999-8888");
+    expect(maskPhoneInput("+5521999998888")).toBe("+55 (21) 99999-8888");
+    expect(maskPhoneInput("2133334444")).toBe("(21) 3333-4444");
+
+    // And what the mask produces is what the validation accepts — the two ends of one promise.
+    for (const typed of ["21999998888", "+5521999998888", "2133334444"]) {
+      const masked = maskPhoneInput(typed);
+      const problems = validateAnswers(validAnswers({ representative_phone: masked }));
+      expect(problems.filter((p) => p.field === "representative_phone")).toEqual([]);
+    }
+  });
+
+  test("a pasted Instagram URL becomes the handle, and a site gets its scheme", () => {
+    expect(normalizeInstagramInput("https://instagram.com/meubar?igsh=xyz")).toBe("meubar");
+    expect(normalizeInstagramInput("@meubar")).toBe("meubar");
+    expect(normalizeWebsiteInput("meurestaurante.com.br")).toBe("https://meurestaurante.com.br");
+    expect(normalizeWebsiteInput("https://ja.tem")).toBe("https://ja.tem");
+    expect(normalizeWebsiteInput("")).toBe("");
+  });
+
+  test("every declared prop of the field component has a caller", () => {
+    // `onBlur` was declared on `PartnerProposalField` and NO CALLER EVER PASSED IT, so validation
+    // only ran on `Continuar` while the lead form of the landing page had validated on blur since
+    // #294. Orphan code (CLAUDE.md §6) with a product cost, and this is the guard against it
+    // coming back.
+    const component = fs.readFileSync(
+      path.join(REPO_ROOT, "src/components/partner-proposal/PartnerProposalField.tsx"),
+      "utf8"
+    );
+    const form = fs.readFileSync(
+      path.join(REPO_ROOT, "src/components/partner-proposal/PartnerProposalForm.tsx"),
+      "utf8"
+    );
+    const declared = [...component.matchAll(/^\s{2}(\w+)\??:/gm)].map((m) => m[1]);
+    const props = declared.filter((name) =>
+      ["field", "value", "problem", "onChange", "onBlur", "nudge", "note", "last"].includes(name)
+    );
+    expect(props.length).toBeGreaterThan(0);
+    for (const prop of props) {
+      expect(form.includes(`${prop}=`), `<PartnerProposalField> never receives ${prop}`).toBe(true);
+    }
+  });
+
+  test("each step is a real form, so the phone keyboard has somewhere to go", () => {
+    // No `<form>` existed: `<div>`s and `type="button"`. On a phone that costs the keyboard's own
+    // action key, and it costs the address grouping autofill does around a form boundary — which
+    // is the exact thing the CEP lookup is trying to make cheap.
+    const form = fs.readFileSync(
+      path.join(REPO_ROOT, "src/components/partner-proposal/PartnerProposalForm.tsx"),
+      "utf8"
+    );
+    expect(form).toContain("<form onSubmit={onFormSubmit}");
+    expect(form).toContain('type="submit"');
+  });
+});
+
+test.describe("nothing surprises the person at the end that could have been said at the start", () => {
+  test("#400: a counter that could not answer is a 503, and only a real limit is a 429", async ({
+    request,
+  }) => {
+    // The mutation this pins: give the 503 branch back the 429 body and this goes red. A deploy
+    // without `PARTNER_FORM_HASH_SECRET` refuses 100% of proposals; saying "too many, wait a few
+    // minutes" tells every restaurant owner something false about a state that never passes.
+    const route = fs.readFileSync(
+      path.join(REPO_ROOT, "src/app/api/partner-proposal/route.ts"),
+      "utf8"
+    );
+    expect(route).toContain('limit.reason === "unavailable"');
+    expect(route.indexOf('limit.reason === "unavailable"')).toBeLessThan(
+      route.indexOf("too_many_submissions")
+    );
+
+    // And the copy for it is its own pair of keys, never the limit's.
+    const pt = JSON.parse(fs.readFileSync(path.join(MESSAGES_DIR, "pt.json"), "utf8"));
+    expect(pt.PartnerProposal.states.unavailableTitle).toBeTruthy();
+    expect(pt.PartnerProposal.states.unavailableBody).toBeTruthy();
+    expect(pt.PartnerProposal.states.unavailableBody).not.toEqual(
+      pt.PartnerProposal.states.tooManyBody
+    );
+    // DS-COPY-018: it points at an address the site publishes, and does not promise waiting.
+    expect(pt.PartnerProposal.states.unavailableBody).toContain("{email}");
+    expect(pt.PartnerProposal.states.unavailableBody).not.toMatch(/minutos?|mais tarde/i);
+
+    // The route still answers something for a well-formed request, so the branch above is the
+    // only difference this test introduced.
+    const response = await request.post("/api/partner-proposal", {
+      data: { answers: validAnswers({ trade_name: `Probe 400 ${Date.now()}` }) },
+      headers: { "x-forwarded-for": `10.40.0.${Math.floor(Math.random() * 200) + 1}` },
+    });
+    expect([200, 429, 503]).toContain(response.status());
+  });
+
+  test("the copy of the offline state does not promise a send that does not exist", () => {
+    // DS-COPY-018. `states.offlineBody` said "a gente envia quando a conexão voltar" and there is
+    // no queue, no `online` handler that submits and no retry: whoever wrote offline, read that
+    // sentence and closed the tab had sent nothing.
+    const form = fs.readFileSync(
+      path.join(REPO_ROOT, "src/components/partner-proposal/PartnerProposalForm.tsx"),
+      "utf8"
+    );
+    expect(form).not.toMatch(/addEventListener\("online"[\s\S]{0,200}handleSubmit/);
+
+    for (const file of fs.readdirSync(MESSAGES_DIR)) {
+      const messages = JSON.parse(fs.readFileSync(path.join(MESSAGES_DIR, file), "utf8"));
+      const offline = messages.PartnerProposal?.states?.offlineBody;
+      if (!offline) continue;
+      expect(offline, `${file} promises an automatic send`).not.toMatch(
+        /a gente envia|enviamos (quando|assim)/i
+      );
+    }
+  });
+
+  test("#404: the review shows the label of a choice, never its identifier", () => {
+    // The one screen that says "confira o que você escreveu" was showing `bar_cafe` to somebody
+    // who had picked "Bar ou café". Mutation: render `answers[field.id]` there again and this
+    // goes red.
+    const pt = JSON.parse(fs.readFileSync(path.join(MESSAGES_DIR, "pt.json"), "utf8"));
+    const category = PARTNER_FORM_FIELDS.find((field) => field.id === "category")!;
+    const state = PARTNER_FORM_FIELDS.find((field) => field.id === "state")!;
+    const translate = (key: string) => {
+      const parts = key.split(".");
+      let node: any = pt.PartnerProposal;
+      for (const part of parts) node = node?.[part];
+      return typeof node === "string" ? node : key;
+    };
+
+    expect(displayAnswer(category, "bar_cafe", translate)).toBe("Bar ou café");
+    expect(displayAnswer(category, "bar_cafe", translate)).not.toBe("bar_cafe");
+    expect(displayAnswer(state, "RJ", translate)).toContain("Rio de Janeiro");
+    // Everything that is not a choice is shown as typed.
+    const tradeName = PARTNER_FORM_FIELDS.find((field) => field.id === "trade_name")!;
+    expect(displayAnswer(tradeName, "Cantina do Zé", translate)).toBe("Cantina do Zé");
+
+    const form = fs.readFileSync(
+      path.join(REPO_ROOT, "src/components/partner-proposal/PartnerProposalForm.tsx"),
+      "utf8"
+    );
+    expect(form).toContain("displayAnswer(field,");
+  });
+});
+
+test.describe("the CEP fills the address, and never blocks anybody", () => {
+  test("an unknown CEP and a broken upstream both answer with a null address", async ({
+    request,
+  }) => {
+    for (const cep of ["", "123", "abcdefgh"]) {
+      const response = await request.get(`/api/postal-code?cep=${cep}`);
+      expect(response.status()).toBe(200);
+      expect(await response.json()).toEqual({ address: null });
+    }
+  });
+
+  test("the reader of the upstream payload keeps the four fields and nothing else", () => {
+    expect(
+      readViaCepPayload({
+        cep: "28950-000",
+        logradouro: "Rua das Palmeiras",
+        bairro: "Centro",
+        localidade: "Armação dos Búzios",
+        uf: "rj",
+        ibge: "3300100",
+        ddd: "22",
+      })
+    ).toEqual({
+      street: "Rua das Palmeiras",
+      district: "Centro",
+      city: "Armação dos Búzios",
+      state: "RJ",
+    });
+
+    // ViaCEP answers `{ "erro": "true" }` — a string — for a code nobody uses.
+    expect(readViaCepPayload({ erro: "true" })).toBeNull();
+    expect(readViaCepPayload({ erro: true })).toBeNull();
+    expect(readViaCepPayload(null)).toBeNull();
+    // A single-range CEP has no street and no district, and that is a legitimate answer.
+    expect(readViaCepPayload({ logradouro: "", bairro: "", localidade: "Búzios", uf: "RJ" })).toEqual(
+      { street: "", district: "", city: "Búzios", state: "RJ" }
+    );
+  });
+
+  test("the lookup only ever writes into empty fields", () => {
+    const form = fs.readFileSync(
+      path.join(REPO_ROOT, "src/components/partner-proposal/PartnerProposalForm.tsx"),
+      "utf8"
+    );
+    // Somebody who typed the street before the CEP keeps what they typed.
+    expect(form).toContain('if ((next[id] ?? "").trim()) return;');
+  });
+});
+
+test.describe("BR-USUARIO-030: the funnel is counted, and it carries nothing about anybody", () => {
+  test("the vocabulary is closed on both ends", () => {
+    expect(FUNNEL_KINDS).toEqual(["view", "start", "step", "submitted", "failed"]);
+    expect(isFunnelKind("view")).toBe(true);
+    expect(isFunnelKind("answers")).toBe(false);
+    expect(isFunnelStep(1)).toBe(true);
+    expect(isFunnelStep(5)).toBe(false);
+    expect(isFunnelStep("1")).toBe(false);
+  });
+
+  test("a row is two values, and a body that carries a third is dropped", async ({ request }) => {
+    const accepted = await request.post("/api/partner-proposal/funnel", {
+      data: { kind: "view", step: 2, answers: { tax_id: "12345678000199" }, session: "abc" },
+    });
+    expect(accepted.status()).toBe(204);
+
+    // ASSERTED OVER EVERY ROW, not over the one this test wrote, and that is deliberate: the
+    // suite runs fully parallel and the counting table has no per-test marker to filter on — it
+    // is the table's whole point that a row identifies nobody and nothing. So the promise is
+    // stated the way it is actually made: NO row, from any test, carries anything else.
+    const rows: Record<string, unknown>[] = await (await request.get(`${MOCK_BASE}/__funnel`)).json();
+    expect(rows.length).toBeGreaterThan(0);
+    for (const row of rows) {
+      expect(Object.keys(row).sort()).toEqual(["event", "step"]);
+    }
+    expect(JSON.stringify(rows)).not.toContain("12345678000199");
+    expect(JSON.stringify(rows)).not.toContain("abc");
+  });
+
+  test("an unknown kind writes nothing and still answers 204", async ({ request }) => {
+    const response = await request.post("/api/partner-proposal/funnel", {
+      data: { kind: "exfiltrate", step: 1 },
+    });
+    expect(response.status()).toBe(204);
+
+    // Same reasoning as above: the guarantee is about the vocabulary of the table, so it is
+    // asserted against the table and not against a delta a neighbouring test can move.
+    const rows: { event: string }[] = await (await request.get(`${MOCK_BASE}/__funnel`)).json();
+    const unknown = rows.map((row) => row.event).filter((event) => !FUNNEL_KINDS.includes(event as never));
+    expect(unknown).toEqual([]);
+  });
+
+  test("the address is counted and never written", () => {
+    // The route DOES read the caller's address, and that changed on review: an unbounded
+    // anonymous INSERT is unbounded disk, not just a skewed chart, so the same counter that
+    // guards the submission guards this — containing abuse on this public door is already the
+    // fourth declared purpose of the collection, and the key-hashed address is already the
+    // mechanism the policy publishes.
+    //
+    // What must stay true is the other half: the address reaches the COUNTER and never the row.
+    const route = fs
+      .readFileSync(path.join(REPO_ROOT, "src/app/api/partner-proposal/funnel/route.ts"), "utf8")
+      .replace(/\/\*[\s\S]*?\*\//g, "")
+      .replace(/^\s*\/\/.*$/gm, "");
+    expect(route).toContain("registerFunnelAttempt(clientAddressOf(request.headers))");
+    // `recordFunnelEvent` takes the kind and the step, and there is no third argument to slip an
+    // address into.
+    expect(route).toMatch(/recordFunnelEvent\(\s*kind\s*,[^)]*\)/);
+    expect(route).not.toContain("hashClientAddress");
+  });
+
+  test("the funnel has a budget of its own, and it is not the submission's", () => {
+    // A tab left open on the form cannot spend the budget its own submission needs. The bucket
+    // goes into the key-hash, which is what keeps the two apart.
+    expect(FUNNEL_BUCKET).toBe("proposal-funnel");
+    expect(FUNNEL_BUCKET).not.toBe("");
+    expect(FUNNEL_LIMIT_PER_WINDOW).toBeGreaterThan(SUBMISSION_LIMIT_PER_WINDOW);
+
+    // Same address, different bucket, different key — so neither counter can see the other's
+    // attempts. Skipped where the secret is absent, because there is no key to compare.
+    const address = "203.0.113.77";
+    const submissionKey = hashClientAddress(address, "");
+    const funnelKey = hashClientAddress(address, FUNNEL_BUCKET);
+    if (submissionKey && funnelKey) expect(submissionKey).not.toBe(funnelKey);
+  });
+
+  test("BR-USUARIO-028 item 1: the fifth purpose is declared in the four languages", () => {
+    // The counter and the line of the policy are the SAME delivery. A table counting without the
+    // paragraph published is exactly the defect that rule exists to stop, so this test fails if
+    // the events module ships and any locale still says the purposes are four.
+    const declared = {
+      pt: [/cinco coisas/, /medir onde o formulário atrapalha/],
+      en: [/five things/, /measuring where the form gets in the way/],
+      es: [/cinco cosas/, /medir dónde estorba el formulario/],
+      it: [/cinque cose/, /misurare dove il modulo crea difficoltà/],
+    } as const;
+
+    for (const [locale, patterns] of Object.entries(declared)) {
+      const messages = JSON.parse(
+        fs.readFileSync(path.join(MESSAGES_DIR, `${locale}.json`), "utf8")
+      );
+      const item = messages.Legal.Privacy.s1Item5 as string;
+      for (const pattern of patterns) {
+        expect(item, `${locale} does not declare the fifth purpose`).toMatch(pattern);
+      }
+      // The negative is qualified by the collection it belongs to — the trap of #304.
+      expect(item, `${locale} keeps an unqualified negative`).toMatch(
+        /Para essa contagem|For that count|Para esa cuenta|Per questo conteggio/
+      );
+    }
+  });
+});
+
+test.describe("DS-COPY-013: the proposal is punctuated by a person", () => {
+  const pt = () =>
+    JSON.parse(fs.readFileSync(path.join(MESSAGES_DIR, "pt.json"), "utf8")) as Record<string, any>;
+
+  // Widened here and not in `partner-offer-ladder.spec.ts` because `PartnerProposal` exists in
+  // `pt` alone: the proposal is Brazil by construction (CNPJ with a check digit, UF, an
+  // eight-digit CEP), and a loop over the four locales would assert three absences.
+  test("criterion 32: no value carries more than one aside mark", () => {
+    const offenders = runningTextOf(pt().PartnerProposal, "PartnerProposal")
+      .filter(([, value]) => asideMarks(value) > ASIDE_CEILING)
+      .map(([key, value]) => `${key}: ${asideMarks(value)} aside marks`);
+    expect(offenders).toEqual([]);
+  });
+
+  test("criterion 33: no value runs ninety characters without a pause", () => {
+    const offenders = runningTextOf(pt().PartnerProposal, "PartnerProposal")
+      .filter(([, value]) => longestBreath(value) > BREATH_CEILING)
+      .map(([key, value]) => `${key}: ${longestBreath(value)} characters without a pause`);
+    expect(offenders).toEqual([]);
+  });
+
+  test("the proposal reaches for no dash at all, which is tighter than the rule asks", () => {
+    // The frequency clause allows a third of a block. The rewrite of 2026-08-19 needed none, and
+    // zero is the line that makes a reintroduced dash a red build rather than a judgement call.
+    const withDash = runningTextOf(pt().PartnerProposal, "PartnerProposal")
+      .filter(([, value]) => hasDash(value))
+      .map(([key]) => key);
+    expect(withDash).toEqual([]);
+  });
+
+  test("the material block says what BR-B2B-021 allows and nothing it does not", () => {
+    const material = pt().PartnerProposal.material;
+    const help = material.help as string;
+    // Ratified by `produto` on 2026-08-19: the confirmation happens, so the sentence may be
+    // published. It is what holds an expectation the contract does not cover.
+    expect(help).toMatch(/confirma a quantidade/);
+    // What may never appear: a joining fee, a kit, a gift, a commercial counterpart.
+    expect(`${material.title} ${help}`).not.toMatch(/taxa|kit|brinde|contrapartida|ades[ãa]o/i);
+  });
+});
+
+test.describe("the promotional material moved out of step 1", () => {
+  test("step 1 is back to the thirteen fields that are on the facade", () => {
+    const stepOne = PARTNER_FORM_FIELDS.filter((field) => field.step === 1);
+    expect(stepOne.length).toBe(13);
+    expect(stepOne.some((field) => MATERIAL_FIELD_IDS.includes(field.id))).toBe(false);
+  });
+
+  test("the three quantities share one step, and it is the last one that asks", () => {
+    const steps = new Set(
+      MATERIAL_FIELD_IDS.map((id) => PARTNER_FORM_FIELDS.find((field) => field.id === id)!.step)
+    );
+    expect([...steps]).toEqual([3]);
+    // The step that asks last, with the review after it — not a fifth step, which three numbers
+    // do not pay for.
+    expect(Math.max(...PARTNER_FORM_FIELDS.map((field) => field.step))).toBe(3);
+  });
+
+  test("the answers contract still carries all 24 keys, and the ids did not move", () => {
+    // Moving the step is a change to the contract document and to the CMS mirror; moving an ID
+    // would be a migration. This is the guard that the second did not happen by accident.
+    expect(PARTNER_FIELD_IDS.length).toBe(24);
+    for (const kind of MATERIAL_KINDS) {
+      expect(PARTNER_FIELD_IDS).toContain(materialFieldId(kind));
+    }
   });
 });

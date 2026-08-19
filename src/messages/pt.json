@@ -303,7 +303,7 @@
       "s2Title": "Você exibe o seu QR Code",
       "s2Body": "Depois de aprovado, você recebe o seu QR Code e o coloca onde o turista já está: {place}. Quem baixa o Tuggi por esse código fica atribuído a você.",
       "s3Title": "A sua participação na receita",
-      "s3Body": "Toda compra feita pelo turista atribuído a você entra na apuração da sua participação na receita, com o percentual definido em acordo comercial.",
+      "s3Body": "Toda compra feita pelo turista atribuído a você conta para a sua participação na receita. O percentual é definido em acordo comercial.",
       "s4Title": "O seu local pode entrar no Tuggi",
       "s4Body": "Aprovada a parceria, o nosso time avalia se cadastra o seu local como ponto de interesse. É uma decisão editorial da Tuggi, e não é automática. Em até {partnerTriageHours} horas após a aprovação você tem o desfecho. E o seu QR Code e a sua participação na receita não dependem dele.",
       "lead": "Do seu lado são duas coisas: exibir o QR Code e nos contar a história do seu lugar. O resto acontece no celular do turista."
@@ -595,7 +595,7 @@
       "s1Item2": "<strong>Dados de Geolocalização (GPS):</strong> O TUGGI necessita de acesso à sua localização em tempo real (inclusive em segundo plano) para acionar os gatilhos de áudio no momento exato em que você cruza um Ponto de Interesse (POI).",
       "s1Item3": "<strong>Dados de Uso e Telemetria:</strong> Coletamos informações sobre interações no aplicativo, como quais áudios foram reproduzidos, idiomas selecionados e métricas de estabilidade do sistema.",
       "s1Item4": "<strong>Dados de Contato Comercial:</strong> Quando você deixa um contato no formulário da página de parcerias deste site, guardamos o que você escreveu ali. São o seu nome, o nome do seu negócio, o tipo de negócio e o canal que você escolheu, WhatsApp ou e-mail. Guardamos também o idioma em que a página estava. A cidade aproximada vem da sua conexão, e junto com o seu contato guardamos essa cidade, não o endereço de IP. Usamos esses dados para uma finalidade só, que é falar com você sobre a parceria, por ligação telefônica ou por mensagem. São no máximo 4 tentativas de contato, dentro de 14 dias corridos a partir do envio. O ciclo termina no que vier primeiro, e depois dele não usamos mais o seu contato para isso. Para retomar, basta enviar o formulário de novo. Nunca usamos esse contato para newsletter, lista de transmissão ou campanha de marketing. Você pode pedir a remoção quando quiser, e a seção 5 diz como.",
-      "s1Item5": "<strong>Dados da Proposta de Parceria:</strong> Existe um formulário de proposta de parceria neste site, aberto a qualquer estabelecimento que queira propor uma parceria. Quem preenche esse formulário nos manda duas coisas. Uma é o estabelecimento, com nome fantasia e razão social, CNPJ, categoria, endereço completo com CEP, bairro, cidade e estado, horário de funcionamento, site e Instagram. A outra é quem responde pelo estabelecimento, com nome, cargo, e-mail e telefone, e esses são dados de uma pessoa. Em MEI e empresário individual, a razão social carrega o nome do dono, e o endereço pode ser o da casa dele, então tratamos esse formulário todo como dado pessoal. Usamos o que chega ali para quatro coisas: avaliar a proposta, falar com a pessoa sobre esta parceria, gerar o contrato e enviá-lo para assinatura no e-mail informado, e conter abuso na página, que é aberta a qualquer pessoa. Para conter abuso contamos quantas propostas vêm de cada conexão. Para essa contagem guardamos um código calculado a partir do endereço de IP, e não o endereço. Esse código não é anônimo, porque a mesma conexão sempre produz o mesmo código. Você pode pedir a remoção desses dados, e a seção 5 diz como.",
+      "s1Item5": "<strong>Dados da Proposta de Parceria:</strong> Existe um formulário de proposta de parceria neste site, aberto a qualquer estabelecimento que queira propor uma parceria. Quem preenche esse formulário nos manda duas coisas. Uma é o estabelecimento, com nome fantasia e razão social, CNPJ, categoria, endereço completo com CEP, bairro, cidade e estado, horário de funcionamento, site e Instagram. A outra é quem responde pelo estabelecimento, com nome, cargo, e-mail e telefone, e esses são dados de uma pessoa. Em MEI e empresário individual, a razão social carrega o nome do dono, e o endereço pode ser o da casa dele, então tratamos esse formulário todo como dado pessoal. Usamos o que chega ali para cinco coisas: avaliar a proposta, falar com a pessoa sobre esta parceria, gerar o contrato e enviá-lo para assinatura no e-mail informado, conter abuso na página, que é aberta a qualquer pessoa, e medir onde o formulário atrapalha. Para conter abuso contamos quantas propostas vêm de cada conexão. Para essa contagem guardamos um código calculado a partir do endereço de IP, e não o endereço. Esse código não é anônimo, porque a mesma conexão sempre produz o mesmo código. Para medir onde o formulário atrapalha contamos quantas pessoas abrem cada passo e em qual passo param. Para essa contagem não guardamos o seu nome, nem o endereço da sua conexão, nem nada do que você escreveu. Você pode pedir a remoção desses dados, e a seção 5 diz como.",
       "s1Item6": "<strong>A História do Lugar:</strong> Nesse mesmo formulário fazemos até quatro perguntas sobre a história do lugar, e as respostas são texto livre. Elas não são material interno e não são confidenciais. Elas são o insumo do texto que o aplicativo pode narrar ao turista, reescrito por nós e traduzido para os idiomas do aplicativo. Então escreva ali só o que você aceita ver publicado, inclusive o nome de alguém que você cite.",
       "s1Item7": "<strong>Registro do Aceite do Contrato:</strong> Quando alguém aceita o contrato de parceria na tela, guardamos o registro desse ato. Ele tem o nome e o cargo de quem aceitou, o e-mail para onde enviamos o link, a data e a hora do nosso servidor, o endereço de IP da conexão, a identificação que o navegador declara, o código do documento exibido e a versão do modelo. Aqui o endereço de IP fica guardado como está, e não transformado em código, porque a finalidade é outra. Esse registro serve para uma coisa só, que é provar quem aceitou o contrato, o que ele aceitou, quando e de onde. Ele não alimenta métrica, não serve para contato, e fica guardado como prova do contrato.",
       "s1Item8": "<strong>Visita à Página de um Parceiro:</strong> Quando você chega a uma página de parceiro deste site, por um Código QR ou por um link dele, registramos essa visita. Se você acessa de fora do Brasil e dos Estados Unidos, esse registro só é criado depois que você aceita os cookies neste site. Enquanto você não aceitar, não guardamos nada dessa visita nem gravamos cookie no seu aparelho. Guardamos o endereço de IP da sua conexão, a identificação que o navegador declara, o idioma do navegador e o fuso horário do aparelho. Guardamos também qual parceiro você visitou e a hora. Junto disso gravamos um cookie deste próprio site, chamado tuggi_attr, que dura 30 dias e guarda o identificador do parceiro, o identificador dessa visita e a data. Esse registro serve para uma finalidade só, que é saber qual parceiro levou você até o aplicativo, porque é assim que remuneramos esse parceiro. Ele não alimenta anúncio e não serve para contato. O endereço de IP e a identificação do navegador saem desse registro depois de 48 horas, e o registro inteiro é apagado depois de 30 dias, por uma rotina que roda todo dia. Quando existe esse registro e você toca num botão que leva à loja, o identificador dessa visita vai dentro do link, e a seção 3 conta o que acontece com ele.",
@@ -967,7 +967,7 @@
   },
   "PartnerProposal": {
     "title": "Proposta de parceria",
-    "lede": "Este formulário é para o estabelecimento que já conversou com a Tuggi. Se você ainda não falou com a gente, comece por aqui: <lp>deixe o seu contato na página de parcerias</lp>.",
+    "lede": "Este formulário é para quem já conversou com a Tuggi. Se você ainda não falou com a gente, comece por aqui: <lp>deixe o seu contato na página de parcerias</lp>.",
     "seo": {
       "title": "Proposta de parceria",
       "description": "O formulário que o estabelecimento preenche depois de conversar com a Tuggi, com os dados do negócio e a história do lugar."
@@ -982,7 +982,9 @@
       "edit": "Editar",
       "restart": "Recomeçar do zero",
       "restartConfirm": "Isso apaga tudo o que você preencheu. Quer mesmo recomeçar?",
-      "seeExample": "Ver um exemplo"
+      "seeExample": "Ver um exemplo",
+      "restartConfirmYes": "Sim, apagar tudo",
+      "restartCancel": "Não, continuar preenchendo"
     },
     "step1": {
       "title": "O seu estabelecimento",
@@ -994,32 +996,32 @@
     },
     "step3": {
       "title": "A história do seu lugar",
-      "subtitle": "Esta é a única parte que só você pode responder. Tudo o que veio antes a gente encontra em documento; isto aqui, não.",
-      "intro": "O Tuggi conta histórias em voz alta para quem está viajando. Para contar a do seu lugar, a gente precisa de pelo menos um fato que seja seu: uma data, um nome, alguma coisa que dê para ver aí dentro. Não precisa escrever bonito — quem escreve o texto final somos nós.",
-      "notHere": "Aqui não é o lugar de cardápio, preço, promoção, número de quartos, forma de pagamento nem horário — o horário a gente já pediu lá atrás. Essas coisas importam para o seu negócio, mas não é isso que o turista escuta.",
+      "subtitle": "Esta é a única parte que só você pode responder. O resto a gente encontra em documento. Isso aqui, não.",
+      "intro": "O Tuggi conta histórias em voz alta para quem está viajando. Para contar a do seu lugar, a gente precisa de um fato que seja só seu: uma data, um nome, alguma coisa que dê para ver aí dentro. Não precisa escrever bonito. Quem escreve o texto final somos nós.",
+      "notHere": "Cardápio, preço, promoção, número de quartos e forma de pagamento não entram aqui. O horário também não, porque a gente já pediu no primeiro passo. Essas coisas importam para o seu negócio, mas não é isso que o turista escuta.",
       "exampleBadTitle": "Assim não dá:",
       "exampleBad": "Restaurante familiar, ambiente aconchegante e atendimento de primeira. Almoço executivo de segunda a sexta e rodízio de pizza aos sábados.",
-      "exampleBadWhy": "Troque o nome pelo do vizinho: continua verdadeiro. E a segunda frase é cardápio.",
+      "exampleBadWhy": "Troque o nome pelo do vizinho e o texto continua verdadeiro. A segunda frase é cardápio.",
       "exampleGoodTitle": "Assim dá:",
-      "exampleGood": "Meu avô, Antônio, abriu a casa em 1961 num galpão que era da fábrica de guarda-chuvas do bairro. O forno a lenha é o mesmo desde a inauguração — foi feito pelo pedreiro que morava na esquina, e a gente nunca trocou o tijolo.",
-      "exampleGoodWhy": "Tem nome, tem ano, e tem uma coisa que só existe aí.",
+      "exampleGood": "Meu avô, Antônio, abriu a casa em 1961, num galpão que era da fábrica de guarda-chuvas do bairro. O forno a lenha é o mesmo desde a inauguração. Foi feito pelo pedreiro que morava na esquina, e a gente nunca trocou o tijolo.",
+      "exampleGoodWhy": "Tem um nome, tem uma data e tem uma coisa que só existe aí.",
       "exampleInnTitle": "Pousada, do mesmo jeito:",
-      "exampleInn": "A casa era a sede de uma fazenda de café de 1897. O piso de peroba e a escada são os originais, e do terraço dá para ver o vale onde passava a linha de trem que fechou em 1971.",
+      "exampleInn": "A casa era a sede de uma fazenda de café de 1897. O piso de peroba e a escada são os originais. Do terraço dá para ver o vale onde passava a linha de trem que fechou em 1971.",
       "substituteTestTitle": "Antes de continuar, faça este teste:",
-      "substituteTest": "troque o nome do seu estabelecimento pelo do vizinho da mesma rua. Se o texto continuar verdadeiro, ele ainda não é sobre o seu lugar — e é exatamente isso que a nossa curadoria vai olhar.",
-      "curation": "Nem todo lugar entra no app. Quem decide é a nossa curadoria, e o critério é o lugar ser permanente, aberto a visita, e ter história própria para contar. Se faltar alguma coisa, a gente diz o que faltou, e você pode mandar de novo.",
+      "substituteTest": "troque o nome do seu estabelecimento pelo do vizinho da mesma rua. Se o texto continuar verdadeiro, ele ainda não é sobre o seu lugar. É isso que a nossa curadoria vai olhar.",
+      "curation": "Nem todo lugar entra no app. Quem decide é a nossa curadoria, e ela olha três coisas: se o lugar é permanente, se é aberto a visita e se tem história própria para contar. Se faltar alguma, a gente diz o que faltou e você pode mandar de novo.",
       "nudgeShort": "Isso ainda está curto. Um nome e um ano já ajudam muito.",
-      "nudgeOffer": "Parece que você falou de cardápio, preço ou reserva. Isso a gente não usa aqui — conte uma coisa que aconteceu no lugar."
+      "nudgeOffer": "Parece que você falou de cardápio, preço ou reserva. Isso a gente não usa aqui. Conte uma coisa que aconteceu no lugar."
     },
     "step4": {
       "title": "Conferir e enviar",
-      "subtitle": "Confira o que você escreveu. Se precisar corrigir, toque em editar.",
+      "subtitle": "Confira o que você escreveu. Dá para corrigir qualquer resposta antes de enviar.",
       "beforeSubmit": "Confira o e-mail e o telefone antes de enviar: é por eles que a gente fala com você.",
       "empty": "não preenchido"
     },
     "material": {
-      "title": "Como o Tuggi vai aparecer no seu estabelecimento",
-      "help": "A gente fornece o material sem custo. Diga quanto precisa de cada um e deixe em branco o que não se aplica — a quantidade final a gente confirma com você antes de produzir."
+      "title": "O material que a gente manda para o seu estabelecimento",
+      "help": "A gente produz e envia sem custo. Diga quanto precisa de cada um e deixe em branco o que não serve. Antes de produzir, a gente confirma a quantidade com você."
     },
     "privacy": {
       "notice": "Os campos deste passo são de uma pessoa, não da empresa. O nome, o cargo, o e-mail e o telefone ficam guardados junto com a sua proposta, e a Tuggi os usa para falar com você sobre esta parceria e para gerar o contrato.",
@@ -1038,7 +1040,7 @@
       },
       "tax_id": {
         "label": "CNPJ",
-        "help": "14 caracteres. Desde 2026 o CNPJ pode ter letras — se o seu tiver, digite normalmente.",
+        "help": "O CNPJ tem 14 caracteres. Desde 2026 ele pode ter letras. Se o seu tiver, digite normalmente.",
         "requiredError": "Preencha o CNPJ."
       },
       "category": {
@@ -1071,26 +1073,27 @@
       },
       "instagram": {
         "label": "Instagram",
-        "help": "Só o @, se tiver."
+        "help": "Pode colar o link do perfil. A gente guarda só o @."
       },
       "opening_hours": {
         "label": "Horário de funcionamento",
-        "help": "Escreva do seu jeito. Por exemplo: terça a domingo, das 11h às 15h e das 18h às 23h; fecha segunda."
+        "help": "Escreva do seu jeito. Por exemplo: terça a domingo, das 11h às 15h e das 18h às 23h. Fecha segunda."
       },
       "website": {
-        "label": "Site"
+        "label": "Site",
+        "help": "Se tiver. Pode colar o endereço completo."
       },
       "material_sticker_qty": {
-        "label": "Adesivos — quantos você quer?",
-        "help": "Para a porta, a vitrine ou o balcão."
+        "label": "Adesivos",
+        "help": "Ficam na porta, na vitrine ou no balcão. Quantos você quer?"
       },
       "material_table_display_qty": {
-        "label": "Displays de mesa — em quantas mesas?",
-        "help": "Um display por mesa. Conte só as mesas onde ele vai ficar."
+        "label": "Displays de mesa",
+        "help": "Um por mesa. Conte só as mesas onde ele vai ficar."
       },
       "material_counter_display_qty": {
-        "label": "Displays de balcão — quantos?",
-        "help": "Para o balcão, a recepção ou o caixa."
+        "label": "Displays de balcão",
+        "help": "Para o balcão, a recepção ou o caixa. Quantos você quer?"
       },
       "representative_name": {
         "label": "Nome completo",
@@ -1109,25 +1112,25 @@
       },
       "representative_phone": {
         "label": "Telefone com WhatsApp",
-        "help": "Com DDD. Exemplo: 21 90000-0000. A gente usa para falar sobre esta parceria, e não entra em lista de mensagens.",
+        "help": "Com DDD. Por exemplo: 21 90000-0000. A gente usa esse número para falar sobre a parceria. Ele não entra em lista de mensagens.",
         "requiredError": "Preencha o telefone com WhatsApp."
       },
       "story_founder": {
-        "label": "Quem começou este lugar, e quando?",
-        "help": "O nome da pessoa e o ano. Se foi você, escreva o seu nome. Se você comprou de alguém, conte as duas coisas: quem começou, e quando você assumiu. Por exemplo: Meu pai, Sebastião, abriu em 1978. Assumi em 2009.",
+        "label": "Quem começou este lugar e em que ano?",
+        "help": "O nome da pessoa e o ano. Se foi você, escreva o seu nome. Se você comprou de alguém, conte quem começou e quando você assumiu. Por exemplo: Meu pai, Sebastião, abriu em 1978. Assumi em 2009.",
         "requiredError": "Conte quem começou o lugar e quando."
       },
       "story_before": {
         "label": "O que tinha neste endereço antes do seu negócio?",
-        "help": "Casa de família, oficina, armazém, cinema, terreno vazio. Se você sabe de que ano é o prédio, escreva. Por exemplo: Era uma serralheria. O prédio é de 1932, está escrito na fachada."
+        "help": "Casa de família, oficina, armazém, cinema, terreno vazio. Se você sabe de que ano é o prédio, escreva. Por exemplo: Era uma serralheria. O prédio é de 1932. Está escrito na fachada."
       },
       "story_unique": {
         "label": "O que existe aí dentro que não existe em outro lugar?",
-        "help": "Vale coisa que dá para ver, tocar ou provar: um forno, um móvel, uma foto na parede, uma peça antiga, uma receita que veio de alguém da família. Elogio não vale — aconchegante e atendimento familiar servem para qualquer lugar. Por exemplo: O balcão de mármore é o original da confeitaria que funcionava aqui; a gente só lixou."
+        "help": "Vale coisa que dá para ver, tocar ou provar. Um forno, um móvel, uma foto na parede, uma receita que veio de alguém da família. Elogio não vale. Aconchegante e atendimento familiar servem para qualquer lugar. Por exemplo: O balcão de mármore é o original da confeitaria que funcionava aqui. A gente só lixou."
       },
       "story_event": {
         "label": "Aconteceu alguma coisa aqui que o pessoal do bairro conta até hoje?",
-        "help": "Uma visita, uma enchente, um jogo, uma festa que começou aqui, alguém conhecido que era freguês. Por exemplo: Em 1994 a rua inteira assistiu à final aqui na calçada."
+        "help": "Uma visita, uma enchente, um jogo, uma festa que começou aqui, alguém conhecido que era freguês. Por exemplo: em 1994, a rua inteira assistiu à final aqui na calçada."
       }
     },
     "categories": {
@@ -1140,28 +1143,31 @@
       "other": "Outro"
     },
     "errors": {
-      "summary": "{count, plural, one {Falta # coisa neste passo.} other {Faltam # coisas neste passo.}}",
+      "summary": "{count, plural, one {Falta # resposta neste passo.} other {Faltam # respostas neste passo.}}",
       "email_malformed": "Este e-mail não parece completo. Confira antes de continuar.",
       "phone_short": "Escreva o telefone com DDD.",
       "cnpj_incomplete": "O CNPJ tem 14 caracteres. {n, plural, one {Falta # caractere} other {Faltam # caracteres}}.",
-      "cnpj_invalid": "Este CNPJ não confere. Confira os 14 caracteres — inclusive as letras, se o seu tiver.",
+      "cnpj_invalid": "Este CNPJ não confere. Confira os 14 caracteres, inclusive as letras, se o seu tiver.",
       "postal_code": "O CEP tem 8 números.",
       "too_long": "Você passou de {max} caracteres. Tire {over} para continuar.",
       "quantity_invalid": "Escreva só o número, de 1 a 9999. Por exemplo: 12.",
-      "material_none": "Escolha ao menos um material: adesivo, display de mesa ou display de balcão. É ele que leva o turista do seu estabelecimento para o aplicativo."
+      "material_none": "Escolha ao menos um: adesivo, display de mesa ou display de balcão. É ele que leva o turista até o app."
     },
     "states": {
       "draftResumed": "O que você preencheu em {date} ficou guardado neste aparelho. Continue de onde parou.",
       "offlineTitle": "Você está sem internet.",
-      "offlineBody": "O que você escrever agora fica no aparelho, e a gente envia quando a conexão voltar.",
+      "offlineBody": "O que você escrever fica guardado neste aparelho. Quando a conexão voltar, é só tocar em enviar.",
       "submitErrorTitle": "Não conseguimos enviar agora.",
       "submitErrorBody": "Tente enviar de novo. Se continuar dando erro, escreva para {email}. O que você preencheu continua guardado neste aparelho.",
       "successTitle": "Recebemos os seus dados.",
-      "successBody": "A gente confere e volta a falar com você por este e-mail: {email}. Enviar o formulário ainda não fecha a parceria: o contrato é o passo seguinte.",
+      "successBody": "A gente confere e volta a falar com você por este e-mail: {email}. Enviar o formulário ainda não fecha a parceria. O contrato é o passo seguinte.",
       "taxIdRegisteredTitle": "Não dá para seguir com este CNPJ por aqui.",
       "taxIdRegisteredBody": "Não é erro de digitação. Se o estabelecimento é seu, escreva para {email} e a gente resolve com você. Se você cuida de mais de um endereço, confira o número, porque cada endereço tem o seu próprio CNPJ.",
       "tooManyTitle": "Chegaram muitos envios desta mesma rede.",
-      "tooManyBody": "Não é nada que você tenha feito de errado. Em internet compartilhada, os envios contam juntos. Tente de novo mais tarde, e o que você preencheu continua guardado neste aparelho. Se precisar resolver hoje, escreva para {email}."
+      "tooManyBody": "Não é nada que você tenha feito de errado. Em internet compartilhada, os envios contam juntos. Tente de novo mais tarde. O que você preencheu continua guardado neste aparelho. Se precisar resolver hoje, escreva para {email}.",
+      "unavailableTitle": "O envio está fora do ar agora.",
+      "unavailableBody": "É um problema nosso, e esperar não resolve. Escreva para {email} que a gente recebe a sua proposta por lá. O que você preencheu continua guardado neste aparelho.",
+      "postalCodeFilled": "A gente preencheu a rua, o bairro, a cidade e o estado. Confira e ajuste se precisar."
     },
     "savedOnDevice": "O que você escrever fica guardado neste aparelho por 24 horas, até você enviar."
   }

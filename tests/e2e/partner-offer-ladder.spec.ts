@@ -3,6 +3,14 @@ import fs from "node:fs";
 import path from "node:path";
 import { localizedPathname } from "../../src/i18n/pathnames";
 import { LOCALES } from "../../src/i18n/locales";
+import {
+  ASIDE_CEILING,
+  BREATH_CEILING,
+  asideMarks,
+  hasDash,
+  longestBreath,
+  runningTextOf,
+} from "./support/copy-ruler";
 
 /**
  * The ladder of the partner offer — criteria 6 and 23 to 27 of §9 of
@@ -521,52 +529,38 @@ test.describe("BR-B2B-016 — the partnership has a paid band, and the page ment
  * review is the `design`'s.
  * ------------------------------------------------------------------------- */
 
-/** The block criteria 32 and 33 read: the six answers, in order. */
+/** The block the frequency clause of criterion 32 reads: the six answers, in order. */
 const FAQ_ANSWERS = [1, 2, 3, 4, 5, 6].map((n) => `Partners.FAQ.a${n}`);
 
-const DASH = /[—–]/;
-const DASHES = /[—–]/g;
-const SIBLING_MARKS = /[;:(]/g;
-
-/** Periods, with their closing punctuation kept — the dash pair lives inside one. */
-function periods(value: string): string[] {
-  return value.split(/(?<=[.!?])\s+/);
-}
-
 /**
- * Criterion 32: asides in one value. A pair of dashes inside the same period is
- * one aside, not two; an odd dash still counts as one. The sibling marks count
- * one for one, because none of them comes in pairs.
+ * The namespaces criteria 32 and 33 read, and the scope grew on 2026-08-19.
+ *
+ * It was `Partners.FAQ.a1` to `a6` and nothing else, deliberately: widened on the day #306
+ * shipped, the aside count stayed green and the breath count failed exactly one key in four
+ * languages — `Segments.steps.s3Body`, which carried the same sentence `a6` used to carry, is
+ * shared with the segment template and belonged to its own card. A guard born red on a key
+ * nobody may touch is a guard somebody switches off.
+ *
+ * #319 is that card, and with `s3Body` rewritten the widening is what it asked for: every
+ * running-text value under `Partners.*` and `Segments.*`, in the four languages. Measured after
+ * the rewrite: zero offenders on either count, and the worst breath is 88 of the 90 allowed.
+ *
+ * `PartnerProposal.*` is widened too, and it is checked in `partner-proposal.spec.ts` instead of
+ * here, because that namespace exists in `pt` alone — the proposal is Brazil by construction —
+ * and a loop over `LOCALES` around it would assert three absences.
  */
-function asideMarks(value: string): number {
-  return periods(value).reduce((total, period) => {
-    const dashes = (period.match(DASHES) ?? []).length;
-    return total + ((dashes + 1) >> 1) + (period.match(SIBLING_MARKS) ?? []).length;
-  }, 0);
-}
+const RULED_NAMESPACES = ["Partners", "Segments"] as const;
 
-/**
- * Criterion 33: the longest stretch a reader crosses without a pause. An ICU
- * slot is worth ten characters — the reader meets the value, not the name, and
- * the four slots of this page resolve to between five and fourteen.
- */
-function longestBreath(value: string): number {
-  return Math.max(
-    ...value
-      .replace(/\{[a-zA-Z]+\}/g, "x".repeat(10))
-      .split(/[,;:—–().!?]/)
-      .map((stretch) => stretch.trim().length)
-  );
-}
-
-test.describe("DS-COPY-013 — the objection block is punctuated by a person, and both halves count", () => {
+test.describe("DS-COPY-013 — the partner pages are punctuated by a person, and both halves count", () => {
   for (const locale of LOCALES) {
-    // Criterion 32.
-    test(`DS-COPY-013: no ${locale} FAQ answer carries more than one aside mark`, () => {
-      const messages = messagesFor(locale);
-      const offenders = FAQ_ANSWERS.map((key) => [key, asideMarks(at(messages, key))] as const)
-        .filter(([, marks]) => marks > 1)
-        .map(([key, marks]) => `${key}: ${marks} aside marks`);
+    // Criterion 32, widened to the two namespaces by #319.
+    test(`DS-COPY-013: no ${locale} value of the partner pages carries more than one aside mark`, () => {
+      const messages = messagesFor(locale) as unknown as Record<string, unknown>;
+      const offenders = RULED_NAMESPACES.flatMap((namespace) =>
+        runningTextOf((messages[namespace] ?? {}) as Record<string, unknown>, namespace)
+          .filter(([, value]) => asideMarks(value) > ASIDE_CEILING)
+          .map(([key, value]) => `${key}: ${asideMarks(value)} aside marks`)
+      );
       expect(offenders).toEqual([]);
     });
 
@@ -574,16 +568,18 @@ test.describe("DS-COPY-013 — the objection block is punctuated by a person, an
     // half the answers have one is the voice the operator recognised.
     test(`DS-COPY-013: at most two of the six ${locale} answers reach for a dash`, () => {
       const messages = messagesFor(locale);
-      const withDash = FAQ_ANSWERS.filter((key) => DASH.test(at(messages, key)));
+      const withDash = FAQ_ANSWERS.filter((key) => hasDash(at(messages, key)));
       expect(withDash.length, `${locale}: ${withDash.join(", ")}`).toBeLessThanOrEqual(2);
     });
 
-    // Criterion 33.
-    test(`DS-COPY-013: no ${locale} FAQ answer runs ninety characters without a pause`, () => {
-      const messages = messagesFor(locale);
-      const offenders = FAQ_ANSWERS.map((key) => [key, longestBreath(at(messages, key))] as const)
-        .filter(([, breath]) => breath > 90)
-        .map(([key, breath]) => `${key}: ${breath} characters without a pause`);
+    // Criterion 33, widened by #319. `Segments.steps.s3Body` was the one key this used to fail.
+    test(`DS-COPY-013: no ${locale} value of the partner pages runs ninety characters without a pause`, () => {
+      const messages = messagesFor(locale) as unknown as Record<string, unknown>;
+      const offenders = RULED_NAMESPACES.flatMap((namespace) =>
+        runningTextOf((messages[namespace] ?? {}) as Record<string, unknown>, namespace)
+          .filter(([, value]) => longestBreath(value) > BREATH_CEILING)
+          .map(([key, value]) => `${key}: ${longestBreath(value)} characters without a pause`)
+      );
       expect(offenders).toEqual([]);
     });
   }

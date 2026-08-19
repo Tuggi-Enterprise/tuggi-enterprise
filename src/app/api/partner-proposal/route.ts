@@ -18,7 +18,8 @@ import { normalizeAnswers, validateAnswers } from "@/lib/partner-proposal/schema
  * what has to be true here rather than what the route does:
  *
  *   1. A durable per-address limit, counted by the database, decides before anything else. It is
- *      the barrier and there is no second one; see `registerSubmissionAttempt`.
+ *      the barrier and there is no second one; see `registerSubmissionAttempt`. A refusal it
+ *      could not decide (no secret, RPC down) answers 503 and never 429 — #400.
  *   2. The body is validated against the field allowlist before anything is persisted — unknown
  *      keys are stripped, so `commission_rate` posted by hand goes nowhere.
  *   3. A CNPJ that already exists in `partner.clients` is refused. That read is the only thing this
@@ -43,6 +44,17 @@ import { normalizeAnswers, validateAnswers } from "@/lib/partner-proposal/schema
  */
 export async function POST(req: Request) {
   const limit = await registerSubmissionAttempt(clientAddressOf(req.headers));
+
+  // A COUNTER THAT COULD NOT ANSWER IS NOT A LIMIT THAT WAS REACHED — #400, second defect.
+  // `registerSubmissionAttempt` fails closed for two different events: the window really is
+  // spent, or `PARTNER_FORM_HASH_SECRET` is missing and nothing counted. Both refuse, and until
+  // 2026-08-19 both refused with the SAME 429 body, so an environment without the variable
+  // turned away every proposal while telling each owner to wait a few minutes for something
+  // that never passes with time. The status is what separates them now, and the two copies on
+  // the other end say different things because they are different problems.
+  if (!limit.allowed && limit.reason === "unavailable") {
+    return NextResponse.json({ error: "submit_failed" }, { status: 503 });
+  }
   if (!limit.allowed) {
     return NextResponse.json(
       { error: "too_many_submissions", retryAfterSeconds: limit.retryAfterSeconds },

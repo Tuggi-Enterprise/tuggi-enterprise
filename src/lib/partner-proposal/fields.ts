@@ -43,9 +43,6 @@ export type PartnerFieldId =
   | "instagram"
   | "opening_hours"
   | "website"
-  | "material_sticker_qty"
-  | "material_table_display_qty"
-  | "material_counter_display_qty"
   // Step 2 — who answers for the establishment
   | "representative_name"
   | "representative_role"
@@ -55,7 +52,10 @@ export type PartnerFieldId =
   | "story_founder"
   | "story_before"
   | "story_unique"
-  | "story_event";
+  | "story_event"
+  | "material_sticker_qty"
+  | "material_table_display_qty"
+  | "material_counter_display_qty";
 
 export type PartnerFieldType =
   | "text"
@@ -125,30 +125,15 @@ export const PARTNER_FORM_FIELDS: readonly PartnerField[] = [
   // type.
   { id: "tax_id", step: 1, type: "cnpj", required: true, maxLength: 18 },
   { id: "category", step: 1, type: "select", required: true, maxLength: 32, options: PARTNER_CATEGORIES },
-  { id: "address", step: 1, type: "text", required: true, autoComplete: "street-address", maxLength: 200 },
-  { id: "address_complement", step: 1, type: "text", required: false, maxLength: 120 },
-  { id: "district", step: 1, type: "text", required: true, maxLength: 120 },
+  { id: "address", step: 1, type: "text", required: true, autoComplete: "address-line1", maxLength: 200 },
+  { id: "address_complement", step: 1, type: "text", required: false, autoComplete: "address-line2", maxLength: 120 },
+  { id: "district", step: 1, type: "text", required: true, autoComplete: "address-level3", maxLength: 120 },
   { id: "postal_code", step: 1, type: "postal_code", required: true, autoComplete: "postal-code", maxLength: 9 },
   { id: "city", step: 1, type: "text", required: true, autoComplete: "address-level2", maxLength: 120 },
   { id: "state", step: 1, type: "select", required: true, autoComplete: "address-level1", maxLength: 2, options: BRAZIL_STATE_CODES },
   { id: "instagram", step: 1, type: "text", required: false, maxLength: 60 },
   { id: "opening_hours", step: 1, type: "textarea", required: false, maxLength: 400 },
-  { id: "website", step: 1, type: "url", required: false, maxLength: 300 },
-
-  // The promotional material, at the END of step 1 and NOT in a fifth step. Three numbers do
-  // not pay for one more screen to abandon, and the person is already declaring the place.
-  //
-  // NO CHECKBOX BESIDE EACH NUMBER, deliberately: a tick plus a quantity has an invalid state
-  // ("ticked, no number") that the form would then have to explain. Blank IS "I do not want
-  // this one", and `required: false` is what says so per field. What is required is the SUM,
-  // and that rule cannot live on a single field — it is in `validateAnswers`.
-  ...MATERIAL_KINDS.map((kind) => ({
-    id: materialFieldId(kind),
-    step: 1 as const,
-    type: "quantity" as const,
-    required: false,
-    maxLength: MATERIAL_QUANTITY_MAX_LENGTH,
-  })),
+  { id: "website", step: 1, type: "url", required: false, autoComplete: "url", maxLength: 300 },
 
   { id: "representative_name", step: 2, type: "text", required: true, autoComplete: "name", maxLength: 160 },
   { id: "representative_role", step: 2, type: "text", required: true, autoComplete: "organization-title", maxLength: 120 },
@@ -162,6 +147,25 @@ export const PARTNER_FORM_FIELDS: readonly PartnerField[] = [
   { id: "story_before", step: 3, type: "textarea", required: false, maxLength: 1200 },
   { id: "story_unique", step: 3, type: "textarea", required: false, maxLength: 1200 },
   { id: "story_event", step: 3, type: "textarea", required: false, maxLength: 1200 },
+
+  // The promotional material, at the END of step 3 and NOT in a step of its own. It sat at the
+  // end of step 1 until 2026-08-19 and moved for two reasons that are the same reason: step 1
+  // carried 16 of the 24 fields and was the longest scroll of the form, and its own subtitle
+  // ("a gente começa pelo que está na fachada e no CNPJ") had stopped describing it. Material is
+  // not identity of the establishment. Here it arrives after the story, when the person has
+  // already invested in the form, and step 1 is back to the 13 fields that are on the facade.
+  //
+  // NO CHECKBOX BESIDE EACH NUMBER, deliberately: a tick plus a quantity has an invalid state
+  // ("ticked, no number") that the form would then have to explain. Blank IS "I do not want
+  // this one", and `required: false` is what says so per field. What is required is the SUM,
+  // and that rule cannot live on a single field — it is in `validateAnswers`.
+  ...MATERIAL_KINDS.map((kind) => ({
+    id: materialFieldId(kind),
+    step: 3 as const,
+    type: "quantity" as const,
+    required: false,
+    maxLength: MATERIAL_QUANTITY_MAX_LENGTH,
+  })),
 ] as const;
 
 export const PARTNER_FIELD_IDS = PARTNER_FORM_FIELDS.map((field) => field.id);

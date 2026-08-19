@@ -163,6 +163,17 @@ const proposals = [];
 const SUBMISSION_ALLOWED_COLUMNS = new Set(["answers", "status", "submitted_at", "updated_at"]);
 
 /**
+ * Rows the app inserted into `partner.proposal_funnel_events`, readable back
+ * over `GET /__funnel`. What matters about a funnel row is what it does NOT
+ * carry: no session, no address, nothing anybody typed. The only way to assert
+ * that from outside is to read the payload back and look at its keys.
+ */
+const funnelEvents = [];
+
+/** The whole shape of that table. A fifth key here is a test going red. */
+const FUNNEL_ALLOWED_COLUMNS = new Set(["event", "step"]);
+
+/**
  * `core.record_partner_form_attempt`, as a counter of timestamps per client
  * hash. It is the barrier the public route stands behind, so the double
  * implements the count instead of always answering `allowed: true`: a mock that
@@ -336,6 +347,32 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  if (url.pathname === "/rest/v1/proposal_funnel_events" && req.method === "POST") {
+    readBody(req).then((raw) => {
+      let rows = [];
+      try {
+        const parsed = JSON.parse(raw);
+        rows = Array.isArray(parsed) ? parsed : [parsed];
+      } catch {
+        sendJson(res, 400, { code: "PGRST102", message: "malformed body" });
+        return;
+      }
+      for (const row of rows) {
+        const unknown = Object.keys(row).find((key) => !FUNNEL_ALLOWED_COLUMNS.has(key));
+        if (unknown) {
+          sendJson(res, 400, {
+            code: "42703",
+            message: `mock-supabase-server refuses column "${unknown}" on proposal_funnel_events`,
+          });
+          return;
+        }
+      }
+      funnelEvents.push(...rows);
+      sendJson(res, 201, {});
+    });
+    return;
+  }
+
   if (url.pathname === "/rest/v1/partner_form_submissions" && req.method === "POST") {
     readBody(req).then((raw) => {
       let rows = [];
@@ -366,6 +403,11 @@ const server = http.createServer((req, res) => {
   // Drain the request body so clients that stream a POST payload (the rpc
   // call below) don't hang waiting on us to read it.
   req.resume();
+
+  if (url.pathname === "/__funnel" && req.method === "GET") {
+    sendJson(res, 200, funnelEvents);
+    return;
+  }
 
   if (url.pathname === "/__proposals" && req.method === "GET") {
     // `trade_name` and not `tax_id`: Playwright reuses a running webServer between local runs,
