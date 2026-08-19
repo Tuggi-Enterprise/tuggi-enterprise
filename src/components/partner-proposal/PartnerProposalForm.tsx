@@ -102,7 +102,7 @@ const STORY_FIELDS: PartnerFieldId[] = [
 /** Every step whose fields are asked rather than reviewed. */
 type AskStep = PartnerField["step"];
 
-type Failure = "submit" | "unavailable" | "tax_id_registered" | "too_many" | null;
+type Failure = "submit" | "unavailable" | "too_many" | null;
 
 /**
  * Where the "I have not spoken to anyone yet" link goes: the landing page, at its form.
@@ -137,7 +137,6 @@ export function PartnerProposalForm({ contactEmail }: { contactEmail: string }) 
   const [postalFilled, setPostalFilled] = useState(false);
 
   const summaryRef = useRef<HTMLDivElement>(null);
-  const taxIdRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const started = useRef(false);
   const stepsSeen = useRef<number[]>([]);
@@ -184,8 +183,6 @@ export function PartnerProposalForm({ contactEmail }: { contactEmail: string }) 
       );
       return next;
     });
-    // The server's refusal was about the value that just changed; it is no longer true.
-    if (id === "tax_id") setFailure((current) => (current === "tax_id_registered" ? null : current));
     if (id === "postal_code") setPostalFilled(false);
   }, [markStarted]);
 
@@ -317,16 +314,6 @@ export function PartnerProposalForm({ contactEmail }: { contactEmail: string }) 
         return;
       }
 
-      if (payload?.error === "tax_id_registered") {
-        // Back to the step that holds the CNPJ, with the refusal beside the field: the person is
-        // on the review screen and the field is three screens behind them.
-        setFailure("tax_id_registered");
-        trackFunnel("proposal_submit_failed", { reason: "tax_id_registered" });
-        countFunnel("failed");
-        setStep(partnerField("tax_id").step);
-        window.requestAnimationFrame(() => taxIdRef.current?.focus());
-        return;
-      }
       // 503 IS NOT 429, and the two copies say different things — #400. A limit that was really
       // reached passes with time; a counter that could not answer does not, and telling the
       // owner of a restaurant to wait a few minutes for that is telling him something false.
@@ -383,10 +370,31 @@ export function PartnerProposalForm({ contactEmail }: { contactEmail: string }) 
       <h1 className="mb-2 text-3xl font-bold text-tuggi-dark">{t("title")}</h1>
 
       {/* DS-COMPONENTE-026, the way back — before the first field, in DOM order. */}
-      <p className="mb-6 text-base text-tuggi-slate leading-relaxed">
+      <p className="mb-2 text-base text-tuggi-slate leading-relaxed">
         {t.rich("lede", {
           lp: (chunks) => (
             <a href={BACK_TO_LANDING} className={LINK_INLINE}>
+              {chunks}
+            </a>
+          ),
+        })}
+      </p>
+
+      {/* THE OTHER WAY OUT, and it replaced a refusal — 2026-08-19.
+          Until this date, somebody whose establishment was already a client filled 24 fields and
+          met a 409 on the send. The refusal is gone — it was a public oracle of who is a client
+          of the Tuggi, in exchange for a guarantee the database now gives on its own — and what
+          takes its place is this: a line, before the first field, that lets the person recognise
+          themselves and leave at second zero.
+
+          IT IS SHOWN TO EVERY VISITOR AND CHECKS NOTHING, which is the whole design. Nothing is
+          looked up and nothing varies, so a stranger reading it learns exactly what a partner
+          reads, which is nothing about anybody. `DS-COMPONENTE-026`, the same bridge as the line
+          above and in the other direction. */}
+      <p className="mb-6 text-base text-tuggi-slate leading-relaxed">
+        {t.rich("alreadyPartner", {
+          mail: (chunks) => (
+            <a href={`mailto:${contactEmail}`} className={LINK_INLINE}>
               {chunks}
             </a>
           ),
@@ -504,16 +512,6 @@ export function PartnerProposalForm({ contactEmail }: { contactEmail: string }) 
         ) : null}
       </div>
 
-      {failure === "tax_id_registered" ? (
-        <div ref={taxIdRef} tabIndex={-1} role="alert" className={`mb-6 ${ALERT_BOX}`}>
-          <p className="text-base font-semibold text-tuggi-error">
-            {t("states.taxIdRegisteredTitle")}
-          </p>
-          <p className="mt-1 text-base text-tuggi-dark leading-relaxed">
-            {t("states.taxIdRegisteredBody", { email: contactEmail })}
-          </p>
-        </div>
-      ) : null}
 
       <div className={CARD}>
         {step <= 3 ? (
@@ -633,7 +631,7 @@ export function PartnerProposalForm({ contactEmail }: { contactEmail: string }) 
                 </section>
               ))}
 
-              {failure && failure !== "tax_id_registered" ? (
+              {failure ? (
                 <div role="alert" className={`mt-6 ${ALERT_BOX}`}>
                   <p className="text-base font-semibold text-tuggi-error">
                     {t(`states.${failureCopyKey(failure)}Title`)}
@@ -751,7 +749,7 @@ export function PartnerProposalForm({ contactEmail }: { contactEmail: string }) 
 }
 
 /** Which pair of copy keys a failure reads. `submit` keeps the names it shipped with. */
-function failureCopyKey(failure: Exclude<Failure, null | "tax_id_registered">): string {
+function failureCopyKey(failure: Exclude<Failure, null>): string {
   if (failure === "too_many") return "tooMany";
   if (failure === "unavailable") return "unavailable";
   return "submitError";

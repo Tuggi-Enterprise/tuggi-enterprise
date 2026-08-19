@@ -200,14 +200,6 @@ function recordAttempt(clientHash, windowSeconds, maxAttempts) {
   return { allowed: true, retry_after_seconds: 0 };
 }
 
-/**
- * CNPJs that `core.clients` already holds, in the two shapes a stored value can
- * have — normalized by the form, and masked by whoever typed the row by hand.
- * `cnpjLookupValues` asks for both, and the fixture answers on either, because
- * matching one shape only is how the same company gets registered twice.
- */
-const REGISTERED_TAX_IDS = new Set(["90021382000122", "90.021.382/0001-22"]);
-
 /** `tax_id=in.("a","b")` → ["a", "b"]. */
 function readInFilter(url, column) {
   const raw = url.searchParams.get(column);
@@ -463,13 +455,22 @@ const server = http.createServer((req, res) => {
   }
 
   if (url.pathname === "/rest/v1/clients" && req.method === "GET") {
-    // The proposal's `lookupTaxId` asks a different question of the same table:
-    // "is any of these shapes already a client?", with `.in()` and `.limit(1)`,
-    // so the answer is an ARRAY and never the `.single()` 406 below.
-    const taxIds = readInFilter(url, "tax_id");
-    if (taxIds) {
-      const hit = taxIds.some((value) => REGISTERED_TAX_IDS.has(value));
-      sendJson(res, 200, hit ? [{ id: "55555555-5555-4555-8555-555555555555" }] : []);
+    // A `tax_id=in.(…)` HERE IS A REGRESSION, NOT A QUERY TO ANSWER — 2026-08-19.
+    //
+    // That was `lookupTaxId`, the proposal asking "is any of these shapes already a client?"
+    // The refusal it fed was removed: it was a public oracle of the Tuggi's client list, and
+    // the guarantee it was supposed to give is now `clients_tax_id_normalized_uk`, a UNIQUE
+    // index that refuses the second row on every write path.
+    //
+    // The double refuses instead of answering, and loudly, because the defect this guards is
+    // silent by nature: a lookup put back "just to mark the row" leaves a difference in TIMING
+    // and nothing else would fail.
+    if (readInFilter(url, "tax_id")) {
+      sendJson(res, 418, {
+        code: "TUGGI-ORACLE",
+        message:
+          "mock-supabase-server: the public proposal must not read partner.clients by tax_id — see BR-B2B-028 and clients_tax_id_normalized_uk",
+      });
       return;
     }
 

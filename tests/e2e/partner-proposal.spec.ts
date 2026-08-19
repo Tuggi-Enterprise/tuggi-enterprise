@@ -282,9 +282,18 @@ test.describe("DS-COPY-018: the copy points at a channel that exists", () => {
     // already takes it.
     expect(offenders).toEqual([]);
 
-    for (const key of ["states.submitErrorBody", "states.taxIdRegisteredBody", "states.tooManyBody"]) {
+    // `states.taxIdRegisteredBody` left this list on 2026-08-19 with the refusal it belonged to;
+    // `states.unavailableBody` took its place, and `alreadyPartner` is the line that replaced the
+    // refusal itself — it carries the address as a `<mail>` chunk, resolved by the component from
+    // the same `contactEmail` prop, so the address is still written in exactly one place.
+    for (const key of [
+      "states.submitErrorBody",
+      "states.unavailableBody",
+      "states.tooManyBody",
+    ]) {
       expect(values.get(key), key).toContain("{email}");
     }
+    expect(values.get("alreadyPartner")).toContain("<mail>");
   });
 
   test("BR-USUARIO-028 item 1: the policy no longer says the form is outside this site", () => {
@@ -338,9 +347,19 @@ test.describe("BR-B2B-026 item 2: the CNPJ is what keeps a company from entering
     expect(stored.rows[0].answers.tax_id).toBe("12ABC34501DE35");
   });
 
-  test("a CNPJ already in partner.clients is refused with 409 and never becomes a row", async ({
+  test("BR-B2B-028: a CNPJ that is already a client is answered exactly like any other", async ({
     request,
   }) => {
+    // THE 409 LEFT ON 2026-08-19, and this test is the inverse of the one it replaces.
+    //
+    // The refusal was there to stop one company being registered twice, and it never did that:
+    // read-then-insert is a race, and it missed the four other write paths into
+    // `partner.clients`. What it did do was answer differently for a CNPJ that is a client —
+    // a public oracle of the Tuggi's client list, probeable by anyone.
+    //
+    // The guarantee moved to `clients_tax_id_normalized_uk`, a UNIQUE index on the same
+    // normalised expression (migration `20260819190000`), which refuses the second row on every
+    // path without telling anybody anything.
     const mark = probe("registered");
     const response = await submit(
       request,
@@ -348,15 +367,48 @@ test.describe("BR-B2B-026 item 2: the CNPJ is what keeps a company from entering
       validAnswers({ tax_id: "90.021.382/0001-22", trade_name: mark })
     );
 
-    // 409 and not 400: nothing the person typed is wrong.
-    expect(response.status()).toBe(409);
-    expect(await response.json()).toMatchObject({ error: "tax_id_registered", field: "tax_id" });
+    expect(response.status()).toBe(200);
+    expect(await response.json()).toMatchObject({ state: "submitted" });
 
     const stored = await (await request.get(`${MOCK_BASE}/__proposals?trade_name=${mark}`)).json();
-    // THE MUTATION THIS CATCHES: delete the `taxId === "registered"` branch from the route and
-    // the same company gets a second proposal — and, one promotion later, a second client
-    // record somebody has to unpick by hand.
-    expect(stored.rows, "a registered company writes no row").toEqual([]);
+    expect(stored.rows.length, "it becomes a proposal like any other").toBe(1);
+  });
+
+  test("BR-B2B-028: the public route does not read the client table at all", () => {
+    // THE MUTATION THIS CATCHES, and it is narrower than deleting the branch: put the lookup
+    // back "just to mark the row" and this goes red. A read kept for any reason at all leaves a
+    // difference in TIMING between a CNPJ that is a client and one that is not — a narrower
+    // oracle, and still an oracle.
+    const source = ["src/app/api/partner-proposal/route.ts", "src/lib/partner-proposal/proposal-service.ts"]
+      .map((file) => fs.readFileSync(path.join(REPO_ROOT, file), "utf8"))
+      .map((text) => text.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, ""))
+      .join("\n");
+
+    expect(source).not.toContain("lookupTaxId");
+    expect(source).not.toContain("cnpjLookupValues");
+    expect(source).not.toMatch(/from\(\s*CLIENTS\s*\)/);
+    expect(source).not.toContain('"clients"');
+  });
+
+  test("BR-B2B-028: nothing in the proposal's copy tells anybody a CNPJ is a client", () => {
+    // The copy of the refusal left with the refusal. A key surviving here would be the oracle
+    // waiting for somebody to mount it again.
+    const pt = JSON.parse(fs.readFileSync(path.join(MESSAGES_DIR, "pt.json"), "utf8"));
+    expect(pt.PartnerProposal.states.taxIdRegisteredTitle).toBeUndefined();
+    expect(pt.PartnerProposal.states.taxIdRegisteredBody).toBeUndefined();
+
+    // And what took its place is a line shown to EVERY visitor, which is why it discloses
+    // nothing: no lookup, no condition, the same sentence for a stranger and for a partner.
+    const deflection = pt.PartnerProposal.alreadyPartner as string;
+    expect(deflection).toBeTruthy();
+    expect(deflection).toContain("<mail>");
+    const form = fs.readFileSync(
+      path.join(REPO_ROOT, "src/components/partner-proposal/PartnerProposalForm.tsx"),
+      "utf8"
+    );
+    // Rendered unconditionally — no `?`, no `&&`, no state between the key and the paragraph.
+    expect(form).toContain('{t.rich("alreadyPartner", {');
+    expect(form).not.toMatch(/\w+\s*(\?|&&)\s*t\.rich\("alreadyPartner"/);
   });
 
   test("BR-B2B-026 item 2: a CNPJ carrying an invisible character is stored clean", () => {
@@ -386,26 +438,25 @@ test.describe("BR-B2B-026 item 2: the CNPJ is what keeps a company from entering
     }
   });
 
-  test("BR-B2B-026 item 2: a registered CNPJ typed with a space is still refused with 409", async ({
+  test("BR-B2B-026 item 2: a CNPJ typed with a space is stored under the same key", async ({
     request,
   }) => {
     const mark = probe("registered-space");
     const response = await submit(
       request,
       mark,
-      // The same company as the 409 test above, typed by somebody who fumbled the keyboard —
-      // or by somebody who worked out that a space was enough to walk past the third barrier.
+      // The same company as the test above, typed by somebody who fumbled the keyboard.
       validAnswers({ tax_id: "9002138200012 2", trade_name: mark })
     );
 
-    expect(response.status(), await response.text()).toBe(409);
-    expect(await response.json()).toMatchObject({ error: "tax_id_registered", field: "tax_id" });
+    expect(response.status(), await response.text()).toBe(200);
 
     const stored = await (await request.get(`${MOCK_BASE}/__proposals?trade_name=${mark}`)).json();
-    // The whole cost of #398 in one assertion: before the fix this answered 200, wrote the row,
-    // and a stranger had a proposal in the queue under a partner's CNPJ that no lookup by shape
-    // would ever find again.
-    expect(stored.rows, "a registered company writes no row, however it was typed").toEqual([]);
+    expect(stored.rows.length).toBe(1);
+    // THE WHOLE COST OF #398, and it outlived the refusal it was written for: the value stored
+    // is the KEY, so the CMS finds this proposal beside the client and beside any twin of it.
+    // Before that fix the space survived into the column and no lookup by shape found it again.
+    expect(stored.rows[0].answers.tax_id).toBe("90021382000122");
   });
 
   test("an invalid CNPJ is refused before anything is written", async ({ request }) => {

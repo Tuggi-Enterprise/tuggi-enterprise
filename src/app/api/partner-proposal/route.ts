@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import {
   clientAddressOf,
   createProposal,
-  lookupTaxId,
   registerSubmissionAttempt,
 } from "@/lib/partner-proposal/proposal-service";
 import { normalizeAnswers, validateAnswers } from "@/lib/partner-proposal/schema";
@@ -22,21 +21,37 @@ import { normalizeAnswers, validateAnswers } from "@/lib/partner-proposal/schema
  *      could not decide (no secret, RPC down) answers 503 and never 429 — #400.
  *   2. The body is validated against the field allowlist before anything is persisted — unknown
  *      keys are stripped, so `commission_rate` posted by hand goes nowhere.
- *   3. A CNPJ that already exists in `partner.clients` is refused. That read is the only thing this
- *      surface asks of the client table, and it answers `registered`/`free`/`unknown` — never a
- *      column.
+ *   3. THIS ROUTE DOES NOT READ `partner.clients` AT ALL, and that is the point of item 3 rather
+ *      than an omission. It used to: a CNPJ already registered was refused with a 409, and the
+ *      lookup that decided it was the only thing this surface asked of the client table.
  *   4. Nothing here writes `partner.clients`. The submission is a proposal, and the promotion into
  *      the live registration is an authenticated act of the team, in the CMS (BR-B2B-026, item 4).
  *
- * THE ORDER OF THE FOUR IS PART OF THE DESIGN, not a style. The limit is registered before the
- * body is even parsed, so a flood of malformed bodies is counted like any other attempt; and the
- * CNPJ is looked up before the INSERT, so a company already registered never produces a row.
- * Removing either step leaves this file reading the same and behaving like an open pipe — which
- * is why both are pinned by mutation in `tests/e2e/partner-proposal.spec.ts`.
+ * ---------------------------------------------------------------------------------------------
+ * WHY THE 409 LEFT, on 2026-08-19 — and it is the same reason it existed
+ * ---------------------------------------------------------------------------------------------
  *
- * A CNPJ that already has a PENDING PROPOSAL is accepted and becomes a second proposal: the
- * conference screen in the CMS shows the duplicate and a person decides. Answering "you already
- * sent this" would turn a public number into a lookup for who is talking to the Tuggi.
+ * The refusal was there to stop one company being registered twice. It never did that: the
+ * guarantee lived in two application reads — this one and `buildPromotionPlan` in the CMS — and
+ * that is a race (read then insert is not atomic) which also missed the four other write paths
+ * into `partner.clients`. Meanwhile it was the one control anybody on the internet could probe,
+ * and what a probe bought was a public oracle of who is a client of the Tuggi.
+ *
+ * The guarantee moved to where it cannot fail: `clients_tax_id_normalized_uk`, a UNIQUE index on
+ * the same normalised expression this code used to compare by (migration `20260819190000`). The
+ * database refuses the second row now, on every path, without anybody being told anything.
+ *
+ * SO THIS ROUTE ANSWERS THE SAME BYTES TO EVERY VALID CNPJ, and the lookup went with the branch
+ * rather than staying to mark the row: a read kept for any reason at all leaves a difference in
+ * TIMING, which is a narrower oracle and still an oracle. There is no `partner.clients` read here
+ * to be timed.
+ *
+ * A CNPJ that already has a pending proposal, or that is already a client, is accepted and becomes
+ * another proposal. The conference screen in the CMS recognises both — `findClientByTaxId` turns
+ * the promotion into an UPDATE of the existing record — and a person decides. What the person on
+ * the form is spared is a refusal at field 24; what they are offered instead is a line at the top
+ * of the page, shown to EVERY visitor so it discloses nothing, telling an existing partner to talk
+ * to us rather than fill this in (`lede`, and `DS-COMPONENTE-026`).
  *
  * Logs carry the outcome and nothing else — no e-mail, no CNPJ, no answers, no address.
  *
@@ -71,16 +86,6 @@ export async function POST(req: Request) {
   const problems = validateAnswers(answers);
   if (problems.length > 0) {
     return NextResponse.json({ error: "invalid_answers", problems }, { status: 400 });
-  }
-
-  const taxId = await lookupTaxId(answers.tax_id ?? "");
-  if (taxId === "registered") {
-    // 409 and not 400: nothing the person typed is wrong. The field is named so the form can
-    // put the message beside the CNPJ instead of at the top of a page they already left.
-    return NextResponse.json({ error: "tax_id_registered", field: "tax_id" }, { status: 409 });
-  }
-  if (taxId === "unknown") {
-    return NextResponse.json({ error: "submit_failed" }, { status: 503 });
   }
 
   const outcome = await createProposal(answers);

@@ -1155,14 +1155,13 @@
       "submitErrorBody": "Tente enviar de novo. Se continuar dando erro, escreva para {email}. O que você preencheu continua guardado neste aparelho.",
       "successTitle": "Recebemos os seus dados.",
       "successBody": "A gente confere e volta a falar com você por este e-mail: {email}. Enviar o formulário ainda não fecha a parceria. O contrato é o passo seguinte.",
-      "taxIdRegisteredTitle": "Não dá para seguir com este CNPJ por aqui.",
-      "taxIdRegisteredBody": "Não é erro de digitação. Se o estabelecimento é seu, escreva para {email} e a gente resolve com você. Se você cuida de mais de um endereço, confira o número, porque cada endereço tem o seu próprio CNPJ.",
       "tooManyTitle": "Chegaram muitos envios desta mesma rede.",
       "tooManyBody": "Não é nada que você tenha feito de errado. Em internet compartilhada, os envios contam juntos. Tente de novo mais tarde. O que você preencheu continua guardado neste aparelho. Se precisar resolver hoje, escreva para {email}.",
       "unavailableTitle": "O envio está fora do ar agora.",
       "unavailableBody": "É um problema nosso, e esperar não resolve. Escreva para {email} que a gente recebe a sua proposta por lá. O que você preencheu continua guardado neste aparelho.",
       "postalCodeFilled": "A gente preencheu a rua, o bairro, a cidade e o estado. Confira e ajuste se precisar."
     },
-    "savedOnDevice": "O que você escrever fica guardado neste aparelho por 24 horas, até você enviar."
+    "savedOnDevice": "O que você escrever fica guardado neste aparelho por 24 horas, até você enviar.",
+    "alreadyPartner": "Se o seu estabelecimento já é parceiro e você quer atualizar os dados, não preencha de novo: <mail>fale com a gente por e-mail</mail>."
   }
 }

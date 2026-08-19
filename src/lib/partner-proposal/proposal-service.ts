@@ -22,11 +22,17 @@
  *  3. That INSERT is behind a durable per-address limit decided by the database, not by this
  *     process — see `registerSubmissionAttempt`.
  *
- * `partner.clients` IS REACHABLE FROM HERE, and in one direction only: `lookupTaxId` asks whether a
- * CNPJ is already registered and gets back one of three words. It selects `id`, returns no
- * column to the caller, and has no sibling that writes. The submission is still a proposal, and
- * the promotion into the live record is still an authenticated act of the team in the CMS
- * (BR-B2B-026, item 4).
+ * `partner.clients` IS NOT REACHABLE FROM HERE AT ALL, as of 2026-08-19. `lookupTaxId` lived here
+ * and asked whether a CNPJ was already registered; the answer became a 409 on the public route,
+ * which was a public oracle of who is a client of the Tuggi in exchange for a guarantee it did not
+ * actually give — read-then-insert is a race, and it missed the four other write paths into that
+ * table. The guarantee is `clients_tax_id_normalized_uk` now, a UNIQUE index on the same
+ * normalised expression (migration `20260819190000`), and the function went with the branch rather
+ * than staying to mark a row: a read kept for any reason leaves a difference in TIMING.
+ *
+ * So the whole client table is out of reach of the public surface. The submission is still a
+ * proposal, and the promotion into the live record is still an authenticated act of the team in
+ * the CMS (BR-B2B-026, item 4).
  *
  * Logs carry the outcome and nothing else — no e-mail, no CNPJ, no answers, no address.
  */
@@ -34,11 +40,9 @@
 import { getSupabaseClient } from "@/lib/supabase-server";
 import { registerAttempt } from "@/lib/rate-limit";
 import type { PartnerAnswers } from "./schema";
-import { cnpjLookupValues } from "@/lib/cnpj";
 
 const SCHEMA = "core";
 const SUBMISSIONS = "partner_form_submissions";
-const CLIENTS = "clients";
 
 /**
  * `.schema("core")` on every call, and never a bare client: `getSupabaseClient` builds one with
@@ -48,43 +52,6 @@ const CLIENTS = "clients";
  */
 function service() {
   return getSupabaseClient("serviceRole").schema(SCHEMA);
-}
-
-// ── The CNPJ is the deduplication key ───────────────────────────────────────────────────
-
-/**
- * Whether this CNPJ is already a client of ours — `registered`, `free`, or `unknown` when the
- * question could not be asked.
- *
- * A CNPJ already in `partner.clients` is a partner the team has registered, and a second
- * registration of the same company through a public form would either duplicate the record or
- * invite somebody to overwrite it. It is refused at the door.
- *
- * A CNPJ that only has a PENDING PROPOSAL is not refused — it becomes another proposal, and a
- * human resolves the duplicate on the conference screen. Refusing there would let anyone with a
- * CNPJ (a public number) find out whether that company is talking to the Tuggi.
- *
- * WHICH SHAPES COUNT AS THE SAME CNPJ is `cnpjLookupValues`, and the CMS promotion asks the same
- * question of the same column with the same helper: the two ends of this feature must not
- * disagree about what "already registered" means.
- */
-export type TaxIdLookup = "registered" | "free" | "unknown";
-
-export async function lookupTaxId(taxId: string): Promise<TaxIdLookup> {
-  const candidates = cnpjLookupValues(taxId);
-  if (candidates.length === 0) return "free";
-
-  const { data, error } = await service().from(CLIENTS).select("id").in("tax_id", candidates).limit(1);
-
-  // `unknown` and never `free`: a lookup that did not answer is not permission to write. A CNPJ
-  // that got through here would become a duplicate client record somebody has to unpick by
-  // hand, and the route turns this into "try again", not into a silent second registration.
-  if (error) {
-    console.error("[partner-proposal] tax id lookup failed");
-    return "unknown";
-  }
-
-  return Array.isArray(data) && data.length > 0 ? "registered" : "free";
 }
 
 // ── The submission ──────────────────────────────────────────────────────────────────────
