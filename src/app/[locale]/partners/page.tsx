@@ -8,17 +8,11 @@ import { CoverageDensityMap } from "@/components/blocks/CoverageDensityMap";
 import { LanguagesStrip } from "@/components/blocks/LanguagesStrip";
 import { FaqSection } from "@/components/blocks/FaqSection";
 import { PartnerLeadForm } from "@/components/blocks/PartnerLeadForm";
-import { PartnerVideo } from "@/components/blocks/PartnerVideo";
 import { LEAD_FORM_ANCHOR } from "@/lib/lead-form";
 import { buildAlternates, buildOpenGraph, buildTwitterCard, defaultRobots } from "@/lib/seo";
 import { getCoverageData } from "@/lib/coverage";
 import { PRODUCT_FACTS } from "@/lib/product-facts";
 import { getStateHubPaths } from "@/lib/routes";
-import {
-  PARTNER_VIDEOS,
-  initialPartnerVideo,
-  narrationLanguageLabel,
-} from "@/lib/partner-videos";
 
 /**
  * The partner hub, as a conversion landing page —
@@ -125,22 +119,6 @@ export default async function PartnersPage({
   const tSegments = await getTranslations({ locale, namespace: "Segments" });
   const coverage = await getCoverageData();
 
-  // The clip lives inside the hero now, so an empty registry has exactly one
-  // effect and no rhythm depends on it: no `media`, single column, the hero of
-  // today. The registry is empty on purpose — see src/lib/partner-videos.
-  const initial = initialPartnerVideo(PARTNER_VIDEOS, locale);
-  const media = initial ? (
-    <PartnerVideo
-      initialId={initial.id}
-      videos={PARTNER_VIDEOS.map((video) => ({
-        ...video,
-        // Resolved here, on the server, with the page's locale — the browser's
-        // ICU data never gets a chance to disagree with the build's.
-        languageLabel: narrationLanguageLabel(locale, video.audioLocale),
-      }))}
-    />
-  ) : undefined;
-
   // Built from the very keys block 7 renders, so a question that changes in
   // i18n cannot leave a stale copy of itself in the structured data.
   const faqSchema = {
@@ -164,7 +142,6 @@ export default async function PartnersPage({
         title={t("hero.title")}
         subtitle={t("hero.subtitle")}
         cta={{ label: t("cta.action"), href: LEAD_FORM_ANCHOR }}
-        media={media}
       />
       {/* Adjacent to the sentence it proves, and inside the two screens where
           74% of the viewing time is spent (spec §1.3). */}

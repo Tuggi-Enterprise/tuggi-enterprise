@@ -4,13 +4,6 @@ import path from "node:path";
 import { localizedPathname } from "../../src/i18n/pathnames";
 import { LOCALES, type SiteLocale } from "../../src/i18n/locales";
 import { SEGMENTS } from "../../src/lib/segments";
-import {
-  PARTNER_VIDEOS,
-  formatClipDuration,
-  initialPartnerVideo,
-  narrationLanguageLabel,
-  type PartnerVideo,
-} from "../../src/lib/partner-videos";
 import { measuredTextContrast } from "./support/contrast";
 
 /**
@@ -153,18 +146,16 @@ test.describe("the partner copy, in the four message files", () => {
   ];
 
   /**
-   * The 21 keys #306 added — spec §5, and criterion 1 of its §9. The four of
-   * `Partners.video` ship with the component that reads them and before the
-   * clips themselves: the block degrades to today's hero while
-   * `PARTNER_VIDEOS` is empty, so they are not orphans waiting to be mounted,
-   * they are the copy of a mounted component with no data yet.
+   * The keys #306 added — spec §5, and criterion 1 of its §9.
+   *
+   * The four of `Partners.video` LEFT with the block, on 2026-08-19 (#323): the
+   * operator decided on 2026-08-14 that there will be no video, and copy whose
+   * component is gone is copy waiting for somebody to mount it again, which is
+   * the defect CLAUDE.md §6 names.
    */
   const CARD_306_KEYS = [
     "Partners.hero.eyebrow",
     "Partners.grid.lead",
-    ...["caption", "playLabel", "languageLegend", "openOnYoutube"].map(
-      (key) => `Partners.video.${key}`
-    ),
     "Partners.FAQ.title",
     ...[1, 2, 3, 4, 5, 6].flatMap((n) => [`Partners.FAQ.q${n}`, `Partners.FAQ.a${n}`]),
     "Partners.form.title",
@@ -474,9 +465,10 @@ test.describe("what /partners serves", () => {
       await expect(links).toHaveCount(1);
       await expect(links.first()).toHaveText(at(messages, "Partners.cta.action"));
       await expect(links.first()).toHaveAttribute("href", "#lead-form");
+      // #323: the block is gone rather than empty, so these are the guard
+      // against somebody mounting it again by hand.
       await expect(page.locator("#video")).toHaveCount(0);
       await expect(page.locator('[data-block="partner-video"]')).toHaveCount(0);
-      expect(PARTNER_VIDEOS).toHaveLength(0);
 
       // Criterion 10: no third-party frame reaches this page, at load or
       // after it. The consent banner is on the same page, and a player mounted
@@ -703,59 +695,3 @@ test.describe("BR-IDIOMA-001 — the hub in the four locales", () => {
   });
 });
 
-/**
- * Criteria 11 and 12 of §9 of the conversion spec, and the choice rule of its
- * §3.4 — the three decisions of the video that the page **cannot** demonstrate
- * today, because `PARTNER_VIDEOS` is empty on purpose (§3.6, SC 1.2.2).
- *
- * They are asserted against the functions rather than against the DOM for that
- * reason: the day the ids arrive, what these guard is the behaviour the spec
- * decided, not the behaviour whoever pastes the ids happens to get. Everything
- * else about the empty registry is measured on the served page, in the hero
- * test above.
- */
-test.describe("#306 — the video data, with the registry still empty", () => {
-  const clip = (id: string, audioLocale: string): PartnerVideo => ({
-    id,
-    audioLocale,
-    youtubeId: `yt-${id}`,
-    poster: `/posters/${id}.jpg`,
-    posterWidth: 1280,
-    posterHeight: 720,
-    durationSeconds: 95,
-  });
-
-  test("criterion 11: the pill reads m:ss, and no digit of it comes from i18n", () => {
-    expect(formatClipDuration(95)).toBe("1:35");
-    expect(formatClipDuration(60)).toBe("1:00");
-    // Under a minute still carries the minute, so the pill never changes width
-    // class mid-list; and a rounded half-second never renders "1:60".
-    expect(formatClipDuration(9)).toBe("0:09");
-    expect(formatClipDuration(59.6)).toBe("1:00");
-  });
-
-  test("criterion 12: the language pill is a name in the page's language, never a code", () => {
-    // The mismatch between narration and interface is the point of the block
-    // (§3.4): an Italian visitor reads *Francese* and sees a language the page
-    // itself does not speak.
-    expect(narrationLanguageLabel("it", "fr")).toBe("Francese");
-    expect(narrationLanguageLabel("pt", "en")).toBe("Inglês");
-    expect(narrationLanguageLabel("es", "fr")).toBe("Francés");
-    expect(narrationLanguageLabel("en", "fr")).toBe("French");
-    // The documented fallback, and the only shape in which a bare code ships:
-    // an ICU build that does not know the code hands it back unchanged.
-    expect(narrationLanguageLabel("pt", "qq")).toBe("QQ");
-  });
-
-  test("§3.4: the clip that opens is the page's language, then English, then the first", () => {
-    const videos = [clip("fr-rio", "fr"), clip("en-rio", "en"), clip("pt-rio", "pt")];
-    expect(initialPartnerVideo(videos, "pt")?.id).toBe("pt-rio");
-    // No Italian clip, so the Italian visitor starts in English rather than in
-    // whatever happens to be first in the array.
-    expect(initialPartnerVideo(videos, "it")?.id).toBe("en-rio");
-    expect(initialPartnerVideo([clip("fr-rio", "fr")], "it")?.id).toBe("fr-rio");
-    // The state that ships today: no clip, no media, and the hero of the hero
-    // test above.
-    expect(initialPartnerVideo(PARTNER_VIDEOS, "pt")).toBeUndefined();
-  });
-});

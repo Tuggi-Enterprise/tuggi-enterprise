@@ -236,12 +236,6 @@
     "cta": {
       "action": "Quero aparecer no Tuggi"
     },
-    "video": {
-      "caption": "Um trajeto real no Rio de Janeiro: do Santos Dumont a Copacabana, com o Tuggi contando o que passa pela janela.",
-      "playLabel": "Reproduzir o vídeo",
-      "languageLegend": "Idioma da narração",
-      "openOnYoutube": "Assistir no YouTube"
-    },
     "FAQ": {
       "title": "As perguntas que a gente mais ouve",
       "q1": "Quanto custa?",

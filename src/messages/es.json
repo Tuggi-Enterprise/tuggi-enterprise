@@ -236,12 +236,6 @@
     "cta": {
       "action": "Quiero aparecer en Tuggi"
     },
-    "video": {
-      "caption": "Un trayecto real en Río de Janeiro: del aeropuerto Santos Dumont a Copacabana, con Tuggi contando lo que pasa por la ventana.",
-      "playLabel": "Reproducir el vídeo",
-      "languageLegend": "Idioma de la narración",
-      "openOnYoutube": "Ver en YouTube"
-    },
     "FAQ": {
       "title": "Las preguntas que más nos hacen",
       "q1": "¿Cuánto cuesta?",

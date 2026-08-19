@@ -29,8 +29,10 @@ import { CtaLink, type CtaHref } from "./CtaLink";
  * **Both calls to action are optional, and absent means absent.** No reserved
  * space, no placeholder, no disabled button: the element is not in the DOM.
  * That was already true of `cta` and it is the whole design of `secondary`,
- * which the hub passes only while `PARTNER_VIDEOS` has an entry — one
- * condition, and the video block reads the same one (spec §4.1).
+ * which no caller passes since #323 took the video block out: it was the "watch
+ * the drive" link, and it pointed at the block that is gone. The prop stays
+ * because it belongs to the segment template rather than to `/parcerias` — and
+ * an unpassed prop of a template is not the same thing as an unmounted block.
  *
  * **The hub's hero did not have a CTA and now has one**, and the reversal has a
  * reason rather than a change of mind: §1.1 of the copy document decided
@@ -49,24 +51,20 @@ import { CtaLink, type CtaHref } from "./CtaLink";
  * (spec §2.1). The hero image itself belongs to the segment page.
  *
  * ---------------------------------------------------------------------------
- * `eyebrow` and `media` — card #306, §3.2 of the conversion spec
+ * `eyebrow` — card #306, §3.2 of the conversion spec
  * ---------------------------------------------------------------------------
  *
- * **The reason for the single column inverts when there is media, and only
- * then.** The decision above is not revoked: with `media` absent the hero
- * renders exactly as it did, one column, no held space, no empty cell. With
- * `media` present the second cell has something in it, so the skeleton becomes
- * two columns from `lg` up.
- *
- * **The DOM order is the same at both widths** — eyebrow, h1, subtitle, call to
- * action, media — so reading order and Tab order never diverge from the visual
- * one (SC 1.3.2 and 2.4.3), and the call to action stays *above* the poster on
- * a phone. The poster being cut by the fold is deliberate: content interrupted
- * at the fold is what makes a page get scrolled.
- *
- * `eyebrow` is `--color-tuggi-primary-text` and never `--color-tuggi-primary`:
- * the brand cyan under small text measures 2.70:1 and fails SC 1.4.3
+ * It is `--color-tuggi-primary-text` and never `--color-tuggi-primary`: the
+ * brand cyan under small text measures 2.70:1 and fails SC 1.4.3
  * (`DS-COR-002`).
+ *
+ * **`media` left with the video block, on 2026-08-19 (#323).** The two-column
+ * skeleton existed for one caller, `/parcerias`, which fed it the narrated
+ * drive; the operator decided on 2026-08-14 that there will be no video, so
+ * the prop had no feeder left and the branch had no reachable state. What it
+ * rendered when absent — one column, `max-w-3xl`, no held space — is what it
+ * always rendered in production, and is what is left here. Removing it changes
+ * no byte of the served markup, which is the condition #323 set.
  */
 
 type SegmentHeroProps = {
@@ -74,12 +72,6 @@ type SegmentHeroProps = {
   subtitle: string;
   /** A short label above the h1, naming who the page is for. Optional. */
   eyebrow?: string;
-  /**
-   * The second cell, from `lg` up — today the narrated drive of `/partners`.
-   * Absent means absent: single column, and no space held for a picture that
-   * is not coming.
-   */
-  media?: React.ReactNode;
   /**
    * The high-intent call to action. `href` is typed against the route map or is
    * an anchor on this page, so a destination that is neither is a compile error
@@ -96,18 +88,7 @@ type SegmentHeroProps = {
   };
 };
 
-export function SegmentHero({
-  title,
-  subtitle,
-  eyebrow,
-  media,
-  cta,
-  secondary,
-}: SegmentHeroProps) {
-  // One column and `max-w-3xl` with no media — the markup a visitor gets today
-  // — and a two-cell grid from `lg` up when there is something to put in the
-  // second cell. Same children, same order, in both.
-  const column = media ? "max-w-xl flex flex-col items-start gap-6" : "";
+export function SegmentHero({ title, subtitle, eyebrow, cta, secondary }: SegmentHeroProps) {
 
   return (
     <section
@@ -115,14 +96,8 @@ export function SegmentHero({
       className="w-full bg-white border-b border-gray-200 pt-32 pb-20 lg:pt-40 lg:pb-24"
     >
       <div className="page-shell">
-        <div
-          className={
-            media
-              ? "flex flex-col items-start gap-10 lg:grid lg:grid-cols-2 lg:gap-12 lg:items-center"
-              : "max-w-3xl flex flex-col items-start gap-6"
-          }
-        >
-          <Column className={column}>
+        <div className="max-w-3xl flex flex-col items-start gap-6">
+          <Column className="">
             {eyebrow ? (
               <p className="text-sm font-semibold uppercase tracking-wide text-tuggi-primary-text">
                 {eyebrow}
@@ -156,7 +131,6 @@ export function SegmentHero({
               </div>
             ) : null}
           </Column>
-          {media}
         </div>
       </div>
     </section>

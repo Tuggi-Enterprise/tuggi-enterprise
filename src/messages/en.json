@@ -236,12 +236,6 @@
     "cta": {
       "action": "I want to appear on Tuggi"
     },
-    "video": {
-      "caption": "A real drive in Rio de Janeiro: from Santos Dumont airport to Copacabana, with Tuggi telling you what goes past the window.",
-      "playLabel": "Play the video",
-      "languageLegend": "Narration language",
-      "openOnYoutube": "Watch on YouTube"
-    },
     "FAQ": {
       "title": "The questions we hear most",
       "q1": "What does it cost?",
