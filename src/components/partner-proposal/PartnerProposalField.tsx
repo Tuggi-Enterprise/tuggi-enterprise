@@ -4,7 +4,7 @@ import React from "react";
 import { AlertCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { BRAZIL_STATES } from "@/lib/brazil-states";
-import { PARTNER_CATEGORIES, type PartnerField } from "@/lib/partner-proposal/fields";
+import { PARTNER_CATEGORIES, PLAN_CHOICES, type PartnerField } from "@/lib/partner-proposal/fields";
 import { maskCnpjInput, cnpjCharactersMissing, CNPJ_INPUT_PLACEHOLDER } from "@/lib/cnpj";
 import {
   PHONE_PLACEHOLDER,
@@ -128,11 +128,25 @@ export function PartnerProposalField({
     onBlur(normalized);
   }
 
+  /**
+   * `choice` and `consent` do not have ONE control for a `<label htmlFor>` to point at: the
+   * first is a group of radios and the second is a tick whose own label is the statement beside
+   * it. Pointing an outer `<label>` at a `<fieldset>` is invalid, and wrapping a `<label>`
+   * around a second `<label>` gives the checkbox two accessible names. So the heading is a
+   * paragraph for those two, and each control carries its own name — the legend for the group,
+   * the statement for the tick.
+   */
+  const grouped = field.type === "choice" || field.type === "consent";
+
   return (
     <div className="mb-6">
-      <label htmlFor={inputId} className={FIELD_LABEL}>
-        {t(`fields.${field.id}.label`)}
-      </label>
+      {grouped ? (
+        <p className={FIELD_LABEL}>{t(`fields.${field.id}.label`)}</p>
+      ) : (
+        <label htmlFor={inputId} className={FIELD_LABEL}>
+          {t(`fields.${field.id}.label`)}
+        </label>
+      )}
       {help ? (
         <p id={helpId} className={FIELD_HELP}>
           {help}
@@ -202,6 +216,65 @@ export function PartnerProposalField({
               </option>
             ))}
           </select>
+        );
+
+      /**
+       * A radio group, not a `<select>`: two options whose labels are whole sentences, on a
+       * phone. A closed set this small is read once and answered once, and a select would hide
+       * one of the two behind a tap.
+       *
+       * The group is a `<fieldset>` whose `<legend>` is the question, so a screen reader
+       * announces what is being chosen before the first option — the outer `<label htmlFor>`
+       * points at no single control here, which is why the legend has to carry it.
+       */
+      case "choice":
+        return (
+          <fieldset
+            id={inputId}
+            aria-describedby={describedBy || undefined}
+            aria-invalid={problem ? true : undefined}
+          >
+            <legend className="sr-only">{t(`fields.${field.id}.label`)}</legend>
+            {optionsOf(field, (key) => t(key)).map((option) => (
+              <label
+                key={option.value}
+                className="mb-2 flex items-start gap-3 rounded-xl border border-gray-200 p-3 text-left"
+              >
+                <input
+                  type="radio"
+                  name={field.id}
+                  value={option.value}
+                  checked={value === option.value}
+                  onChange={() => onChange(option.value)}
+                  onBlur={handleBlur}
+                  className="mt-1 h-4 w-4 shrink-0"
+                />
+                <span>{option.label}</span>
+              </label>
+            ))}
+          </fieldset>
+        );
+
+      /**
+       * The declaration. `"true"` when ticked and empty otherwise, so the ordinary `required`
+       * branch of `validateAnswers` is what refuses it — there is no second rule for the gate.
+       */
+      case "consent":
+        return (
+          <label className="flex items-start gap-3 text-left">
+            <input
+              id={inputId}
+              name={field.id}
+              type="checkbox"
+              checked={value === "true"}
+              aria-invalid={problem ? true : undefined}
+              aria-describedby={describedBy || undefined}
+              onChange={(event) => onChange(event.target.checked ? "true" : "")}
+              onBlur={handleBlur}
+              className="mt-1 h-4 w-4 shrink-0"
+            />
+            <span>{t(`fields.${field.id}.statement`)}</span>
+          </label>
         );
 
       case "cnpj":
@@ -333,6 +406,12 @@ function optionsOf(
       label: translate(`categories.${category}`),
     }));
   }
+  if (field.id === "plan_choice") {
+    return PLAN_CHOICES.map((choice) => ({
+      value: choice,
+      label: translate(`plans.${choice}`),
+    }));
+  }
   return (field.options ?? []).map((option) => ({ value: option, label: option }));
 }
 
@@ -354,7 +433,10 @@ export function displayAnswer(
   translate: (key: string) => string
 ): string {
   if (!value) return "";
-  if (field.type !== "select") return value;
+  // A tick has no stored label to show back: `true` on the review screen is a code where a
+  // sentence belongs, the same defect `bar_cafe` was in #404.
+  if (field.type === "consent") return translate("consentConfirmed");
+  if (field.type !== "select" && field.type !== "choice") return value;
   const option = optionsOf(field, translate).find((candidate) => candidate.value === value);
   return option ? option.label : value;
 }

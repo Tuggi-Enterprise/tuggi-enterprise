@@ -119,6 +119,9 @@ function validAnswers(overrides: Record<string, string> = {}) {
     trade_name: "Cantina do Antônio",
     legal_name: "Cantina do Antônio Ltda",
     tax_id: "12.ABC.345/01DE-35",
+    // The declaration blocks the submission when it is absent (BR-B2B-022 item 5), so a fixture
+    // without it would make every test below assert against a 400 about the wrong field.
+    legal_status_declaration: "true",
     category: "restaurant",
     address: "Rua das Palmeiras, 120",
     district: "Centro",
@@ -135,6 +138,7 @@ function validAnswers(overrides: Record<string, string> = {}) {
     // fixture with none would make every submission test below assert against a 400 that has
     // nothing to do with what it is testing.
     material_table_display_qty: "12",
+    plan_choice: "map_only",
     ...overrides,
   };
 }
@@ -604,14 +608,52 @@ test.describe("BR-B2B-022 / BR-USUARIO-030: the list of what is asked", () => {
     expect(forbidden).toEqual([]);
   });
 
-  test("the 24 fields are the ones the CMS reads back, and exactly one story is required", () => {
+  test("the 26 fields are the ones the CMS reads back, and exactly one story is required", () => {
     // The count is the contract's, not a preference: `docs/contracts/partner-proposal-answers.md`
     // lists these ids and the CMS conference indexes `answers` by them.
-    expect(PARTNER_FORM_FIELDS.length).toBe(24);
+    //
+    // It was 24 until 2026-08-21, when the operator added the two questions the team was asking
+    // by hand: whether the establishment is legalized, and which of the two tiers it wants.
+    expect(PARTNER_FORM_FIELDS.length).toBe(26);
     const requiredStories = PARTNER_FORM_FIELDS.filter(
-      (field) => field.step === 3 && field.required
+      (field) => field.step === 3 && field.required && field.id.startsWith("story_")
     ).map((field) => field.id);
     expect(requiredStories).toEqual(["story_founder"]);
+  });
+
+  test("BR-B2B-022 item 5: the legal-status declaration is required, and it is near the top", () => {
+    const declaration = PARTNER_FORM_FIELDS.find(
+      (field) => field.id === "legal_status_declaration"
+    )!;
+
+    // Required is what blocks the submission — there is no second rule for this gate, and the
+    // operator's decision of 2026-08-21 was to block rather than to record and let through.
+    expect(declaration.required).toBe(true);
+    expect(declaration.type).toBe("consent");
+
+    // A gate at the end is a gate somebody hits after typing everything. It sits beside the
+    // CNPJ, which is the other fact about the establishment being a real, registered business.
+    expect(declaration.step).toBe(1);
+    const stepOne = PARTNER_FORM_FIELDS.filter((field) => field.step === 1).map((f) => f.id);
+    expect(stepOne.indexOf("legal_status_declaration")).toBe(stepOne.indexOf("tax_id") + 1);
+  });
+
+  test("BR-B2B-016 item 6: the plan question names no price, no currency and no recurrence", () => {
+    // The operator put the question here on 2026-08-21 with the reason on the record: the
+    // commercial team has already explained the cost, and this form's own lede says it is for
+    // whoever has already talked to us. What the rule's ceiling still forbids is publishing the
+    // NUMBER, and that is what this guards — the divergence about describing what the fee buys
+    // is registered for `produto`.
+    const copy = flatten(messagesFor("pt").PartnerProposal);
+    const surface = [
+      copy.get("plans.map_only"),
+      copy.get("plans.map_and_description"),
+      copy.get("fields.plan_choice.label"),
+      copy.get("fields.plan_choice.help"),
+    ].join(" ");
+
+    expect(surface).not.toMatch(/R\$|\bBRL\b|\d+[.,]\d{2}|reais/i);
+    expect(surface).not.toMatch(/m[êe]s|mensal|anual|assinatura|recorr/i);
   });
 
   test("every field has a label, and every required field has its own message", () => {
@@ -1260,9 +1302,9 @@ test.describe("DS-COPY-013: the proposal is punctuated by a person", () => {
 });
 
 test.describe("the promotional material moved out of step 1", () => {
-  test("step 1 is back to the thirteen fields that are on the facade", () => {
+  test("step 1 is the thirteen fields on the facade, plus the legal-status gate", () => {
     const stepOne = PARTNER_FORM_FIELDS.filter((field) => field.step === 1);
-    expect(stepOne.length).toBe(13);
+    expect(stepOne.length).toBe(14);
     expect(stepOne.some((field) => MATERIAL_FIELD_IDS.includes(field.id))).toBe(false);
   });
 
@@ -1276,10 +1318,10 @@ test.describe("the promotional material moved out of step 1", () => {
     expect(Math.max(...PARTNER_FORM_FIELDS.map((field) => field.step))).toBe(3);
   });
 
-  test("the answers contract still carries all 24 keys, and the ids did not move", () => {
+  test("the answers contract still carries all 26 keys, and the ids did not move", () => {
     // Moving the step is a change to the contract document and to the CMS mirror; moving an ID
     // would be a migration. This is the guard that the second did not happen by accident.
-    expect(PARTNER_FIELD_IDS.length).toBe(24);
+    expect(PARTNER_FIELD_IDS.length).toBe(26);
     for (const kind of MATERIAL_KINDS) {
       expect(PARTNER_FIELD_IDS).toContain(materialFieldId(kind));
     }

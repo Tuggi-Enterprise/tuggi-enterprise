@@ -110,9 +110,16 @@ export function validateAnswers(answers: PartnerAnswers): FieldProblem[] {
         }
         break;
       case "select":
+      case "choice":
         if (field.options && !field.options.includes(raw)) {
           problems.push({ field: field.id, code: "required" });
         }
+        break;
+      // A tick is stored as the literal `"true"` and absent otherwise, so the only invalid
+      // non-empty value is something a client made up. The `!raw` branch above is what refuses
+      // an unticked declaration, which is how the gate blocks the submission.
+      case "consent":
+        if (raw !== "true") problems.push({ field: field.id, code: "required" });
         break;
       case "quantity":
         if (!QUANTITY_DIGITS.test(raw)) {

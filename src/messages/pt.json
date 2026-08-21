@@ -1037,6 +1037,12 @@
         "help": "O CNPJ tem 14 caracteres. Desde 2026 ele pode ter letras. Se o seu tiver, digite normalmente.",
         "requiredError": "Preencha o CNPJ."
       },
+      "legal_status_declaration": {
+        "label": "Documentação",
+        "statement": "Declaro que o estabelecimento tem CNPJ ativo, alvará de funcionamento vigente e documento de constituição.",
+        "help": "A Tuggi só assina contrato com estabelecimento legalizado.",
+        "requiredError": "Sem a documentação em ordem não dá para seguir com a proposta. Fale com a gente antes de continuar."
+      },
       "category": {
         "label": "Que tipo de lugar é?",
         "requiredError": "Escolha o tipo de lugar."
@@ -1125,6 +1131,11 @@
       "story_event": {
         "label": "Aconteceu alguma coisa aqui que o pessoal do bairro conta até hoje?",
         "help": "Uma visita, uma enchente, um jogo, uma festa que começou aqui, alguém conhecido que era freguês. Por exemplo: em 1994, a rua inteira assistiu à final aqui na calçada."
+      },
+      "plan_choice": {
+        "label": "O que você quer contratar",
+        "help": "O time comercial já explicou as duas opções para você. Escolha a que vocês combinaram.",
+        "requiredError": "Escolha uma das duas opções."
       }
     },
     "categories": {
@@ -1136,6 +1147,11 @@
       "attraction": "Atração ou passeio",
       "other": "Outro"
     },
+    "plans": {
+      "map_only": "Aparecer no mapa, sem custo",
+      "map_and_description": "Aparecer no mapa e ter uma descrição falada, com custo"
+    },
+    "consentConfirmed": "Confirmado",
     "errors": {
       "summary": "{count, plural, one {Falta # resposta neste passo.} other {Faltam # respostas neste passo.}}",
       "email_malformed": "Este e-mail não parece completo. Confira antes de continuar.",

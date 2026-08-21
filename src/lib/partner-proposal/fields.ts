@@ -33,6 +33,7 @@ export type PartnerFieldId =
   | "trade_name"
   | "legal_name"
   | "tax_id"
+  | "legal_status_declaration"
   | "category"
   | "address"
   | "address_complement"
@@ -53,6 +54,7 @@ export type PartnerFieldId =
   | "story_before"
   | "story_unique"
   | "story_event"
+  | "plan_choice"
   | "material_sticker_qty"
   | "material_table_display_qty"
   | "material_counter_display_qty";
@@ -66,7 +68,11 @@ export type PartnerFieldType =
   | "postal_code"
   | "select"
   | "textarea"
-  | "quantity";
+  | "quantity"
+  /** A single tick the person has to make. Stored as `"true"`, absent when not ticked. */
+  | "consent"
+  /** A closed set of two or three, as radios: every option visible without opening anything. */
+  | "choice";
 
 export interface PartnerField {
   id: PartnerFieldId;
@@ -106,6 +112,31 @@ export const MATERIAL_FIELD_IDS: readonly PartnerFieldId[] = MATERIAL_KINDS.map(
 /** Up to four digits. A pedido of five figures is a typo, not an order. */
 export const MATERIAL_QUANTITY_MAX_LENGTH = 4;
 
+/**
+ * The two tiers of BR-B2B-016, item 1, as the person picks between them.
+ *
+ * WHY THIS QUESTION EXISTS ON THIS SURFACE, and it is the part that needed a decision rather
+ * than a judgement. BR-B2B-016 item 6 caps what a CAPTURE surface may publish about the paid
+ * tier: mention, do not describe, and never publish price, recurrence or what exactly the fee
+ * buys. The operator's decision of 2026-08-21 puts the question here anyway, with the reason
+ * on the record: *"essas perguntas precisam ser feitas, o time comercial já explicou o custo
+ * para o comerciante"* — this form is not where the offer is discovered. Its own lede has said
+ * so since #396: *"Este formulário é para quem já conversou com a Tuggi."*
+ *
+ * WHAT THIS DOES NOT DO, and the boundary is the reason the field is a choice and not a price
+ * list: no value, no currency, no recurrence and no comparison of what each tier is worth.
+ * `com custo` says a cost exists, which is what the commercial conversation already said out
+ * loud. The number lives in `partner.clients.monthly_fee_cents` and reaches the partner in the
+ * contract (BR-B2B-017), never here.
+ *
+ * IT DECIDES NOTHING. The answer is what the establishment ASKED FOR; the tier of the contract
+ * is chosen by the operator in the CMS at generation, and no public route writes it to
+ * `partner.clients`. The divergence with the text of BR-B2B-016 item 6 is registered for
+ * `produto` to resolve in the rule.
+ */
+export const PLAN_CHOICES = ["map_only", "map_and_description"] as const;
+export type PlanChoice = (typeof PLAN_CHOICES)[number];
+
 /** Categories offered in step 1. Ids in English; labels in `src/messages/pt.json`. */
 export const PARTNER_CATEGORIES = [
   "restaurant",
@@ -124,6 +155,14 @@ export const PARTNER_FORM_FIELDS: readonly PartnerField[] = [
   // is `text`, because a numeric keypad makes an alphanumeric CNPJ physically impossible to
   // type.
   { id: "tax_id", step: 1, type: "cnpj", required: true, maxLength: 18 },
+  // Beside the CNPJ, and near the TOP of the form on purpose. It is the one answer that can
+  // stop the submission (BR-B2B-022, item 5 — an irregular establishment does not reach the
+  // triage), and a gate at the end would be a gate somebody hits after typing 24 fields.
+  //
+  // It is a DECLARATION, not a document: nothing is uploaded, nothing is verified here, and
+  // BR-B2B-022 item 7 forbids saying otherwise. What the team does with it is the in-person
+  // conference in the CMS, which is a separate act by a named person.
+  { id: "legal_status_declaration", step: 1, type: "consent", required: true, maxLength: 8 },
   { id: "category", step: 1, type: "select", required: true, maxLength: 32, options: PARTNER_CATEGORIES },
   { id: "address", step: 1, type: "text", required: true, autoComplete: "address-line1", maxLength: 200 },
   { id: "address_complement", step: 1, type: "text", required: false, autoComplete: "address-line2", maxLength: 120 },
@@ -147,6 +186,10 @@ export const PARTNER_FORM_FIELDS: readonly PartnerField[] = [
   { id: "story_before", step: 3, type: "textarea", required: false, maxLength: 1200 },
   { id: "story_unique", step: 3, type: "textarea", required: false, maxLength: 1200 },
   { id: "story_event", step: 3, type: "textarea", required: false, maxLength: 1200 },
+
+  // What the establishment is asking for. Before the material because the material is the
+  // counterpart of being on the map at all (BR-B2B-021), in both tiers.
+  { id: "plan_choice", step: 3, type: "choice", required: true, maxLength: 32, options: PLAN_CHOICES },
 
   // The promotional material, at the END of step 3 and NOT in a step of its own. It sat at the
   // end of step 1 until 2026-08-19 and moved for two reasons that are the same reason: step 1
