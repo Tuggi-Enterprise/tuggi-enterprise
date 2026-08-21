@@ -55,8 +55,13 @@ if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
   process.exit(1);
 }
 
+// Accept-Encoding is set explicitly: supabase-js runs on undici, which does NOT
+// negotiate compression by itself, so every page arrived uncompressed. The server
+// does support it (measured: 289 KB -> 90 KB per 2 000-row page, 3.2x less to move)
+// and undici decodes it transparently.
 const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, {
-  db: { schema: "core" }
+  db: { schema: "core" },
+  global: { headers: { "Accept-Encoding": "gzip" } }
 });
 
 // ── Load TopoJSON + build spatial index ──────────────────────────────────────
@@ -166,36 +171,68 @@ const DB_STATE_FALLBACK = {
   "canary islands":   { name: "Santa Cruz de Tenerife", admin: "Spain" },
 };
 
-// ── Fetch all active attractions with their coordinates ───────────────────────
+// ── Fetch all active attractions with their coordinates ───────────────────────────
 // Uses embedded FK select: attraction_coordinate is 1:1 with attractions via
 // attraction_coordinate.attraction_id FK → attractions.id
 // Also fetches state for DB-fallback when PIP returns null.
-async function fetchAllWithCoords() {
-  const { count: planned } = await sb
-    .from("attractions")
-    .select("*", { count: "planned", head: true })
-    .eq("is_active", true);
+//
+// PERF: PostgREST caps every response at db-max-rows (2 000 here) regardless of
+// the limit asked for, so ~2.6M active rows means ~1 300 requests no matter what.
+// Issuing them one after another WAS the entire runtime (~50 min at ~0.5 req/s);
+// the point-in-polygon pass costs well under a minute of CPU. The id space is
+// split into 256 UUID-prefix ranges drained by a shared worker pool, so requests
+// overlap instead of queueing. Measured end to end on the full 2.6M rows: ~52 min
+// sequential -> ~25 min, a sustained ~1 640 rows/s. Note that a warm microbenchmark
+// suggested far more (~10 req/s); it was re-hitting the same cached first pages.
+// Deep cold pagination is server-bound, so ~2x is what the client side can buy.
+//
+// Concurrency is deliberately modest: this runs against the production database
+// that also serves the app and the CMS. Raising it past 12 mostly raised
+// per-request latency — that headroom is not ours to take.
+//
+// Getting past ~25 min means stopping the 2.6M-row transfer altogether, which
+// needs the region assignment aggregated DB-side (PostGIS is already installed;
+// core.mv_poi_geo_counts is the existing precedent). That is a schema change.
+//
+// 256 ranges instead of one per worker because the prefix histogram is not flat
+// (prefix "2" carries ~2x the average). Many small ranges pulled from a queue
+// keep a heavy one from becoming the tail; one range per worker would not.
+const FETCH_CONCURRENCY = 12;
 
-  console.log(`   Estimated: ~${(planned || 0).toLocaleString()} rows`);
+const ID_RANGES = (() => {
+  const hex    = "0123456789abcdef";
+  const asUuid = prefix => `${prefix}000000-0000-0000-0000-000000000000`;
+  const prefixes = [];
+  for (const a of hex) for (const b of hex) prefixes.push(a + b);
+  return prefixes.map((prefix, i) => ({
+    from: asUuid(prefix),
+    to:   i + 1 < prefixes.length ? asUuid(prefixes[i + 1]) : null, // last range is open-ended
+  }));
+})();
 
-  const rows  = [];
-  let lastId  = "00000000-0000-0000-0000-000000000000";
-  let fetched = 0;
+let fetchedTotal = 0;
+
+// Walks one id range to exhaustion, paging on the id cursor within it.
+async function fetchRange({ from, to }) {
+  const out = [];
+  let cursor = from, firstPage = true;
 
   while (true) {
     let data, error, retries = 0;
     while (retries < 5) {
-      ({ data, error } = await sb
+      let q = sb
         .from("attractions")
         .select("id, state, attraction_coordinate!inner(latitude, longitude)")
         .eq("is_active", true)
-        .gt("id", lastId)
         .order("id")
-        .limit(PAGE_SIZE_CURSOR));
+        .limit(PAGE_SIZE_CURSOR);
+      q = firstPage ? q.gte("id", cursor) : q.gt("id", cursor);
+      if (to) q = q.lt("id", to);
+
+      ({ data, error } = await q);
       if (!error) break;
       if (!error.message?.includes("timeout")) throw new Error("Fetch error: " + (error.message || JSON.stringify(error)));
       retries++;
-      process.stdout.write(`\r   ⏳ Timeout at ${fetched.toLocaleString()}, retry ${retries}/5...`);
       await new Promise(r => setTimeout(r, 2000 * retries));
     }
     if (error) throw new Error("Fetch error after retries: " + error.message);
@@ -206,19 +243,44 @@ async function fetchAllWithCoords() {
         ? r.attraction_coordinate[0]
         : r.attraction_coordinate;
       if (coord?.latitude != null && coord?.longitude != null) {
-        rows.push({ id: r.id, lat: coord.latitude, lng: coord.longitude, dbState: r.state });
+        out.push({ id: r.id, lat: coord.latitude, lng: coord.longitude, dbState: r.state });
       }
     }
 
-    lastId   = data[data.length - 1].id;
-    fetched += data.length;
-
-    if (fetched % 20_000 === 0) {
-      process.stdout.write(`\r   Fetching... ${fetched.toLocaleString()} rows`);
-    }
+    fetchedTotal += data.length;
+    if (data.length < PAGE_SIZE_CURSOR) break; // short page = range exhausted
+    cursor    = data[data.length - 1].id;
+    firstPage = false;
   }
 
-  process.stdout.write(`\r   Fetched ${fetched.toLocaleString()} rows, coords resolved: ${rows.length.toLocaleString()}   \n`);
+  return out;
+}
+
+async function fetchAllWithCoords() {
+  const { count: planned } = await sb
+    .from("attractions")
+    .select("*", { count: "planned", head: true })
+    .eq("is_active", true);
+
+  console.log(`   Estimated: ~${(planned || 0).toLocaleString()} rows`);
+
+  const queue = [...ID_RANGES];
+  const rows  = [];
+  let doneRanges = 0;
+
+  await Promise.all(Array.from({ length: FETCH_CONCURRENCY }, async () => {
+    while (queue.length) {
+      const range = queue.shift();
+      const got   = await fetchRange(range);
+      for (const r of got) rows.push(r); // not push(...got): spreading blows the stack on big ranges
+      doneRanges++;
+      process.stdout.write(`\r   Fetching... ${doneRanges}/${ID_RANGES.length} ranges, ${rows.length.toLocaleString()} rows   `);
+    }
+  }));
+
+  // Rows come back in range-completion order, not id order. Nothing downstream
+  // depends on the order: the PIP pass only counts into a Map.
+  process.stdout.write(`\r   Fetched ${fetchedTotal.toLocaleString()} rows, coords resolved: ${rows.length.toLocaleString()}        \n`);
   return rows;
 }
 
