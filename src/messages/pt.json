@@ -991,6 +991,8 @@
     "step3": {
       "title": "A história do seu lugar",
       "subtitle": "Esta é a única parte que só você pode responder. O resto a gente encontra em documento. Isso aqui, não.",
+      "titleMapOnly": "A sua escolha, e o material",
+      "subtitleMapOnly": "É o último passo antes de você conferir tudo.",
       "intro": "O Tuggi conta histórias em voz alta para quem está viajando. Para contar a do seu lugar, a gente precisa de um fato que seja só seu: uma data, um nome, alguma coisa que dê para ver aí dentro. Não precisa escrever bonito. Quem escreve o texto final somos nós.",
       "notHere": "Cardápio, preço, promoção, número de quartos e forma de pagamento não entram aqui. O horário também não, porque a gente já pediu no primeiro passo. Essas coisas importam para o seu negócio, mas não é isso que o turista escuta.",
       "exampleBadTitle": "Assim não dá:",
@@ -1133,8 +1135,7 @@
         "help": "Uma visita, uma enchente, um jogo, uma festa que começou aqui, alguém conhecido que era freguês. Por exemplo: em 1994, a rua inteira assistiu à final aqui na calçada."
       },
       "plan_choice": {
-        "label": "O que você quer contratar",
-        "help": "O time comercial já explicou as duas opções para você. Escolha a que vocês combinaram.",
+        "label": "O que o Tuggi vai dizer sobre o seu lugar",
         "requiredError": "Escolha uma das duas opções."
       }
     },
@@ -1148,8 +1149,8 @@
       "other": "Outro"
     },
     "plans": {
-      "map_only": "Aparecer no mapa, sem custo",
-      "map_and_description": "Aparecer no mapa e ter uma descrição falada, com custo"
+      "map_and_description": "Contar a minha história",
+      "map_only": "Só aparecer"
     },
     "consentConfirmed": "Confirmado",
     "errors": {
@@ -1178,6 +1179,12 @@
       "postalCodeFilled": "A gente preencheu a rua, o bairro, a cidade e o estado. Confira e ajuste se precisar."
     },
     "savedOnDevice": "O que você escrever fica guardado neste aparelho por 24 horas, até você enviar.",
-    "alreadyPartner": "Se o seu estabelecimento já é parceiro e você quer atualizar os dados, não preencha de novo: <mail>fale com a gente por e-mail</mail>."
+    "alreadyPartner": "Se o seu estabelecimento já é parceiro e você quer atualizar os dados, não preencha de novo: <mail>fale com a gente por e-mail</mail>.",
+    "planSamples": {
+      "map_and_description": "“À sua direita, a Cantina do Antônio. A casa abriu em 1961 num galpão que era da fábrica de guarda-chuvas do bairro, e o forno a lenha é o mesmo desde então.”",
+      "map_only": "“À sua direita, Cantina do Antônio.”"
+    },
+    "planSamplesIntro": "O turista ouve e lê:",
+    "planCost": "Só a primeira tem custo, e o valor vocês combinam no contrato. Nada é cobrado até a sua história estar no ar."
   }
 }

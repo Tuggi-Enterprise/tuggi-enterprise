@@ -73,6 +73,35 @@ export interface FieldProblem {
  * list backs the server's 400 and the client's error summary, so the two cannot disagree about
  * what is missing.
  */
+/**
+ * The four story questions, in the order the form asks them. Exported because the form has to
+ * know which fields to hide, and a second hand-written list is how the hidden set and the
+ * validated set start disagreeing.
+ */
+export const STORY_FIELD_IDS: PartnerFieldId[] = [
+  "story_founder",
+  "story_before",
+  "story_unique",
+  "story_event",
+];
+
+/**
+ * Whether this submission is asked for the story at all — the ONE place that decides it.
+ *
+ * BR-B2B-011, item 2.2: the input of a `map_only` partner IS the minimal registration BY DESIGN
+ * (BR-B2B-016, item 1 — the app points at the place and says its name, nothing beyond it), and
+ * what gate 2 measures without qualification is WHAT WILL BE NARRATED. For the free tier that is
+ * nothing, so there is no story to ask for and none to refuse a submission over.
+ *
+ * `!== "map_only"` and not `=== "map_and_description"`: while the person has not answered the
+ * tier yet, the step must not go green on an empty `story_founder`. An unanswered tier is
+ * refused by `plan_choice` itself, which is `required` — and until it is answered this returns
+ * `true`, so the story stays required and nothing slips through the gap between the two.
+ */
+export function storyRequired(answers: PartnerAnswers): boolean {
+  return (answers.plan_choice ?? "").trim() !== "map_only";
+}
+
 export function validateAnswers(answers: PartnerAnswers): FieldProblem[] {
   const problems: FieldProblem[] = [];
 
@@ -85,7 +114,12 @@ export function validateAnswers(answers: PartnerAnswers): FieldProblem[] {
     }
 
     if (!raw) {
-      if (field.required) problems.push({ field: field.id, code: "required" });
+      // `story_founder` is declared `required: false` in the list and becomes required HERE,
+      // because the answer decides it and a declaration has no access to the answers. Refusing a
+      // free-tier submission for a field the form never showed is the defect this closes.
+      const required =
+        field.required || (field.id === "story_founder" && storyRequired(answers));
+      if (required) problems.push({ field: field.id, code: "required" });
       continue;
     }
 
@@ -239,5 +273,20 @@ export function normalizeAnswers(input: unknown): PartnerAnswers | null {
     if (!value) continue;
     answers[field.id] = field.type === "cnpj" ? cnpjCharacters(value) : value;
   }
+
+  /**
+   * THE STORY DOES NOT TRAVEL WITH A FREE-TIER PROPOSAL, and the strip is here rather than in the
+   * component because the component is not the barrier.
+   *
+   * Somebody who types the story and then picks `map_only` keeps their text on screen — hiding a
+   * block must not destroy what a person wrote, and switching back has to bring it whole. What
+   * must not happen is that text reaching the database: the CMS hides the story for this tier
+   * (BR-B2B-011, item 2.2), so a stored answer nothing reads is a fact that quietly stops being
+   * true. The tier is what decides which questions this submission carries.
+   */
+  if (!storyRequired(answers)) {
+    for (const id of STORY_FIELD_IDS) delete answers[id];
+  }
+
   return answers;
 }

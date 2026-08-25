@@ -17,6 +17,7 @@ import { LEAD_FORM_ID } from "@/lib/lead-form";
 import {
   PARTNER_FORM_STEP_COUNT,
   PARTNER_FORM_FIELDS,
+  DEFAULT_PLAN_CHOICE,
   fieldsOfStep,
   partnerField,
   MATERIAL_FIELD_IDS,
@@ -25,6 +26,8 @@ import {
 } from "@/lib/partner-proposal/fields";
 import {
   storyNudge,
+  storyRequired,
+  STORY_FIELD_IDS,
   validateAnswers,
   problemsOfStep,
   type FieldProblem,
@@ -92,12 +95,12 @@ import {
  *    fields and its own subtitle had stopped describing it.
  */
 
-const STORY_FIELDS: PartnerFieldId[] = [
-  "story_founder",
-  "story_before",
-  "story_unique",
-  "story_event",
-];
+/**
+ * The four story questions. Read from `schema.ts` rather than declared here: the set the form
+ * HIDES and the set `validateAnswers` stops requiring have to be the same set, and two lists is
+ * how they start disagreeing (CLAUDE.md §6, SSOT).
+ */
+const STORY_FIELDS: PartnerFieldId[] = STORY_FIELD_IDS;
 
 /** Every step whose fields are asked rather than reviewed. */
 type AskStep = PartnerField["step"];
@@ -125,7 +128,21 @@ export function PartnerProposalForm({ contactEmail }: { contactEmail: string }) 
   // Read once, on the first render, and never again: re-reading would fight the person's
   // typing, and `useState` with an initialiser is the form React sanctions for this.
   const [restored] = useState(() => readMirror());
-  const [answers, setAnswers] = useState<PartnerAnswers>(restored.answers);
+  /**
+   * THE FORM OPENS ON THE PAID TIER (operator, 2026-08-25), and the default is `??` rather than a
+   * spread on top: a restored draft has to keep the choice the person actually made, including
+   * the free one. Overwriting it would re-ask a decision every time somebody came back to the
+   * tab, and always in the same direction.
+   *
+   * It is defensible as a default because THIS FORM CHARGES NOTHING. Picking
+   * `map_and_description` here is a declaration of interest, not a purchase: the value and the
+   * acceptance are a separate, explicit act in the contract (BR-B2B-023, BR-B2B-026, item 5). A
+   * pre-ticked purchase would be another matter entirely, and this is not one.
+   */
+  const [answers, setAnswers] = useState<PartnerAnswers>(() => ({
+    plan_choice: restored.answers.plan_choice ?? DEFAULT_PLAN_CHOICE,
+    ...restored.answers,
+  }));
   const [resumedAt, setResumedAt] = useState<string | null>(restored.savedAt);
   const [step, setStep] = useState(1);
   const [problems, setProblems] = useState<FieldProblem[]>([]);
@@ -148,6 +165,15 @@ export function PartnerProposalForm({ contactEmail }: { contactEmail: string }) 
   const online = useSyncExternalStore(subscribeToConnectivity, () => navigator.onLine, () => true);
 
   const allProblems = useMemo(() => validateAnswers(answers), [answers]);
+
+  /**
+   * Whether this person is asked for the story at all — the same predicate the server validates
+   * with, never a second reading of `plan_choice` written here.
+   *
+   * It is `true` while the tier is unanswered, so step 3 opens on the choice with the story
+   * still ahead of it rather than on a step that looks finished.
+   */
+  const tellsStory = storyRequired(answers);
 
   /**
    * The first step is a view like any other, and it is counted from an effect rather than at the
@@ -454,7 +480,9 @@ export function PartnerProposalForm({ contactEmail }: { contactEmail: string }) 
                   type="button"
                   className={BUTTON_QUIET}
                   onClick={() => {
-                    setAnswers({});
+                    // The same opening state, not an empty one: starting over must not silently
+                    // drop the tier to "unanswered" when the form never opens that way.
+                    setAnswers({ plan_choice: DEFAULT_PLAN_CHOICE });
                     clearMirror();
                     setResumedAt(null);
                     setProblems([]);
@@ -521,10 +549,12 @@ export function PartnerProposalForm({ contactEmail }: { contactEmail: string }) 
               tabIndex={-1}
               className="text-2xl font-bold text-tuggi-dark outline-none"
             >
-              {t(`step${step}.title`)}
+              {step === 3 && !tellsStory ? t("step3.titleMapOnly") : t(`step${step}.title`)}
             </h2>
             <p className="mt-2 text-base text-tuggi-slate leading-relaxed">
-              {t(`step${step}.subtitle`)}
+              {step === 3 && !tellsStory
+                ? t("step3.subtitleMapOnly")
+                : t(`step${step}.subtitle`)}
             </p>
           </>
         ) : null}
@@ -561,33 +591,63 @@ export function PartnerProposalForm({ contactEmail }: { contactEmail: string }) 
 
           {step === 3 ? (
             <>
-              <p className="mt-4 text-base text-tuggi-dark leading-relaxed">{t("step3.intro")}</p>
-              <p className={`mt-4 text-base text-tuggi-dark leading-relaxed ${NOTE_BOX}`}>
-                {t("step3.notHere")}
-              </p>
-              <details className="mt-4">
-                <summary className={`${BUTTON_QUIET} cursor-pointer list-none`}>
-                  {t("actions.seeExample")}
-                </summary>
-                <div className="mt-3 space-y-3 text-base text-tuggi-dark leading-relaxed">
-                  <p>
-                    <strong>{t("step3.exampleBadTitle")}</strong> <em>{t("step3.exampleBad")}</em>
+              {/* THE CHOICE LEADS THE STEP, and it is rendered alone. Everything under it —
+                  what a good anchor is, what does not belong, the two examples, the substitute
+                  test, the curation note — explains the STORY, and the story is only asked of
+                  whoever picked it. Framing first would bury the one decision this step exists
+                  to make under five paragraphs about a block half the people never see. */}
+              <div className="mt-6">
+                {renderFields(3, (id) => id === "plan_choice")}
+              </div>
+
+              {tellsStory ? (
+                <>
+                  <p className="mt-4 text-base text-tuggi-dark leading-relaxed">
+                    {t("step3.intro")}
                   </p>
-                  <p className="text-tuggi-slate">{t("step3.exampleBadWhy")}</p>
-                  <p>
-                    <strong>{t("step3.exampleGoodTitle")}</strong> <em>{t("step3.exampleGood")}</em>
+                  <p className={`mt-4 text-base text-tuggi-dark leading-relaxed ${NOTE_BOX}`}>
+                    {t("step3.notHere")}
                   </p>
-                  <p className="text-tuggi-slate">{t("step3.exampleGoodWhy")}</p>
-                  <p>
-                    <strong>{t("step3.exampleInnTitle")}</strong> <em>{t("step3.exampleInn")}</em>
+                  <details className="mt-4">
+                    <summary className={`${BUTTON_QUIET} cursor-pointer list-none`}>
+                      {t("actions.seeExample")}
+                    </summary>
+                    <div className="mt-3 space-y-3 text-base text-tuggi-dark leading-relaxed">
+                      <p>
+                        <strong>{t("step3.exampleBadTitle")}</strong>{" "}
+                        <em>{t("step3.exampleBad")}</em>
+                      </p>
+                      <p className="text-tuggi-slate">{t("step3.exampleBadWhy")}</p>
+                      <p>
+                        <strong>{t("step3.exampleGoodTitle")}</strong>{" "}
+                        <em>{t("step3.exampleGood")}</em>
+                      </p>
+                      <p className="text-tuggi-slate">{t("step3.exampleGoodWhy")}</p>
+                      <p>
+                        <strong>{t("step3.exampleInnTitle")}</strong>{" "}
+                        <em>{t("step3.exampleInn")}</em>
+                      </p>
+                    </div>
+                  </details>
+
+                  <div className="mt-6">
+                    {renderFields(3, (id) => STORY_FIELDS.includes(id))}
+                  </div>
+
+                  <p className="text-base text-tuggi-dark leading-relaxed">
+                    <strong>{t("step3.substituteTestTitle")}</strong> {t("step3.substituteTest")}
                   </p>
-                </div>
-              </details>
-              <div className="mt-6">{renderFields(3)}</div>
-              <p className="text-base text-tuggi-dark leading-relaxed">
-                <strong>{t("step3.substituteTestTitle")}</strong> {t("step3.substituteTest")}
-              </p>
-              <p className="mt-4 text-base text-tuggi-slate leading-relaxed">{t("step3.curation")}</p>
+                  <p className="mt-4 text-base text-tuggi-slate leading-relaxed">
+                    {t("step3.curation")}
+                  </p>
+                </>
+              ) : null}
+
+              {/* The material closes the step in BOTH tiers: displaying it is the
+                  establishment's side of the agreement either way (BR-B2B-021). */}
+              <div className="mt-6">
+                {renderFields(3, (id) => MATERIAL_FIELD_IDS.includes(id))}
+              </div>
             </>
           ) : null}
 
@@ -614,7 +674,11 @@ export function PartnerProposalForm({ contactEmail }: { contactEmail: string }) 
                     </button>
                   </div>
                   <dl className="mt-2">
-                    {fieldsOfStep(reviewStep as AskStep).map((field) => (
+                    {/* The same filter the step used: a review that lists four questions the
+                        person was never asked reads as four things they forgot to answer. */}
+                    {fieldsOfStep(reviewStep as AskStep)
+                      .filter((field) => !STORY_FIELDS.includes(field.id) || tellsStory)
+                      .map((field) => (
                       <div key={field.id} className="py-1">
                         <dt className="text-sm text-tuggi-slate">{t(`fields.${field.id}.label`)}</dt>
                         <dd className="text-base text-tuggi-dark">
@@ -679,8 +743,18 @@ export function PartnerProposalForm({ contactEmail }: { contactEmail: string }) 
     else void handleSubmit();
   }
 
-  function renderFields(currentStep: AskStep) {
-    const fields = fieldsOfStep(currentStep);
+  function renderFields(currentStep: AskStep, only?: (id: PartnerFieldId) => boolean) {
+    /**
+     * The story is hidden for the free tier, and hidden is all it is: what the person typed
+     * stays in `answers`, so switching the tier back brings the text whole. What never reaches
+     * the database is `normalizeAnswers`' business, on the server, where the barrier belongs.
+     *
+     * `fields.length` for `last` is computed AFTER the filter — it draws the separator, and a
+     * length taken before it would put the rule under a field that is no longer the last one.
+     */
+    const fields = fieldsOfStep(currentStep)
+      .filter((field) => !STORY_FIELDS.includes(field.id) || tellsStory)
+      .filter((field) => (only ? only(field.id) : true));
     return fields.map((field, index) => (
       <Fragment key={field.id}>
         {field.id === MATERIAL_FIELD_IDS[0] ? materialHeading() : null}
@@ -736,7 +810,12 @@ export function PartnerProposalForm({ contactEmail }: { contactEmail: string }) 
 
   function renderNudge(field: PartnerField) {
     if (!STORY_FIELDS.includes(field.id)) return null;
-    const nudge = storyNudge(answers[field.id] ?? "", { required: field.required });
+    // `required` is the EFFECTIVE one and no longer `field.required`: the declaration says
+    // `false` for every story field now, and reading it here would retire the `short` nudge —
+    // the one that catches a two-word answer on the only question gate 2 needs.
+    const nudge = storyNudge(answers[field.id] ?? "", {
+      required: field.id === "story_founder" && tellsStory,
+    });
     if (!nudge) return null;
     return (
       // `role="status"`, never `role="alert"`: these never block the submission and never say

@@ -49,12 +49,12 @@ export type PartnerFieldId =
   | "representative_role"
   | "representative_email"
   | "representative_phone"
-  // Step 3 — the story of the place
+  // Step 3 — what the establishment is asking for, and the story of the place
+  | "plan_choice"
   | "story_founder"
   | "story_before"
   | "story_unique"
   | "story_event"
-  | "plan_choice"
   | "material_sticker_qty"
   | "material_table_display_qty"
   | "material_counter_display_qty";
@@ -134,8 +134,25 @@ export const MATERIAL_QUANTITY_MAX_LENGTH = 4;
  * `partner.clients`. The divergence with the text of BR-B2B-016 item 6 is registered for
  * `produto` to resolve in the rule.
  */
-export const PLAN_CHOICES = ["map_only", "map_and_description"] as const;
+/**
+ * The two tiers of BR-B2B-016, item 1, IN THE ORDER THE FORM OFFERS THEM. The paid one leads,
+ * and it was put there on 2026-08-25.
+ *
+ * The order is not cosmetic and it is not a ranking of the product: the first option read is the
+ * one the rest is compared against, and the form is where the offer is made (operator,
+ * 2026-08-25). What the order may never become is a claim of advantage for the paying partner
+ * over another POI — BR-B2B-016, item 3, has no exception, and nothing downstream reads this
+ * array as precedence: `validateAnswers` uses it for membership and the renderer for sequence.
+ *
+ * MIRRORED in `tuggi-cms/lib/partner-form/fields.ts`, symbol `PLAN_CHOICES`, and the mirror
+ * carries the order too — `docs/contracts/partner-proposal-answers.md` §1.3.
+ */
+export const PLAN_CHOICES = ["map_and_description", "map_only"] as const;
+
 export type PlanChoice = (typeof PLAN_CHOICES)[number];
+
+/** What the form pre-selects. See `PLAN_CHOICES` above and the contract, §1.3. */
+export const DEFAULT_PLAN_CHOICE: PlanChoice = "map_and_description";
 
 /** Categories offered in step 1. Ids in English; labels in `src/messages/pt.json`. */
 export const PARTNER_CATEGORIES = [
@@ -179,17 +196,39 @@ export const PARTNER_FORM_FIELDS: readonly PartnerField[] = [
   { id: "representative_email", step: 2, type: "email", required: true, autoComplete: "email", maxLength: 255 },
   { id: "representative_phone", step: 2, type: "tel", required: true, autoComplete: "tel", maxLength: 32 },
 
-  // Exactly one required question in step 3, and it is the one nobody can get wrong: a name
-  // plus a year is already a dated, attributable anchor (DS-COPY-015). The other three raise
-  // quality and must stay optional — not every place has them.
-  { id: "story_founder", step: 3, type: "textarea", required: true, maxLength: 1200 },
+  /**
+   * WHAT THE ESTABLISHMENT IS ASKING FOR, AND IT COMES FIRST IN STEP 3.
+   *
+   * Moved on 2026-08-25.
+   *
+   * It used to sit after the four story questions, and that order asked everybody to write the
+   * story and only then revealed that half of them had no use for it. `map_only` is the free
+   * tier, and BR-B2B-011 item 2.2 says its input IS the minimal registration BY DESIGN: what
+   * gate 2 measures without qualification is WHAT WILL BE NARRATED, which for that tier is
+   * nothing. Four textareas answered for nothing is the family of defect
+   * `spec-proposta-parceria-ux-2026-08.md` §3.3 names — a surprise that arrives after the work
+   * is done.
+   *
+   * It is also the moment the form sells (operator, 2026-08-25: *"esse form pode vender sim"*),
+   * and a choice that carries weight cannot be the last radio under four textareas.
+   *
+   * Still BEFORE the material, which is unchanged: the material is the counterpart of being on
+   * the map at all (BR-B2B-021), in both tiers.
+   */
+  { id: "plan_choice", step: 3, type: "choice", required: true, maxLength: 32, options: PLAN_CHOICES },
+
+  // The story, and it is asked of the PAID tier only — `storyRequired` in `schema.ts` is the one
+  // place that decides it, and `validateAnswers` is what enforces it. Left `required: true` here
+  // it would refuse a free-tier submission for a field the form never showed; the conditional
+  // cannot live on this line, because the declaration has no access to the answers.
+  //
+  // Exactly one required question, and it is the one nobody can get wrong: a name plus a year is
+  // already a dated, attributable anchor (DS-COPY-015). The other three raise quality and must
+  // stay optional — not every place has them.
+  { id: "story_founder", step: 3, type: "textarea", required: false, maxLength: 1200 },
   { id: "story_before", step: 3, type: "textarea", required: false, maxLength: 1200 },
   { id: "story_unique", step: 3, type: "textarea", required: false, maxLength: 1200 },
   { id: "story_event", step: 3, type: "textarea", required: false, maxLength: 1200 },
-
-  // What the establishment is asking for. Before the material because the material is the
-  // counterpart of being on the map at all (BR-B2B-021), in both tiers.
-  { id: "plan_choice", step: 3, type: "choice", required: true, maxLength: 32, options: PLAN_CHOICES },
 
   // The promotional material, at the END of step 3 and NOT in a step of its own. It sat at the
   // end of step 1 until 2026-08-19 and moved for two reasons that are the same reason: step 1

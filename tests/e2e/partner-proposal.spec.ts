@@ -7,12 +7,15 @@ import { LOCALES, type SiteLocale } from "../../src/i18n/locales";
 import { localizedPathname } from "../../src/i18n/pathnames";
 import { PROPOSAL_LOCALE, PROPOSAL_ROUTE } from "../../src/lib/partner-proposal/link";
 import {
+  DEFAULT_PLAN_CHOICE,
   FORBIDDEN_FIELDS,
   PARTNER_FIELD_IDS,
   PARTNER_FORM_FIELDS,
+  PLAN_CHOICES,
 } from "../../src/lib/partner-proposal/fields";
 import {
   normalizeAnswers,
+  storyRequired,
   validateAnswers,
   type FieldProblem,
 } from "../../src/lib/partner-proposal/schema";
@@ -132,8 +135,10 @@ function validAnswers(overrides: Record<string, string> = {}) {
     representative_role: "Sócio",
     representative_email: "antonio@exemplo.com.br",
     representative_phone: "(22) 99876-5432",
-    story_founder:
-      "Meu avô, Antônio, abriu a casa em 1961 num galpão que era da fábrica de guarda-chuvas do bairro.",
+    // NO STORY, and the fixture is `map_only`: since 2026-08-25 the free tier is not asked the
+    // four story questions at all (BR-B2B-011, item 2.2), and `normalizeAnswers` strips them at
+    // the boundary. A fixture carrying one would model a submission this form cannot produce —
+    // and the key-for-key comparison of the stripped-column test would fail on it.
     // At least one kind of material is required — see the block at the end of this file. A
     // fixture with none would make every submission test below assert against a 400 that has
     // nothing to do with what it is testing.
@@ -608,17 +613,82 @@ test.describe("BR-B2B-022 / BR-USUARIO-030: the list of what is asked", () => {
     expect(forbidden).toEqual([]);
   });
 
-  test("the 26 fields are the ones the CMS reads back, and exactly one story is required", () => {
+  test("the 26 fields are the ones the CMS reads back", () => {
     // The count is the contract's, not a preference: `docs/contracts/partner-proposal-answers.md`
     // lists these ids and the CMS conference indexes `answers` by them.
     //
     // It was 24 until 2026-08-21, when the operator added the two questions the team was asking
     // by hand: whether the establishment is legalized, and which of the two tiers it wants.
     expect(PARTNER_FORM_FIELDS.length).toBe(26);
-    const requiredStories = PARTNER_FORM_FIELDS.filter(
-      (field) => field.step === 3 && field.required && field.id.startsWith("story_")
+  });
+
+  test("BR-B2B-011 item 2.2: the story is required of the paid tier and of nobody else", () => {
+    /**
+     * It used to be a static `required: true` on `story_founder`, and it stopped being one on
+     * 2026-08-25: the free tier is not asked the story at all, so a declaration that cannot see
+     * the answers cannot decide it. The input of a `map_only` partner IS the minimal registration
+     * BY DESIGN (BR-B2B-016, item 1), and what gate 2 measures without qualification is what will
+     * be narrated — which for that tier is nothing.
+     *
+     * The static list therefore declares NO required story, and `storyRequired` is the one place
+     * that decides. A `required: true` creeping back onto any of the four would refuse a free-tier
+     * submission for a field the form never showed.
+     */
+    const staticRequired = PARTNER_FORM_FIELDS.filter(
+      (field) => field.id.startsWith("story_") && field.required
     ).map((field) => field.id);
-    expect(requiredStories).toEqual(["story_founder"]);
+    expect(staticRequired).toEqual([]);
+
+    // Paid: the one anchor question is refused when blank.
+    const paid = validAnswers({ plan_choice: "map_and_description", story_founder: "" });
+    expect(storyRequired(paid)).toBe(true);
+    expect(
+      validateAnswers(paid).filter((problem) => problem.field === "story_founder")
+    ).toHaveLength(1);
+
+    // Free: no story is asked, so none is missing.
+    const free = validAnswers({ plan_choice: "map_only", story_founder: "" });
+    expect(storyRequired(free)).toBe(false);
+    expect(
+      validateAnswers(free).filter((problem) => problem.field.startsWith("story_"))
+    ).toEqual([]);
+
+    // AND THE GAP BETWEEN THE TWO. While the tier is unanswered the story stays required, so an
+    // empty step 3 cannot go green by simply not choosing.
+    const undecided = validAnswers({ plan_choice: "", story_founder: "" });
+    expect(storyRequired(undecided)).toBe(true);
+  });
+
+  test("the tier comes before the story, so nobody writes for nothing", () => {
+    // `spec-proposta-parceria-ux-2026-08.md` §3.3 — a surprise that arrives after the work is
+    // done. Asked last, the choice let half the people answer four textareas that their tier has
+    // no use for. It is also the moment the form sells (operator, 2026-08-25).
+    const stepThree = PARTNER_FORM_FIELDS.filter((field) => field.step === 3).map((f) => f.id);
+    expect(stepThree.indexOf("plan_choice")).toBeLessThan(stepThree.indexOf("story_founder"));
+    // Still before the material, which is the counterpart of being on the map in BOTH tiers.
+    expect(stepThree.indexOf("plan_choice")).toBeLessThan(
+      stepThree.indexOf("material_sticker_qty")
+    );
+  });
+
+  test("a free-tier submission does not carry a story it typed and then abandoned", () => {
+    // Hiding the block must not destroy what somebody wrote — switching the tier back has to
+    // bring the text whole — so the strip is at the boundary and not in the component. What must
+    // not happen is that text reaching the database: the CMS hides the story for this tier, and a
+    // stored answer nothing reads is a fact that quietly stops being true.
+    const typed = validAnswers({
+      plan_choice: "map_only",
+      story_founder: "O meu avô abriu a casa em 1961.",
+      story_unique: "O forno a lenha é o mesmo desde a inauguração.",
+    });
+    const stored = normalizeAnswers(typed)!;
+    expect(stored.story_founder).toBeUndefined();
+    expect(stored.story_unique).toBeUndefined();
+    expect(stored.plan_choice).toBe("map_only");
+
+    // The paid tier keeps every word.
+    const paid = normalizeAnswers({ ...typed, plan_choice: "map_and_description" })!;
+    expect(paid.story_founder).toBe("O meu avô abriu a casa em 1961.");
   });
 
   test("BR-B2B-022 item 5: the legal-status declaration is required, and it is near the top", () => {
@@ -645,15 +715,72 @@ test.describe("BR-B2B-022 / BR-USUARIO-030: the list of what is asked", () => {
     // NUMBER, and that is what this guards — the divergence about describing what the fee buys
     // is registered for `produto`.
     const copy = flatten(messagesFor("pt").PartnerProposal);
+    // The samples and the cost line joined the surface on 2026-08-25 and are held to the same
+    // ceiling — the block grew, so what it may not say has to grow with it.
     const surface = [
       copy.get("plans.map_only"),
       copy.get("plans.map_and_description"),
+      copy.get("planSamples.map_only"),
+      copy.get("planSamples.map_and_description"),
+      copy.get("planSamplesIntro"),
+      copy.get("planCost"),
       copy.get("fields.plan_choice.label"),
       copy.get("fields.plan_choice.help"),
     ].join(" ");
 
     expect(surface).not.toMatch(/R\$|\bBRL\b|\d+[.,]\d{2}|reais/i);
-    expect(surface).not.toMatch(/m[êe]s|mensal|anual|assinatura|recorr/i);
+    // `\b` around the bare month, and it is a correction rather than a loosening: without the
+    // boundary `m[êe]s` matches INSIDE `mesmo` and inside `mesa` — the second is the name of one
+    // of the three material fields, so the guard was one edit away from reproving copy that says
+    // nothing about recurrence. The words that carry recurrence still fail: `mês`, `mensal`,
+    // `anual`, `assinatura`, `recorrente`.
+    expect(surface).not.toMatch(/\bm[êe]s\b|mensal|anual|assinatura|recorr/i);
+  });
+
+  test("BR-B2B-015 item 4: the cost line carries its scope and never an absolute", () => {
+    /**
+     * `Aparecer no mapa, sem custo` was the free option's whole name until 2026-08-25, and it
+     * was two defects in four words: an absolute cost negative, which item 4 bans without a
+     * middle ground, and — worse for the form — the only word that distinguished the two
+     * options. Both labels opened with `Aparecer no mapa`, so the eye processed what was left,
+     * and what was left was the price. The format had decided the comparison before a word of
+     * argument was read.
+     */
+    const copy = flatten(messagesFor("pt").PartnerProposal);
+    const names = [copy.get("plans.map_only")!, copy.get("plans.map_and_description")!];
+
+    // The price is not a word inside either name.
+    for (const name of names) {
+      expect(name).not.toMatch(/custo|gr[áa]tis|gratuit|pago|pagar|de gra[çc]a/i);
+    }
+
+    // And the names do not open alike: the first word is where the comparison happens.
+    const firstWord = (value: string) => value.trim().split(/\s+/)[0].toLowerCase();
+    expect(firstWord(names[0])).not.toBe(firstWord(names[1]));
+
+    // The cost is stated ONCE, under both, and with the scope item 4 demands — never a bare
+    // "não custa nada", which speaks for the whole domain and is false since BR-B2B-016.
+    const cost = copy.get("planCost")!;
+    expect(cost).toMatch(/custo/i);
+    expect(cost).not.toMatch(/n[ãa]o (?:paga|custa) nada|sem custo|100% gratuito|sem taxa/i);
+    // BR-B2B-018: the risk reversal that is true and was going unused.
+    expect(cost).toMatch(/no ar/i);
+  });
+
+  test("the paid tier leads the choice, and it is what the form opens on", () => {
+    // Operator, 2026-08-25: the form sells. The first option read is the one the other is
+    // compared against, and the default is the one the form argues for.
+    //
+    // A DEFAULT AND NOT A PRE-TICKED PURCHASE: nothing is charged here. Picking the paid tier is
+    // a declaration of interest; the value and the acceptance are a separate explicit act in the
+    // contract (BR-B2B-023, BR-B2B-026 item 5).
+    expect(PLAN_CHOICES[0]).toBe("map_and_description");
+    expect(DEFAULT_PLAN_CHOICE).toBe("map_and_description");
+    expect(PLAN_CHOICES).toContain(DEFAULT_PLAN_CHOICE);
+
+    // The default has to be a tier the story is asked for, or the form would open having
+    // silently answered the question this step exists to ask.
+    expect(storyRequired({ plan_choice: DEFAULT_PLAN_CHOICE })).toBe(true);
   });
 
   test("every field has a label, and every required field has its own message", () => {
@@ -665,12 +792,22 @@ test.describe("BR-B2B-022 / BR-USUARIO-030: the list of what is asked", () => {
       // `errors.required` fallback (DS-COMPONENTE-016).
       if (!values.get(`fields.${field.id}.label`)) missing.push(`fields.${field.id}.label`);
 
-      // The message names the field ("Preencha o CNPJ"), never "campo obrigatório", so it only
-      // exists where it can be reached: `errorMessage` asks for it on code `required`, and only
-      // a required field — or a select with an option outside its list — produces that code.
+      /**
+       * The message names the field ("Preencha o CNPJ"), never "campo obrigatório", so it only
+       * exists where it can be reached: `errorMessage` asks for it on code `required`, and only
+       * a field that can PRODUCE that code needs one.
+       *
+       * `field.required` stopped being the whole answer on 2026-08-25. `story_founder` is
+       * declared optional and becomes required for the paid tier, decided by `storyRequired` —
+       * so the question this asks is "can this field ever produce `required`?", which is the
+       * condition the message actually serves. Reading the static flag would have deleted a
+       * message the paid path still reaches.
+       */
+      const canBeRequired =
+        field.required || (field.id === "story_founder" && storyRequired({}));
       const requiredError = values.get(`fields.${field.id}.requiredError`);
-      if (field.required && !requiredError) missing.push(`fields.${field.id}.requiredError`);
-      if (!field.required && requiredError !== undefined) {
+      if (canBeRequired && !requiredError) missing.push(`fields.${field.id}.requiredError`);
+      if (!canBeRequired && requiredError !== undefined) {
         missing.push(`fields.${field.id}.requiredError exists for an optional field`);
       }
     }

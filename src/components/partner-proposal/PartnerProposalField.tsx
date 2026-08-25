@@ -227,7 +227,27 @@ export function PartnerProposalField({
        * announces what is being chosen before the first option — the outer `<label htmlFor>`
        * points at no single control here, which is why the legend has to carry it.
        */
-      case "choice":
+      /**
+       * THE TIER IS THE ONE CHOICE THIS FORM ARGUES FOR, and it is why this branch shows the
+       * sample beside the name instead of a bare label.
+       *
+       * The two labels used to open with the same three words — `Aparecer no mapa, sem custo` and
+       * `Aparecer no mapa e ter uma descrição falada, com custo`. When two options share an
+       * opening the eye only processes what is left, and what was left was the price; the format
+       * had decided the comparison before a word of argument was read. The names differ from the
+       * first syllable now, the price is a single line under BOTH of them rather than a word
+       * inside either name, and what distinguishes them is a quote of what the tourist hears —
+       * one clause against a story. It demonstrates instead of asserting, which is the only thing
+       * that works for a product made of audio.
+       *
+       * WHAT THE SAMPLE MAY NOT BECOME: a claim of advantage over another POI (BR-B2B-016, item
+       * 3), a promise about what the tourist does next, or a figure of any kind (BR-B2B-015,
+       * item 7). It quotes the audio and stops there. The place in it is invented — the same
+       * fictional house `step3.exampleGood` already uses — because a real partner's story is not
+       * ours to publish on a capture surface.
+       */
+      case "choice": {
+        const samples = field.id === "plan_choice";
         return (
           <fieldset
             id={inputId}
@@ -235,10 +255,21 @@ export function PartnerProposalField({
             aria-invalid={problem ? true : undefined}
           >
             <legend className="sr-only">{t(`fields.${field.id}.label`)}</legend>
+            {samples ? (
+              <p className={`${FIELD_HELP} mb-3`}>{t("planSamplesIntro")}</p>
+            ) : null}
             {optionsOf(field, (key) => t(key)).map((option) => (
               <label
                 key={option.value}
-                className="mb-2 flex items-start gap-3 rounded-xl border border-gray-200 p-3 text-left"
+                className={
+                  samples
+                    ? `mb-3 flex items-start gap-3 rounded-xl border p-4 text-left ${
+                        value === option.value
+                          ? "border-tuggi-blue bg-tuggi-blue/5"
+                          : "border-gray-200"
+                      }`
+                    : "mb-2 flex items-start gap-3 rounded-xl border border-gray-200 p-3 text-left"
+                }
               >
                 <input
                   type="radio"
@@ -249,11 +280,29 @@ export function PartnerProposalField({
                   onBlur={handleBlur}
                   className="mt-1 h-4 w-4 shrink-0"
                 />
-                <span>{option.label}</span>
+                <span>
+                  <span className={samples ? "font-semibold text-tuggi-dark" : undefined}>
+                    {option.label}
+                  </span>
+                  {samples ? (
+                    /* The sample is not the accessible name of the control: the name is the
+                       option, and the quote is what describes it. Inside the same <label> it is
+                       announced with it, which is what somebody choosing by ear needs. */
+                    <span className="mt-2 block text-base italic leading-relaxed text-tuggi-slate">
+                      {t(`planSamples.${option.value}`)}
+                    </span>
+                  ) : null}
+                </span>
               </label>
             ))}
+            {/* The cost, once, under both — never a word inside either name. It carries the scope
+                BR-B2B-015 item 4 demands (never a bare "não custa nada"), no number, which the
+                ceiling of item 8 keeps, and the risk reversal of BR-B2B-018: nothing runs until
+                the description is on air. */}
+            {samples ? <p className={`${FIELD_HELP} mt-1`}>{t("planCost")}</p> : null}
           </fieldset>
         );
+      }
 
       /**
        * The declaration. `"true"` when ticked and empty otherwise, so the ordinary `required`
