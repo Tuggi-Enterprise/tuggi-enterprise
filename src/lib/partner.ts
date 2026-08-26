@@ -61,6 +61,16 @@ function toLogoUrl(avatarUrl: string | null | undefined): string | null {
   return trimmed;
 }
 
+/**
+ * A partner row can carry an empty string where a name is absent, and `??` only
+ * catches null — an empty trade name would then win over a filled legal name and
+ * the hero would render no name at all.
+ */
+function nonEmpty(value: string | null | undefined): string | null {
+  const trimmed = value?.trim();
+  return trimmed ? trimmed : null;
+}
+
 /** Maps a next-intl locale to the language code used in core.attraction_descriptions. */
 export function getDbLang(locale: string): string {
   switch (locale) {
@@ -119,9 +129,14 @@ async function buildPartnerData(
   const welcome = await fetchLocalizedWelcome(supabase, welcomePoiId, dbLang);
   return {
     id: client.id,
-    // Prefer company_name; fall back to the personal name so bare clients (e.g. a
-    // driver, who has no company_name) still surface a name for the referral framing.
-    name: isTuggi ? null : (client.company_name ?? client.name),
+    // The TRADE NAME first (`name`), the legal name (`company_name`) only as fallback.
+    // `/d/{slug}` is the page the tourist opens from the QR printed on the table: what
+    // is on the sign is the trade name ("Cozi +"), not the legal one ("Cozimais
+    // Restaurante e Café"). Same order the slug itself uses since migration
+    // `20260826_01_client_slug_from_trade_name` (partner.ensure_client_slug). The
+    // fallback keeps bare clients working (a driver has no company_name) and keeps
+    // legacy rows that only ever filled company_name showing a name at all.
+    name: isTuggi ? null : (nonEmpty(client.name) ?? nonEmpty(client.company_name)),
     slug: client.slug,
     isTuggi,
     audioLang: dbLang,

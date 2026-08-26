@@ -72,6 +72,21 @@ const CLIENTS_BY_SLUG = {
     social_handle: null,
     avatar_url: `https://${HOST}:${PORT}/storage/v1/object/public/partners/e2e-logo.png`,
   },
+  // The two names disagree on purpose: `name` is the trade name on the sign,
+  // `company_name` is the legal name on the contract. `/d/{slug}` must show the
+  // trade name — the real `Cozi +` row is what exposed the inverted order.
+  "e2e-nome-fantasia": {
+    id: "44444444-4444-4444-8444-444444444444",
+    slug: "e2e-nome-fantasia",
+    name: "Cozi +",
+    company_name: "Cozimais Restaurante e Café",
+    welcome_poi_id: null,
+    metadata: null,
+    client_type: "restaurant",
+    website: null,
+    social_handle: null,
+    avatar_url: null,
+  },
 };
 
 /**

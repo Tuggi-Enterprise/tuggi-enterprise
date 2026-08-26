@@ -28,6 +28,11 @@ const NO_LOGO_PATH = "/d/e2e-sem-logo";
 const WITH_LOGO_PATH = "/d/e2e-com-logo";
 const PARTNER_NAME = "Delícias do Vale do Café";
 
+/** The fixture whose trade name and legal name disagree (mock-supabase-server.mjs). */
+const TRADE_NAME_PATH = "/d/e2e-nome-fantasia";
+const TRADE_NAME = "Cozi +";
+const LEGAL_NAME = "Cozimais Restaurante e Café";
+
 /** iPhone 12/13/14 class — the viewport this page is actually read on. */
 const PHONE = { width: 390, height: 844 } as const;
 /**
@@ -102,6 +107,22 @@ test.describe("partner brand lockup — no avatar_url (the common case)", () => 
     await expect(page.locator('a[href*="play.google.com"]:visible')).toHaveCount(0);
     // The single CTA button stays the only way out of the page.
     await expect(page.getByRole("button", { name: /discover more in the app/i })).toBeVisible();
+  });
+
+  test("shows the trade name, never the legal name", async ({ page }) => {
+    // `partner.clients` carries both: `name` is the trade name (what is on the
+    // sign and on the QR material), `company_name` is the legal name (what the
+    // contract is signed with). The page resolved the legal name first, so
+    // `Cozi +` published as `Cozimais Restaurante e Café`. Same order the slug
+    // already uses — migration 20260826_01_client_slug_from_trade_name.
+    await page.goto(TRADE_NAME_PATH);
+    await waitForLockup(page);
+
+    await expect(page.locator("h1")).toContainText(TRADE_NAME);
+    await expect(page.locator("body")).not.toContainText(LEGAL_NAME);
+    // The title/OG read the same resolved name, and that is the string that
+    // travels on WhatsApp when the partner shares their own link.
+    await expect(page).toHaveTitle(new RegExp(TRADE_NAME.replace("+", "\\+")));
   });
 
   test("lockup screenshot baseline (no logo)", async ({ page }) => {
