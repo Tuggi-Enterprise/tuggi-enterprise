@@ -9,7 +9,7 @@ import {
   useState,
   useSyncExternalStore,
 } from "react";
-import { AlertCircle, CheckCircle2, WifiOff } from "lucide-react";
+import { AlertCircle, CheckCircle2, Loader2, WifiOff } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { localizedPathname } from "@/i18n/pathnames";
@@ -37,6 +37,7 @@ import { PROPOSAL_LOCALE } from "@/lib/partner-proposal/link";
 import { clearMirror, readMirror, writeMirror } from "@/lib/partner-proposal/draft-mirror";
 import { isCompletePostalCode, postalCodeDigits } from "@/lib/partner-proposal/field-format";
 import {
+  applyPostalCodeAddress,
   POSTAL_CODE_ENDPOINT,
   type PostalCodeAddress,
 } from "@/lib/partner-proposal/postal-code-lookup";
@@ -152,6 +153,13 @@ export function PartnerProposalForm({ contactEmail }: { contactEmail: string }) 
   const [submitted, setSubmitted] = useState<{ contactEmail: string | null } | null>(null);
   const [confirmingRestart, setConfirmingRestart] = useState(false);
   const [postalFilled, setPostalFilled] = useState(false);
+  /**
+   * A busca do CEP está fora. Estado próprio, e não derivado de `postalFilled`, porque as duas
+   * perguntas são diferentes — "ainda não voltou" e "voltou e preencheu" — e a legenda de cada
+   * uma é outra. Sem ela a pessoa digitava o CEP, pulava para o campo seguinte e via quatro
+   * campos se escreverem sozinhos sem nada ter avisado que alguém estava escrevendo.
+   */
+  const [postalLooking, setPostalLooking] = useState(false);
 
   const summaryRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -194,6 +202,64 @@ export function PartnerProposalForm({ contactEmail }: { contactEmail: string }) 
     countFunnel("start");
   }, []);
 
+  /**
+   * The address behind a CEP, asked once per complete CEP.
+   *
+   * IT NEVER WRITES INTO A FIELD SOMEBODY IS TYPING IN, and that guarantee is what this
+   * function exists to keep. Two submissions out of 25 arrived with `city = "Cabo FrioCabo Frio"`
+   * (25/08/2026), and the field was always `city` — never `address`, never `district`, never
+   * `state`. It is not a coincidence: on screen `city` is the field IMMEDIATELY AFTER the postal
+   * code, it is the only text input still empty when the answer lands, and it is the one holding
+   * the cursor. The "empty fields only" rule below cannot protect it, because at that instant it
+   * genuinely IS empty — the person has just started typing into it.
+   *
+   * So the rule is the cursor and not only the emptiness: `document.activeElement` names the
+   * field the person is in, and that one is left alone whatever it holds. What they type stays;
+   * the other three are filled.
+   *
+   * It only ever WRITES INTO EMPTY FIELDS. Somebody who typed the street before the CEP keeps
+   * what they typed, and somebody correcting a wrong district does not have it overwritten by
+   * the next keystroke in the postal code. Failure is silent by design: `route.ts` answers
+   * `{ address: null }` to everything that went wrong, and a null here means "type it yourself".
+   *
+   * `finally` and not the success branch: `route.ts` answers `{ address: null }` instead of
+   * failing, but a network that dies mid-flight would otherwise leave `Buscando o endereço…` on
+   * the screen for ever.
+   */
+  const lookUpPostalCode = useCallback(
+    async (value: string) => {
+      const digits = postalCodeDigits(value);
+      if (!isCompletePostalCode(value) || postalLookedUp.current === digits) return;
+      postalLookedUp.current = digits;
+
+      let address: PostalCodeAddress | null = null;
+      setPostalFilled(false);
+      setPostalLooking(true);
+      try {
+        const response = await fetch(`${POSTAL_CODE_ENDPOINT}?cep=${digits}`);
+        address = ((await response.json()) as { address?: PostalCodeAddress | null })?.address ?? null;
+      } catch {
+        return;
+      } finally {
+        setPostalLooking(false);
+      }
+      if (!address) return;
+
+      // Read BEFORE `setAnswers`, so it names the field the cursor was in when the answer
+      // arrived — not one it may have moved to while React was rendering.
+      const busy = focusedFieldId();
+      const filled = address;
+
+      setAnswers((current) => {
+        const next = applyPostalCodeAddress(current, filled, { busy });
+        writeMirror(next);
+        return next;
+      });
+      setPostalFilled(true);
+    },
+    []
+  );
+
   const setAnswer = useCallback((id: PartnerFieldId, value: string) => {
     markStarted();
     setAnswers((current) => {
@@ -209,50 +275,23 @@ export function PartnerProposalForm({ contactEmail }: { contactEmail: string }) 
       );
       return next;
     });
-    if (id === "postal_code") setPostalFilled(false);
-  }, [markStarted]);
+    if (id === "postal_code") {
+      setPostalFilled(false);
+      /**
+       * A BUSCA COMEÇA NO OITAVO DÍGITO, e não no blur — é isso que tira a corrida da tela em vez
+       * de só arbitrá-la. Pelo blur, a busca partia no instante em que a pessoa saía do CEP, ou
+       * seja, quando o cursor já estava no campo seguinte (`city`), e a resposta chegava
+       * exatamente em cima do que ela estava digitando. Começando aqui, a busca acontece enquanto
+       * o cursor ainda está no CEP, e na maioria das vezes termina antes de a pessoa chegar lá.
+       *
+       * `lookUpPostalCode` já é idempotente por CEP (`postalLookedUp`), então o blur continua
+       * valendo como rede — para um CEP colado, para o autofill do navegador e para o caso em que
+       * esta chamada falhou na rede.
+       */
+      void lookUpPostalCode(value);
+    }
+  }, [markStarted, lookUpPostalCode]);
 
-  /**
-   * The address behind a CEP, asked once per complete CEP.
-   *
-   * It only ever WRITES INTO EMPTY FIELDS. Somebody who typed the street before the CEP keeps
-   * what they typed, and somebody correcting a wrong district does not have it overwritten by
-   * the next keystroke in the postal code. Failure is silent by design: `route.ts` answers
-   * `{ address: null }` to everything that went wrong, and a null here means "type it yourself".
-   */
-  const lookUpPostalCode = useCallback(
-    async (value: string) => {
-      const digits = postalCodeDigits(value);
-      if (!isCompletePostalCode(value) || postalLookedUp.current === digits) return;
-      postalLookedUp.current = digits;
-
-      let address: PostalCodeAddress | null = null;
-      try {
-        const response = await fetch(`${POSTAL_CODE_ENDPOINT}?cep=${digits}`);
-        address = ((await response.json()) as { address?: PostalCodeAddress | null })?.address ?? null;
-      } catch {
-        return;
-      }
-      if (!address) return;
-
-      setAnswers((current) => {
-        const next = { ...current };
-        const fill = (id: PartnerFieldId, incoming: string) => {
-          if (!incoming) return;
-          if ((next[id] ?? "").trim()) return;
-          next[id] = incoming;
-        };
-        fill("address", address.street);
-        fill("district", address.district);
-        fill("city", address.city);
-        fill("state", address.state);
-        writeMirror(next);
-        return next;
-      });
-      setPostalFilled(true);
-    },
-    []
-  );
 
   /**
    * One field lost focus: decide that field, and nothing else on the screen.
@@ -794,13 +833,30 @@ export function PartnerProposalForm({ contactEmail }: { contactEmail: string }) 
   }
 
   /**
-   * What the CEP lookup has to say, and it only ever says one thing: four fields were filled.
+   * O que a busca do CEP tem a dizer, e agora são DUAS coisas — a que faltava é a primeira.
    *
-   * `role="status"`, never `alert`: filling four fields silently startles more than it helps,
-   * and a failure says nothing at all — the fields are simply empty and the person types.
+   * `Buscando o endereço…` existe porque o silêncio era a metade visível do defeito: a pessoa
+   * digitava o CEP, ia para o campo seguinte e quatro campos se escreviam sozinhos, sem nada
+   * ter avisado que alguém mais estava escrevendo. Duas propostas de 25 chegaram com
+   * `Cabo FrioCabo Frio` (25/08/2026). A outra metade — não escrever debaixo do cursor — está em
+   * `applyPostalCodeAddress`; esta é a que faz a pessoa esperar meio segundo em vez de disputar
+   * o campo conosco.
+   *
+   * `role="status"`, nunca `alert`: nada aqui bloqueia, nada aqui é erro. Uma falha não diz
+   * absolutamente nada — os campos ficam vazios e a pessoa digita, que é o comportamento de
+   * sempre.
    */
   function renderNote(field: PartnerField) {
-    if (field.id !== "postal_code" || !postalFilled) return null;
+    if (field.id !== "postal_code") return null;
+    if (postalLooking) {
+      return (
+        <p role="status" className="mt-2 flex items-center gap-2 text-sm text-tuggi-slate">
+          <Loader2 className="h-4 w-4 shrink-0 animate-spin" aria-hidden="true" />
+          {t("states.postalCodeLooking")}
+        </p>
+      );
+    }
+    if (!postalFilled) return null;
     return (
       <p role="status" className="mt-2 text-sm text-tuggi-slate">
         {t("states.postalCodeFilled")}
@@ -849,6 +905,19 @@ function replaceProblemsOf(
 ): FieldProblem[] {
   const kept = shown.filter((problem) => !ids.includes(problem.field));
   return [...kept, ...fresh.filter((problem) => ids.includes(problem.field))];
+}
+
+/**
+ * O id do campo que está com o cursor, ou `null`.
+ *
+ * `PartnerProposalField` dá a todo controle `name={field.id}`, então o `name` do elemento em foco
+ * É o id da resposta. Ler o DOM aqui é deliberado: o React não sabe quem tem o foco, e a decisão
+ * que depende disso — não escrever debaixo do cursor — é do preenchimento pelo CEP.
+ */
+function focusedFieldId(): string | null {
+  const active = typeof document === "undefined" ? null : document.activeElement;
+  const name = (active as { name?: unknown } | null)?.name;
+  return typeof name === "string" && name ? name : null;
 }
 
 function subscribeToConnectivity(onChange: () => void): () => void {

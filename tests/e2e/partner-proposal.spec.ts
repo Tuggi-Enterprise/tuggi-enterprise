@@ -35,7 +35,11 @@ import {
   normalizeWebsiteInput,
   postalCodeDigits,
 } from "../../src/lib/partner-proposal/field-format";
-import { readViaCepPayload } from "../../src/lib/partner-proposal/postal-code-lookup";
+import {
+  applyPostalCodeAddress,
+  POSTAL_CODE_FILLS,
+  readViaCepPayload,
+} from "../../src/lib/partner-proposal/postal-code-lookup";
 import { FUNNEL_KINDS, isFunnelKind, isFunnelStep } from "../../src/lib/partner-proposal/funnel";
 import {
   FUNNEL_BUCKET,
@@ -1285,12 +1289,16 @@ test.describe("the CEP fills the address, and never blocks anybody", () => {
   });
 
   test("the lookup only ever writes into empty fields", () => {
-    const form = fs.readFileSync(
-      path.join(REPO_ROOT, "src/components/partner-proposal/PartnerProposalForm.tsx"),
-      "utf8"
+    // A regra saiu do componente e virou `applyPostalCodeAddress` (26/08/2026), junto com a
+    // segunda — não escrever no campo que está com o cursor. Aqui ela é EXERCIDA, e não mais
+    // procurada como texto dentro do formulário: quem digitou a rua antes do CEP fica com o que
+    // digitou. O caso do cursor tem o seu próprio bloco, no fim deste arquivo.
+    const next = applyPostalCodeAddress(
+      { address: "Av Assunção 606" },
+      { street: "Avenida Assunção", district: "São Bento", city: "Cabo Frio", state: "RJ" }
     );
-    // Somebody who typed the street before the CEP keeps what they typed.
-    expect(form).toContain('if ((next[id] ?? "").trim()) return;');
+    expect(next.address).toBe("Av Assunção 606");
+    expect(next.district).toBe("São Bento");
   });
 });
 
@@ -1462,5 +1470,75 @@ test.describe("the promotional material moved out of step 1", () => {
     for (const kind of MATERIAL_KINDS) {
       expect(PARTNER_FIELD_IDS).toContain(materialFieldId(kind));
     }
+  });
+});
+
+test.describe("o CEP preenche sem disputar o campo com quem está digitando", () => {
+  const ADDRESS = {
+    street: "Avenida Assunção",
+    district: "São Bento",
+    city: "Cabo Frio",
+    state: "RJ",
+  };
+
+  test("o campo vazio recebe o que o CEP trouxe", () => {
+    expect(applyPostalCodeAddress({}, ADDRESS)).toEqual({
+      address: "Avenida Assunção",
+      district: "São Bento",
+      city: "Cabo Frio",
+      state: "RJ",
+    });
+    expect([...POSTAL_CODE_FILLS]).toEqual(["address", "district", "city", "state"]);
+  });
+
+  test("quem digitou antes do CEP fica com o que digitou", () => {
+    const typed = { address: "Av Assunção 606", district: "Sao bento" };
+    const next = applyPostalCodeAddress(typed, ADDRESS);
+    expect(next.address).toBe("Av Assunção 606");
+    expect(next.district).toBe("Sao bento");
+    // O que estava vazio ainda é preenchido: a regra é por campo, não pela resposta inteira.
+    expect(next.city).toBe("Cabo Frio");
+  });
+
+  test("o campo com o cursor nunca é escrito — foi ele que produziu `Cabo FrioCabo Frio`", () => {
+    // 2 de 25 propostas em 25/08/2026, e o campo era SEMPRE `city`: na tela ele vem logo depois
+    // do CEP, é o único input de texto ainda vazio quando a resposta chega, e é o que está com o
+    // cursor. Estar vazio não bastava como guarda, porque naquele instante ele está vazio mesmo.
+    const next = applyPostalCodeAddress({}, ADDRESS, { busy: "city" });
+    expect(next.city).toBeUndefined();
+    expect(next.address).toBe("Avenida Assunção");
+    expect(next.district).toBe("São Bento");
+    expect(next.state).toBe("RJ");
+  });
+
+  test("um campo em branco na resposta do ViaCEP não apaga nada", () => {
+    // CEP de faixa única responde `logradouro` e `bairro` vazios, e isso é resposta legítima.
+    const next = applyPostalCodeAddress({}, { ...ADDRESS, street: "", district: "" });
+    expect(next.address).toBeUndefined();
+    expect(next.city).toBe("Cabo Frio");
+  });
+
+  test("a busca começa no oitavo dígito e se anuncia enquanto acontece", () => {
+    const form = fs.readFileSync(
+      path.join(REPO_ROOT, "src/components/partner-proposal/PartnerProposalForm.tsx"),
+      "utf8"
+    );
+
+    // Pelo blur, a busca partia quando o cursor JÁ estava em `city`, que é onde a resposta caía.
+    expect(form).toContain("void lookUpPostalCode(value);");
+    // A metade visível do defeito: quatro campos se escrevendo sozinhos, sem aviso nenhum.
+    expect(form).toContain("setPostalLooking(true)");
+    expect(form).toContain("states.postalCodeLooking");
+    // Nunca preso em `Buscando…` quando a rede morre no meio.
+    expect(form).toContain("setPostalLooking(false)");
+    // O foco é lido ANTES do setAnswers, senão nomeia um campo para onde o cursor já andou.
+    expect(form).toMatch(/const busy = focusedFieldId\(\);[\s\S]{0,200}setAnswers\(/);
+    // A regra mora no módulo puro, não numa segunda cópia dentro do componente.
+    expect(form).toContain("applyPostalCodeAddress(current, filled, { busy })");
+  });
+
+  test("a legenda da busca existe em pt, que é o único idioma desta porta", () => {
+    const pt = JSON.parse(fs.readFileSync(path.join(MESSAGES_DIR, "pt.json"), "utf8"));
+    expect(pt.PartnerProposal.states.postalCodeLooking).toBeTruthy();
   });
 });

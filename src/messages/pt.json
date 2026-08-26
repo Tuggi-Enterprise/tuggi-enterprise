@@ -1176,7 +1176,8 @@
       "tooManyBody": "Não é nada que você tenha feito de errado. Em internet compartilhada, os envios contam juntos. Tente de novo mais tarde. O que você preencheu continua guardado neste aparelho. Se precisar resolver hoje, escreva para {email}.",
       "unavailableTitle": "O envio está fora do ar agora.",
       "unavailableBody": "É um problema nosso, e esperar não resolve. Escreva para {email} que a gente recebe a sua proposta por lá. O que você preencheu continua guardado neste aparelho.",
-      "postalCodeFilled": "A gente preencheu a rua, o bairro, a cidade e o estado. Confira e ajuste se precisar."
+      "postalCodeFilled": "A gente preencheu a rua, o bairro, a cidade e o estado. Confira e ajuste se precisar.",
+      "postalCodeLooking": "Buscando o endereço deste CEP… aguarde um instante antes de preencher a cidade."
     },
     "savedOnDevice": "O que você escrever fica guardado neste aparelho por 24 horas, até você enviar.",
     "alreadyPartner": "Se o seu estabelecimento já é parceiro e você quer atualizar os dados, não preencha de novo: <mail>fale com a gente por e-mail</mail>.",

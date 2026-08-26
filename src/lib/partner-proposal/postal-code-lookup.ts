@@ -20,6 +20,8 @@
  * than one that never had the service.
  */
 
+import type { PartnerAnswers } from "./schema";
+
 /** What the site asks of a CEP, and the whole of it. The route below returns nothing else. */
 export interface PostalCodeAddress {
   /** `logradouro` — the street, with no number. The number is always typed. */
@@ -64,4 +66,49 @@ export function readViaCepPayload(payload: unknown): PostalCodeAddress | null {
 
 function text(value: unknown): string {
   return typeof value === "string" ? value.trim() : "";
+}
+
+/**
+ * ─────────────────────────────────────────────────────────────────────────────────────────────
+ * O QUE O CEP PREENCHE, e as duas regras que decidem isso. Puro, para que as duas regras possam
+ * ser quebradas por um teste em vez de por uma revisão.
+ *
+ * REGRA 1 — SÓ CAMPO VAZIO. Quem digitou a rua antes do CEP fica com o que digitou.
+ *
+ * REGRA 2 — NUNCA O CAMPO QUE ESTÁ COM O CURSOR, e é ela que faltava. Em 25/08/2026, 2 de 25
+ * propostas chegaram com `city = "Cabo FrioCabo Frio"`, e o campo era sempre `city` — nunca
+ * `address`, nunca `district`, nunca `state`. Não é acaso: na tela `city` é o campo IMEDIATAMENTE
+ * DEPOIS do CEP, é o único input de texto ainda vazio quando a resposta chega, e é o que está com
+ * o cursor. A regra 1 não o protege, porque naquele instante ele está vazio de verdade — a pessoa
+ * acabou de começar a digitar nele.
+ *
+ * `busy` é o `name` do elemento em foco, que é o id do campo (`PartnerProposalField` passa
+ * `name: field.id`). Quem lê o DOM é o componente; aqui só se decide.
+ */
+export const POSTAL_CODE_FILLS = ["address", "district", "city", "state"] as const;
+
+export type PostalCodeFilledField = (typeof POSTAL_CODE_FILLS)[number];
+
+export function applyPostalCodeAddress(
+  current: PartnerAnswers,
+  address: PostalCodeAddress,
+  options: { busy?: string | null } = {}
+): PartnerAnswers {
+  const next: PartnerAnswers = { ...current };
+  const incoming: Record<PostalCodeFilledField, string> = {
+    address: address.street,
+    district: address.district,
+    city: address.city,
+    state: address.state,
+  };
+
+  for (const id of POSTAL_CODE_FILLS) {
+    const value = incoming[id];
+    if (!value) continue;
+    if (id === options.busy) continue;
+    if ((next[id] ?? "").trim()) continue;
+    next[id] = value;
+  }
+
+  return next;
 }
