@@ -1198,6 +1198,9 @@
     "title": "Novidades",
     "subtitle": "Notas de versão e notícias de produto, da mais recente para a mais antiga.",
     "readMore": "Ler",
+    "cta": {
+      "button": "Baixar o aplicativo"
+    },
     "backToSection": "Voltar para Novidades",
     "empty": {
       "body": "Ainda não há publicação neste idioma.",

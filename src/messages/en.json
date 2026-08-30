@@ -968,6 +968,9 @@
     "title": "Updates",
     "subtitle": "Release notes and product news, newest first.",
     "readMore": "Read",
+    "cta": {
+      "button": "Get the app"
+    },
     "backToSection": "Back to Updates",
     "empty": {
       "body": "Nothing published in this language yet.",

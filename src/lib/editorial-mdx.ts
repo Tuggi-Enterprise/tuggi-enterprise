@@ -50,6 +50,36 @@ export const AUTHORABLE_BLOCKS = [
 
 export type AuthorableBlock = (typeof AUTHORABLE_BLOCKS)[number];
 
+/**
+ * What each block requires, and what it tolerates. Checked at parse time, so a
+ * figure with no `alt` or a quote with no attribution is a **build** failure
+ * and never a page (criterion 22).
+ *
+ * `rows` is the only non-string prop, and it is JSON on purpose: an
+ * `antes | depois` string would need an escape the day a cell contains the
+ * separator, and the escape is where the silent truncation lives.
+ */
+const BLOCK_CONTRACT: Record<AuthorableBlock, { required: string[]; optional: string[] }> = {
+  // `alt` is mandatory and it is not the caption: a figure with a caption and
+  // no alt describes itself to everyone except the reader who needs it (§8.4).
+  ArticleFigure: { required: ["src", "alt"], optional: ["caption"] },
+  // No anonymous quotation. An attribution nobody can check is an assertion
+  // wearing quotation marks.
+  ArticleQuote: { required: ["quote", "author"], optional: ["role"] },
+  // One variant, and that is the decision: a yellow `warning` and a red
+  // `danger` would be two colour pairs with no owner in `@theme`, born inside
+  // a content file (DS-COR-001). Copy that has to alarm alarms in its first
+  // sentence (DS-COPY-045), not in a coloured box halfway down.
+  ArticleNotice: { required: ["body"], optional: [] },
+  ArticleChangeTable: {
+    required: ["caption", "beforeLabel", "afterLabel", "rows"],
+    optional: [],
+  },
+  // It receives no number, ever. The amount comes from `resolvePricing`
+  // (BR-MONETIZACAO-069) and the block only says what the table is.
+  ArticlePriceTable: { required: ["caption"], optional: [] },
+};
+
 export type Block =
   | { kind: "heading"; level: 2 | 3; children: Inline[] }
   | { kind: "paragraph"; children: Inline[] }
@@ -241,7 +271,43 @@ function parseComponent(source: string, file: string): Block {
     );
   }
 
-  return { kind: "component", name: name as AuthorableBlock, props };
+  const block = name as AuthorableBlock;
+  const contract = BLOCK_CONTRACT[block];
+
+  for (const key of Object.keys(props)) {
+    if (!contract.required.includes(key) && !contract.optional.includes(key)) {
+      throw new EditorialContentError(
+        file,
+        `<${block}> has no \`${key}\`. It takes ${[...contract.required, ...contract.optional].join(", ")}.`
+      );
+    }
+  }
+  for (const key of contract.required) {
+    if (props[key] === undefined || props[key] === "") {
+      throw new EditorialContentError(file, `<${block}> is missing \`${key}\``);
+    }
+  }
+
+  if (block === "ArticleChangeTable") {
+    const rows = props.rows;
+    const valid =
+      Array.isArray(rows) &&
+      rows.length > 0 &&
+      rows.every(
+        (row) =>
+          Array.isArray(row) &&
+          row.length === 2 &&
+          row.every((cell) => typeof cell === "string" && cell.trim() !== "")
+      );
+    if (!valid) {
+      throw new EditorialContentError(
+        file,
+        "<ArticleChangeTable> `rows` is a non-empty list of `[before, after]` pairs, and no cell is blank — a row whose absence is a blank space says nothing; it says it with a word (DS-COMPONENTE-055)"
+      );
+    }
+  }
+
+  return { kind: "component", name: block, props };
 }
 
 /* ---------------------------------------------------------------------------
