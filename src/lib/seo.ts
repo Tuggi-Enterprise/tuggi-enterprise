@@ -119,14 +119,18 @@ export function buildAlternatesFor(
  * leaf from another.
  */
 
-/** Public path of a translated leaf under a declared section. */
-function leafPath(locale: string, sectionPath: string, leaf: string): string {
+/**
+ * Public path of a translated leaf under a declared section — the one
+ * construction. Every `<Link>`, the canonical, hreflang, the sitemap, the feed
+ * and `/llms.txt` go through here, so an article's address is composed once.
+ */
+export function buildLeafPath(locale: string, sectionPath: string, leaf: string): string {
   return `/${locale}${localizedPathname(locale, sectionPath)}/${leaf}`;
 }
 
 /** Absolute URL of a translated leaf under a declared section. */
 export function buildLeafUrl(locale: string, sectionPath: string, leaf: string): string {
-  return `${BASE_URL}${leafPath(locale, sectionPath, leaf)}`;
+  return `${BASE_URL}${buildLeafPath(locale, sectionPath, leaf)}`;
 }
 
 /**
@@ -144,14 +148,14 @@ export function buildAlternatesForLeaf(
 ) {
   const languages: Record<string, string> = {};
   for (const [loc, leaf] of Object.entries(leafByLocale)) {
-    if (leaf) languages[loc] = leafPath(loc, sectionPath, leaf);
+    if (leaf) languages[loc] = buildLeafPath(loc, sectionPath, leaf);
   }
   const xDefault = languages[routing.defaultLocale] ?? Object.values(languages)[0];
   if (xDefault) languages["x-default"] = xDefault;
 
   const own = leafByLocale[locale];
   return {
-    canonical: own ? leafPath(locale, sectionPath, own) : languages[routing.defaultLocale],
+    canonical: own ? buildLeafPath(locale, sectionPath, own) : languages[routing.defaultLocale],
     languages,
   };
 }

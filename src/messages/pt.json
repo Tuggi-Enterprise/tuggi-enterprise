@@ -66,6 +66,7 @@
     "accessibility": "Acessibilidade",
     "security": "Segurança B2G",
     "coverage": "Cobertura Global",
+    "updates": "Novidades",
     "audioTours": "Roteiros de Áudio",
     "rights": "Todos os direitos reservados."
   },
@@ -1187,5 +1188,37 @@
     },
     "planSamplesIntro": "O turista ouve e lê:",
     "planCost": "Só a primeira tem custo, e o valor vocês combinam no contrato. Nada é cobrado até a sua história estar no ar."
+  },
+  "Updates": {
+    "seo": {
+      "title": "Novidades e notas de versão",
+      "description": "O que mudou no aplicativo, quando mudou e o que acontece com o que você já comprou.",
+      "ogImageAlt": "Cartão de compartilhamento da seção de novidades do Tuggi."
+    },
+    "title": "Novidades",
+    "subtitle": "Notas de versão e notícias de produto, da mais recente para a mais antiga.",
+    "readMore": "Ler",
+    "backToSection": "Voltar para Novidades",
+    "empty": {
+      "body": "Ainda não há publicação neste idioma.",
+      "link": "Ler em inglês"
+    },
+    "type": {
+      "release": "Nota de versão",
+      "news": "Notícia"
+    },
+    "filter": {
+      "label": "Filtrar por tipo",
+      "all": "Tudo"
+    },
+    "pager": {
+      "label": "Mais novidades",
+      "previous": "Anterior",
+      "next": "Próximo"
+    },
+    "priceTable": {
+      "columnPass": "Passe",
+      "columnPrice": "Preço"
+    }
   }
 }

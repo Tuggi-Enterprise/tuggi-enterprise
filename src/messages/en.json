@@ -66,6 +66,7 @@
     "accessibility": "Accessibility",
     "security": "B2G Security",
     "coverage": "Global Coverage",
+    "updates": "Updates",
     "audioTours": "Audio Tours",
     "rights": "All rights reserved."
   },
@@ -957,5 +958,37 @@
     "skipToContent": "Skip to main content",
     "playAudio": "Play audio",
     "pauseAudio": "Pause audio"
+  },
+  "Updates": {
+    "seo": {
+      "title": "Updates and release notes",
+      "description": "What changed in the app, when it changed, and what happens to what you already bought.",
+      "ogImageAlt": "Share card for the Tuggi updates section."
+    },
+    "title": "Updates",
+    "subtitle": "Release notes and product news, newest first.",
+    "readMore": "Read",
+    "backToSection": "Back to Updates",
+    "empty": {
+      "body": "Nothing published in this language yet.",
+      "link": "Read in English"
+    },
+    "type": {
+      "release": "Release note",
+      "news": "News"
+    },
+    "filter": {
+      "label": "Filter by type",
+      "all": "All"
+    },
+    "pager": {
+      "label": "More updates",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "priceTable": {
+      "columnPass": "Pass",
+      "columnPrice": "Price"
+    }
   }
 }

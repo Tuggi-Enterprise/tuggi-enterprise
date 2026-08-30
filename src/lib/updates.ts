@@ -315,6 +315,21 @@ export function showsTypeFilter(listing: UpdateDocument[]): boolean {
   );
 }
 
+/**
+ * The publication date, in the reader's language — spec §4.2, slice 2.
+ *
+ * `Intl`, never a string written by hand, and **`timeZone: "UTC"`**, which is
+ * not decoration: `publishedAt` is a calendar day, `new Date("2026-08-30")`
+ * is midnight UTC, and formatting that in a negative offset (São Paulo, every
+ * American market) publishes the 29th. The article would carry a different
+ * date from its own `<time datetime>`.
+ */
+export function formatUpdateDate(publishedAt: string, locale: string): string {
+  return new Intl.DateTimeFormat(locale, { dateStyle: "long", timeZone: "UTC" }).format(
+    new Date(`${publishedAt}T00:00:00Z`)
+  );
+}
+
 /** The shape of an article per locale — what criterion 14 compares. */
 export function shapesByLocale(article: UpdateArticle): Partial<Record<SiteLocale, string[]>> {
   return Object.fromEntries(

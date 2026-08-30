@@ -66,6 +66,7 @@
     "accessibility": "Accessibilità",
     "security": "Sicurezza B2G",
     "coverage": "Copertura Globale",
+    "updates": "Aggiornamenti",
     "audioTours": "Audioguide",
     "rights": "Tutti i diritti riservati."
   },
@@ -957,5 +958,37 @@
     "skipToContent": "Vai al contenuto principale",
     "playAudio": "Riproduci audio",
     "pauseAudio": "Metti in pausa"
+  },
+  "Updates": {
+    "seo": {
+      "title": "Aggiornamenti e note di rilascio",
+      "description": "Che cosa è cambiato nell'app, quando è cambiato e che cosa succede a ciò che hai già comprato.",
+      "ogImageAlt": "Immagine di condivisione della sezione aggiornamenti di Tuggi."
+    },
+    "title": "Aggiornamenti",
+    "subtitle": "Note di rilascio e notizie di prodotto, dalla più recente alla più vecchia.",
+    "readMore": "Leggi",
+    "backToSection": "Torna agli aggiornamenti",
+    "empty": {
+      "body": "Non c'è ancora nessuna pubblicazione in questa lingua.",
+      "link": "Leggi in inglese"
+    },
+    "type": {
+      "release": "Nota di rilascio",
+      "news": "Notizia"
+    },
+    "filter": {
+      "label": "Filtra per tipo",
+      "all": "Tutto"
+    },
+    "pager": {
+      "label": "Altri aggiornamenti",
+      "previous": "Precedente",
+      "next": "Successivo"
+    },
+    "priceTable": {
+      "columnPass": "Pass",
+      "columnPrice": "Prezzo"
+    }
   }
 }

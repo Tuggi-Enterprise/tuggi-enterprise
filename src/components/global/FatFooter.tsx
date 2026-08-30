@@ -75,6 +75,15 @@ export function FatFooter() {
             <Link href="/coverage" className="text-sm text-slate-400 hover:text-white transition-colors duration-200 block mb-3 focus-visible:ring-2 focus-visible:ring-tuggi-primary-text focus:outline-none rounded-sm w-max">
               {t("coverage")}
             </Link>
+            {/* The editorial section lives here and NOT in the main menu —
+                DS-LAYOUT-011. The header already carries six items, the
+                language picker and the download CTA; the cold visitor's path is
+                promise → proof → install, and a reading destination is a
+                seventh decision in it. Whoever needs this section arrives by
+                link: from the store note, an email, a push or search. */}
+            <Link href="/updates" className="text-sm text-slate-400 hover:text-white transition-colors duration-200 block mb-3 focus-visible:ring-2 focus-visible:ring-tuggi-primary-text focus:outline-none rounded-sm w-max">
+              {t("updates")}
+            </Link>
           </div>
 
           {/* Column 4: Trust Center & Compliance */}

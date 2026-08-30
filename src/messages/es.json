@@ -66,6 +66,7 @@
     "accessibility": "Accesibilidad",
     "security": "Seguridad B2G",
     "coverage": "Cobertura Global",
+    "updates": "Novedades",
     "audioTours": "Audioguías",
     "rights": "Todos los derechos reservados."
   },
@@ -957,5 +958,37 @@
     "skipToContent": "Ir al contenido principal",
     "playAudio": "Reproducir audio",
     "pauseAudio": "Pausar audio"
+  },
+  "Updates": {
+    "seo": {
+      "title": "Novedades y notas de versión",
+      "description": "Qué cambió en la aplicación, cuándo cambió y qué pasa con lo que ya compraste.",
+      "ogImageAlt": "Tarjeta para compartir de la sección de novedades de Tuggi."
+    },
+    "title": "Novedades",
+    "subtitle": "Notas de versión y noticias de producto, de la más reciente a la más antigua.",
+    "readMore": "Leer",
+    "backToSection": "Volver a Novedades",
+    "empty": {
+      "body": "Todavía no hay publicaciones en este idioma.",
+      "link": "Leer en inglés"
+    },
+    "type": {
+      "release": "Nota de versión",
+      "news": "Noticia"
+    },
+    "filter": {
+      "label": "Filtrar por tipo",
+      "all": "Todo"
+    },
+    "pager": {
+      "label": "Más novedades",
+      "previous": "Anterior",
+      "next": "Siguiente"
+    },
+    "priceTable": {
+      "columnPass": "Pase",
+      "columnPrice": "Precio"
+    }
   }
 }
