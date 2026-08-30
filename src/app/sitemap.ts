@@ -1,7 +1,14 @@
 import { MetadataRoute } from "next";
 import { routing } from "@/i18n/routing";
 import type { StaticAppPathname } from "@/i18n/pathnames";
-import { buildUrl, buildSitemapAlternates, buildSitemapAlternatesFor } from "@/lib/seo";
+import {
+  buildUrl,
+  buildLeafUrl,
+  buildSitemapAlternates,
+  buildSitemapAlternatesFor,
+  buildSitemapAlternatesForLeaf,
+} from "@/lib/seo";
+import { UPDATES_SECTION, getUpdateArticles, slugsByLocale } from "@/lib/updates";
 import { getSupabaseClient } from "@/lib/supabase-server";
 import { TUGGI_PARTNER_ID } from "@/lib/app-meta";
 import {
@@ -52,6 +59,10 @@ const routes: StaticAppPathname[] = [
   "/purpose",
   "/contact",
   "/trust-center/accessibility",
+  // The editorial section. It is deliberately out of the main menu
+  // (DS-LAYOUT-011), so the sitemap and /llms.txt are two of its four doors —
+  // leaving it out is how a published section stays unfound.
+  "/updates",
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -66,6 +77,27 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified: new Date(),
         changeFrequency: "weekly",
         priority: route === "/" ? 1 : 0.8,
+        alternates,
+      });
+    }
+  }
+
+  // ── Editorial articles ────────────────────────────────────────────────────
+  // One entry per (article × locale the article exists in), and the hreflang
+  // set comes from the registry, never from `buildSitemapAlternates`: the leaf
+  // is translated and the route map only knows the section, so a path built as
+  // `updates/<slug>` would list one language's leaf under all four prefixes
+  // (DS-COMPONENTE-057). A locale with no translation is simply absent — an
+  // alternate pointing at a piece that is not there is the same loss.
+  for (const article of getUpdateArticles()) {
+    const leaves = slugsByLocale(article.id);
+    const alternates = { languages: buildSitemapAlternatesForLeaf(UPDATES_SECTION, leaves) };
+    for (const [locale, leaf] of Object.entries(leaves)) {
+      entries.push({
+        url: buildLeafUrl(locale, UPDATES_SECTION, leaf),
+        lastModified: new Date(`${article.publishedAt}T00:00:00Z`),
+        changeFrequency: "yearly",
+        priority: 0.6,
         alternates,
       });
     }

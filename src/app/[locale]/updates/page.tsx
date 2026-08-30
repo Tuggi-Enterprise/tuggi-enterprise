@@ -11,7 +11,12 @@ import {
   buildUrl,
   defaultRobots,
 } from "@/lib/seo";
-import { UPDATES_SECTION, formatUpdateDate, listUpdates } from "@/lib/updates";
+import {
+  UPDATES_SECTION,
+  formatUpdateDate,
+  listUpdates,
+  updatesFeedPath,
+} from "@/lib/updates";
 import { UpdateGrid } from "@/components/blocks/UpdateGrid";
 import type { UpdateCardVM } from "@/components/blocks/UpdateCard";
 
@@ -47,7 +52,13 @@ export async function generateMetadata({
   return {
     title,
     description,
-    alternates: buildAlternates(locale, UPDATES_SECTION),
+    alternates: {
+      ...buildAlternates(locale, UPDATES_SECTION),
+      // The feed is per locale, so it is discovered from the listing of that
+      // locale and nowhere else — a `<link>` in the head is the only way a
+      // reader's client finds it.
+      types: { "application/rss+xml": [{ url: updatesFeedPath(locale), title }] },
+    },
     robots: defaultRobots,
     openGraph: buildOpenGraph({
       title,

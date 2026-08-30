@@ -330,6 +330,19 @@ export function formatUpdateDate(publishedAt: string, locale: string): string {
   );
 }
 
+/**
+ * Where the RSS feed of a locale lives — one feed per locale, because there is
+ * one listing per locale.
+ *
+ * The section word is NOT translated here, and that is measured: the middleware
+ * matcher skips every path carrying a dot, so a localized `/pt/novidades/
+ * feed.xml` never reaches next-intl and 404s. The feed sits with the other
+ * machine-readable files of the site, which are not localized either.
+ */
+export function updatesFeedPath(locale: string): string {
+  return `/${locale}${UPDATES_SECTION}/feed.xml`;
+}
+
 /** The shape of an article per locale — what criterion 14 compares. */
 export function shapesByLocale(article: UpdateArticle): Partial<Record<SiteLocale, string[]>> {
   return Object.fromEntries(

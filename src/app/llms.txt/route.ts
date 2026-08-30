@@ -7,6 +7,9 @@ import {
   type RouteSnapshot,
 } from "@/lib/routes";
 import { formatDistance, formatDuration } from "@/lib/tourFormat";
+import { UPDATES_SECTION, getUpdateArticles } from "@/lib/updates";
+import { buildLeafUrl } from "@/lib/seo";
+import { localizedPathname } from "@/i18n/pathnames";
 
 // /llms.txt — an LLM-friendly map of the site (https://llmstxt.org/).
 // English, locale-prefixed canonical links (the site serves localePrefix="always").
@@ -70,6 +73,32 @@ function routesSection(): string {
   return `\n## Audio tour routes\n\nEach route page carries a map, the ordered stops with real audio previews, duration, distance, accessibility and the languages it is narrated in.\n\n${blocks.join("\n\n")}\n`;
 }
 
+/**
+ * The editorial record — news and release notes.
+ *
+ * Same construction as `routeLine`: one line per piece, linking the locale it
+ * is actually published in (`/en` would 404 for an article with no English
+ * translation), with the fact after the colon. This file is the only surface of
+ * the site designed to be read by an agent, so the section is born in it or it
+ * is born invisible — an assistant asked "what changed in Tuggi" answers from
+ * here or does not answer.
+ */
+function updateLine(article: ReturnType<typeof getUpdateArticles>[number]): string {
+  const document = article.byLocale.en ?? Object.values(article.byLocale)[0];
+  const url = buildLeafUrl(document.locale, UPDATES_SECTION, document.slug);
+  const kind = article.type === "release" ? "release note" : "product news";
+  return `- [${document.title}](${url}): ${kind}, ${article.publishedAt} — ${document.summary}`;
+}
+
+function updatesSection(): string {
+  const articles = getUpdateArticles();
+  if (!articles.length) return "";
+  const section = `${SITE_URL}/en${localizedPathname("en", UPDATES_SECTION)}`;
+  return `\n## Updates\n\nWhat changed in the app, when it changed, and what happens to what a traveller already bought.\n\n- [All updates](${section}): the full record, newest first\n${articles
+    .map(updateLine)
+    .join("\n")}\n`;
+}
+
 export function GET() {
   const body = `# TUGGI
 
@@ -93,6 +122,7 @@ Key facts:
 - [Purpose](${SITE_URL}/en/purpose): Mission and accessibility
 
 ${routesSection()}
+${updatesSection()}
 ## For businesses
 - [Destinations](${SITE_URL}/en/destinations): For cities and tourism boards
 - [Fleets](${SITE_URL}/en/enterprise/fleets): For car-rental and mobility fleets
