@@ -97,6 +97,79 @@ export function buildAlternatesFor(
   };
 }
 
+/* ---------------------------------------------------------------------------
+ * Routes whose LEAF is translated — DS-COMPONENTE-057
+ * -------------------------------------------------------------------------
+ *
+ * Everything above resolves one internal pathname per locale, which is right
+ * while the whole path is declared in the route map. It is WRONG the moment
+ * the last segment varies per language and is not in the map: an editorial
+ * article is `/pt/novidades/passes-por-hora` and `/en/updates/hour-passes`,
+ * and the map only knows the section.
+ *
+ * `localizedPathname("pt", "updates/hour-passes")` answers
+ * `/novidades/hour-passes` — the ancestor translated, the leaf carried through
+ * — which is a URL that 404s, published as the `pt` alternate of every other
+ * locale. It looks right in a quick inspection, which is what makes it the
+ * expensive failure: the four language versions point at each other with the
+ * wrong address and are lost together.
+ *
+ * So the three helpers below take the leaf **per locale**, from whatever
+ * registry knows it (`src/lib/updates.ts` for articles), and never derive one
+ * leaf from another.
+ */
+
+/** Public path of a translated leaf under a declared section. */
+function leafPath(locale: string, sectionPath: string, leaf: string): string {
+  return `/${locale}${localizedPathname(locale, sectionPath)}/${leaf}`;
+}
+
+/** Absolute URL of a translated leaf under a declared section. */
+export function buildLeafUrl(locale: string, sectionPath: string, leaf: string): string {
+  return `${BASE_URL}${leafPath(locale, sectionPath, leaf)}`;
+}
+
+/**
+ * `alternates` for a page whose leaf is translated.
+ *
+ * @param leafByLocale - the registry's answer: the leaf of THIS page in each
+ *                       locale it exists in. A locale absent from the object
+ *                       is absent from hreflang — pointing at a translation
+ *                       that is not there is the same loss, one URL at a time.
+ */
+export function buildAlternatesForLeaf(
+  locale: string,
+  sectionPath: string,
+  leafByLocale: Partial<Record<string, string>>
+) {
+  const languages: Record<string, string> = {};
+  for (const [loc, leaf] of Object.entries(leafByLocale)) {
+    if (leaf) languages[loc] = leafPath(loc, sectionPath, leaf);
+  }
+  const xDefault = languages[routing.defaultLocale] ?? Object.values(languages)[0];
+  if (xDefault) languages["x-default"] = xDefault;
+
+  const own = leafByLocale[locale];
+  return {
+    canonical: own ? leafPath(locale, sectionPath, own) : languages[routing.defaultLocale],
+    languages,
+  };
+}
+
+/** Sitemap flavour of `buildAlternatesForLeaf` — absolute URLs. */
+export function buildSitemapAlternatesForLeaf(
+  sectionPath: string,
+  leafByLocale: Partial<Record<string, string>>
+): Record<string, string> {
+  const languages: Record<string, string> = {};
+  for (const [loc, leaf] of Object.entries(leafByLocale)) {
+    if (leaf) languages[loc] = buildLeafUrl(loc, sectionPath, leaf);
+  }
+  const xDefault = languages[routing.defaultLocale] ?? Object.values(languages)[0];
+  if (xDefault) languages["x-default"] = xDefault;
+  return languages;
+}
+
 /**
  * Sitemap-flavoured variant of `buildAlternatesFor` — absolute URLs, limited to
  * `availableLocales` (+ x-default).

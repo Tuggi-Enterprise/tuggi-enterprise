@@ -88,6 +88,21 @@ const TRANSLATED_ROUTES = {
     es: "/tecnologia",
     it: "/tecnologia",
   },
+  /**
+   * The editorial section — news and release notes (spec §1.1).
+   *
+   * `news` was rejected in `en`: "newsroom" is press office, and the search
+   * intent we want is "Tuggi app what's new". `novità` was rejected in `it`
+   * for its accent — the URL becomes `novit%C3%A0`, which breaks when pasted
+   * into WhatsApp and vanishes from a store screenshot. `blog` was rejected in
+   * all four: it promises cadence and opinion, and this is a product record.
+   */
+  "/updates": {
+    pt: "/novidades",
+    en: "/updates",
+    es: "/novedades",
+    it: "/aggiornamenti",
+  },
 } as const satisfies Record<string, Record<SiteLocale, string>>;
 
 /**
@@ -126,6 +141,29 @@ const proposalPathnames = {
 };
 
 /**
+ * The editorial article (spec §1.2) — one dynamic key, composed.
+ *
+ * The word of the section is NOT retyped here: the entry is built from
+ * `TRANSLATED_ROUTES["/updates"]`, exactly as `proposalPathnames` above builds
+ * the proposal from `/partners`. Renaming the section moves every article with
+ * it, and nobody writes `novidades` twice.
+ *
+ * The `[slug]` is the *public* leaf, and next-intl passes it through
+ * untranslated: `/pt/novidades/passes-por-hora` rewrites to the internal
+ * `/updates/passes-por-hora`, so the page receives the Portuguese slug and
+ * resolves the article from the registry in `src/lib/updates.ts`. That is why
+ * hreflang for an article may NOT be built from this map — `localizedPathname`
+ * translates the ancestor and carries the leaf through unchanged, which would
+ * publish `/pt/novidades/hour-passes`. See DS-COMPONENTE-057 and
+ * `buildAlternatesForLeaf` in src/lib/seo.ts.
+ */
+const updateArticlePathnames = {
+  "/updates/[slug]": Object.fromEntries(
+    LOCALES.map((locale) => [locale, `${TRANSLATED_ROUTES["/updates"][locale]}/[slug]`])
+  ) as Record<SiteLocale, string>,
+};
+
+/**
  * Segment routes, derived — never written by hand.
  *
  * A published segment's internal pathname (`/partners/car-rental`) matches the
@@ -153,6 +191,7 @@ export const pathnames = {
   ...sharedSlugPathnames,
   ...TRANSLATED_ROUTES,
   ...proposalPathnames,
+  ...updateArticlePathnames,
   ...buildSegmentPathnames(SEGMENTS),
 } satisfies Record<string, PathnameEntry>;
 
