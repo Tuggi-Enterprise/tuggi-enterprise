@@ -905,6 +905,12 @@ const FORBIDDEN_CLAIMS: ForbiddenClaim[] = [
 interface Waiver {
   /** Message keys, or key prefixes: "Legal.Terms" waives that whole namespace. */
   keys: string[];
+  /**
+   * Editorial articles, by directory id under `src/content/updates`. A second
+   * kind of subject for the same reason: since 2026-08-30 not every published
+   * string of this site is a message, and an article has no key to name.
+   */
+  articles?: string[];
   why: string;
 }
 
@@ -1005,6 +1011,19 @@ const CLAIM_FAMILIES: ClaimFamily[] = [
           "The rest of the namespace is scanned like everything else.",
       },
       {
+        keys: [],
+        articles: ["hour-passes"],
+        why:
+          "Two absolutes, and a rule sits behind each. \"As horas não expiram\" / " +
+          '"never expire" is BR-MONETIZACAO-050, the same fact the Metadata.drive* ' +
+          "waiver above covers, arriving from the editorial section instead of a " +
+          "message key. \"Ler o nome e a descrição de qualquer ponto é sempre livre\" / " +
+          '"always free" is BR-MONETIZACAO-056, which states exactly that: reading a ' +
+          "POI's name and description is free in any state of the account. An absolute " +
+          "with a rule behind it is what this family says it does not ban, and the " +
+          "rest of the piece is scanned like everything else.",
+      },
+      {
         keys: ["NotFound.subtitle"],
         why:
           "404 copy about the traveller's freedom to go anywhere, not a capability " +
@@ -1086,6 +1105,10 @@ const CLAIM_FAMILIES: ClaimFamily[] = [
           // Italian "L'acquisto si fa dentro l'app" the single note carried.
           "Drive.Pricing.storeNoteWithPrice",
           "Drive.Pricing.storeNoteNoPrice",
+          // The nature-of-charge note of the article's price table, added
+          // 2026-08-30: the Italian opens "Acquisto una tantum", the same word
+          // for the same money flow as the five keys above.
+          "Updates.priceTable.note",
         ],
         why:
           'The Italian "Acquista 10 ore nell\'app" is the *traveller* buying a pass ' +
@@ -1412,6 +1435,39 @@ function waivedStrings(family: ClaimFamily): string[] {
   return out.sort((a, b) => b.length - a.length);
 }
 
+/* ---------------------------------------------------------------------------
+ * Editorial content — the published prose that is not i18n.
+ *
+ * Until 2026-08-30 the scan above read every string this site publishes,
+ * because every string was a message. `/updates` broke that: an article is MDX,
+ * it reaches a reader and it reaches `/llms.txt`, and no sweep here would have
+ * seen the seventh article promising something a rule forbids. It is the same
+ * hole `hour-catalogue.spec.ts` closed for the catalogue vocabulary, closed
+ * here for the claim families — with the same hinge, a dispensation that is
+ * declared and carries a reason.
+ * ------------------------------------------------------------------------- */
+
+const CONTENT_DIR = path.join(SRC, "content/updates");
+
+/** One article in one locale: the id, and everything a reader reads of it. */
+function editorialArticles(locale: string): { id: string; text: string; summary: string }[] {
+  if (!fs.existsSync(CONTENT_DIR)) return [];
+  return fs
+    .readdirSync(CONTENT_DIR)
+    .filter((id) => fs.statSync(path.join(CONTENT_DIR, id)).isDirectory())
+    .flatMap((id) => {
+      const file = path.join(CONTENT_DIR, id, `${locale}.mdx`);
+      if (!fs.existsSync(file)) return [];
+      const raw = fs.readFileSync(file, "utf8");
+      const summary = /^summary:\s*"?(.*?)"?\s*$/m.exec(raw)?.[1] ?? "";
+      return [{ id, text: raw, summary }];
+    });
+}
+
+function isWaivedArticle(family: ClaimFamily, id: string): Waiver | undefined {
+  return family.waivers.find((waiver) => waiver.articles?.includes(id));
+}
+
 function familyHits(family: ClaimFamily, text: string): string[] {
   // An ICU placeholder NAME is not a word anybody reads: `"Passo {current} de
   // {total}"` renders as "Passo 1 de 4", and matching `\btotal\b` inside the
@@ -1635,10 +1691,33 @@ test.describe("Claim families — a decided class does not come back in new word
       }
     }
 
+    for (const locale of LOCALES) {
+      test(`family "${family.id}" is absent from the ${locale} editorial content`, () => {
+        const offenders: string[] = [];
+        for (const article of editorialArticles(locale)) {
+          if (isWaivedArticle(family, article.id)) continue;
+          for (const hit of familyHits(family, article.text)) {
+            offenders.push(`${article.id}/${locale}.mdx — "${hit}"`);
+          }
+        }
+        expect(offenders, family.rule).toEqual([]);
+      });
+    }
+
     test(`family "${family.id}" is absent from /llms.txt`, async ({ request }) => {
       const response = await request.get("/llms.txt");
       expect(response.status()).toBe(200);
-      expect(familyHits(family, await response.text()), family.rule).toEqual([]);
+
+      // `/llms.txt` is English and carries one line per article, built from the
+      // title and the summary. Subtract the articles this family already waived
+      // above, so the reason lives in one place — the same subtraction the
+      // rendered-page scan does for waived message keys.
+      let text = await response.text();
+      for (const article of editorialArticles("en")) {
+        if (!isWaivedArticle(family, article.id) || !article.summary) continue;
+        text = text.split(article.summary).join(" ");
+      }
+      expect(familyHits(family, text), family.rule).toEqual([]);
     });
   }
 
@@ -1651,9 +1730,21 @@ test.describe("Claim families — a decided class does not come back in new word
       for (const waiver of family.waivers) {
         expect(waiver.why.trim().length, `${family.id}: waiver with no reason`)
           .toBeGreaterThan(40);
+        expect(
+          waiver.keys.length + (waiver.articles?.length ?? 0),
+          `${family.id}: waiver that names no subject`
+        ).toBeGreaterThan(0);
         for (const key of waiver.keys) {
           const exists = known.has(key) || [...known].some((k) => k.startsWith(`${key}.`));
           expect(exists, `${family.id}: waiver for "${key}", which no longer exists`).toBe(true);
+        }
+        // A waived article that was renamed or unpublished takes its
+        // dispensation with it, for the same reason a waived key does.
+        for (const id of waiver.articles ?? []) {
+          expect(
+            fs.existsSync(path.join(CONTENT_DIR, id)),
+            `${family.id}: waiver for the article "${id}", which no longer exists`
+          ).toBe(true);
         }
       }
     }
