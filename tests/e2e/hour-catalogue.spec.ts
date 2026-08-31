@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { publishedText } from "./support/published-text";
 import { localizedPathname } from "../../src/i18n/pathnames";
+import { parseEditorialDocument } from "../../src/lib/editorial-mdx";
 
 /**
  * BR-MONETIZACAO-048 — the paid catalogue is three passes of hours (10, 25, 45),
@@ -549,4 +550,126 @@ test.describe("WCAG 2.2 SC 1.4.10 — the headline reflows whole", () => {
       );
     });
   }
+});
+
+/* ---------------------------------------------------------------------------
+ * 6. The editorial content — DS-COPY-048, and the dispensation it declares
+ * ------------------------------------------------------------------------- */
+
+/**
+ * The guards above sweep `src/messages/*.json`, and until 2026-08-30 that was
+ * every public string of the site. It no longer is: the editorial section of
+ * `/updates` publishes prose from `src/content/updates/**\/*.mdx`, which is not
+ * i18n and which this sweep did not reach.
+ *
+ * That absence produced two defects at once, and they pull in opposite
+ * directions:
+ *
+ *   1. **A hole.** Article #7, written in a hurry a year from now, can sell a
+ *      "7-day pass" and nothing goes red.
+ *   2. **A false positive waiting to happen.** Article #1 *has* to name the
+ *      day-priced model in order to explain that it ended. Extending the sweep
+ *      without a way out reproves the piece for telling the truth.
+ *
+ * The way out is the shape `DS-COPY-016` already fixed and `DS-COPY-048` now
+ * states: **the guard separates offering from mentioning by declaration, never
+ * by counting.** The frontmatter carries `waiver: [{ rule, reason }]`, per
+ * file. A waiver with no reason is refused by the parser (it breaks the build);
+ * a waiver that matches nothing in its own file is refused here, which is the
+ * same hinge `no-hardcoded-copy.spec.ts` uses to stop a dispensation from
+ * outliving the string that justified it.
+ *
+ * **`PRICE` has no dispensation.** A price on this site is born in
+ * `src/lib/pricing.ts`, under BR-MONETIZACAO-069, and no article has a reason
+ * to type one — the article reads `<ArticlePriceTable>`, which asks
+ * `resolvePricing`.
+ */
+const CONTENT_DIR = path.join(REPO_ROOT, "src/content/updates");
+
+/** The rules an article may declare a dispensation from, and the ruler of each. */
+const CONTENT_RULES: { rule: string; ruler: RegExp; waivable: boolean }[] = [
+  { rule: "ACCESS_IN_DAYS", ruler: ACCESS_IN_DAYS, waivable: true },
+  { rule: "ANNUAL_PRODUCT", ruler: ANNUAL_PRODUCT, waivable: true },
+  { rule: "PLAN_WORD", ruler: PLAN_WORD, waivable: true },
+  { rule: "PRICE", ruler: PRICE, waivable: false },
+];
+
+function editorialFiles(): { file: string; raw: string }[] {
+  if (!fs.existsSync(CONTENT_DIR)) return [];
+  return fs.readdirSync(CONTENT_DIR).flatMap((id) => {
+    const dir = path.join(CONTENT_DIR, id);
+    if (!fs.statSync(dir).isDirectory()) return [];
+    return fs
+      .readdirSync(dir)
+      .filter((name) => name.endsWith(".mdx"))
+      .map((name) => ({
+        file: path.relative(REPO_ROOT, path.join(dir, name)),
+        raw: fs.readFileSync(path.join(dir, name), "utf8"),
+      }));
+  });
+}
+
+/** The rules a file declares a dispensation from. */
+function waivedRules(raw: string, file: string): string[] {
+  const declared = parseEditorialDocument(raw, file).frontmatter.waiver;
+  if (!Array.isArray(declared)) return [];
+  return (declared as { rule?: string }[]).map((entry) => entry.rule ?? "");
+}
+
+test.describe("DS-COPY-048 — the catalogue guard reaches the editorial content", () => {
+  test("DS-COPY-048: there is editorial content to sweep", () => {
+    // A sweep over an empty directory is green and says nothing. If the section
+    // is ever emptied this goes red and whoever emptied it decides on purpose.
+    expect(editorialFiles().length).toBeGreaterThan(0);
+  });
+
+  for (const { rule, ruler, waivable } of CONTENT_RULES) {
+    test(`BR-MONETIZACAO-062 / 061 / 069: no .mdx trips ${rule} without declaring it`, () => {
+      const offenders: string[] = [];
+
+      for (const { file, raw } of editorialFiles()) {
+        if (waivable && waivedRules(raw, file).includes(rule)) continue;
+        raw.split("\n").forEach((line, index) => {
+          if (ruler.test(line)) offenders.push(`${file}:${index + 1}: ${line.trim()}`);
+        });
+      }
+
+      expect(
+        offenders,
+        waivable
+          ? `An article that has to NAME the product may declare \`waiver: [{ rule: ${rule}, reason: … }]\` ` +
+              "in its frontmatter. One that is OFFERING it may not — the difference is the declaration, " +
+              "not the frequency (DS-COPY-048)."
+          : "A price typed into an article is a number the price table does not know about: it survives " +
+              "a market it does not belong to and is never formatted by Intl. The amounts come from " +
+              "src/lib/pricing.ts and only there (BR-MONETIZACAO-069).",
+      ).toEqual([]);
+    });
+  }
+
+  test("DS-COPY-048: a dispensation that matches nothing in its own file is stale", () => {
+    // The other direction, and the one that rots quietly: the sentence that
+    // justified the waiver is rewritten, the waiver stays, and the next article
+    // inherits a hole nobody granted.
+    const stale: string[] = [];
+
+    for (const { file, raw } of editorialFiles()) {
+      for (const rule of waivedRules(raw, file)) {
+        const known = CONTENT_RULES.find((candidate) => candidate.rule === rule);
+        if (!known) {
+          stale.push(`${file}: waives "${rule}", which is not a rule this guard has`);
+          continue;
+        }
+        if (!known.waivable) {
+          stale.push(`${file}: waives ${rule}, which has no dispensation`);
+          continue;
+        }
+        if (!known.ruler.test(raw)) {
+          stale.push(`${file}: waives ${rule} and no line in the file trips it`);
+        }
+      }
+    }
+
+    expect(stale).toEqual([]);
+  });
 });

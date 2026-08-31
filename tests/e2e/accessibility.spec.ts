@@ -175,6 +175,11 @@ const AUDITED_PAGES = [
   "/contact",
   "/tours",
   "/trust-center/accessibility",
+  // The editorial listing joined with the section of 2026-08-30. Its article
+  // cannot join this list: the leaf is translated per locale, and `localeUrl`
+  // resolves the ancestor only. The same three assertions run over the article
+  // in tests/e2e/updates-section.spec.ts (DS-A11Y-011).
+  "/updates",
 ] as const;
 
 test.describe("Coverage map keyboard operability (SC 2.4.7, 2.4.3, 4.1.2)", () => {
