@@ -85,6 +85,30 @@ function articleUrl(document: UpdateDocument): string {
   return `${sectionUrl(document.locale)}/${document.slug}`;
 }
 
+/**
+ * The article that declares a given block — the anchor of every block test.
+ *
+ * NOT `listUpdates(locale)[0]`. That reads "the newest piece", which is a
+ * property of the publication calendar and of the slug that breaks the tie; it
+ * stood in for "the piece with the blocks" only while the section held one
+ * article. The second piece, published on the same day, sorted ahead of the
+ * first, and five block assertions went red at once for a reason that had
+ * nothing to do with the block set. The anchor is the declaration, which is
+ * what each of those tests is about.
+ */
+function articleDeclaring(locale: string, name: AuthorableBlock): UpdateDocument {
+  const found = listUpdates(locale as UpdateDocument["locale"]).find((document) =>
+    document.blocks.some((block) => block.kind === "component" && block.name === name)
+  );
+  if (!found) {
+    throw new Error(
+      `no ${locale} article declares <${name}>, so this test has nothing to stand on — ` +
+        "delete it, or point it at a piece that carries the block"
+    );
+  }
+  return found;
+}
+
 /** Every `.mdx` of the section, with its path relative to the repo root. */
 function contentFiles(): { file: string; raw: string }[] {
   if (!fs.existsSync(CONTENT_DIR)) return [];
@@ -605,7 +629,13 @@ test.describe("DS-LAYOUT-012 — the reading column has a measured ceiling", () 
       page,
     }) => {
       await page.setViewportSize({ width, height: 1000 });
-      const document = listUpdates(DEFAULT_LOCALE)[0];
+
+      // Every piece, not the newest one: the measure is a property of the
+      // template, and which piece sorts first is decided by the calendar and by
+      // the slug that breaks the tie. Article #2 declares no block, so its wide
+      // column is the generated cover alone — the case that proves the ceiling
+      // holds with nothing but the template inside it.
+      for (const document of listUpdates(DEFAULT_LOCALE)) {
       await page.goto(articleUrl(document));
 
       // 576 px ÷ 8,06 px (the mean glyph of this copy at Inter 16/28) is 71
@@ -635,6 +665,7 @@ test.describe("DS-LAYOUT-012 — the reading column has a measured ceiling", () 
           768
         );
       }
+      }
     });
   }
 });
@@ -660,25 +691,35 @@ test.describe("DS-COMPONENTE-054 / 055 — the closed block set", () => {
     // image for this piece, and an attributed quotation has no source), not an
     // omission to fix. Written this way the assertion survives that decision
     // AND still goes red if a block is declared and never painted.
-    const document = listUpdates(DEFAULT_LOCALE)[0];
-    await page.goto(articleUrl(document));
+    //
+    // Every piece of the section, because the other half of the assertion —
+    // nothing is painted that was NOT declared — can only be proved by a piece
+    // that declares nothing, and article #2 is one.
+    let declaredInSection = 0;
 
-    const declared = document.blocks.filter((block) => block.kind === "component");
-    for (const name of AUTHORABLE_BLOCKS) {
-      const expected = declared.filter((block) => block.name === name).length;
-      const selector = `article [data-block="${blockAttribute(name)}"]`;
-      await expect(page.locator(selector), `${name} declared ${expected}×`).toHaveCount(expected);
+    for (const document of listUpdates(DEFAULT_LOCALE)) {
+      await page.goto(articleUrl(document));
+
+      const declared = document.blocks.filter((block) => block.kind === "component");
+      declaredInSection += declared.length;
+      for (const name of AUTHORABLE_BLOCKS) {
+        const expected = declared.filter((block) => block.name === name).length;
+        const selector = `article [data-block="${blockAttribute(name)}"]`;
+        await expect(
+          page.locator(selector),
+          `${document.slug}: ${name} declared ${expected}×`
+        ).toHaveCount(expected);
+      }
     }
 
-    // At least one block, or this test proves nothing about rendering.
-    expect(declared.length, "the piece declares no block at all").toBeGreaterThan(0);
+    // At least one block somewhere, or this test proves nothing about rendering.
+    expect(declaredInSection, "no piece of the section declares a block at all").toBeGreaterThan(0);
   });
 
   test("DS-COMPONENTE-055: before/after is one table with a caption and two column headers", async ({
     page,
   }) => {
-    const document = listUpdates(DEFAULT_LOCALE)[0];
-    await page.goto(articleUrl(document));
+    await page.goto(articleUrl(articleDeclaring(DEFAULT_LOCALE, "ArticleChangeTable")));
 
     const table = page.locator("article table").first();
     await expect(table.locator("caption")).toHaveCount(1);
@@ -690,8 +731,7 @@ test.describe("DS-COMPONENTE-054 / 055 — the closed block set", () => {
     // `display: block` "responsive table" delivers exactly that and drops the
     // header association on the way, so the table stays a table at every width.
     await page.setViewportSize({ width: 360, height: 900 });
-    const document = listUpdates(DEFAULT_LOCALE)[0];
-    await page.goto(articleUrl(document));
+    await page.goto(articleUrl(articleDeclaring(DEFAULT_LOCALE, "ArticleChangeTable")));
 
     const row = page.locator("article table tbody tr").first();
     const boxes = await row
@@ -705,22 +745,52 @@ test.describe("DS-COMPONENTE-054 / 055 — the closed block set", () => {
     ).toBeLessThan(4);
   });
 
-  test("DS-COMPONENTE-058: the end of an article has one CTA and a pager", async ({ page }) => {
-    const document = listUpdates(DEFAULT_LOCALE)[0];
-    await page.goto(articleUrl(document));
+  for (const locale of LOCALES) {
+    test(`DS-COMPONENTE-058: on ${locale} every article ends with one CTA and the pager its neighbours ask for`, async ({
+      page,
+    }) => {
+      const listing = listUpdates(locale);
+      expect(listing.length, `${locale} publishes nothing to page through`).toBeGreaterThan(0);
 
-    // One store CTA, and it is the one the site already publishes. No
-    // newsletter, no "follow us", and no third-party share widget — a share
-    // script would enter the AttributionGateProvider and the CookieBanner this
-    // site already operates, and would cost weight on a phone.
-    const storeCta = page.locator('article a[href="/d/tuggi"], article a[href^="https://apps.apple"]');
-    await expect(storeCta).toHaveCount(1);
+      for (const document of listing) {
+        await page.goto(articleUrl(document));
 
-    // With one article the pager has no neighbour and renders nothing, which is
-    // the correct answer — `pagerFor` is proved below on a list that has them.
-    const { previous, next } = pagerFor(listUpdates(DEFAULT_LOCALE), document.slug);
-    await expect(page.locator("article nav")).toHaveCount(previous || next ? 1 : 0);
-  });
+        // One store CTA, and it is the one the site already publishes. No
+        // newsletter, no "follow us", and no third-party share widget — a share
+        // script would enter the AttributionGateProvider and the CookieBanner
+        // this site already operates, and would cost weight on a phone.
+        const storeCta = page.locator(
+          'article a[href="/d/tuggi"], article a[href^="https://apps.apple"]'
+        );
+        await expect(storeCta, `${document.slug} does not end in one CTA`).toHaveCount(1);
+
+        // The pager renders the neighbours the listing actually has: nothing at
+        // all while the section holds one piece, one side while it holds two,
+        // both sides from the third on. Until 2026-08-30 the section held one
+        // article and this could only prove the empty case.
+        const { previous, next } = pagerFor(listing, document.slug);
+        const nav = page.locator("article nav");
+        await expect(nav, `${document.slug} pages to nowhere`).toHaveCount(
+          previous || next ? 1 : 0
+        );
+        if (!previous && !next) continue;
+
+        const neighbours = [previous, next].filter(
+          (neighbour): neighbour is UpdateDocument => Boolean(neighbour)
+        );
+        await expect(nav.locator("a")).toHaveCount(neighbours.length);
+        for (const neighbour of neighbours) {
+          // Its own locale's leaf, and the neighbour's title spelled out. A
+          // pager link that crossed languages would publish the 404 of
+          // DS-COMPONENTE-057 from inside the article, and one labelled by an
+          // arrow alone makes the reader open a page to find out what it is.
+          const link = nav.locator(`a[href="${articleUrl(neighbour)}"]`);
+          await expect(link, `${document.slug} does not link ${neighbour.slug}`).toHaveCount(1);
+          await expect(link).toContainText(neighbour.title);
+        }
+      }
+    });
+  }
 
   test("DS-COMPONENTE-058: the pager is previous-older / next-newer", () => {
     const listing = [
@@ -793,8 +863,7 @@ test.describe("BR-MONETIZACAO-069 — the article reads the price table, it neve
     page,
   }) => {
     await geoAnswers(page, "MX");
-    const document = listUpdates(DEFAULT_LOCALE)[0];
-    await page.goto(articleUrl(document));
+    await page.goto(articleUrl(articleDeclaring(DEFAULT_LOCALE, "ArticlePriceTable")));
 
     const block = page.locator('[data-block="article-price-table"]');
     await expect(block).toHaveCount(1);
@@ -811,8 +880,7 @@ test.describe("BR-MONETIZACAO-069 — the article reads the price table, it neve
     page,
   }) => {
     await geoAnswers(page, "BR");
-    const document = listUpdates(DEFAULT_LOCALE)[0];
-    await page.goto(articleUrl(document));
+    await page.goto(articleUrl(articleDeclaring(DEFAULT_LOCALE, "ArticlePriceTable")));
 
     const block = page.locator('[data-block="article-price-table"]');
     // Written out here independently of `src/lib/pricing.ts`, so changing a
@@ -827,8 +895,7 @@ test.describe("BR-MONETIZACAO-069 — the article reads the price table, it neve
     page,
   }) => {
     await geoAnswers(page, null);
-    const document = listUpdates(DEFAULT_LOCALE)[0];
-    await page.goto(articleUrl(document));
+    await page.goto(articleUrl(articleDeclaring(DEFAULT_LOCALE, "ArticlePriceTable")));
 
     const text = await page.locator('[data-block="article-price-table"]').innerText();
     expect(text, '"I do not know where you are" published an offer').not.toMatch(PRICE_IN_PROSE);
