@@ -21,7 +21,7 @@ import { join } from "node:path";
 import { getTranslations } from "next-intl/server";
 import type { SiteLocale } from "@/i18n/locales";
 import { findUpdate, formatUpdateDate, listUpdates } from "@/lib/updates";
-import { buildCoverTrace } from "@/lib/updateCover";
+import { COVER_VIEWBOX, buildCoverTrace } from "@/lib/updateCover";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
@@ -45,6 +45,15 @@ const LOCKUP = await readFile(
 /** Fixed height, automatic width: the lockup is 3.06:1 and is never stretched
  *  (`DS-MARCA-007` item 1). Satori reads the intrinsic ratio from the buffer. */
 const LOCKUP_HEIGHT = 40;
+
+/** The horizontal strip the decorative trace may occupy: below the lockup
+ *  (`64` of padding + its height) and above the eyebrow of the text block. */
+const TRACE_BAND = { top: 150, height: 320 } as const;
+
+/** A `y` of the 630-tall trace space, placed inside the band. */
+function bandY(y: number): number {
+  return TRACE_BAND.top + (y * TRACE_BAND.height) / COVER_VIEWBOX.height;
+}
 
 export default async function Image({
   params,
@@ -87,25 +96,42 @@ export default async function Image({
         }}
       >
         {/* The route/line metaphor, drawn behind the words. Decorative, and it
-            carries no text — the title below is the only text on the card. */}
+            carries no text — the title below is the only text on the card.
+
+            **It is confined to the middle band, and that is not taste.** The
+            trace is seeded by the slug, so its shape is whatever the next slug
+            hashes to: at full height it ran through the lockup on `hour-passes`
+            and touched the eyebrow on `pases-por-hora` — measured on the four
+            cards of article #1, 2026-08-30. A card whose decoration crosses the
+            brand is one the next slug decides, not the designer. The band
+            starts under the lockup (64 + 40 px) and ends above the eyebrow, and
+            `preserveAspectRatio="none"` squashes the same curve into it rather
+            than cropping it: the card and the hero stay the same drawing. */}
         <svg
           width={1200}
           height={630}
           viewBox="0 0 1200 630"
           style={{ position: "absolute", top: 0, left: 0, opacity: 0.28 }}
         >
-          <path
-            d={trace.d}
-            fill="none"
-            stroke="#00a8e8"
-            strokeWidth={6}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <circle cx={trace.start[0]} cy={trace.start[1]} r={14} fill="#00a8e8" />
+          {/* The path is squeezed into the band; the two dots are drawn in the
+              card's own space at the same mapped position, so they stay round.
+              Scaling them with the path turns them into ovals — the shape the
+              brand manual draws is a circle, and a flattened one reads as a
+              rendering artefact, which is what it would be. */}
+          <g transform={`translate(0 ${TRACE_BAND.top}) scale(1 ${TRACE_BAND.height / COVER_VIEWBOX.height})`}>
+            <path
+              d={trace.d}
+              fill="none"
+              stroke="#00a8e8"
+              strokeWidth={6}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </g>
+          <circle cx={trace.start[0]} cy={bandY(trace.start[1])} r={14} fill="#00a8e8" />
           <circle
             cx={trace.end[0]}
-            cy={trace.end[1]}
+            cy={bandY(trace.end[1])}
             r={13}
             fill="#0b1220"
             stroke="#00a8e8"
