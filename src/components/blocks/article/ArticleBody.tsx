@@ -1,6 +1,6 @@
 import { Fragment, type ReactNode } from "react";
 import Link from "next/link";
-import type { AuthorableBlock, Block, Inline } from "@/lib/editorial-mdx";
+import type { Block, Inline } from "@/lib/editorial-mdx";
 import { parseInline } from "@/lib/editorial-mdx";
 import { ArticleChangeTable } from "@/components/blocks/article/ArticleChangeTable";
 import { ArticleFigure } from "@/components/blocks/article/ArticleFigure";
@@ -12,24 +12,30 @@ import { ArticleQuote } from "@/components/blocks/article/ArticleQuote";
  * The body of an article, rendered from the tree the parser produced.
  *
  * ---------------------------------------------------------------------------
- * The two columns — `DS-LAYOUT-012`
+ * One column, 640 px — `DS-LAYOUT-012`
  * ---------------------------------------------------------------------------
  *
- * Running text is capped at **576 px** and a figure, a table or a quotation at
- * **768 px**, on the same axis: a figure breathes, text does not stretch.
+ * Prose and object share a single cap. The article used to have two, 576 px of
+ * text and 768 px of object, and the second one was the defect the operator
+ * reported on 2026-08-31: the cover announced a width of 768 px and every
+ * paragraph under it broke at 576, a 192 px step that reads as a broken page
+ * rather than as an object breathing. The wide column is a CEILING in the rule,
+ * never an obligation, and nothing this section publishes needs it — the cover
+ * is a generated ornament and the two tables carry two short columns each.
  *
- * **The criterion of the column is "is this read line by line?", not "is this a
- * component?".** Routing by block kind is what published `ArticleNotice` — a
- * paragraph of prose in a box — at 768 px and 101 characters a line in Italian,
- * worse than the 102 of the legal pages that made this rule exist. A component
- * is a shape, not a genre: three of the five carry prose. `PROSE_COMPONENTS`
- * below is that decision written down, so the next block declares which column
- * it belongs to instead of inheriting one from its kind.
+ * With one column the old routing question — "is this block read line by line
+ * or not?" — has no consequence left, so the `PROSE_COMPONENTS` set that
+ * answered it is gone rather than kept as a switch with one position. The
+ * defect it existed to prevent (`ArticleNotice`, a paragraph of prose in a box,
+ * published at 768 px and 101 characters a line in Italian) cannot come back
+ * while there is a single width to inherit.
  *
- * **The body is 18/32 — `prose-lg`, not the `prose` base of 16/28.** Nobody had
- * chosen 16: it is the default of `@tailwindcss/typography` 0.5.19. The measure
- * is the quotient of the two, so the width alone never decided anything — the
- * same 576 px carries 77 characters at 16 px and 66 at 18 px.
+ * **The body is 20/34 — `prose-xl` from `md` up, `prose-lg` below it.** Nobody
+ * had chosen the 16/28 this started from: it is the default of
+ * `@tailwindcss/typography` 0.5.19. The measure is the quotient of width and
+ * size, so the width alone never decided anything — the same 576 px carries 77
+ * characters at 16 px and 66 at 18 px, and 640 px at 20 px carries exactly what
+ * 576 px at 18 px did.
  *
  * The cap sits on the **wrapper**, not on the `prose` element, and that is not
  * a style choice. `@tailwindcss/typography` sets `max-width: 65ch` on `.prose`
@@ -57,18 +63,21 @@ import { ArticleQuote } from "@/components/blocks/article/ArticleQuote";
  * template renders — never a wider line.
  */
 
-const TEXT_COLUMN = "max-w-xl";
-const FIGURE_COLUMN = "max-w-3xl";
-
 /**
- * The declared blocks that are **read line by line** and therefore belong to
- * the text column — `DS-LAYOUT-012`, part 2. Everything else is an object
- * (image, table, pulled quotation) and the wide column is the objects'.
+ * The reading column — `DS-LAYOUT-012`. ONE column, and one constant: prose and
+ * object share it. The cap and the body size are a single decision, because the
+ * measure is their quotient — 640 px at 20 px is the same **32,0 em** the pair
+ * 576/18 gave, and the characters per line are a property of the font, not of
+ * the size. Measured on the four locales: identical to thirteen decimal places.
+ *
+ * Below `md` the viewport is narrower than either cap and the pair goes back to
+ * 576/18, so a window between 688 px and 768 px can never land on 640 px of
+ * 18 px type, which would be 35,6 em.
  */
-const PROSE_COMPONENTS = new Set<AuthorableBlock>(["ArticleNotice"]);
+const READING_COLUMN = "max-w-xl md:max-w-[40rem]";
 
 const PROSE =
-  "prose prose-lg prose-slate prose-headings:text-tuggi-dark prose-headings:font-black prose-p:text-tuggi-slate prose-li:text-tuggi-slate prose-strong:text-tuggi-dark prose-a:text-tuggi-primary-text prose-a:font-semibold";
+  "prose prose-lg md:prose-xl prose-slate prose-headings:text-tuggi-dark prose-headings:font-black prose-p:text-tuggi-slate prose-li:text-tuggi-slate prose-strong:text-tuggi-dark prose-a:text-tuggi-primary-text prose-a:font-semibold";
 
 function renderInline(nodes: Inline[], keyPrefix: string): ReactNode {
   return nodes.map((node, index) => {
@@ -184,7 +193,7 @@ export function ArticleBody({ blocks }: { blocks: Block[] }) {
     if (!run.length) return;
     const start = out.length;
     out.push(
-      <div key={`text-${start}`} className={TEXT_COLUMN}>
+      <div key={`text-${start}`} className={READING_COLUMN}>
         <div className={PROSE}>
           {run.map((block, index) => renderTextBlock(block, `text-${start}-${index}`))}
         </div>
@@ -197,10 +206,7 @@ export function ArticleBody({ blocks }: { blocks: Block[] }) {
     if (block.kind === "component") {
       flush();
       out.push(
-        <div
-          key={`block-${out.length}`}
-          className={PROSE_COMPONENTS.has(block.name) ? TEXT_COLUMN : FIGURE_COLUMN}
-        >
+        <div key={`block-${out.length}`} className={READING_COLUMN}>
           {renderComponent(block, `block-${out.length}`)}
         </div>
       );

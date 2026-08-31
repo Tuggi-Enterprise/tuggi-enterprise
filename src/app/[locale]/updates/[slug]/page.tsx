@@ -158,12 +158,20 @@ export default async function UpdateArticlePage({
           `<main id="main-content">`, and a second landmark of the same role
           inside it is the defect trust-center/layout.tsx corrected. */}
       {/* Two columns from 1280 px up — `DS-LAYOUT-013`.
-          The reading column is 768 px wide at most and anchored on the content
-          edge of `.page-shell`, and the 368 px that remain carry a rail of
-          internal navigation — never a second offer. `minmax(0, 768px)` and not
-          `768px`: a plain track floors the grid at 768 and the row overflows the
+          The reading column is 640 px wide at most and anchored on the content
+          edge of `.page-shell`, and the 496 px that remain carry a rail of
+          internal navigation — never a second offer. `minmax(0, 40rem)` and not
+          `40rem`: a plain track floors the grid at 640 and the row overflows the
           rail on a narrow screen, which is the horizontal scroll SC 1.4.10
           refuses.
+
+          The track was 768 px until 2026-08-31, because the objects had a
+          column of their own. Collapsing the two columns into one is what
+          closed the hole the operator reported: with a 768 px track and 576 px
+          of prose, 208 px of the track were dead on every paragraph row and the
+          gutter to the rail read as a void instead of a gutter. Now the two
+          columns touch across 80 px, and 640 + 80 + 496 is the 1216 of the
+          shell.
 
           The rail is `row-span-2` AND `self-start`, and the pair is what makes
           `sticky` work without inflating the box: the sticky constraint
@@ -178,15 +186,15 @@ export default async function UpdateArticlePage({
           the top right and is still read after the article, which is what
           SC 1.3.2 asks; reordering the DOM to match the screen is the defect,
           not the fix. */}
-      <article className="xl:grid xl:grid-cols-[minmax(0,768px)_1fr] xl:gap-x-20">
+      <article className="xl:grid xl:grid-cols-[minmax(0,40rem)_1fr] xl:gap-x-20">
         <div className="xl:col-start-1 xl:row-start-1">
           {/* The header is text — link back, badge, date, `h1` and dek — and it
-              reads in the TEXT column, `DS-LAYOUT-012`. The cover is an object
-              and stays in the figure column, so it is a sibling of the header
-              rather than its last child. No negative margin to fake the bleed:
-              it breaks below a 768 px viewport. Order in the DOM and position
-              on screen are the ones the reader already sees. */}
-          <header className="max-w-xl">
+              reads in the TEXT column, `DS-LAYOUT-012`. The cover is a sibling
+              of the header rather than its last child, so the two never share a
+              cap by accident. No negative margin anywhere: a faked bleed breaks
+              below a 768 px viewport. Order in the DOM and position on screen
+              are the ones the reader already sees. */}
+          <header className="max-w-xl md:max-w-[40rem]">
             {/* One link back, with the name of the section. Not a `Home ›`
                 breadcrumb: the site has none anywhere, and a two-level trail is
                 noise (§5.1). */}
@@ -215,15 +223,24 @@ export default async function UpdateArticlePage({
             {/* The dek is the SAME string the card carried: a summary that
                 differs from the one the reader clicked is a promise broken in
                 two clicks (§5.1). */}
-            <p className="mt-4 text-lg leading-relaxed text-tuggi-slate">{article.summary}</p>
+            <p className="mt-4 text-lg md:text-xl leading-relaxed text-tuggi-slate">{article.summary}</p>
           </header>
 
-          <figure className="max-w-3xl mt-8">
+          {/* The cover shares the reading column, and that is the correction of
+              2026-08-31. It used to bleed to 768 px while the prose ran at 576:
+              the first object of the page announced a width the text then did
+              not keep, and the step read as a broken page rather than as an
+              object breathing. `DS-LAYOUT-012` caps the object column, it does
+              not oblige an object to fill it — and the cover is a generated
+              ornament, not a figure the reader studies. The two tables still
+              take the wide column, twice, deep in the piece, where a breakout
+              reads as emphasis. */}
+          <figure className="max-w-xl md:max-w-[40rem] mt-8">
             <UpdateCover
               cover={article.cover}
               coverAlt={article.coverAlt}
               slug={article.slug}
-              sizes="(min-width: 768px) 768px, 100vw"
+              sizes="(min-width: 768px) 640px, 100vw"
               priority
             />
           </figure>
@@ -256,7 +273,7 @@ export default async function UpdateArticlePage({
               No number enters this card. The welcome grant is BR-MONETIZACAO-058
               and it has one owner; a figure typed here is a second declaration
               of it that nothing keeps in step. */}
-          <div className="mt-16 max-w-3xl rounded-3xl border border-gray-100 bg-tuggi-bg p-8 text-center">
+          <div className="mt-16 max-w-xl md:max-w-[40rem] rounded-3xl border border-gray-100 bg-tuggi-bg p-8 text-center">
             <p className="max-w-lg mx-auto text-base leading-relaxed text-tuggi-slate">
               {t("cta.body")}
             </p>
@@ -319,7 +336,7 @@ export default async function UpdateArticlePage({
           </ul>
         </nav>
 
-        <div className="max-w-3xl xl:col-start-1 xl:row-start-2">
+        <div className="max-w-xl md:max-w-[40rem] xl:col-start-1 xl:row-start-2">
           <ArticlePager previous={toLink(previous)} next={toLink(next)} />
         </div>
       </article>

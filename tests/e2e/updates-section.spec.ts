@@ -671,8 +671,16 @@ const RUNNING_TEXT: { label: string; selector: string }[] = [
  */
 const COVER = "article > div > figure";
 
-/** The blocks that are objects, and whose column is the wide one. */
-const WIDE_BLOCKS = ["article-figure", "article-quote", "article-change-table", "article-price-table"];
+/**
+ * The blocks that are objects. They shared a WIDER column than the prose until
+ * 2026-08-31; now they share the reading column with it, because nothing this
+ * section publishes needs 768 px and the step read as a broken page. The list
+ * stays so the assertion has subjects to name.
+ */
+const OBJECT_BLOCKS = ["article-figure", "article-quote", "article-change-table", "article-price-table"];
+
+/** The one column of the article, from `md` up — `DS-LAYOUT-012`, 640 px at 20 px = 32,0 em. */
+const READING_WIDTH = 640;
 
 type Measured = { em: number; width: number; fontSize: number; text: string };
 
@@ -724,30 +732,33 @@ test.describe("DS-LAYOUT-012 — the reading column has a measured ceiling", () 
       expect(counted, "no running text was measured — the selectors went stale").toBeGreaterThan(0);
     });
 
-    test(`DS-LAYOUT-012: on ${locale} prose is 18/32 and nothing cancels the measure`, async ({
+    test(`DS-LAYOUT-012: on ${locale} prose is 20/36 and nothing cancels the measure`, async ({
       page,
     }) => {
       await page.setViewportSize({ width: 1440, height: 1000 });
       await page.goto(articleUrl(listUpdates(locale)[0]));
 
-      // 18/32 is `prose-lg`, and nobody had chosen the 16/28 it replaced: it is
-      // the default of `@tailwindcss/typography` 0.5.19. The measure is the
-      // quotient of width and body, so fixing the width and letting the body
-      // pick itself decided half the rule and left the other half to a plugin.
+      // 20/36 is `prose-xl`, and nobody had chosen the 16/28 this started from:
+      // it is the default of `@tailwindcss/typography` 0.5.19. The measure is
+      // the quotient of width and body, so fixing the width and letting the
+      // body pick itself decided half the rule and left the other half to a
+      // plugin. The pair moved from 576/18 to 640/20 on 2026-08-31 and the
+      // measure did not move at all: both are 32,0 em, and the characters per
+      // line are a property of the font — measured identical in four locales.
       const type = await page.locator("article .prose").first().evaluate((node) => {
         const style = window.getComputedStyle(node);
         return { fontSize: style.fontSize, lineHeight: style.lineHeight, maxWidth: style.maxWidth };
       });
-      expect(type.fontSize).toBe("18px");
-      expect(type.lineHeight).toBe("32px");
+      expect(type.fontSize).toBe("20px");
+      expect(type.lineHeight).toBe("36px");
 
       // `max-w-none` is the utility the legal pages use to cancel the measure,
       // and it is what takes their `<article>` to 822 px and 102 characters.
       expect(type.maxWidth, "something cancelled the measure of `prose`").not.toBe("none");
       // Scoped to the READING column and not to the whole `<article>`: the
       // support column of `DS-LAYOUT-013` carries `xl:max-w-none` on purpose —
-      // above the breakpoint its width is the 368 px of the grid track, and a
-      // 768 px cap left on it would be a number governing nothing. What this
+      // above the breakpoint its width is the 496 px of the grid track, and a
+      // cap left on it would be a number governing nothing. What this
       // guard defends is the measure of the text, and all of the text lives in
       // the first child. A substring match over the whole article would report
       // the rail and say "the measure was cancelled", which is a true count
@@ -762,7 +773,7 @@ test.describe("DS-LAYOUT-012 — the reading column has a measured ceiling", () 
       ).toBe(0);
     });
 
-    test(`DS-LAYOUT-012: on ${locale} text shares one left edge and only objects bleed`, async ({
+    test(`DS-LAYOUT-012: on ${locale} text and object share one column and one left edge`, async ({
       page,
     }) => {
       await page.setViewportSize({ width: 1440, height: 1000 });
@@ -775,7 +786,9 @@ test.describe("DS-LAYOUT-012 — the reading column has a measured ceiling", () 
 
         // Link back, badge and date, `h1`, dek, body and notice: one column,
         // one left edge. The header used to sit at 768 px with the body at 576,
-        // so the piece opened on one axis and continued on another.
+        // so the piece opened on one axis and continued on another. Since
+        // 2026-08-31 the object column is the text column, so the cover joins
+        // the same list instead of being the exception to it.
         const columns = await page.evaluate(() => {
           const box = (selector: string) => {
             const element = document.querySelector(selector);
@@ -801,25 +814,26 @@ test.describe("DS-LAYOUT-012 — the reading column has a measured ceiling", () 
             first!.left
           );
         }
-        expect(columns.body!.width, "the reading column is not 576 px").toBe(576);
+        expect(columns.body!.width, "the reading column is not 640 px").toBe(READING_WIDTH);
 
-        // The cover is an object and keeps the wide column — as a sibling of
-        // the header, not as its last child, and with no negative margin: a
-        // negative margin breaks below a 768 px viewport.
+        // The cover shares the reading column since 2026-08-31. It used to
+        // bleed to 768 px while the prose ran at 576, and the 192 px step is
+        // the defect the operator reported: the first object of the page
+        // announced a width the text then did not keep. Still a sibling of the
+        // header and still with no negative margin — a faked bleed breaks below
+        // a 768 px viewport.
         const cover = await page
           .locator(COVER)
           .first()
           .evaluate((node) => Math.round(node.getBoundingClientRect().width));
-        expect(cover).toBe(768);
-        expect(cover).toBeGreaterThan(columns.body!.width);
+        expect(cover, "the cover left the reading column").toBe(READING_WIDTH);
 
-        for (const block of WIDE_BLOCKS) {
+        for (const block of OBJECT_BLOCKS) {
           const widths = await page
             .locator(`article [data-block="${block}"]`)
             .evaluateAll((nodes) => nodes.map((node) => Math.round(node.getBoundingClientRect().width)));
           for (const width of widths) {
-            expect(width, `${block} left the figure column`).toBeLessThanOrEqual(768);
-            expect(width, `${block} was demoted to the text column`).toBeGreaterThan(576);
+            expect(width, `${block} left the reading column`).toBe(READING_WIDTH);
           }
         }
       }
@@ -861,9 +875,9 @@ test.describe("DS-LAYOUT-012 — the reading column has a measured ceiling", () 
  *
  * `DS-LAYOUT-012` decided how WIDE the reading column is; `DS-LAYOUT-013`
  * decides where it STARTS and what fills what is left. The two are different
- * axes of the same page and neither replaces the other: the column is still
- * 576 px of text and 768 px of object, and it begins on the content edge of the
- * rail instead of floating in the middle of it. Centring a narrow column inside
+ * axes of the same page and neither replaces the other: the column is 640 px
+ * of text AND of object since 2026-08-31, and it begins on the content edge of
+ * the rail instead of floating in the middle of it. Centring a narrow column inside
  * the rail creates a second rail — the body opened at `left` 432 while the logo
  * of the header opened at 112, 320 px of ditch on each side, 53 % of the rail
  * empty — and that misalignment is what the eye reads as "not the same page".
@@ -910,8 +924,17 @@ const RAIL_VIEWPORTS = [
  */
 const COLLAPSED_VIEWPORTS = [360, 768, 1024];
 
-/** The support column of the rail: 1216 − 768 of text − 80 of gutter. */
-const SUPPORT_WIDTH = 368;
+/**
+ * The support column of the rail: 1216 − 640 of reading column − 80 of gutter.
+ *
+ * It was 368 while the track was 768. The track was that wide only because the
+ * objects had a column of their own, so 128 px of it were dead on every
+ * paragraph row and the gutter to the rail measured 208 px — read as a hole,
+ * not as a gutter, and reported as one. Collapsing the object column into the
+ * text column gave those pixels to the support track, and now the two columns
+ * touch across the 80 px the grid declares.
+ */
+const SUPPORT_WIDTH = 496;
 
 /** The navigation rail — one attribute, so the test never guesses the tag. */
 const RAIL = "nav[data-article-rail]";
@@ -1036,14 +1059,16 @@ test.describe("DS-LAYOUT-013 — the article occupies the rail", () => {
           );
         }
 
-        // DS-LAYOUT-012 is untouched: anchoring the column is not widening it,
-        // and neither is putting navigation next to it. #617 refused widening
-        // for a measured reason — 36 em is 80,2 characters in the worst real
-        // English paragraph, over the ceiling of SC 1.4.8 — and widening would
-        // have taken nothing back from the rail anyway: the track is sized by
-        // the object column, not by the text one.
-        expect(at.body!.width, `${where}: the reading column was stretched to the rail`).toBe(576);
-        expect(at.cover!.width, `${where}: the cover left the figure column`).toBe(768);
+        // DS-LAYOUT-012 is untouched: anchoring the column is not widening the
+        // MEASURE, and neither is putting navigation next to it. The column
+        // went from 576 px to 640 px on 2026-08-31 and the measure did not move
+        // — the body went from 18 px to 20 px in the same decision, both are
+        // 32,0 em, and the characters per line came out identical in the four
+        // locales. Widening the measure itself stays refused for the reason
+        // #617 measured: 36 em is 80,2 characters in the worst real English
+        // paragraph, over the ceiling of SC 1.4.8.
+        expect(at.body!.width, `${where}: the reading column was stretched to the rail`).toBe(640);
+        expect(at.cover!.width, `${where}: the cover left the reading column`).toBe(640);
 
         // The right half of the rule: the space left over carries function, and
         // it reaches the far edge. Anchoring without it trades a symmetric
@@ -1207,9 +1232,9 @@ test.describe("DS-LAYOUT-013 — the article occupies the rail", () => {
         const where = `${piece.slug} at ${width} px`;
 
         expect(at.card, `${where}: the call left the page`).not.toBeNull();
-        // The figure column, never the rail: `max-w-3xl` and no `mx-auto`.
-        expect(at.card!.width, `${where}: the call is wider than the figure column`)
-          .toBeLessThanOrEqual(768);
+        // The reading column, never the rail, and no `mx-auto`.
+        expect(at.card!.width, `${where}: the call is wider than the reading column`)
+          .toBeLessThanOrEqual(640);
         expect(at.card!.left, `${where}: the call starts on a second rail`).toBe(at.rail.left);
 
         // And the sentence inside it obeys DS-LAYOUT-012 like any other running
@@ -1443,7 +1468,7 @@ test.describe("DS-COMPONENTE-059 — the rail is a slice of the site map, not a 
     // and the label is the smallest text on the screen.
     const biggest = Math.max(...facts.paint.map((node) => node.fontSize));
     expect(biggest, "the rail reads as loud as the article").toBeLessThanOrEqual(16);
-    expect(facts.proseFontSize, "the body of the article is not 18 px any more").toBe(18);
+    expect(facts.proseFontSize, "the body of the article is not 20 px any more").toBe(20);
     expect(facts.heading!.fontSize, "the label of the rail is not the smallest text")
       .toBeLessThanOrEqual(12);
 
@@ -1529,7 +1554,14 @@ test.describe("DS-COMPONENTE-054 / 055 — the closed block set", () => {
     await page.setViewportSize({ width: 360, height: 900 });
     await page.goto(articleUrl(articleDeclaring(DEFAULT_LOCALE, "ArticleChangeTable")));
 
-    const row = page.locator("article table tbody tr").first();
+    // The CHANGE table by its own `data-block`, never `article table` first.
+    // The piece declares the price table above it since 2026-08-30, and the
+    // first `<table>` of the document became the wrong one silently: the price
+    // table is `th[scope=row]` plus ONE `td`, so the count fell to 1 and the
+    // failure named this component for a change made to the other one.
+    const row = page
+      .locator('article [data-block="article-change-table"] table tbody tr')
+      .first();
     const boxes = await row
       .locator("td")
       .evaluateAll((nodes) => nodes.map((node) => node.getBoundingClientRect()));
