@@ -157,21 +157,39 @@ export default async function UpdateArticlePage({
       {/* A `<article>`, not a `<main>`: the root layout already opens
           `<main id="main-content">`, and a second landmark of the same role
           inside it is the defect trust-center/layout.tsx corrected. */}
-      {/* Two columns from 1280 px up — `DS-LAYOUT-013`.
-          The reading column is 640 px wide at most and anchored on the content
-          edge of `.page-shell`, and the 496 px that remain carry a rail of
-          internal navigation — never a second offer. `minmax(0, 40rem)` and not
-          `40rem`: a plain track floors the grid at 640 and the row overflows the
-          rail on a narrow screen, which is the horizontal scroll SC 1.4.10
-          refuses.
+      {/* Two columns from 1280 px up — `DS-LAYOUT-013`, in the proportion
+          `DS-LAYOUT-012` fixes: **70 / 30**, asked for by the operator on
+          2026-08-31 (*"estamos com duas colunas que parecem estar com 50/50 /
+          teremos 70/30"*) about the 640 / 496 this template shipped that
+          morning, which is 56,3 / 43,7 of the track.
 
-          The track was 768 px until 2026-08-31, because the objects had a
+          The three numbers are one sum and none of them is free. The content
+          box of `.page-shell` is 1216 px at EVERY viewport from 1280 up — the
+          shell caps at 80 rem, so 1440 and 1920 have the same budget and only
+          the margin around it grows. Take the 96 px gutter out and 1120 px of
+          track remain; 70 % of that is 784 and 30 % is 336. `minmax(0, 49rem)`
+          and not `49rem`: a plain track floors the grid at 784 and the row
+          overflows the rail on a narrow screen, which is the horizontal scroll
+          SC 1.4.10 refuses.
+
+          **The reading column could only grow because the body grew with it.**
+          The measure is width ÷ size, and 784 px at the 20 px this had would be
+          39,2 em — six over the ceiling of `DS-LAYOUT-012`. At the 24 px of
+          `prose-2xl` it is 32,67 em: under the 33, with MORE headroom than the
+          32,00 em of the 640/20 it replaces, and with the same characters a
+          line, because the glyph is measured in `em` and does not know the
+          size. 70/30 is not a request the rule refuses — it is one the rule
+          prices, and the price is the body.
+
+          The gutter went 80 → 96 px inside the same sum, and 96 is what lands
+          the proportion on 70,00 / 30,00 instead of 69,7 / 30,3. It is four
+          times the body size; the hole reported on the morning of 2026-08-31
+          was 272 px. This is a gutter.
+
+          The track was 768 px until that morning, because the objects had a
           column of their own. Collapsing the two columns into one is what
-          closed the hole the operator reported: with a 768 px track and 576 px
-          of prose, 208 px of the track were dead on every paragraph row and the
-          gutter to the rail read as a void instead of a gutter. Now the two
-          columns touch across 80 px, and 640 + 80 + 496 is the 1216 of the
-          shell.
+          closed that hole: with a 768 px track and 576 px of prose, 208 px of
+          the track were dead on every paragraph row.
 
           The rail is `row-span-2` AND `self-start`, and the pair is what makes
           `sticky` work without inflating the box: the sticky constraint
@@ -186,7 +204,7 @@ export default async function UpdateArticlePage({
           the top right and is still read after the article, which is what
           SC 1.3.2 asks; reordering the DOM to match the screen is the defect,
           not the fix. */}
-      <article className="xl:grid xl:grid-cols-[minmax(0,40rem)_1fr] xl:gap-x-20">
+      <article className="xl:grid xl:grid-cols-[minmax(0,49rem)_1fr] xl:gap-x-24">
         <div className="xl:col-start-1 xl:row-start-1">
           {/* The header is text — link back, badge, date, `h1` and dek — and it
               reads in the TEXT column, `DS-LAYOUT-012`. The cover is a sibling
@@ -194,7 +212,7 @@ export default async function UpdateArticlePage({
               cap by accident. No negative margin anywhere: a faked bleed breaks
               below a 768 px viewport. Order in the DOM and position on screen
               are the ones the reader already sees. */}
-          <header className="max-w-xl md:max-w-[40rem]">
+          <header className="max-w-xl md:max-w-[40rem] xl:max-w-[49rem]">
             {/* One link back, with the name of the section. Not a `Home ›`
                 breadcrumb: the site has none anywhere, and a two-level trail is
                 noise (§5.1). */}
@@ -216,14 +234,28 @@ export default async function UpdateArticlePage({
               </time>
             </div>
 
-            <h1 className="mt-3 text-4xl md:text-5xl font-black tracking-tight text-tuggi-dark">
+            {/* 60 px from `xl`, and that is arithmetic rather than taste: the
+                body goes to 24 px there, so `prose-2xl` draws its `h2` at 48 px
+                — exactly the `md` size of this title. A section heading the
+                same size as the title of the piece is not a hierarchy, it is
+                two titles. The ladder becomes 60 / 48 / 36 / 24, and the
+                plugin's own scale is left alone: the heading sizes have one
+                owner and it is the plugin, so the title moves and nothing
+                inside `prose` is overridden. */}
+            <h1 className="mt-3 text-4xl md:text-5xl xl:text-6xl font-black tracking-tight text-tuggi-dark">
               {article.title}
             </h1>
 
             {/* The dek is the SAME string the card carried: a summary that
                 differs from the one the reader clicked is a promise broken in
                 two clicks (§5.1). */}
-            <p className="mt-4 text-lg md:text-xl leading-relaxed text-tuggi-slate">{article.summary}</p>
+            {/* The dek has always been the size of the body — what separates
+                them is the colour and the leading — so it follows the body up
+                to 24 px at `xl`. Left behind at 20 px it would be the first
+                paragraph of the piece rendered SMALLER than the second. */}
+            <p className="mt-4 text-lg md:text-xl xl:text-2xl leading-relaxed text-tuggi-slate">
+              {article.summary}
+            </p>
           </header>
 
           {/* The cover shares the reading column, and that is the correction of
@@ -232,15 +264,15 @@ export default async function UpdateArticlePage({
               not keep, and the step read as a broken page rather than as an
               object breathing. `DS-LAYOUT-012` caps the object column, it does
               not oblige an object to fill it — and the cover is a generated
-              ornament, not a figure the reader studies. The two tables still
-              take the wide column, twice, deep in the piece, where a breakout
-              reads as emphasis. */}
-          <figure className="max-w-xl md:max-w-[40rem] mt-8">
+              ornament, not a figure the reader studies. It followed the column
+              to 784 px on 2026-08-31 for the same reason it came down to 640:
+              the object column IS the reading column, at every tier. */}
+          <figure className="max-w-xl md:max-w-[40rem] xl:max-w-[49rem] mt-8">
             <UpdateCover
               cover={article.cover}
               coverAlt={article.coverAlt}
               slug={article.slug}
-              sizes="(min-width: 768px) 640px, 100vw"
+              sizes="(min-width: 1280px) 784px, (min-width: 768px) 640px, 100vw"
               priority
             />
           </figure>
@@ -273,7 +305,7 @@ export default async function UpdateArticlePage({
               No number enters this card. The welcome grant is BR-MONETIZACAO-058
               and it has one owner; a figure typed here is a second declaration
               of it that nothing keeps in step. */}
-          <div className="mt-16 max-w-xl md:max-w-[40rem] rounded-3xl border border-gray-100 bg-tuggi-bg p-8 text-center">
+          <div className="mt-16 max-w-xl md:max-w-[40rem] xl:max-w-[49rem] rounded-3xl border border-gray-100 bg-tuggi-bg p-8 text-center">
             <p className="max-w-lg mx-auto text-base leading-relaxed text-tuggi-slate">
               {t("cta.body")}
             </p>
@@ -336,7 +368,7 @@ export default async function UpdateArticlePage({
           </ul>
         </nav>
 
-        <div className="max-w-xl md:max-w-[40rem] xl:col-start-1 xl:row-start-2">
+        <div className="max-w-xl md:max-w-[40rem] xl:max-w-[49rem] xl:col-start-1 xl:row-start-2">
           <ArticlePager previous={toLink(previous)} next={toLink(next)} />
         </div>
       </article>

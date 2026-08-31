@@ -12,7 +12,7 @@ import { ArticleQuote } from "@/components/blocks/article/ArticleQuote";
  * The body of an article, rendered from the tree the parser produced.
  *
  * ---------------------------------------------------------------------------
- * One column, 640 px — `DS-LAYOUT-012`
+ * One column — 640 px at 20 px, and 784 px at 24 px from `xl` — `DS-LAYOUT-012`
  * ---------------------------------------------------------------------------
  *
  * Prose and object share a single cap. The article used to have two, 576 px of
@@ -30,12 +30,19 @@ import { ArticleQuote } from "@/components/blocks/article/ArticleQuote";
  * published at 768 px and 101 characters a line in Italian) cannot come back
  * while there is a single width to inherit.
  *
- * **The body is 20/34 — `prose-xl` from `md` up, `prose-lg` below it.** Nobody
- * had chosen the 16/28 this started from: it is the default of
- * `@tailwindcss/typography` 0.5.19. The measure is the quotient of width and
- * size, so the width alone never decided anything — the same 576 px carries 77
- * characters at 16 px and 66 at 18 px, and 640 px at 20 px carries exactly what
- * 576 px at 18 px did.
+ * **The body is 20/36 from `md` up and 24/40 from `xl` up** — `prose-xl` and
+ * then `prose-2xl`, over `prose-lg` below both. Nobody had chosen the 16/28
+ * this started from: it is the default of `@tailwindcss/typography` 0.5.19. The
+ * measure is the quotient of width and size, so the width alone never decided
+ * anything — the same 576 px carries 77 characters at 16 px and 66 at 18 px,
+ * and 640 px at 20 px carries exactly what 576 px at 18 px did.
+ *
+ * That quotient is the whole reason the column could grow to 784 px on the
+ * operator's 70/30 without touching the ceiling: characters per line are
+ * `measure ÷ glyph width`, the glyph is a property of the font measured in
+ * `em`, so raising width and size together buys pixels and spends no
+ * character. 784/24 is **32,67 em**, under the 33 of the rule and with more
+ * headroom than the 32,00 em it replaces.
  *
  * The cap sits on the **wrapper**, not on the `prose` element, and that is not
  * a style choice. `@tailwindcss/typography` sets `max-width: 65ch` on `.prose`
@@ -70,14 +77,19 @@ import { ArticleQuote } from "@/components/blocks/article/ArticleQuote";
  * 576/18 gave, and the characters per line are a property of the font, not of
  * the size. Measured on the four locales: identical to thirteen decimal places.
  *
- * Below `md` the viewport is narrower than either cap and the pair goes back to
- * 576/18, so a window between 688 px and 768 px can never land on 640 px of
- * 18 px type, which would be 35,6 em.
+ * **Three tiers, and the third one exists because of the rail.** 576/18 below
+ * `md`, 640/20 from `md`, and **784/24 from `xl`** — the same breakpoint where
+ * the two-column grid opens. The operator asked for 70/30 between the reading
+ * and the rail on 2026-08-31, and 70 % of the 1120 px of track the shell leaves
+ * after a 96 px gutter is exactly 784. Below `xl` there is no rail, so there is
+ * no proportion to honour and nothing changes: a window between 688 px and
+ * 768 px can never land on 640 px of 18 px type, which would be 35,6 em, and a
+ * 1024 px one never lands on 784 px of 20 px type, which would be 39,2 em.
  */
-const READING_COLUMN = "max-w-xl md:max-w-[40rem]";
+const READING_COLUMN = "max-w-xl md:max-w-[40rem] xl:max-w-[49rem]";
 
 const PROSE =
-  "prose prose-lg md:prose-xl prose-slate prose-headings:text-tuggi-dark prose-headings:font-black prose-p:text-tuggi-slate prose-li:text-tuggi-slate prose-strong:text-tuggi-dark prose-a:text-tuggi-primary-text prose-a:font-semibold";
+  "prose prose-lg md:prose-xl xl:prose-2xl prose-slate prose-headings:text-tuggi-dark prose-headings:font-black prose-p:text-tuggi-slate prose-li:text-tuggi-slate prose-strong:text-tuggi-dark prose-a:text-tuggi-primary-text prose-a:font-semibold";
 
 function renderInline(nodes: Inline[], keyPrefix: string): ReactNode {
   return nodes.map((node, index) => {

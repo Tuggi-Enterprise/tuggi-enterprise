@@ -25,7 +25,12 @@ export function ArticleQuote({
 }) {
   return (
     <figure className="my-10 border-l-4 border-tuggi-primary-text pl-6" data-block="article-quote">
-      <blockquote className="text-xl leading-relaxed text-tuggi-dark">{children}</blockquote>
+      {/* Body size, at every tier the body has — 20 px from `md`, 24 px from
+          `xl` — for the reason the notice states: a pull quote rendered
+          SMALLER than the paragraph above it is not an emphasis. */}
+      <blockquote className="text-xl xl:text-2xl leading-relaxed text-tuggi-dark">
+        {children}
+      </blockquote>
       {/* The attribution is running text and does not inherit the 768 px of
           the figure — `DS-LAYOUT-012`, part 2. */}
       <figcaption className="mt-3 max-w-lg text-base text-tuggi-slate">

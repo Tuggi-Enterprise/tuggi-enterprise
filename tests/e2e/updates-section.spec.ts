@@ -679,8 +679,23 @@ const COVER = "article > div > figure";
  */
 const OBJECT_BLOCKS = ["article-figure", "article-quote", "article-change-table", "article-price-table"];
 
-/** The one column of the article, from `md` up — `DS-LAYOUT-012`, 640 px at 20 px = 32,0 em. */
+/**
+ * The one column of the article — `DS-LAYOUT-012`, in the two tiers it has
+ * above `md`.
+ *
+ * 640 px at 20 px is 32,00 em; 784 px at 24 px is 32,67 em. The second tier
+ * opens at `xl`, the same breakpoint as the two-column grid, because it exists
+ * to serve the 70/30 the operator asked for on 2026-08-31 — and 70 % of the
+ * 1120 px of track the 1216 px shell leaves after a 96 px gutter is 784. Width
+ * and body are ONE decision: the measure is their quotient, so the column grew
+ * 144 px and the characters per line did not move.
+ */
 const READING_WIDTH = 640;
+const READING_WIDTH_XL = 784;
+/** Where the second tier opens — `xl` in Tailwind, and the grid's own threshold. */
+const WIDE_TIER = 1280;
+const readingWidthAt = (viewport: number) =>
+  viewport >= WIDE_TIER ? READING_WIDTH_XL : READING_WIDTH;
 
 type Measured = { em: number; width: number; fontSize: number; text: string };
 
@@ -732,25 +747,40 @@ test.describe("DS-LAYOUT-012 — the reading column has a measured ceiling", () 
       expect(counted, "no running text was measured — the selectors went stale").toBeGreaterThan(0);
     });
 
-    test(`DS-LAYOUT-012: on ${locale} prose is 20/36 and nothing cancels the measure`, async ({
+    test(`DS-LAYOUT-012: on ${locale} prose is 20/36 below the wide tier and 24/40 above it`, async ({
       page,
     }) => {
-      await page.setViewportSize({ width: 1440, height: 1000 });
-      await page.goto(articleUrl(listUpdates(locale)[0]));
+      // Both tiers, in one test, because the pair (width, body) is what the
+      // rule fixes and asserting either half alone proves nothing: 24/40 is
+      // `prose-2xl` and nobody had chosen the 16/28 this started from — it is
+      // the default of `@tailwindcss/typography` 0.5.19. The pair moved from
+      // 576/18 to 640/20 and then to 784/24, and the measure never crossed the
+      // ceiling: 32,00 · 32,00 · 32,67 em. Characters per line are a property
+      // of the font, not of the size — measured identical in four locales.
+      const readType = async () =>
+        page.locator("article .prose").first().evaluate((node) => {
+          const style = window.getComputedStyle(node);
+          return {
+            fontSize: style.fontSize,
+            lineHeight: style.lineHeight,
+            maxWidth: style.maxWidth,
+          };
+        });
 
-      // 20/36 is `prose-xl`, and nobody had chosen the 16/28 this started from:
-      // it is the default of `@tailwindcss/typography` 0.5.19. The measure is
-      // the quotient of width and body, so fixing the width and letting the
-      // body pick itself decided half the rule and left the other half to a
-      // plugin. The pair moved from 576/18 to 640/20 on 2026-08-31 and the
-      // measure did not move at all: both are 32,0 em, and the characters per
-      // line are a property of the font — measured identical in four locales.
-      const type = await page.locator("article .prose").first().evaluate((node) => {
-        const style = window.getComputedStyle(node);
-        return { fontSize: style.fontSize, lineHeight: style.lineHeight, maxWidth: style.maxWidth };
-      });
-      expect(type.fontSize).toBe("20px");
+      await page.setViewportSize({ width: 1024, height: 1000 });
+      await page.goto(articleUrl(listUpdates(locale)[0]));
+      let type = await readType();
+      expect(type.fontSize, "the body below the wide tier is not 20 px any more").toBe("20px");
       expect(type.lineHeight).toBe("36px");
+
+      await page.setViewportSize({ width: 1440, height: 1000 });
+      type = await readType();
+      expect(type.fontSize, "the body of the wide tier is not 24 px any more").toBe("24px");
+      // Rounded, and that is not laziness: `prose-2xl` declares the leading as
+      // the ratio `round(40 / 24)`, so the browser computes 40.0001px and an
+      // exact string match would fail on a rule that is doing exactly what it
+      // says. The tier below declares 36/20, which divides, and matches exactly.
+      expect(Math.round(parseFloat(type.lineHeight))).toBe(40);
 
       // `max-w-none` is the utility the legal pages use to cancel the measure,
       // and it is what takes their `<article>` to 822 px and 102 characters.
@@ -814,7 +844,9 @@ test.describe("DS-LAYOUT-012 — the reading column has a measured ceiling", () 
             first!.left
           );
         }
-        expect(columns.body!.width, "the reading column is not 640 px").toBe(READING_WIDTH);
+        expect(columns.body!.width, "the reading column is not 784 px at 1440").toBe(
+          READING_WIDTH_XL
+        );
 
         // The cover shares the reading column since 2026-08-31. It used to
         // bleed to 768 px while the prose ran at 576, and the 192 px step is
@@ -826,14 +858,14 @@ test.describe("DS-LAYOUT-012 — the reading column has a measured ceiling", () 
           .locator(COVER)
           .first()
           .evaluate((node) => Math.round(node.getBoundingClientRect().width));
-        expect(cover, "the cover left the reading column").toBe(READING_WIDTH);
+        expect(cover, "the cover left the reading column").toBe(READING_WIDTH_XL);
 
         for (const block of OBJECT_BLOCKS) {
           const widths = await page
             .locator(`article [data-block="${block}"]`)
             .evaluateAll((nodes) => nodes.map((node) => Math.round(node.getBoundingClientRect().width)));
           for (const width of widths) {
-            expect(width, `${block} left the reading column`).toBe(READING_WIDTH);
+            expect(width, `${block} left the reading column`).toBe(READING_WIDTH_XL);
           }
         }
       }
@@ -925,16 +957,24 @@ const RAIL_VIEWPORTS = [
 const COLLAPSED_VIEWPORTS = [360, 768, 1024];
 
 /**
- * The support column of the rail: 1216 − 640 of reading column − 80 of gutter.
+ * The support column of the rail: 1216 − 784 of reading column − 96 of gutter.
  *
- * It was 368 while the track was 768. The track was that wide only because the
- * objects had a column of their own, so 128 px of it were dead on every
- * paragraph row and the gutter to the rail measured 208 px — read as a hole,
- * not as a gutter, and reported as one. Collapsing the object column into the
- * text column gave those pixels to the support track, and now the two columns
- * touch across the 80 px the grid declares.
+ * **The three numbers are the 70/30 the operator asked for on 2026-08-31**, and
+ * they are asserted as pixels rather than as a percentage because that is what
+ * a regression would move. 784 and 336 are 70,00 % and 30,00 % of the 1120 px
+ * of track the shell leaves once the gutter is out, and the shell is 1216 px at
+ * every viewport from 1280 up — it caps at 80 rem, so this proportion has one
+ * value and not one per screen.
+ *
+ * It was 368 while the track was 768, and 496 while it was 640. The 768 was
+ * wide only because the objects had a column of their own, so 128 px of it were
+ * dead on every paragraph row and the gutter measured 208 px — read as a hole
+ * and reported as one.
  */
-const SUPPORT_WIDTH = 496;
+const SUPPORT_WIDTH = 336;
+
+/** The gutter the grid declares between the two tracks — `xl:gap-x-24`. */
+const GUTTER = 96;
 
 /** The navigation rail — one attribute, so the test never guesses the tag. */
 const RAIL = "nav[data-article-rail]";
@@ -1061,14 +1101,34 @@ test.describe("DS-LAYOUT-013 — the article occupies the rail", () => {
 
         // DS-LAYOUT-012 is untouched: anchoring the column is not widening the
         // MEASURE, and neither is putting navigation next to it. The column
-        // went from 576 px to 640 px on 2026-08-31 and the measure did not move
-        // — the body went from 18 px to 20 px in the same decision, both are
-        // 32,0 em, and the characters per line came out identical in the four
-        // locales. Widening the measure itself stays refused for the reason
-        // #617 measured: 36 em is 80,2 characters in the worst real English
-        // paragraph, over the ceiling of SC 1.4.8.
-        expect(at.body!.width, `${where}: the reading column was stretched to the rail`).toBe(640);
-        expect(at.cover!.width, `${where}: the cover left the reading column`).toBe(640);
+        // went 576 → 640 → 784 px on 2026-08-31 and the measure never moved
+        // past the ceiling — the body went 18 → 20 → 24 px in the same
+        // decisions, giving 32,00 · 32,00 · 32,67 em, and the characters per
+        // line came out identical in the four locales. Widening the measure
+        // ITSELF stays refused for the reason #617 measured: 36 em is 80,2
+        // characters in the worst real English paragraph, over SC 1.4.8. That
+        // is the difference between this change and the one refused — 70/30
+        // was bought with the body, not with the line.
+        expect(at.body!.width, `${where}: the reading column was stretched to the rail`).toBe(
+          readingWidthAt(width)
+        );
+        expect(at.cover!.width, `${where}: the cover left the reading column`).toBe(
+          readingWidthAt(width)
+        );
+
+        // The proportion itself, stated as the operator states it: the two
+        // TRACKS, gutter excluded, because the gutter is what separates them
+        // and not what either of them occupies. 56,3 / 43,7 is what he was
+        // looking at when he asked for 70/30.
+        expect(
+          at.body!.width + GUTTER + at.railNav!.width,
+          `${where}: the two tracks and the gutter no longer sum to the rail`
+        ).toBe(at.rail.width);
+        const share = (at.body!.width / (at.rail.width - GUTTER)) * 100;
+        expect(
+          Number(share.toFixed(1)),
+          `${where}: the reading takes ${share.toFixed(1)} % of the track, not 70`
+        ).toBe(70);
 
         // The right half of the rule: the space left over carries function, and
         // it reaches the far edge. Anchoring without it trades a symmetric
@@ -1234,7 +1294,7 @@ test.describe("DS-LAYOUT-013 — the article occupies the rail", () => {
         expect(at.card, `${where}: the call left the page`).not.toBeNull();
         // The reading column, never the rail, and no `mx-auto`.
         expect(at.card!.width, `${where}: the call is wider than the reading column`)
-          .toBeLessThanOrEqual(640);
+          .toBeLessThanOrEqual(readingWidthAt(width));
         expect(at.card!.left, `${where}: the call starts on a second rail`).toBe(at.rail.left);
 
         // And the sentence inside it obeys DS-LAYOUT-012 like any other running
@@ -1468,7 +1528,10 @@ test.describe("DS-COMPONENTE-059 — the rail is a slice of the site map, not a 
     // and the label is the smallest text on the screen.
     const biggest = Math.max(...facts.paint.map((node) => node.fontSize));
     expect(biggest, "the rail reads as loud as the article").toBeLessThanOrEqual(16);
-    expect(facts.proseFontSize, "the body of the article is not 20 px any more").toBe(20);
+    // The rail lost 160 px of track to the 70/30 of 2026-08-31 and its type did
+    // not move, so (d) got easier, not harder — but the LINKS have to still fit
+    // in one line each, and that is what the target width below counts.
+    expect(facts.proseFontSize, "the body of the article is not 24 px any more").toBe(24);
     expect(facts.heading!.fontSize, "the label of the rail is not the smallest text")
       .toBeLessThanOrEqual(12);
 
