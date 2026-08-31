@@ -153,7 +153,13 @@ export default async function UpdateArticlePage({
           `<main id="main-content">`, and a second landmark of the same role
           inside it is the defect trust-center/layout.tsx corrected. */}
       <article>
-        <header className="mx-auto max-w-3xl">
+        {/* The header is text — link back, badge, date, `h1` and dek — and it
+            reads in the TEXT column, `DS-LAYOUT-012`. The cover is an object
+            and stays in the figure column, so it is a sibling of the header
+            rather than its last child. No negative margin to fake the bleed:
+            it breaks below a 768 px viewport. Order in the DOM and position on
+            screen are the ones the reader already sees. */}
+        <header className="mx-auto max-w-xl">
           {/* One link back, with the name of the section. Not a `Home ›`
               breadcrumb: the site has none anywhere, and a two-level trail is
               noise (§5.1). */}
@@ -183,17 +189,17 @@ export default async function UpdateArticlePage({
               differs from the one the reader clicked is a promise broken in
               two clicks (§5.1). */}
           <p className="mt-4 text-lg leading-relaxed text-tuggi-slate">{article.summary}</p>
-
-          <figure className="mt-8">
-            <UpdateCover
-              cover={article.cover}
-              coverAlt={article.coverAlt}
-              slug={article.slug}
-              sizes="(min-width: 768px) 768px, 100vw"
-              priority
-            />
-          </figure>
         </header>
+
+        <figure className="mx-auto max-w-3xl mt-8">
+          <UpdateCover
+            cover={article.cover}
+            coverAlt={article.coverAlt}
+            slug={article.slug}
+            sizes="(min-width: 768px) 768px, 100vw"
+            priority
+          />
+        </figure>
 
         <div className="mt-10">
           <ArticleBody blocks={article.blocks} />

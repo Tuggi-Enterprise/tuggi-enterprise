@@ -32,7 +32,9 @@ export function ArticleFigure({
         className="w-full h-auto rounded-2xl border border-gray-100"
       />
       {caption && (
-        <figcaption className="mt-3 text-sm text-tuggi-slate">{caption}</figcaption>
+        // A caption is running text and does not inherit the 768 px of the
+        // figure it belongs to — `DS-LAYOUT-012`, part 2.
+        <figcaption className="mt-3 max-w-lg text-base text-tuggi-slate">{caption}</figcaption>
       )}
     </figure>
   );

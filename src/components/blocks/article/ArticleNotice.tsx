@@ -18,7 +18,10 @@ export function ArticleNotice({ children }: { children: ReactNode }) {
   return (
     <aside data-block="article-notice" className="my-10 flex gap-4 rounded-2xl border border-gray-200 border-l-4 border-l-tuggi-primary-text bg-tuggi-bg p-6">
       <Info className="w-5 h-5 shrink-0 mt-0.5 text-tuggi-primary-text" aria-hidden="true" />
-      <div className="text-tuggi-slate leading-relaxed">{children}</div>
+      {/* 18/32, the body of the article — `DS-LAYOUT-012`, part 3. A notice is
+          prose, so it reads at the size the prose around it reads at, and it
+          sits in the text column, not in the figure one. */}
+      <div className="text-lg leading-8 text-tuggi-slate">{children}</div>
     </aside>
   );
 }

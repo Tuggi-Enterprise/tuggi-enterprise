@@ -26,7 +26,9 @@ export function ArticleQuote({
   return (
     <figure className="my-10 border-l-4 border-tuggi-primary-text pl-6" data-block="article-quote">
       <blockquote className="text-xl leading-relaxed text-tuggi-dark">{children}</blockquote>
-      <figcaption className="mt-3 text-sm text-tuggi-slate">
+      {/* The attribution is running text and does not inherit the 768 px of
+          the figure — `DS-LAYOUT-012`, part 2. */}
+      <figcaption className="mt-3 max-w-lg text-base text-tuggi-slate">
         {author}
         {role ? `, ${role}` : ""}
       </figcaption>

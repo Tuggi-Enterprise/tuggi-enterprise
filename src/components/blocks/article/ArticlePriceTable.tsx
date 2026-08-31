@@ -93,8 +93,12 @@ export function ArticlePriceTable() {
         </tbody>
       </table>
 
-      <p className="mt-3 text-sm text-tuggi-slate">{tTable("note")}</p>
-      <p className="mt-2 text-sm text-tuggi-slate">
+      {/* The table is an object and keeps the wide column; these two notes are
+          running text and do NOT inherit its 768 px — `DS-LAYOUT-012`, part 2.
+          `max-w-lg` at `text-base` is 32 em. No `mx-auto`: they align with the
+          left edge of the table, which is where the reader's eye already is. */}
+      <p className="mt-3 max-w-lg text-base text-tuggi-slate">{tTable("note")}</p>
+      <p className="mt-2 max-w-lg text-base text-tuggi-slate">
         {pricing ? t("storeNoteWithPrice") : t("storeNoteNoPrice")}
       </p>
     </div>

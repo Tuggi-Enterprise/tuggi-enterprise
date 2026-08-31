@@ -623,51 +623,205 @@ test.describe("DS-A11Y-011 — the heading structure belongs to the template", (
   });
 });
 
+/**
+ * `DS-LAYOUT-012` — the measure of running text is a **quotient**, not a width.
+ *
+ * The ceiling is `width ÷ font-size ≤ 33`, both computed in the browser. Width
+ * alone proves nothing and that is what the first version of this guard got
+ * wrong: the same 576 px carries 77 characters at 16 px and 66 at 18 px, and it
+ * is the character that the 45–75 band of Bringhurst and the 80 ceiling of
+ * SC 1.4.8 count. 33 em comes from the narrowest glyph measured on this copy,
+ * 0,449 em — 33 ÷ 0,449 = 73,5 characters, inside the band and 8 % under the
+ * WCAG ceiling.
+ *
+ * It runs in **four locales** because Portuguese is not the language of the
+ * longest line: it has the WIDEST mean glyph (7,813 px against 7,474 px in
+ * English), so it fits FEWER characters in the same column. English and Italian
+ * are the ones that touch the ceiling, and measuring `pt` alone hid an English
+ * paragraph of 80,2 characters.
+ */
+const MEASURE_CEILING = 33;
+
+/**
+ * Every element of an article that is **read line by line** — §11, 15-b.
+ *
+ * The notice and the two notes of the price table are on this list because they
+ * are prose, whatever the shape of the box around them. Routing by block kind
+ * instead of by genre is what published the notice at 768 px and 101 characters
+ * a line in Italian — worse than the 102 of the legal pages that made the rule
+ * exist.
+ */
+const RUNNING_TEXT: { label: string; selector: string }[] = [
+  { label: "paragraph", selector: "article .prose p" },
+  { label: "list item", selector: "article .prose li" },
+  { label: "dek", selector: "article > header > p" },
+  { label: "notice body", selector: 'article [data-block="article-notice"] > div' },
+  { label: "price-table note", selector: 'article [data-block="article-price-table"] > p' },
+  { label: "figcaption", selector: "article figcaption" },
+];
+
+/** The blocks that are objects, and whose column is the wide one. */
+const WIDE_BLOCKS = ["article-figure", "article-quote", "article-change-table", "article-price-table"];
+
+type Measured = { em: number; width: number; fontSize: number; text: string };
+
+/** `getBoundingClientRect().width ÷ getComputedStyle().fontSize`, in the page. */
+function measure(page: Page, selector: string): Promise<Measured[]> {
+  return page.locator(selector).evaluateAll((nodes) =>
+    nodes.map((node) => {
+      const width = node.getBoundingClientRect().width;
+      const fontSize = parseFloat(window.getComputedStyle(node).fontSize);
+      return {
+        em: width / fontSize,
+        width,
+        fontSize,
+        // `textContent`, never an accessible name: with whitespace between
+        // inline children the accname matcher normalises the difference away.
+        text: (node.textContent ?? "").replace(/\s+/g, " ").trim().slice(0, 48),
+      };
+    })
+  );
+}
+
 test.describe("DS-LAYOUT-012 — the reading column has a measured ceiling", () => {
-  for (const width of [1024, 1440]) {
-    test(`DS-LAYOUT-012: at ${width} px text stays under 576 px and a figure under 768 px`, async ({
+  for (const locale of LOCALES) {
+    test(`DS-LAYOUT-012: on ${locale} every running-text element measures at most ${MEASURE_CEILING} em`, async ({
       page,
     }) => {
-      await page.setViewportSize({ width, height: 1000 });
+      await page.setViewportSize({ width: 1440, height: 1000 });
 
       // Every piece, not the newest one: the measure is a property of the
       // template, and which piece sorts first is decided by the calendar and by
       // the slug that breaks the tie. Article #2 declares no block, so its wide
       // column is the generated cover alone — the case that proves the ceiling
       // holds with nothing but the template inside it.
-      for (const document of listUpdates(DEFAULT_LOCALE)) {
-      await page.goto(articleUrl(document));
+      let counted = 0;
+      for (const document of listUpdates(locale)) {
+        await page.goto(articleUrl(document));
 
-      // 576 px ÷ 8,06 px (the mean glyph of this copy at Inter 16/28) is 71
-      // characters, inside the 45–75 band. The legal pages measure 822 px and
-      // 102 characters, because they cancel the measure with `max-w-none` —
-      // that is a consultation surface, and this is a reading one.
-      // Scoped to the BODY, which is what "reading column" means: the dek is a
-      // single display sentence in the header, at `text-lg`, and it sits in the
-      // figure column with the `h1` on purpose (§5.1). The 45–75 band is about
-      // running text.
-      const paragraphs = await page
-        .locator("article .prose p")
-        .evaluateAll((nodes) => nodes.map((node) => node.getBoundingClientRect().width));
-      expect(paragraphs.length).toBeGreaterThan(0);
-      for (const paragraphWidth of paragraphs) {
-        expect(Math.round(paragraphWidth), "a paragraph runs past the reading column").toBeLessThanOrEqual(
-          576
-        );
+        for (const { label, selector } of RUNNING_TEXT) {
+          for (const element of await measure(page, selector)) {
+            counted += 1;
+            expect(
+              element.em,
+              `${locale} · ${document.slug} · ${label} runs ${element.em.toFixed(1)} em ` +
+                `(${Math.round(element.width)} px ÷ ${element.fontSize} px): "${element.text}"`
+            ).toBeLessThanOrEqual(MEASURE_CEILING);
+          }
+        }
       }
+      expect(counted, "no running text was measured — the selectors went stale").toBeGreaterThan(0);
+    });
 
-      const wide = await page
-        .locator("article figure, article table")
-        .evaluateAll((nodes) => nodes.map((node) => node.getBoundingClientRect().width));
-      expect(wide.length).toBeGreaterThan(0);
-      for (const wideWidth of wide) {
-        expect(Math.round(wideWidth), "a figure or table runs past the figure column").toBeLessThanOrEqual(
-          768
-        );
-      }
+    test(`DS-LAYOUT-012: on ${locale} prose is 18/32 and nothing cancels the measure`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width: 1440, height: 1000 });
+      await page.goto(articleUrl(listUpdates(locale)[0]));
+
+      // 18/32 is `prose-lg`, and nobody had chosen the 16/28 it replaced: it is
+      // the default of `@tailwindcss/typography` 0.5.19. The measure is the
+      // quotient of width and body, so fixing the width and letting the body
+      // pick itself decided half the rule and left the other half to a plugin.
+      const type = await page.locator("article .prose").first().evaluate((node) => {
+        const style = window.getComputedStyle(node);
+        return { fontSize: style.fontSize, lineHeight: style.lineHeight, maxWidth: style.maxWidth };
+      });
+      expect(type.fontSize).toBe("18px");
+      expect(type.lineHeight).toBe("32px");
+
+      // `max-w-none` is the utility the legal pages use to cancel the measure,
+      // and it is what takes their `<article>` to 822 px and 102 characters.
+      expect(type.maxWidth, "something cancelled the measure of `prose`").not.toBe("none");
+      expect(await page.locator('article [class*="max-w-none"]').count()).toBe(0);
+    });
+
+    test(`DS-LAYOUT-012: on ${locale} text shares one left edge and only objects bleed`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width: 1440, height: 1000 });
+
+      // `piece`, not `document`: inside `page.evaluate` the browser's own
+      // `document` is what the callback needs, and a loop variable of that name
+      // shadows it — the type error is the friendly half of that mistake.
+      for (const piece of listUpdates(locale)) {
+        await page.goto(articleUrl(piece));
+
+        // Link back, badge and date, `h1`, dek, body and notice: one column,
+        // one left edge. The header used to sit at 768 px with the body at 576,
+        // so the piece opened on one axis and continued on another.
+        const columns = await page.evaluate(() => {
+          const box = (selector: string) => {
+            const element = document.querySelector(selector);
+            if (!element) return null;
+            const rect = element.getBoundingClientRect();
+            return { left: Math.round(rect.left), width: Math.round(rect.width) };
+          };
+          return {
+            back: box("article > header > a"),
+            meta: box("article > header > div"),
+            title: box("article > header > h1"),
+            dek: box("article > header > p"),
+            body: box("article .prose"),
+            notice: box('article [data-block="article-notice"]'),
+          };
+        });
+
+        const text = Object.entries(columns).filter(([, value]) => value !== null);
+        expect(text.length, "the header of the article vanished").toBeGreaterThan(4);
+        const [, first] = text[0];
+        for (const [name, value] of text) {
+          expect(value!.left, `${locale} · ${piece.slug} · ${name} starts on another axis`).toBe(
+            first!.left
+          );
+        }
+        expect(columns.body!.width, "the reading column is not 576 px").toBe(576);
+
+        // The cover is an object and keeps the wide column — as a sibling of
+        // the header, not as its last child, and with no negative margin: a
+        // negative margin breaks below a 768 px viewport.
+        const cover = await page
+          .locator("article > figure")
+          .first()
+          .evaluate((node) => Math.round(node.getBoundingClientRect().width));
+        expect(cover).toBe(768);
+        expect(cover).toBeGreaterThan(columns.body!.width);
+
+        for (const block of WIDE_BLOCKS) {
+          const widths = await page
+            .locator(`article [data-block="${block}"]`)
+            .evaluateAll((nodes) => nodes.map((node) => Math.round(node.getBoundingClientRect().width)));
+          for (const width of widths) {
+            expect(width, `${block} left the figure column`).toBeLessThanOrEqual(768);
+            expect(width, `${block} was demoted to the text column`).toBeGreaterThan(576);
+          }
+        }
       }
     });
   }
+
+  /**
+   * No published piece declares a figure or a quotation today, so the two
+   * `<figcaption>` of the section have no DOM to be measured in. The class is
+   * the assertion until one does: at 768 px they measured 54,9 em, which 15-b
+   * refuses along with everything else that is read line by line.
+   */
+  test("DS-LAYOUT-012: the two figcaptions do not inherit the width of their figure", () => {
+    for (const name of ["ArticleFigure", "ArticleQuote"]) {
+      const source = fs.readFileSync(
+        path.join(REPO_ROOT, `src/components/blocks/article/${name}.tsx`),
+        "utf8"
+      );
+      const caption = source.match(/<figcaption className="([^"]+)"/);
+      expect(caption, `${name} no longer renders a figcaption with a literal className`).not.toBeNull();
+      expect(caption![1], `${name}: the caption inherits the 768 px of its figure`).toContain(
+        "max-w-lg"
+      );
+      expect(caption![1], `${name}: the caption is smaller than the prose around it`).toContain(
+        "text-base"
+      );
+    }
+  });
 });
 
 /**
@@ -826,9 +980,13 @@ test.describe("DS-MARCA-009 — alt, and what the generated cover is not", () =>
           // The generated field carries no text and no logo, and is therefore
           // decorative: it is drawn inline and hidden from assistive technology
           // rather than described with an empty string over HTTP.
-          const cover = page.locator("article header figure svg").first();
+          // `article > figure`, not `article header figure`: the cover is an
+          // object and left the header when the header went to the text column
+          // (DS-LAYOUT-012). It is the only direct `<figure>` child of the
+          // article — a body figure is wrapped in its column `<div>`.
+          const cover = page.locator("article > figure svg").first();
           await expect(cover).toHaveAttribute("aria-hidden", "true");
-          await expect(page.locator("article header figure img")).toHaveCount(0);
+          await expect(page.locator("article > figure img")).toHaveCount(0);
         }
       }
     });
