@@ -9,6 +9,7 @@ import { NAV_ITEMS } from "../../src/lib/nav";
 import { documentShape, parseEditorialDocument } from "../../src/lib/editorial-mdx";
 import {
   FILTER_FLOOR,
+  LISTING_CEILING,
   UPDATES_SECTION,
   getUpdateArticles,
   listUpdates,
@@ -384,6 +385,19 @@ test.describe("DS-COMPONENTE-051 / 052 — the listing and its card", () => {
       expect(listing.map((d) => d.slug), `${locale} is out of order`).toEqual(
         sorted.map((d) => d.slug)
       );
+
+      // The other half of DS-COMPONENTE-052, and it is a trip-wire rather than
+      // a property: while the section holds up to 24 pieces the listing is one
+      // complete page. Above that it has to paginate BY ROUTE — one indexable
+      // URL per page, with rel=next/prev — never infinite scroll and never a
+      // "load more" with no URL, because content behind infinite scroll is not
+      // crawled reliably. This goes red on the 25th article, which is when the
+      // card is due.
+      expect(
+        listing.length,
+        `${locale} crossed ${LISTING_CEILING} articles — the route-anchored pagination of ` +
+          "DS-COMPONENTE-052 is now due"
+      ).toBeLessThanOrEqual(LISTING_CEILING);
     }
   });
 
