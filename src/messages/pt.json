@@ -1221,7 +1221,8 @@
     },
     "priceTable": {
       "columnPass": "Passe",
-      "columnPrice": "Preço"
+      "columnPrice": "Preço",
+      "note": "Compra única. Não renova. As horas de passes diferentes se somam."
     }
   }
 }

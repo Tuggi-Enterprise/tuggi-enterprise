@@ -991,7 +991,8 @@
     },
     "priceTable": {
       "columnPass": "Pass",
-      "columnPrice": "Prezzo"
+      "columnPrice": "Prezzo",
+      "note": "Acquisto una tantum. Non si rinnova. Le ore di pass diversi si sommano."
     }
   }
 }
