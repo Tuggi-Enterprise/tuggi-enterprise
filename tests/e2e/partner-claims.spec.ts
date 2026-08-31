@@ -906,11 +906,14 @@ interface Waiver {
   /** Message keys, or key prefixes: "Legal.Terms" waives that whole namespace. */
   keys: string[];
   /**
-   * Editorial articles, by directory id under `src/content/updates`. A second
-   * kind of subject for the same reason: since 2026-08-30 not every published
-   * string of this site is a message, and an article has no key to name.
+   * Editorial prose, which has no key to name. The subject is an article of
+   * `src/content/updates` AND the phrases inside it this family lets through —
+   * never the article as a whole. A message waiver takes out one key and leaves
+   * the namespace scanned; this takes out one sentence and leaves the piece
+   * scanned, which is the same promise. `phrases` that match nothing in the
+   * article are stale, and the hygiene test below says so.
    */
-  articles?: string[];
+  articles?: { id: string; phrases: string[] }[];
   why: string;
 }
 
@@ -1012,16 +1015,36 @@ const CLAIM_FAMILIES: ClaimFamily[] = [
       },
       {
         keys: [],
-        articles: ["hour-passes"],
+        articles: [
+          {
+            id: "hour-passes",
+            phrases: [
+              "não expiram",
+              "never expire",
+              "no caducan",
+              "non scadono",
+              "é sempre livre",
+              "is always free",
+              "es siempre libre",
+              "è sempre libero",
+              "never reaches your balance",
+            ],
+          },
+        ],
         why:
           "Two absolutes, and a rule sits behind each. \"As horas não expiram\" / " +
           '"never expire" is BR-MONETIZACAO-050, the same fact the Metadata.drive* ' +
           "waiver above covers, arriving from the editorial section instead of a " +
           "message key. \"Ler o nome e a descrição de qualquer ponto é sempre livre\" / " +
           '"always free" is BR-MONETIZACAO-056, which states exactly that: reading a ' +
-          "POI's name and description is free in any state of the account. An absolute " +
-          "with a rule behind it is what this family says it does not ban, and the " +
-          "rest of the piece is scanned like everything else.",
+          "POI's name and description is free in any state of the account. And the " +
+          '"time spent in silence never reaches your balance" of the English is ' +
+          "BR-AUDIO-021 items 3 and 4, in the rule's own words: the tourist does not " +
+          "pay for silence, and time with no witness is not charged. An absolute " +
+          "with a rule behind it is what this family says it does not ban. Only the " +
+          "eight phrases are subtracted, one per fact per language: the rest of the " +
+          "piece is scanned like everything else, and a phrase that stops appearing " +
+          "in the article takes its dispensation with it.",
       },
       {
         keys: ["NotFound.subtitle"],
@@ -1464,8 +1487,20 @@ function editorialArticles(locale: string): { id: string; text: string; summary:
     });
 }
 
-function isWaivedArticle(family: ClaimFamily, id: string): Waiver | undefined {
-  return family.waivers.find((waiver) => waiver.articles?.includes(id));
+/** Every phrase this family lets through in a given article, longest first. */
+function waivedPhrases(family: ClaimFamily, id: string): string[] {
+  return family.waivers
+    .flatMap((waiver) => waiver.articles ?? [])
+    .filter((article) => article.id === id)
+    .flatMap((article) => article.phrases)
+    .sort((a, b) => b.length - a.length);
+}
+
+/** An article's text with the waived phrases taken out — everything else stays. */
+function scannableArticle(family: ClaimFamily, id: string, text: string): string {
+  let out = text;
+  for (const phrase of waivedPhrases(family, id)) out = out.split(phrase).join(" ");
+  return out;
 }
 
 function familyHits(family: ClaimFamily, text: string): string[] {
@@ -1695,8 +1730,8 @@ test.describe("Claim families — a decided class does not come back in new word
       test(`family "${family.id}" is absent from the ${locale} editorial content`, () => {
         const offenders: string[] = [];
         for (const article of editorialArticles(locale)) {
-          if (isWaivedArticle(family, article.id)) continue;
-          for (const hit of familyHits(family, article.text)) {
+          const scannable = scannableArticle(family, article.id, article.text);
+          for (const hit of familyHits(family, scannable)) {
             offenders.push(`${article.id}/${locale}.mdx — "${hit}"`);
           }
         }
@@ -1714,8 +1749,9 @@ test.describe("Claim families — a decided class does not come back in new word
       // rendered-page scan does for waived message keys.
       let text = await response.text();
       for (const article of editorialArticles("en")) {
-        if (!isWaivedArticle(family, article.id) || !article.summary) continue;
-        text = text.split(article.summary).join(" ");
+        for (const phrase of waivedPhrases(family, article.id)) {
+          text = text.split(phrase).join(" ");
+        }
       }
       expect(familyHits(family, text), family.rule).toEqual([]);
     });
@@ -1740,11 +1776,20 @@ test.describe("Claim families — a decided class does not come back in new word
         }
         // A waived article that was renamed or unpublished takes its
         // dispensation with it, for the same reason a waived key does.
-        for (const id of waiver.articles ?? []) {
+        for (const { id, phrases } of waiver.articles ?? []) {
           expect(
             fs.existsSync(path.join(CONTENT_DIR, id)),
             `${family.id}: waiver for the article "${id}", which no longer exists`
           ).toBe(true);
+          const published = LOCALES.map(
+            (locale) => editorialArticles(locale).find((article) => article.id === id)?.text ?? ""
+          ).join("\n");
+          for (const phrase of phrases) {
+            expect(
+              published.includes(phrase),
+              `${family.id}: "${phrase}" is waived in "${id}" and appears in no locale of it`
+            ).toBe(true);
+          }
         }
       }
     }
