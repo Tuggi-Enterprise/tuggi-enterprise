@@ -5,7 +5,7 @@ import { publishedText } from "./support/published-text";
 import { ASIDE_CEILING, BREATH_CEILING, asideMarks, longestBreath } from "./support/copy-ruler";
 import { localizedPathname } from "../../src/i18n/pathnames";
 import { LOCALES, DEFAULT_LOCALE } from "../../src/i18n/locales";
-import { NAV_ITEMS } from "../../src/lib/nav";
+import { ARTICLE_RAIL_ITEMS, NAV_ITEMS } from "../../src/lib/nav";
 import {
   AUTHORABLE_BLOCKS,
   documentShape,
@@ -851,20 +851,21 @@ test.describe("DS-LAYOUT-012 — the reading column has a measured ceiling", () 
 });
 
 /* ---------------------------------------------------------------------------
- * 5-b. The article occupies the rail — DS-LAYOUT-013, §11 criterion 15-c
+ * 5-b. The article occupies the rail, and the rail is navigation —
+ *      DS-LAYOUT-013 and DS-COMPONENTE-059, §11 criteria 15-c, 15-d, 15-e, 15-f
  * ------------------------------------------------------------------------- */
 
 /**
  * `DS-LAYOUT-013` — the article occupies the rail, by structure and never by a
- * wider line.
+ * wider line. `DS-COMPONENTE-059` — what the second track carries.
  *
- * `DS-LAYOUT-012` decided how WIDE the reading column is; this rule decides
- * where it STARTS and what fills what is left. The two are different axes of
- * the same page and neither replaces the other: the column is still 576 px of
- * text and 768 px of object, and it now begins on the content edge of the rail
- * instead of floating in the middle of it. Centring a narrow column inside the
- * rail creates a second rail — the body opened at `left` 432 while the logo of
- * the header opened at 112, 320 px of ditch on each side, 53 % of the rail
+ * `DS-LAYOUT-012` decided how WIDE the reading column is; `DS-LAYOUT-013`
+ * decides where it STARTS and what fills what is left. The two are different
+ * axes of the same page and neither replaces the other: the column is still
+ * 576 px of text and 768 px of object, and it begins on the content edge of the
+ * rail instead of floating in the middle of it. Centring a narrow column inside
+ * the rail creates a second rail — the body opened at `left` 432 while the logo
+ * of the header opened at 112, 320 px of ditch on each side, 53 % of the rail
  * empty — and that misalignment is what the eye reads as "not the same page".
  *
  * The proof is geometric and needs no screenshot: the `<article>` shares the
@@ -877,8 +878,18 @@ test.describe("DS-LAYOUT-012 — the reading column has a measured ceiling", () 
  * Anchoring alone is not the rule — it was measured and refused. Removing
  * `mx-auto` and stopping there leaves 672 px of dead space to the right at
  * 2560, which is worse than the symmetric ditch it replaced. So the second
- * track carries the download call, and the assertion that closes the rail is
- * `aside.right === rail.right`.
+ * track carries function.
+ *
+ * **What that function is changed on 2026-08-31 (#617), and the change is the
+ * point of half of this file.** The track used to carry the download call, and
+ * that put two filled buttons of the SAME act in the same corner: the orange
+ * `Baixar App` the header pins to every scroll and a cyan one 278 px below it.
+ * Now the track carries a rail of internal navigation — three destinations the
+ * menu already publishes, no tint of action, no button, no number — and the
+ * call goes back to the end of the reading. So this block proves two things at
+ * once and they pull in opposite directions: the rail has to be THERE (15-d)
+ * and it has to be QUIET (15-f), and the call has to exist EXACTLY ONCE, in the
+ * reading column, at every viewport (15-e).
  */
 const RAIL_WIDTH = 1216;
 
@@ -890,78 +901,104 @@ const RAIL_VIEWPORTS = [
 ];
 
 /**
- * Below it the grid collapses to one column. 768 is the breakpoint of the
- * cover's own `sizes` and 360 the narrowest phone the site supports — the two
- * places where a two-column grid that forgot to collapse produces horizontal
+ * Below it the grid collapses to one column and the navigation rail is not
+ * rendered at all. 1024 is the widest viewport with no rail and the one the
+ * `xl:` threshold is easiest to get wrong on; 768 is the breakpoint of the
+ * cover's own `sizes`; 360 is the narrowest phone the site supports. The three
+ * are where a two-column grid that forgot to collapse produces horizontal
  * scroll instead of a visible break.
  */
-const COLLAPSED_VIEWPORTS = [360, 768];
+const COLLAPSED_VIEWPORTS = [360, 768, 1024];
 
 /** The support column of the rail: 1216 − 768 of text − 80 of gutter. */
 const SUPPORT_WIDTH = 368;
+
+/** The navigation rail — one attribute, so the test never guesses the tag. */
+const RAIL = "nav[data-article-rail]";
+
+/** The pager. `article nav` is ambiguous now: the rail is a `<nav>` too. */
+const PAGER = "article nav[aria-label]";
 
 /** The store call the article ends with — one node, at every viewport. */
 const STORE_CTA = 'article a[href="/d/tuggi"], article a[href^="https://apps.apple"]';
 
 /**
- * Every box criterion 15-c compares, read in one pass so they are all measured
- * against the same layout.
+ * Every box criteria 15-c and 15-e compare, read in one pass so they are all
+ * measured against the same layout.
  *
  * The rail is taken as the CONTENT box of the footer's shell — its padding
  * discounted — because that is the edge the reader compares against: the rail
  * is where the content starts, not where the wrapper starts.
  */
 function railGeometry(page: Page, cover: string) {
-  return page.evaluate((coverSelector) => {
-    const box = (selector: string) => {
-      const element = document.querySelector(selector);
-      if (!element) return null;
-      const rect = element.getBoundingClientRect();
-      return {
-        left: Math.round(rect.left),
-        right: Math.round(rect.right),
-        width: Math.round(rect.width),
-        top: Math.round(rect.top + window.scrollY),
-        bottom: Math.round(rect.bottom + window.scrollY),
+  return page.evaluate(
+    ({ coverSelector, railSelector, pagerSelector, ctaSelector }) => {
+      const rect = (element: Element | null) => {
+        if (!element) return null;
+        const measured = element.getBoundingClientRect();
+        return {
+          left: Math.round(measured.left),
+          right: Math.round(measured.right),
+          width: Math.round(measured.width),
+          height: Math.round(measured.height),
+          top: Math.round(measured.top + window.scrollY),
+          bottom: Math.round(measured.bottom + window.scrollY),
+        };
       };
-    };
+      const box = (selector: string) => rect(document.querySelector(selector));
 
-    const shell = document.querySelector("footer > div");
-    const shellRect = shell!.getBoundingClientRect();
-    const shellStyle = window.getComputedStyle(shell!);
-    const padLeft = parseFloat(shellStyle.paddingLeft);
-    const padRight = parseFloat(shellStyle.paddingRight);
+      const shell = document.querySelector("footer > div");
+      const shellRect = shell!.getBoundingClientRect();
+      const shellStyle = window.getComputedStyle(shell!);
+      const padLeft = parseFloat(shellStyle.paddingLeft);
+      const padRight = parseFloat(shellStyle.paddingRight);
 
-    return {
-      rail: {
-        left: Math.round(shellRect.left + padLeft),
-        right: Math.round(shellRect.right - padRight),
-        width: Math.round(shellRect.width - padLeft - padRight),
-      },
-      logo: box('header img[alt="TUGGI Logo"]'),
-      article: box("article"),
-      title: box("article header h1"),
-      body: box("article .prose"),
-      cover: box(coverSelector),
-      aside: box("article > aside"),
-      pager: box("article nav"),
-      scrollWidth: document.documentElement.scrollWidth,
-      innerWidth: window.innerWidth,
-    };
-  }, cover);
+      // The card of the call is the parent of the store link, not a class the
+      // test would have to keep in step with the markup.
+      const call = document.querySelector(ctaSelector);
+      const card = call?.parentElement ?? null;
+      const cardBody = card?.querySelector("p") ?? null;
+
+      return {
+        rail: {
+          left: Math.round(shellRect.left + padLeft),
+          right: Math.round(shellRect.right - padRight),
+          width: Math.round(shellRect.width - padLeft - padRight),
+        },
+        logo: box('header img[alt="TUGGI Logo"]'),
+        article: box("article"),
+        title: box("article header h1"),
+        body: box("article .prose"),
+        cover: box(coverSelector),
+        railNav: box(railSelector),
+        pager: box(pagerSelector),
+        card: rect(card),
+        cardBody: cardBody
+          ? {
+              ...rect(cardBody)!,
+              fontSize: parseFloat(window.getComputedStyle(cardBody).fontSize),
+            }
+          : null,
+        scrollWidth: document.documentElement.scrollWidth,
+        innerWidth: window.innerWidth,
+      };
+    },
+    { coverSelector: cover, railSelector: RAIL, pagerSelector: PAGER, ctaSelector: STORE_CTA }
+  );
 }
 
 test.describe("DS-LAYOUT-013 — the article occupies the rail", () => {
-  // One locale, and that is deliberate: the rail is a property of the TEMPLATE,
-  // not of the copy inside it. What does change per language is the measure of
-  // the line, and `DS-LAYOUT-012` already runs its four locales over that.
+  // One locale for the geometry, and that is deliberate: the grid is a property
+  // of the TEMPLATE, not of the copy inside it. What changes per language is
+  // the measure of the line, and `DS-LAYOUT-012` already runs its four locales
+  // over that; the rail's own copy is checked in the four below.
   // Every published piece of the locale, though — article #2 declares no block,
   // so its reading column is the header and the generated cover alone, which is
   // the case that proves the grid holds with the least content in it.
   const pieces = listUpdates(DEFAULT_LOCALE);
 
   for (const { width, left } of RAIL_VIEWPORTS) {
-    test(`DS-LAYOUT-013: at ${width} px the article starts on the rail and the support column closes it`, async ({
+    test(`DS-LAYOUT-013: at ${width} px the article starts on the rail and the navigation column closes it`, async ({
       page,
     }) => {
       await page.setViewportSize({ width, height: 1000 });
@@ -999,24 +1036,25 @@ test.describe("DS-LAYOUT-013 — the article occupies the rail", () => {
           );
         }
 
-        // DS-LAYOUT-012 is untouched: anchoring the column is not widening it.
+        // DS-LAYOUT-012 is untouched: anchoring the column is not widening it,
+        // and neither is putting navigation next to it. #617 refused widening
+        // for a measured reason — 36 em is 80,2 characters in the worst real
+        // English paragraph, over the ceiling of SC 1.4.8 — and widening would
+        // have taken nothing back from the rail anyway: the track is sized by
+        // the object column, not by the text one.
         expect(at.body!.width, `${where}: the reading column was stretched to the rail`).toBe(576);
         expect(at.cover!.width, `${where}: the cover left the figure column`).toBe(768);
 
         // The right half of the rule: the space left over carries function, and
         // it reaches the far edge. Anchoring without it trades a symmetric
         // ditch for a hole on the right.
-        expect(at.aside, `${where}: the support column is not in the document`).not.toBeNull();
-        expect(at.aside!.width, `${where}: the support column is not the track`).toBe(
-          SUPPORT_WIDTH
-        );
-        expect(at.aside!.right, `${where}: the support column does not close the rail`).toBe(
+        expect(at.railNav, `${where}: the navigation rail is not in the document`).not.toBeNull();
+        expect(at.railNav!.width, `${where}: the rail is not the track`).toBe(SUPPORT_WIDTH);
+        expect(at.railNav!.right, `${where}: the rail does not close the page's rail`).toBe(
           at.rail.right
         );
         // Beside the article, not under it — row 1 of the grid.
-        expect(at.aside!.top, `${where}: the support column fell below the content`).toBe(
-          at.article!.top
-        );
+        expect(at.railNav!.top, `${where}: the rail fell below the content`).toBe(at.article!.top);
 
         expect(at.scrollWidth, `${where}: the page scrolls sideways`).toBeLessThanOrEqual(
           at.innerWidth + 1
@@ -1026,7 +1064,7 @@ test.describe("DS-LAYOUT-013 — the article occupies the rail", () => {
   }
 
   for (const width of COLLAPSED_VIEWPORTS) {
-    test(`DS-LAYOUT-013: at ${width} px the grid is one column and the support column is back in the flow`, async ({
+    test(`DS-COMPONENTE-059: at ${width} px the rail is NOT RENDERED and the call keeps its place in the flow`, async ({
       page,
     }) => {
       await page.setViewportSize({ width, height: 800 });
@@ -1041,17 +1079,50 @@ test.describe("DS-LAYOUT-013 — the article occupies the rail", () => {
           at.rail.width
         );
 
-        // One column: the aside is under the body, and the pager under the
-        // aside. This is the same DOM order the wide viewport publishes — the
-        // grid moved the box, it did not move the node.
-        expect(at.aside!.left, `${where}: the support column left the rail`).toBe(at.rail.left);
+        // The rail does not exist below the threshold — `DS-LAYOUT-013` regra
+        // 4. The three destinations are in the header and in the `FatFooter` at
+        // this width, and a stack of links glued to the pager, which is
+        // navigation itself, is a third menu.
+        //
+        // "Does not exist" is asserted as the reader and the screen reader can
+        // observe it — no box, no accessible name, no tab stop — and NOT as a
+        // count of DOM nodes, because this page is `force-static`: one HTML
+        // answers every viewport, so nothing on the server knows how wide the
+        // window is. `display: none` is the only mechanism that reaches the
+        // three at once; the alternative, a media query read in JavaScript,
+        // would ship a rail that pops in after hydration and is absent from the
+        // served HTML. The one thing that WOULD be a defect is two nodes with
+        // one hidden by CSS — that is proved above, on the call.
+        const railBelow = page.locator("[data-article-rail]");
+        await expect(railBelow, `${where}: the rail was rendered twice`).toHaveCount(1);
+        await expect(railBelow, `${where}: the rail paints below the threshold`).toBeHidden();
+        await expect(
+          page.locator("[data-article-rail] a:visible"),
+          `${where}: the rail publishes a visible link below the threshold`
+        ).toHaveCount(0);
+        // Zero tab stops, proved by trying: a `display: none` subtree cannot
+        // take focus, and a rail hidden by opacity or by a zero height could.
+        const focusable = await page.evaluate(() => {
+          const anchors = Array.from(
+            document.querySelectorAll<HTMLAnchorElement>("[data-article-rail] a")
+          );
+          return anchors.filter((anchor) => {
+            anchor.focus();
+            return document.activeElement === anchor;
+          }).length;
+        });
+        expect(focusable, `${where}: the rail is still in the tab order`).toBe(0);
+
+        // The call, on the other hand, is CONTENT of the page: it stays, in the
+        // reading flow, between the body and the pager. One node in both cases.
+        expect(at.card, `${where}: the call left the page`).not.toBeNull();
         expect(
-          at.aside!.top,
-          `${where}: the support column is still beside the body, so the grid did not collapse`
+          at.card!.top,
+          `${where}: the call is still beside the body, so the grid did not collapse`
         ).toBeGreaterThanOrEqual(at.body!.bottom);
         if (at.pager) {
           expect(at.pager.top, `${where}: the pager climbed above the call`).toBeGreaterThanOrEqual(
-            at.aside!.bottom
+            at.card!.bottom
           );
         }
 
@@ -1063,60 +1134,336 @@ test.describe("DS-LAYOUT-013 — the article occupies the rail", () => {
   }
 
   for (const width of [...COLLAPSED_VIEWPORTS, ...RAIL_VIEWPORTS.map((v) => v.width)]) {
-    test(`DS-LAYOUT-013: at ${width} px there is ONE call node, read after the article`, async ({
+    test(`DS-COMPONENTE-058 / DS-LAYOUT-013: at ${width} px there is ONE call node, at the end of the reading`, async ({
       page,
     }) => {
       await page.setViewportSize({ width, height: 900 });
       await page.goto(articleUrl(pieces[0]));
 
-      // The grid repositions one node; it never renders two and hides one by
-      // media query. Two would double the tab stop and fire `updates_article`
-      // from a target the reader cannot see.
+      // The call is written once, in the flow, and the grid never moves it. Two
+      // nodes with one hidden by media query would double the tab stop and fire
+      // `updates_article` from a target the reader cannot see — which is what
+      // regra 4 forbids in both of its legs.
       await expect(
         page.locator(STORE_CTA),
-        "the support column duplicated the store call"
+        "the page carries more than one store call"
       ).toHaveCount(1);
-      await expect(page.locator("article > aside")).toHaveCount(1);
-
-      // SC 1.3.2: the DOM order IS the reading order, and it does not follow the
-      // screen. The aside paints at the top right above the breakpoint and is
-      // still read after the body — reordering the DOM to match the screen is
-      // the defect, not the fix.
-      const order = await page.evaluate(() => {
-        const aside = document.querySelector("article > aside")!;
-        const body = document.querySelector("article .prose")!;
-        const pager = document.querySelector("article nav");
-        const FOLLOWING = Node.DOCUMENT_POSITION_FOLLOWING;
-        return {
-          asideAfterBody: Boolean(body.compareDocumentPosition(aside) & FOLLOWING),
-          pagerAfterAside: pager
-            ? Boolean(aside.compareDocumentPosition(pager) & FOLLOWING)
-            : null,
-        };
-      });
-      expect(order.asideAfterBody, "the call is read before the article it interrupts").toBe(true);
-      if (order.pagerAfterAside !== null) {
-        expect(order.pagerAfterAside, "the pager is read before the call").toBe(true);
+      await expect(
+        page.locator(`${RAIL} a[href="/d/tuggi"], ${RAIL} button, ${RAIL} [href^="https://apps"]`),
+        "the rail grew a call to action"
+      ).toHaveCount(0);
+      // One rail node in the document at every width — the threshold decides
+      // whether it PAINTS, never how many there are. See the collapsed test
+      // above for why a statically generated page cannot drop the node.
+      await expect(page.locator(RAIL), "the rail was rendered twice").toHaveCount(1);
+      if (width >= 1280) {
+        await expect(page.locator(RAIL), "the rail vanished above the threshold").toBeVisible();
+      } else {
+        await expect(page.locator(RAIL), "the rail paints below the threshold").toBeHidden();
       }
 
-      // A complementary landmark with no accessible name is a landmark nobody
-      // can pick from a list. `textContent` and not the accessible name: the
-      // accname matcher normalises away a missing space between inline children
-      // and would call a defect a pass.
-      const label = await page.evaluate(() => {
-        const aside = document.querySelector("article > aside")!;
-        const id = aside.getAttribute("aria-labelledby");
-        const heading = id ? document.getElementById(id) : null;
-        return { id, text: (heading?.textContent ?? "").trim(), tag: heading?.tagName ?? null };
-      });
-      expect(label.id, "the aside has no aria-labelledby").not.toBeNull();
-      expect(label.tag, "the aria-labelledby of the aside points at nothing").not.toBeNull();
-      expect(label.text.length, "the name of the support column is empty").toBeGreaterThan(0);
-      // A key that did not resolve renders its own path, and next-intl 4.12
-      // does not break the build over it.
-      expect(label.text, "the rail title is rendering its own i18n path").not.toContain("Updates.");
+      // SC 1.3.2: the DOM order IS the reading order, and it does not follow the
+      // screen. The rail paints at the top right above the breakpoint and is
+      // still read after the body — reordering the DOM to match the screen is
+      // the defect, not the fix.
+      const order = await page.evaluate(
+        ({ railSelector, pagerSelector, ctaSelector }) => {
+          const body = document.querySelector("article .prose, article header")!;
+          const call = document.querySelector(ctaSelector)!;
+          const rail = document.querySelector(railSelector);
+          const pager = document.querySelector(pagerSelector);
+          const FOLLOWING = Node.DOCUMENT_POSITION_FOLLOWING;
+          const follows = (first: Element, second: Element) =>
+            Boolean(first.compareDocumentPosition(second) & FOLLOWING);
+          return {
+            callAfterBody: follows(body, call),
+            railAfterCall: rail ? follows(call, rail) : null,
+            pagerAfterCall: pager ? follows(call, pager) : null,
+            callInReadingColumn: Boolean(call.closest("article > div:first-child")),
+          };
+        },
+        { railSelector: RAIL, pagerSelector: PAGER, ctaSelector: STORE_CTA }
+      );
+      expect(order.callAfterBody, "the call is read before the article it interrupts").toBe(true);
+      expect(order.callInReadingColumn, "the call left the reading column").toBe(true);
+      if (order.railAfterCall !== null) {
+        expect(order.railAfterCall, "the rail is read before the article").toBe(true);
+      }
+      if (order.pagerAfterCall !== null) {
+        expect(order.pagerAfterCall, "the pager is read before the call").toBe(true);
+      }
     });
   }
+
+  for (const width of [...COLLAPSED_VIEWPORTS, ...RAIL_VIEWPORTS.map((v) => v.width)]) {
+    test(`DS-COMPONENTE-058: at ${width} px the call fits the reading column and its line is measured`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height: 900 });
+
+      for (const piece of pieces) {
+        await page.goto(articleUrl(piece));
+        const at = await railGeometry(page, COVER);
+        const where = `${piece.slug} at ${width} px`;
+
+        expect(at.card, `${where}: the call left the page`).not.toBeNull();
+        // The figure column, never the rail: `max-w-3xl` and no `mx-auto`.
+        expect(at.card!.width, `${where}: the call is wider than the figure column`)
+          .toBeLessThanOrEqual(768);
+        expect(at.card!.left, `${where}: the call starts on a second rail`).toBe(at.rail.left);
+
+        // And the sentence inside it obeys DS-LAYOUT-012 like any other running
+        // text: 512 px at 16 px is 32,0 em, under the ceiling of 33.
+        expect(at.cardBody, `${where}: the call has no body copy`).not.toBeNull();
+        const measure = at.cardBody!.width / at.cardBody!.fontSize;
+        expect(
+          Number(measure.toFixed(1)),
+          `${where}: the body of the call measures ${measure.toFixed(1)} em`
+        ).toBeLessThanOrEqual(MEASURE_CEILING);
+      }
+    });
+  }
+});
+
+/**
+ * `DS-COMPONENTE-059` — the rail is navigation, and it is quiet.
+ *
+ * Every clause below is arithmetic, which is the whole design of the rule: "it
+ * does not compete with the reading" is not a matter of taste once it is
+ * written as a font size, a target box, a height and a list of forbidden
+ * colours. The measurements are taken at 1440 × 1000, which is where the
+ * prototype the spec records was measured.
+ */
+test.describe("DS-COMPONENTE-059 — the rail is a slice of the site map, not a second offer", () => {
+  /** The two tints of action. A rail may not paint either, on any descendant. */
+  const ACTION_TOKENS = ["--color-tuggi-primary", "--color-tuggi-secondary"];
+
+  function railFacts(page: Page) {
+    return page.evaluate(
+      ({ railSelector, pagerSelector, callSelector, tokens }) => {
+        const rail = document.querySelector(railSelector);
+        if (!rail) return null;
+
+        // The tokens resolved by the browser, so the test compares what is
+        // painted and not a hex someone typed twice.
+        const probe = document.createElement("span");
+        document.body.appendChild(probe);
+        const forbidden = tokens.map((token) => {
+          probe.style.color = `var(${token})`;
+          return window.getComputedStyle(probe).color;
+        });
+        probe.remove();
+
+        const isOpaque = (colour: string) => {
+          const parts = colour.match(/[\d.]+/g);
+          if (!parts) return false;
+          return parts.length < 4 || parseFloat(parts[3]) > 0;
+        };
+
+        const descendants = Array.from(rail.querySelectorAll("*"));
+        const paint = [rail, ...descendants].map((node) => {
+          const style = window.getComputedStyle(node);
+          return {
+            tag: node.tagName.toLowerCase(),
+            background: style.backgroundColor,
+            colour: style.color,
+            shadow: style.boxShadow,
+            borders: (["Top", "Right", "Bottom", "Left"] as const).map((side) => ({
+              width: parseFloat(style[`border${side}Width` as "borderTopWidth"]),
+              colour: style[`border${side}Color` as "borderTopColor"],
+            })),
+            fontSize: parseFloat(style.fontSize),
+            opaqueBackground: isOpaque(style.backgroundColor),
+          };
+        });
+
+        const heading = rail.querySelector("h2, h3");
+        const links = Array.from(rail.querySelectorAll("a")).map((anchor) => {
+          const box = anchor.getBoundingClientRect();
+          return {
+            href: anchor.getAttribute("href") ?? "",
+            text: (anchor.textContent ?? "").trim(),
+            width: Math.round(box.width),
+            height: Math.round(box.height),
+            fontSize: parseFloat(window.getComputedStyle(anchor).fontSize),
+          };
+        });
+
+        const proseParagraph = document.querySelector("article .prose p");
+
+        return {
+          forbidden,
+          paint,
+          buttons: rail.querySelectorAll("button").length,
+          heading: heading
+            ? {
+                tag: heading.tagName.toLowerCase(),
+                id: heading.id,
+                text: (heading.textContent ?? "").trim(),
+                fontSize: parseFloat(window.getComputedStyle(heading).fontSize),
+              }
+            : null,
+          labelledBy: rail.getAttribute("aria-labelledby"),
+          links,
+          height: Math.round(rail.getBoundingClientRect().height),
+          viewportHeight: window.innerHeight,
+          proseFontSize: proseParagraph
+            ? parseFloat(window.getComputedStyle(proseParagraph).fontSize)
+            : null,
+          otherHrefs: {
+            back:
+              document.querySelector("article header a")?.getAttribute("href") ?? null,
+            pager: Array.from(document.querySelectorAll(`${pagerSelector} a`)).map(
+              (anchor) => anchor.getAttribute("href") ?? ""
+            ),
+            call: document.querySelector(callSelector)?.getAttribute("href") ?? null,
+          },
+        };
+      },
+      { railSelector: RAIL, pagerSelector: PAGER, callSelector: STORE_CTA, tokens: ACTION_TOKENS }
+    );
+  }
+
+  for (const locale of LOCALES) {
+    test(`DS-COMPONENTE-059: on ${locale} the rail is a named landmark of at most three menu links`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width: 1440, height: 1000 });
+      const messages = JSON.parse(
+        fs.readFileSync(path.join(REPO_ROOT, `src/messages/${locale}.json`), "utf8")
+      );
+
+      for (const piece of listUpdates(locale)) {
+        await page.goto(articleUrl(piece));
+        const facts = await railFacts(page);
+        const where = `${locale}/${piece.slug}`;
+        expect(facts, `${where}: there is no rail at 1440 px`).not.toBeNull();
+
+        // A landmark with no accessible name is a landmark a screen-reader user
+        // cannot pick from a list. `textContent` and not the accname matcher:
+        // the matcher normalises a missing space between inline children away
+        // and would call a defect a pass.
+        expect(facts!.labelledBy, `${where}: the rail has no aria-labelledby`).not.toBeNull();
+        expect(facts!.heading, `${where}: the aria-labelledby points at nothing`).not.toBeNull();
+        expect(facts!.heading!.id, `${where}: the rail is named by the wrong element`).toBe(
+          facts!.labelledBy
+        );
+        // The label is copy, and it is the ONLY new string of the rail — the
+        // rest comes from the menu. A key that did not resolve renders its own
+        // path, and next-intl 4.12 does not break the build over it.
+        expect(facts!.heading!.text, `${where}: the rail title is rendering its i18n path`)
+          .not.toContain("Updates.");
+        expect(facts!.heading!.text, `${where}: the rail title is not the published copy`).toBe(
+          messages.Updates.rail.title
+        );
+
+        // (b) of the criterion: the label of every link is the one the MENU
+        // carries. Two names for the same place is the defect this forbids, so
+        // the expectation is read from `Header.nav*` and from the registry, not
+        // typed here.
+        const expected = ARTICLE_RAIL_ITEMS.map((item) => ({
+          href: `/${locale}${localizedPathname(locale, item.href)}`,
+          text: messages.Header[item.labelKey] as string,
+        }));
+        expect(expected.length, "the rail registry lost its destinations").toBeGreaterThan(0);
+        expect(expected.length, "Hick's law: three is the ceiling").toBeLessThanOrEqual(3);
+        expect(
+          facts!.links.map((link) => ({ href: link.href, text: link.text })),
+          `${where}: the rail does not spell the menu`
+        ).toEqual(expected);
+
+        // (g) no digit, in any of the four languages. No price, no date, no
+        // count: a number in the rail is a second declaration of a business
+        // rule that nothing keeps in step.
+        const text = [facts!.heading!.text, ...facts!.links.map((link) => link.text)].join(" ");
+        expect(text, `${where}: the rail carries a number`).not.toMatch(/\d/);
+
+        // (g) of DS-COMPONENTE-059: no destination is printed twice in the same
+        // document. The pager already publishes the neighbouring pieces and the
+        // header link already goes back to the section.
+        const elsewhere = new Set(
+          [facts!.otherHrefs.back, facts!.otherHrefs.call, ...facts!.otherHrefs.pager].filter(
+            (href): href is string => Boolean(href)
+          )
+        );
+        for (const link of facts!.links) {
+          expect(
+            elsewhere.has(link.href),
+            `${where}: ${link.href} is already published elsewhere on this page`
+          ).toBe(false);
+        }
+      }
+    });
+  }
+
+  test("DS-COMPONENTE-059: the rail carries no surface, no tint of action and no button", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 1000 });
+    await page.goto(articleUrl(listUpdates(DEFAULT_LOCALE)[0]));
+    const facts = (await railFacts(page))!;
+    expect(facts, "there is no rail at 1440 px").not.toBeNull();
+
+    // (a) no card: no opaque background, no shadow, and the only border allowed
+    // is the 1 px rule between items.
+    for (const node of facts.paint) {
+      expect(node.opaqueBackground, `<${node.tag}> in the rail paints a surface`).toBe(false);
+      expect(node.shadow, `<${node.tag}> in the rail casts a shadow`).toBe("none");
+      for (const border of node.borders) {
+        expect(border.width, `<${node.tag}> in the rail draws a card border`).toBeLessThanOrEqual(
+          1
+        );
+      }
+    }
+
+    // (b) no tint of action anywhere — this is the whole reason the rule was
+    // rewritten. The focus ring is the exception and it is not painted here.
+    for (const node of facts.paint) {
+      for (const forbidden of facts.forbidden) {
+        expect(node.background, `<${node.tag}> paints the rail with a brand tint`).not.toBe(
+          forbidden
+        );
+        expect(node.colour, `<${node.tag}> writes the rail in a brand tint`).not.toBe(forbidden);
+      }
+    }
+
+    // (c) no button of any kind.
+    expect(facts.buttons, "the rail grew a button").toBe(0);
+  });
+
+  test("DS-COMPONENTE-059: the rail is smaller than the reading and fits the window", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 1000 });
+    await page.goto(articleUrl(listUpdates(DEFAULT_LOCALE)[0]));
+    const facts = (await railFacts(page))!;
+    expect(facts, "there is no rail at 1440 px").not.toBeNull();
+
+    // (d) the biggest type in the rail is smaller than the body of the article,
+    // and the label is the smallest text on the screen.
+    const biggest = Math.max(...facts.paint.map((node) => node.fontSize));
+    expect(biggest, "the rail reads as loud as the article").toBeLessThanOrEqual(16);
+    expect(facts.proseFontSize, "the body of the article is not 18 px any more").toBe(18);
+    expect(facts.heading!.fontSize, "the label of the rail is not the smallest text")
+      .toBeLessThanOrEqual(12);
+
+    // (e) a comfortable target: SC 2.5.8 asks 24 × 24, and a vertical list of
+    // links is not the *Inline* exception, so the 44 px of the HIG and of
+    // Material are what a stack this cheap should cost.
+    for (const link of facts.links) {
+      expect(link.height, `"${link.text}" is a ${link.height} px target`).toBeGreaterThanOrEqual(
+        44
+      );
+      expect(link.width, `"${link.text}" is a ${link.width} px target`).toBeGreaterThanOrEqual(24);
+    }
+
+    // (f) a sticky rail taller than the window has its foot cut off and does
+    // not scroll.
+    expect(
+      facts.height,
+      `the rail is ${facts.height} px of a ${facts.viewportHeight} px window`
+    ).toBeLessThanOrEqual(facts.viewportHeight / 2);
+  });
 });
 
 /**
@@ -1218,7 +1565,10 @@ test.describe("DS-COMPONENTE-054 / 055 — the closed block set", () => {
         // both sides from the third on. Until 2026-08-30 the section held one
         // article and this could only prove the empty case.
         const { previous, next } = pagerFor(listing, document.slug);
-        const nav = page.locator("article nav");
+        // `article nav` stopped being unambiguous when the support column became a
+        // navigation rail (DS-COMPONENTE-059). The pager is the one named by
+        // `aria-label`; reaimed, not loosened.
+        const nav = page.locator("article nav[aria-label]");
         await expect(nav, `${document.slug} pages to nowhere`).toHaveCount(
           previous || next ? 1 : 0
         );

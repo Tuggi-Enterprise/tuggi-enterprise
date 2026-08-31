@@ -970,8 +970,10 @@
     "readMore": "Read",
     "cta": {
       "button": "Get the app",
-      "railTitle": "Get Tuggi",
-      "railBody": "Your welcome hours are waiting in the app."
+      "body": "Your welcome hours are waiting in the app."
+    },
+    "rail": {
+      "title": "Explore Tuggi"
     },
     "backToSection": "Back to Updates",
     "empty": {

@@ -970,8 +970,10 @@
     "readMore": "Leer",
     "cta": {
       "button": "Descargar la app",
-      "railTitle": "Descarga Tuggi",
-      "railBody": "Tus horas de bienvenida ya están en la app."
+      "body": "Tus horas de bienvenida ya están en la app."
+    },
+    "rail": {
+      "title": "Conoce Tuggi"
     },
     "backToSection": "Volver a Novedades",
     "empty": {

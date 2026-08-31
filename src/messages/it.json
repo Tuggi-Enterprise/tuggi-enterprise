@@ -970,8 +970,10 @@
     "readMore": "Leggi",
     "cta": {
       "button": "Scarica l'app",
-      "railTitle": "Scarica Tuggi",
-      "railBody": "Le tue ore di benvenuto ti aspettano nell'app."
+      "body": "Le tue ore di benvenuto ti aspettano nell'app."
+    },
+    "rail": {
+      "title": "Scopri Tuggi"
     },
     "backToSection": "Torna agli aggiornamenti",
     "empty": {

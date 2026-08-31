@@ -26,6 +26,7 @@ import { ArticlePager } from "@/components/blocks/article/ArticlePager";
 import { AppDownloadButton } from "@/components/blocks/AppDownloadButton";
 import { UpdateCover } from "@/components/blocks/UpdateCover";
 import { UpdateTypeBadge } from "@/components/blocks/UpdateTypeBadge";
+import { ARTICLE_RAIL_ITEMS } from "@/lib/nav";
 
 /**
  * An editorial article — spec §5.
@@ -109,6 +110,10 @@ export default async function UpdateArticlePage({
   if (!article) notFound();
 
   const t = await getTranslations({ locale, namespace: "Updates" });
+  // The rail spells its links with the menu's own labels — `DS-COMPONENTE-059`
+  // regra 2 — so `Header` is read here rather than a second set of keys added
+  // to `Updates`.
+  const tHeader = await getTranslations({ locale, namespace: "Header" });
   const listing = listUpdates(locale as SiteLocale);
   const { previous, next } = pagerFor(listing, slug);
 
@@ -154,24 +159,25 @@ export default async function UpdateArticlePage({
           inside it is the defect trust-center/layout.tsx corrected. */}
       {/* Two columns from 1280 px up — `DS-LAYOUT-013`.
           The reading column is 768 px wide at most and anchored on the content
-          edge of `.page-shell`, and the 368 px that remain carry the download
-          call, which is the one thing on this page that gains by being
-          persistent. `minmax(0, 768px)` and not `768px`: a plain track floors
-          the grid at 768 and the row overflows the rail on a narrow screen,
-          which is the horizontal scroll SC 1.4.10 refuses.
+          edge of `.page-shell`, and the 368 px that remain carry a rail of
+          internal navigation — never a second offer. `minmax(0, 768px)` and not
+          `768px`: a plain track floors the grid at 768 and the row overflows the
+          rail on a narrow screen, which is the horizontal scroll SC 1.4.10
+          refuses.
 
-          No `items-start`. The `<aside>` has to stretch across both rows for
-          `sticky` to have any travel — aligned to the start it is as tall as
-          its own box and never moves.
+          The rail is `row-span-2` AND `self-start`, and the pair is what makes
+          `sticky` work without inflating the box: the sticky constraint
+          rectangle of a grid item is its GRID AREA, so spanning both rows gives
+          the travel, while `self-start` keeps the `<nav>` as tall as the three
+          links it holds. Stretched, it would measure the height of the whole
+          article — a landmark of 2261 px in a 1000 px window, which is what
+          criterion 15-f(f) counts.
 
           The DOM order is the reading order and it does not change: content,
-          then the call, then the pager (`DS-COMPONENTE-058`). The aside paints
-          at the top right and is still read after the article, which is what
+          then the rail, then the pager (`DS-COMPONENTE-058`). The rail paints at
+          the top right and is still read after the article, which is what
           SC 1.3.2 asks; reordering the DOM to match the screen is the defect,
-          not the fix. Below the breakpoint the same three children stack in
-          that same order, so there is ONE call-to-action node in the document
-          at every viewport — two nodes with one hidden by CSS would duplicate
-          the tab stop and the `updates_article` event. */}
+          not the fix. */}
       <article className="xl:grid xl:grid-cols-[minmax(0,768px)_1fr] xl:gap-x-20">
         <div className="xl:col-start-1 xl:row-start-1">
           {/* The header is text — link back, badge, date, `h1` and dek — and it
@@ -225,48 +231,93 @@ export default async function UpdateArticlePage({
           <div className="mt-10">
             <ArticleBody blocks={article.blocks} />
           </div>
+
+          {/* Three things end an article, in this order, and nothing else
+              (DS-COMPONENTE-058): one CTA — the one the site already publishes
+              —, the pager, and no third-party share widget. The share of this
+              section is the OG card plus a correct canonical, which is what
+              makes the link look right in WhatsApp, where it is actually
+              shared.
+
+              The call lives at the END OF THE READING, not in the rail, and
+              that is `DS-LAYOUT-013` regra 3: a persistent offer beside the
+              text is the definition of competing with the reader's attention,
+              and the site header already carries a filled download button on
+              every scroll — the rail was being the SECOND filled button of the
+              same act, in the same corner, in a second brand colour.
+
+              ONE node, at every viewport: it is in the flow of the reading
+              column and the grid never moves it, so the `updates_article` event
+              and the tab stop exist exactly once. No `mx-auto` — the column is
+              anchored on the rail (regra 1) and centring inside it would open
+              the second rail this rule exists to close. No `h2` either: the
+              button says the same sentence the heading used to, 2 cm apart.
+
+              No number enters this card. The welcome grant is BR-MONETIZACAO-058
+              and it has one owner; a figure typed here is a second declaration
+              of it that nothing keeps in step. */}
+          <div className="mt-16 max-w-3xl rounded-3xl border border-gray-100 bg-tuggi-bg p-8 text-center">
+            <p className="max-w-lg mx-auto text-base leading-relaxed text-tuggi-slate">
+              {t("cta.body")}
+            </p>
+            <AppDownloadButton
+              eventLabel="updates_article"
+              className="mt-6 inline-block px-8 py-4 bg-tuggi-primary text-tuggi-dark font-black rounded-2xl shadow-xl shadow-tuggi-primary/20 hover:shadow-2xl hover:-translate-y-1 transition-all"
+            >
+              {t("cta.button")}
+            </AppDownloadButton>
+          </div>
         </div>
 
-        {/* Three things end an article, in this order, and nothing else
-            (DS-COMPONENTE-058): one CTA — the one the site already publishes —,
-            the pager, and no third-party share widget. The share of this
-            section is the OG card plus a correct canonical, which is what makes
-            the link look right in WhatsApp, where it is actually shared.
+        {/* The rail — `DS-COMPONENTE-059`. A recorte of the site map, and
+            nothing else: a label, at most three links to surfaces the menu
+            already publishes, and no image, icon, description, number, price,
+            date, button or field.
 
-            The call is the support column of `DS-LAYOUT-013`: from 1280 px up
-            it moves to the second track and rides the scroll, and below it
-            falls back into the flow it already occupied, between the body and
-            the pager. Same node in both cases. It is an `<aside>` named by its
-            own heading, because a landmark with no accessible name is a landmark
-            a screen-reader user cannot choose from a list. */}
-        <aside
-          className="mt-16 max-w-3xl xl:col-start-2 xl:row-start-1 xl:row-span-2 xl:mt-0 xl:max-w-none"
-          aria-labelledby="article-cta-title"
+            It is a `<nav>` and not an `<aside>` because it carries navigation,
+            and it is named by its own heading, because a landmark with no
+            accessible name is a landmark a screen-reader user cannot pick from
+            a list.
+
+            `hidden xl:block`, so below 1280 px it is NOT RENDERED — not hidden.
+            The three destinations are already in the header and in the
+            `FatFooter` at that viewport, and a stack of links glued to the
+            pager, which is itself navigation, is a third menu. That is the
+            second leg of `DS-LAYOUT-013` regra 4: content of the page falls
+            back into the flow, navigation that the chrome already publishes
+            simply does not exist below the threshold. Never two nodes with one
+            hidden by CSS. */}
+        <nav
+          data-article-rail
+          aria-labelledby="article-rail-title"
+          className="hidden xl:sticky xl:top-24 xl:col-start-2 xl:row-start-1 xl:row-span-2 xl:block xl:self-start"
         >
-          <div className="xl:sticky xl:top-24">
-            <div className="rounded-3xl border border-gray-100 bg-tuggi-bg p-8 text-center">
-              <h2
-                id="article-cta-title"
-                className="text-xl font-black tracking-tight text-tuggi-dark"
-              >
-                {t("cta.railTitle")}
-              </h2>
-              {/* Restates BR-MONETIZACAO-058, which the article itself already
-                  publishes. No number enters the rail: the grant is a business
-                  rule with one owner, and a figure typed here is a second
-                  declaration of it that nothing keeps in step. */}
-              <p className="mt-2 text-base leading-relaxed text-tuggi-slate">
-                {t("cta.railBody")}
-              </p>
-              <AppDownloadButton
-                eventLabel="updates_article"
-                className="mt-6 inline-block px-8 py-4 bg-tuggi-primary text-tuggi-dark font-black rounded-2xl shadow-xl shadow-tuggi-primary/20 hover:shadow-2xl hover:-translate-y-1 transition-all"
-              >
-                {t("cta.button")}
-              </AppDownloadButton>
-            </div>
-          </div>
-        </aside>
+          {/* The smallest text on the screen, and the label of the landmark: it
+              names a place, it does not promise and it does not sell. Small caps
+              by CSS — the JSON keeps the natural case. */}
+          <h2
+            id="article-rail-title"
+            className="text-xs font-bold uppercase tracking-wider text-tuggi-slate"
+          >
+            {t("rail.title")}
+          </h2>
+          <ul className="mt-4">
+            {ARTICLE_RAIL_ITEMS.map((item) => (
+              <li key={item.href} className="border-t border-gray-200">
+                {/* The label is the one the menu carries — `Header.nav*`, the
+                    same registry — so the site cannot grow two names for the
+                    same place, and a destination unpublished in `NAV_ITEMS`
+                    disappears from both at once. No string is typed here. */}
+                <Link
+                  href={`/${locale}${localizedPathname(locale, item.href)}`}
+                  className="block rounded-sm py-3 text-base font-bold text-tuggi-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text focus-visible:ring-offset-2"
+                >
+                  {tHeader(item.labelKey)}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
 
         <div className="max-w-3xl xl:col-start-1 xl:row-start-2">
           <ArticlePager previous={toLink(previous)} next={toLink(next)} />
