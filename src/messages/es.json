@@ -969,7 +969,9 @@
     "subtitle": "Notas de versión y noticias de producto, de la más reciente a la más antigua.",
     "readMore": "Leer",
     "cta": {
-      "button": "Descargar la app"
+      "button": "Descargar la app",
+      "railTitle": "Descarga Tuggi",
+      "railBody": "Tus horas de bienvenida ya están en la app."
     },
     "backToSection": "Volver a Novedades",
     "empty": {

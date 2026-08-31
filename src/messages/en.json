@@ -969,7 +969,9 @@
     "subtitle": "Release notes and product news, newest first.",
     "readMore": "Read",
     "cta": {
-      "button": "Get the app"
+      "button": "Get the app",
+      "railTitle": "Get Tuggi",
+      "railBody": "Your welcome hours are waiting in the app."
     },
     "backToSection": "Back to Updates",
     "empty": {

@@ -42,10 +42,23 @@ import { ArticleQuote } from "@/components/blocks/article/ArticleQuote";
  *
  * Consecutive text blocks share one `prose` container so the plugin's vertical
  * rhythm still applies between them.
+ *
+ * ---------------------------------------------------------------------------
+ * The two columns are anchored, not centred — `DS-LAYOUT-013`
+ * ---------------------------------------------------------------------------
+ *
+ * Neither cap carries `mx-auto`. Centring a narrow column inside the rail
+ * creates a **second rail**: the body used to start at `left` 432 while the
+ * logo of the header started at 112, 320 px of ditch on each side and 53 % of
+ * the rail empty. The width of each column is the decision of `DS-LAYOUT-012`
+ * and it does not change here; where the column *starts* is this rule's, and
+ * it starts on the content edge of `.page-shell`, like everything else on the
+ * site. What fills the rest of the rail is the support column the article
+ * template renders — never a wider line.
  */
 
-const TEXT_COLUMN = "mx-auto max-w-xl";
-const FIGURE_COLUMN = "mx-auto max-w-3xl";
+const TEXT_COLUMN = "max-w-xl";
+const FIGURE_COLUMN = "max-w-3xl";
 
 /**
  * The declared blocks that are **read line by line** and therefore belong to

@@ -969,7 +969,9 @@
     "subtitle": "Note di rilascio e notizie di prodotto, dalla più recente alla più vecchia.",
     "readMore": "Leggi",
     "cta": {
-      "button": "Scarica l'app"
+      "button": "Scarica l'app",
+      "railTitle": "Scarica Tuggi",
+      "railBody": "Le tue ore di benvenuto ti aspettano nell'app."
     },
     "backToSection": "Torna agli aggiornamenti",
     "empty": {

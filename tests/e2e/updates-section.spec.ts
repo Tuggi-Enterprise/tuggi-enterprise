@@ -654,11 +654,22 @@ const MEASURE_CEILING = 33;
 const RUNNING_TEXT: { label: string; selector: string }[] = [
   { label: "paragraph", selector: "article .prose p" },
   { label: "list item", selector: "article .prose li" },
-  { label: "dek", selector: "article > header > p" },
+  { label: "dek", selector: "article header > p" },
   { label: "notice body", selector: 'article [data-block="article-notice"] > div' },
   { label: "price-table note", selector: 'article [data-block="article-price-table"] > p' },
   { label: "figcaption", selector: "article figcaption" },
 ];
+
+/**
+ * The cover of the piece.
+ *
+ * `article > div > figure`, not `article > figure`: `DS-LAYOUT-013` wrapped the
+ * reading column in a `<div>` so the grid can put the support column beside it,
+ * and the cover moved down one level with the rest of the content. A figure
+ * declared by the body sits deeper still, inside its own column wrapper, so
+ * this path keeps naming exactly one element.
+ */
+const COVER = "article > div > figure";
 
 /** The blocks that are objects, and whose column is the wide one. */
 const WIDE_BLOCKS = ["article-figure", "article-quote", "article-change-table", "article-price-table"];
@@ -733,7 +744,22 @@ test.describe("DS-LAYOUT-012 — the reading column has a measured ceiling", () 
       // `max-w-none` is the utility the legal pages use to cancel the measure,
       // and it is what takes their `<article>` to 822 px and 102 characters.
       expect(type.maxWidth, "something cancelled the measure of `prose`").not.toBe("none");
-      expect(await page.locator('article [class*="max-w-none"]').count()).toBe(0);
+      // Scoped to the READING column and not to the whole `<article>`: the
+      // support column of `DS-LAYOUT-013` carries `xl:max-w-none` on purpose —
+      // above the breakpoint its width is the 368 px of the grid track, and a
+      // 768 px cap left on it would be a number governing nothing. What this
+      // guard defends is the measure of the text, and all of the text lives in
+      // the first child. A substring match over the whole article would report
+      // the rail and say "the measure was cancelled", which is a true count
+      // about the wrong element.
+      expect(
+        await page
+          .locator(
+            'article > div:first-child [class*="max-w-none"], article > div:first-child[class*="max-w-none"]'
+          )
+          .count(),
+        "something cancelled the measure inside the reading column"
+      ).toBe(0);
     });
 
     test(`DS-LAYOUT-012: on ${locale} text shares one left edge and only objects bleed`, async ({
@@ -758,10 +784,10 @@ test.describe("DS-LAYOUT-012 — the reading column has a measured ceiling", () 
             return { left: Math.round(rect.left), width: Math.round(rect.width) };
           };
           return {
-            back: box("article > header > a"),
-            meta: box("article > header > div"),
-            title: box("article > header > h1"),
-            dek: box("article > header > p"),
+            back: box("article header > a"),
+            meta: box("article header > div"),
+            title: box("article header > h1"),
+            dek: box("article header > p"),
             body: box("article .prose"),
             notice: box('article [data-block="article-notice"]'),
           };
@@ -781,7 +807,7 @@ test.describe("DS-LAYOUT-012 — the reading column has a measured ceiling", () 
         // the header, not as its last child, and with no negative margin: a
         // negative margin breaks below a 768 px viewport.
         const cover = await page
-          .locator("article > figure")
+          .locator(COVER)
           .first()
           .evaluate((node) => Math.round(node.getBoundingClientRect().width));
         expect(cover).toBe(768);
@@ -822,6 +848,275 @@ test.describe("DS-LAYOUT-012 — the reading column has a measured ceiling", () 
       );
     }
   });
+});
+
+/* ---------------------------------------------------------------------------
+ * 5-b. The article occupies the rail — DS-LAYOUT-013, §11 criterion 15-c
+ * ------------------------------------------------------------------------- */
+
+/**
+ * `DS-LAYOUT-013` — the article occupies the rail, by structure and never by a
+ * wider line.
+ *
+ * `DS-LAYOUT-012` decided how WIDE the reading column is; this rule decides
+ * where it STARTS and what fills what is left. The two are different axes of
+ * the same page and neither replaces the other: the column is still 576 px of
+ * text and 768 px of object, and it now begins on the content edge of the rail
+ * instead of floating in the middle of it. Centring a narrow column inside the
+ * rail creates a second rail — the body opened at `left` 432 while the logo of
+ * the header opened at 112, 320 px of ditch on each side, 53 % of the rail
+ * empty — and that misalignment is what the eye reads as "not the same page".
+ *
+ * The proof is geometric and needs no screenshot: the `<article>` shares the
+ * `left` and the `width` of the content box of the footer's shell, and so do
+ * the `h1`, the body and the cover. The footer is the reference on purpose. It
+ * is the surface furthest from this template that draws the same rail, so a
+ * regression in the rail itself and a regression in this article cannot cancel
+ * each other out.
+ *
+ * Anchoring alone is not the rule — it was measured and refused. Removing
+ * `mx-auto` and stopping there leaves 672 px of dead space to the right at
+ * 2560, which is worse than the symmetric ditch it replaced. So the second
+ * track carries the download call, and the assertion that closes the rail is
+ * `aside.right === rail.right`.
+ */
+const RAIL_WIDTH = 1216;
+
+/** Above the breakpoint: the rail is constant, only the margin around it grows. */
+const RAIL_VIEWPORTS = [
+  { width: 1280, left: 32 },
+  { width: 1440, left: 112 },
+  { width: 2560, left: 672 },
+];
+
+/**
+ * Below it the grid collapses to one column. 768 is the breakpoint of the
+ * cover's own `sizes` and 360 the narrowest phone the site supports — the two
+ * places where a two-column grid that forgot to collapse produces horizontal
+ * scroll instead of a visible break.
+ */
+const COLLAPSED_VIEWPORTS = [360, 768];
+
+/** The support column of the rail: 1216 − 768 of text − 80 of gutter. */
+const SUPPORT_WIDTH = 368;
+
+/** The store call the article ends with — one node, at every viewport. */
+const STORE_CTA = 'article a[href="/d/tuggi"], article a[href^="https://apps.apple"]';
+
+/**
+ * Every box criterion 15-c compares, read in one pass so they are all measured
+ * against the same layout.
+ *
+ * The rail is taken as the CONTENT box of the footer's shell — its padding
+ * discounted — because that is the edge the reader compares against: the rail
+ * is where the content starts, not where the wrapper starts.
+ */
+function railGeometry(page: Page, cover: string) {
+  return page.evaluate((coverSelector) => {
+    const box = (selector: string) => {
+      const element = document.querySelector(selector);
+      if (!element) return null;
+      const rect = element.getBoundingClientRect();
+      return {
+        left: Math.round(rect.left),
+        right: Math.round(rect.right),
+        width: Math.round(rect.width),
+        top: Math.round(rect.top + window.scrollY),
+        bottom: Math.round(rect.bottom + window.scrollY),
+      };
+    };
+
+    const shell = document.querySelector("footer > div");
+    const shellRect = shell!.getBoundingClientRect();
+    const shellStyle = window.getComputedStyle(shell!);
+    const padLeft = parseFloat(shellStyle.paddingLeft);
+    const padRight = parseFloat(shellStyle.paddingRight);
+
+    return {
+      rail: {
+        left: Math.round(shellRect.left + padLeft),
+        right: Math.round(shellRect.right - padRight),
+        width: Math.round(shellRect.width - padLeft - padRight),
+      },
+      logo: box('header img[alt="TUGGI Logo"]'),
+      article: box("article"),
+      title: box("article header h1"),
+      body: box("article .prose"),
+      cover: box(coverSelector),
+      aside: box("article > aside"),
+      pager: box("article nav"),
+      scrollWidth: document.documentElement.scrollWidth,
+      innerWidth: window.innerWidth,
+    };
+  }, cover);
+}
+
+test.describe("DS-LAYOUT-013 — the article occupies the rail", () => {
+  // One locale, and that is deliberate: the rail is a property of the TEMPLATE,
+  // not of the copy inside it. What does change per language is the measure of
+  // the line, and `DS-LAYOUT-012` already runs its four locales over that.
+  // Every published piece of the locale, though — article #2 declares no block,
+  // so its reading column is the header and the generated cover alone, which is
+  // the case that proves the grid holds with the least content in it.
+  const pieces = listUpdates(DEFAULT_LOCALE);
+
+  for (const { width, left } of RAIL_VIEWPORTS) {
+    test(`DS-LAYOUT-013: at ${width} px the article starts on the rail and the support column closes it`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height: 1000 });
+
+      for (const piece of pieces) {
+        await page.goto(articleUrl(piece));
+        const at = await railGeometry(page, COVER);
+        const where = `${piece.slug} at ${width} px`;
+
+        // The reference first. If the footer stopped drawing the rail, every
+        // assertion below would still pass while the page was broken.
+        expect(at.rail.width, `${where}: the footer no longer draws a ${RAIL_WIDTH} px rail`).toBe(
+          RAIL_WIDTH
+        );
+        expect(at.rail.left, `${where}: the rail does not start where the card measured it`).toBe(
+          left
+        );
+
+        expect(at.article!.left, `${where}: the article floats inside the rail`).toBe(at.rail.left);
+        expect(at.article!.width, `${where}: the article does not span the rail`).toBe(
+          at.rail.width
+        );
+
+        // The logo is the element always on screen, and it is what the reader
+        // compares the article against without knowing they are doing it.
+        expect(at.logo!.left, `${where}: the header logo left the rail`).toBe(at.rail.left);
+        for (const [name, geometry] of [
+          ["h1", at.title],
+          ["body", at.body],
+          ["cover", at.cover],
+        ] as const) {
+          expect(geometry, `${where}: the ${name} vanished`).not.toBeNull();
+          expect(geometry!.left, `${where}: the ${name} starts on a second rail`).toBe(
+            at.logo!.left
+          );
+        }
+
+        // DS-LAYOUT-012 is untouched: anchoring the column is not widening it.
+        expect(at.body!.width, `${where}: the reading column was stretched to the rail`).toBe(576);
+        expect(at.cover!.width, `${where}: the cover left the figure column`).toBe(768);
+
+        // The right half of the rule: the space left over carries function, and
+        // it reaches the far edge. Anchoring without it trades a symmetric
+        // ditch for a hole on the right.
+        expect(at.aside, `${where}: the support column is not in the document`).not.toBeNull();
+        expect(at.aside!.width, `${where}: the support column is not the track`).toBe(
+          SUPPORT_WIDTH
+        );
+        expect(at.aside!.right, `${where}: the support column does not close the rail`).toBe(
+          at.rail.right
+        );
+        // Beside the article, not under it — row 1 of the grid.
+        expect(at.aside!.top, `${where}: the support column fell below the content`).toBe(
+          at.article!.top
+        );
+
+        expect(at.scrollWidth, `${where}: the page scrolls sideways`).toBeLessThanOrEqual(
+          at.innerWidth + 1
+        );
+      }
+    });
+  }
+
+  for (const width of COLLAPSED_VIEWPORTS) {
+    test(`DS-LAYOUT-013: at ${width} px the grid is one column and the support column is back in the flow`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height: 800 });
+
+      for (const piece of pieces) {
+        await page.goto(articleUrl(piece));
+        const at = await railGeometry(page, COVER);
+        const where = `${piece.slug} at ${width} px`;
+
+        expect(at.article!.left, `${where}: the article floats inside the rail`).toBe(at.rail.left);
+        expect(at.article!.width, `${where}: the article does not span the rail`).toBe(
+          at.rail.width
+        );
+
+        // One column: the aside is under the body, and the pager under the
+        // aside. This is the same DOM order the wide viewport publishes — the
+        // grid moved the box, it did not move the node.
+        expect(at.aside!.left, `${where}: the support column left the rail`).toBe(at.rail.left);
+        expect(
+          at.aside!.top,
+          `${where}: the support column is still beside the body, so the grid did not collapse`
+        ).toBeGreaterThanOrEqual(at.body!.bottom);
+        if (at.pager) {
+          expect(at.pager.top, `${where}: the pager climbed above the call`).toBeGreaterThanOrEqual(
+            at.aside!.bottom
+          );
+        }
+
+        expect(at.scrollWidth, `${where}: the page scrolls sideways`).toBeLessThanOrEqual(
+          at.innerWidth + 1
+        );
+      }
+    });
+  }
+
+  for (const width of [...COLLAPSED_VIEWPORTS, ...RAIL_VIEWPORTS.map((v) => v.width)]) {
+    test(`DS-LAYOUT-013: at ${width} px there is ONE call node, read after the article`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto(articleUrl(pieces[0]));
+
+      // The grid repositions one node; it never renders two and hides one by
+      // media query. Two would double the tab stop and fire `updates_article`
+      // from a target the reader cannot see.
+      await expect(
+        page.locator(STORE_CTA),
+        "the support column duplicated the store call"
+      ).toHaveCount(1);
+      await expect(page.locator("article > aside")).toHaveCount(1);
+
+      // SC 1.3.2: the DOM order IS the reading order, and it does not follow the
+      // screen. The aside paints at the top right above the breakpoint and is
+      // still read after the body — reordering the DOM to match the screen is
+      // the defect, not the fix.
+      const order = await page.evaluate(() => {
+        const aside = document.querySelector("article > aside")!;
+        const body = document.querySelector("article .prose")!;
+        const pager = document.querySelector("article nav");
+        const FOLLOWING = Node.DOCUMENT_POSITION_FOLLOWING;
+        return {
+          asideAfterBody: Boolean(body.compareDocumentPosition(aside) & FOLLOWING),
+          pagerAfterAside: pager
+            ? Boolean(aside.compareDocumentPosition(pager) & FOLLOWING)
+            : null,
+        };
+      });
+      expect(order.asideAfterBody, "the call is read before the article it interrupts").toBe(true);
+      if (order.pagerAfterAside !== null) {
+        expect(order.pagerAfterAside, "the pager is read before the call").toBe(true);
+      }
+
+      // A complementary landmark with no accessible name is a landmark nobody
+      // can pick from a list. `textContent` and not the accessible name: the
+      // accname matcher normalises away a missing space between inline children
+      // and would call a defect a pass.
+      const label = await page.evaluate(() => {
+        const aside = document.querySelector("article > aside")!;
+        const id = aside.getAttribute("aria-labelledby");
+        const heading = id ? document.getElementById(id) : null;
+        return { id, text: (heading?.textContent ?? "").trim(), tag: heading?.tagName ?? null };
+      });
+      expect(label.id, "the aside has no aria-labelledby").not.toBeNull();
+      expect(label.tag, "the aria-labelledby of the aside points at nothing").not.toBeNull();
+      expect(label.text.length, "the name of the support column is empty").toBeGreaterThan(0);
+      // A key that did not resolve renders its own path, and next-intl 4.12
+      // does not break the build over it.
+      expect(label.text, "the rail title is rendering its own i18n path").not.toContain("Updates.");
+    });
+  }
 });
 
 /**
@@ -984,9 +1279,9 @@ test.describe("DS-MARCA-009 — alt, and what the generated cover is not", () =>
           // object and left the header when the header went to the text column
           // (DS-LAYOUT-012). It is the only direct `<figure>` child of the
           // article — a body figure is wrapped in its column `<div>`.
-          const cover = page.locator("article > figure svg").first();
+          const cover = page.locator(`${COVER} svg`).first();
           await expect(cover).toHaveAttribute("aria-hidden", "true");
-          await expect(page.locator("article > figure img")).toHaveCount(0);
+          await expect(page.locator(`${COVER} img`)).toHaveCount(0);
         }
       }
     });
