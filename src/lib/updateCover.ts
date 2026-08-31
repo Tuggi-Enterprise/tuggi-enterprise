@@ -5,8 +5,17 @@
  * brand manual registers, drawn the way the site already draws it: the hairline
  * stroke, the filled start dot and the hollow end ring of `RouteCard`'s `<svg>`.
  * `routeTrace.ts` is the same drawing from a real geometry; this one has no
- * geometry, so the shape is derived from the slug — stable per article, and
- * different between articles without anybody choosing anything.
+ * geometry, so the shape is derived from the slug — stable for a given URL, and
+ * different between URLs without anybody choosing anything.
+ *
+ * **The seed is the slug, and the slug is per locale**, so one article draws
+ * four different fields: `/pt/novidades/audio-guia-que-comeca-sozinho` and
+ * `/en/updates/audio-guide-that-starts-on-its-own` are the same piece with two
+ * pictures. Measured on screen 2026-08-30, not deduced. Seeding on the article
+ * **id** instead would give one piece one field in the four languages; which of
+ * the two is wanted is a `design` decision about the share card, not a defect
+ * to be quietly flipped — this note exists so the next reader knows the choice
+ * is open rather than made.
  *
  * **It carries no text and no logo.** That is what makes it publishable without
  * a designer: no safe area to respect, nothing to translate into four
