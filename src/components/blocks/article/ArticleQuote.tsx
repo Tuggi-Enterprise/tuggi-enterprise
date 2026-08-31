@@ -24,7 +24,7 @@ export function ArticleQuote({
   role?: string;
 }) {
   return (
-    <figure className="my-10 border-l-4 border-tuggi-primary-text pl-6">
+    <figure className="my-10 border-l-4 border-tuggi-primary-text pl-6" data-block="article-quote">
       <blockquote className="text-xl leading-relaxed text-tuggi-dark">{children}</blockquote>
       <figcaption className="mt-3 text-sm text-tuggi-slate">
         {author}

@@ -27,7 +27,7 @@ export function ArticleChangeTable({
   rows: [string, string][];
 }) {
   return (
-    <div className="my-10">
+    <div className="my-10" data-block="article-change-table">
       <table className="w-full table-fixed border-collapse text-left text-sm">
         <caption className="caption-top pb-3 text-left text-sm font-bold text-tuggi-dark">
           {caption}

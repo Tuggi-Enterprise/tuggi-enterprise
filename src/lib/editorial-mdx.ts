@@ -75,9 +75,13 @@ const BLOCK_CONTRACT: Record<AuthorableBlock, { required: string[]; optional: st
     required: ["caption", "beforeLabel", "afterLabel", "rows"],
     optional: [],
   },
-  // It receives no number, ever. The amount comes from `resolvePricing`
-  // (BR-MONETIZACAO-069) and the block only says what the table is.
-  ArticlePriceTable: { required: ["caption"], optional: [] },
+  // It receives NOTHING from content, and that is the whole point. The amount
+  // comes from `resolvePricing` (BR-MONETIZACAO-069), and the caption, the two
+  // column headers, the usage caption of each pass and the nature of the charge
+  // come from `Updates.priceTable.*` and `Drive.Pricing.*`. An author who could
+  // type the caption could type a second name for the catalogue, in one
+  // language, where no sweep of `src/messages` would ever read it.
+  ArticlePriceTable: { required: [], optional: [] },
 };
 
 export type Block =

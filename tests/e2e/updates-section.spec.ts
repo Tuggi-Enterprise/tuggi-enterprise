@@ -6,7 +6,12 @@ import { ASIDE_CEILING, BREATH_CEILING, asideMarks, longestBreath } from "./supp
 import { localizedPathname } from "../../src/i18n/pathnames";
 import { LOCALES, DEFAULT_LOCALE } from "../../src/i18n/locales";
 import { NAV_ITEMS } from "../../src/lib/nav";
-import { documentShape, parseEditorialDocument } from "../../src/lib/editorial-mdx";
+import {
+  AUTHORABLE_BLOCKS,
+  documentShape,
+  parseEditorialDocument,
+  type AuthorableBlock,
+} from "../../src/lib/editorial-mdx";
 import {
   FILTER_FLOOR,
   LISTING_CEILING,
@@ -634,21 +639,39 @@ test.describe("DS-LAYOUT-012 — the reading column has a measured ceiling", () 
   }
 });
 
+/**
+ * The `data-block` of a rendered block is its component name in kebab case, and
+ * that convention IS the contract: a block that paints under another name goes
+ * red here rather than being quietly absent from the count below.
+ */
+function blockAttribute(name: AuthorableBlock): string {
+  return name.replace(/(?!^)([A-Z])/g, "-$1").toLowerCase();
+}
+
 test.describe("DS-COMPONENTE-054 / 055 — the closed block set", () => {
-  test("DS-COMPONENTE-054: the article renders every block the marker exercises", async ({
+  test("DS-COMPONENTE-054: the page renders exactly the blocks the piece declares", async ({
     page,
   }) => {
+    // Against the TREE the parser produced, never against a list of blocks
+    // somebody expected to find. Until 2026-08-30 this read the marker article,
+    // which exercised all five blocks on purpose; the real copy of article #1
+    // carries a notice, a before/after and the price table, and no figure and
+    // no quotation — a decision of the copy deck (§2: there is no assertable
+    // image for this piece, and an attributed quotation has no source), not an
+    // omission to fix. Written this way the assertion survives that decision
+    // AND still goes red if a block is declared and never painted.
     const document = listUpdates(DEFAULT_LOCALE)[0];
     await page.goto(articleUrl(document));
 
-    await expect(page.locator("article figure blockquote"), "the quote block").toHaveCount(1);
-    await expect(page.locator("article aside"), "the notice block").toHaveCount(1);
-    await expect(page.locator("article table"), "the change table and the price table").toHaveCount(
-      2
-    );
-    // The cover figure plus the body figure.
-    await expect(page.locator("article figure img"), "the figure block").toHaveCount(1);
-    await expect(page.locator("article ul, article ol"), "the list block").not.toHaveCount(0);
+    const declared = document.blocks.filter((block) => block.kind === "component");
+    for (const name of AUTHORABLE_BLOCKS) {
+      const expected = declared.filter((block) => block.name === name).length;
+      const selector = `article [data-block="${blockAttribute(name)}"]`;
+      await expect(page.locator(selector), `${name} declared ${expected}×`).toHaveCount(expected);
+    }
+
+    // At least one block, or this test proves nothing about rendering.
+    expect(declared.length, "the piece declares no block at all").toBeGreaterThan(0);
   });
 
   test("DS-COMPONENTE-055: before/after is one table with a caption and two column headers", async ({
@@ -918,20 +941,5 @@ test.describe("DS-COPY-046 / DS-A11Y-011 — what the content files may contain"
         reason: "BR-MONETIZACAO-062 — the piece explains the extinction",
       },
     ]);
-  });
-
-  test("TEMPORARY: the article #1 is still marked as provisional", () => {
-    // The body of the first article is placeholder text on purpose: the copy is
-    // the `design`'s and lands in the next round. This assertion is the guard
-    // against the failure mode that has burned other teams — placeholder that
-    // reads like real copy gets published and nobody notices.
-    //
-    // WHEN THE REAL COPY LANDS, THIS TEST IS DELETED IN THE SAME COMMIT. It is
-    // not a rule; it is a marker with a deadline, and it goes red the moment
-    // somebody half-replaces the text.
-    const markers = /TEXTO PROVISÓRIO|PLACEHOLDER TEXT|TEXTO PROVISIONAL|TESTO PROVVISORIO/;
-    for (const { file, raw } of contentFiles()) {
-      expect(raw, `${file} no longer declares itself provisional`).toMatch(markers);
-    }
   });
 });

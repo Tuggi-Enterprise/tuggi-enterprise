@@ -109,7 +109,7 @@ function renderComponent(block: Extract<Block, { kind: "component" }>, key: stri
         />
       );
     case "ArticlePriceTable":
-      return <ArticlePriceTable key={key} caption={propText(props, "caption")} />;
+      return <ArticlePriceTable key={key} />;
   }
 }
 

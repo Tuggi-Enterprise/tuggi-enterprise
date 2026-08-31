@@ -990,6 +990,7 @@
       "next": "Successivo"
     },
     "priceTable": {
+      "caption": "Pass a ore",
       "columnPass": "Pass",
       "columnPrice": "Prezzo",
       "note": "Acquisto una tantum. Non si rinnova. Le ore di pass diversi si sommano."

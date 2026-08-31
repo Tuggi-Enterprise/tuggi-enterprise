@@ -16,7 +16,7 @@ import { Info } from "lucide-react";
  */
 export function ArticleNotice({ children }: { children: ReactNode }) {
   return (
-    <aside className="my-10 flex gap-4 rounded-2xl border border-gray-200 border-l-4 border-l-tuggi-primary-text bg-tuggi-bg p-6">
+    <aside data-block="article-notice" className="my-10 flex gap-4 rounded-2xl border border-gray-200 border-l-4 border-l-tuggi-primary-text bg-tuggi-bg p-6">
       <Info className="w-5 h-5 shrink-0 mt-0.5 text-tuggi-primary-text" aria-hidden="true" />
       <div className="text-tuggi-slate leading-relaxed">{children}</div>
     </aside>

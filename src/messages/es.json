@@ -990,6 +990,7 @@
       "next": "Siguiente"
     },
     "priceTable": {
+      "caption": "Pases de horas",
       "columnPass": "Pase",
       "columnPrice": "Precio",
       "note": "Compra única. No se renueva. Las horas de distintos pases se suman."

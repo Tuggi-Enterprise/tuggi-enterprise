@@ -22,7 +22,7 @@ export function ArticleFigure({
   caption?: ReactNode;
 }) {
   return (
-    <figure className="my-10">
+    <figure className="my-10" data-block="article-figure">
       <Image
         src={src}
         alt={alt}

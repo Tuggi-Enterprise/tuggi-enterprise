@@ -48,7 +48,7 @@ const PASSES: {
   { key: "45h", titleKey: "pass3Title", descKey: "pass3Desc" },
 ];
 
-export function ArticlePriceTable({ caption }: { caption: string }) {
+export function ArticlePriceTable() {
   const t = useTranslations("Drive.Pricing");
   const tTable = useTranslations("Updates.priceTable");
   const locale = useLocale();
@@ -58,7 +58,7 @@ export function ArticlePriceTable({ caption }: { caption: string }) {
     <div className="my-10" data-block="article-price-table">
       <table className="w-full table-fixed border-collapse text-left text-sm">
         <caption className="caption-top pb-3 text-left text-sm font-bold text-tuggi-dark">
-          {caption}
+          {tTable("caption")}
         </caption>
         <thead>
           <tr className="border-b border-gray-200">

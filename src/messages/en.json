@@ -990,6 +990,7 @@
       "next": "Next"
     },
     "priceTable": {
+      "caption": "Hour passes",
       "columnPass": "Pass",
       "columnPrice": "Price",
       "note": "One-time purchase. Does not renew. Hours from different passes add up."
