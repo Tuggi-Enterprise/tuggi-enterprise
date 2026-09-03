@@ -57,3 +57,4 @@ https___*
 # Memória dos agentes vive no workspace (../.claude/agent-memory/), não no repo do projeto.
 .claude/agent-memory/
 .claude/settings.local.json
+.open-next/

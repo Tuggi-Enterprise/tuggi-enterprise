@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@next/third-parties": "^16.1.6",
+    "@opennextjs/cloudflare": "^1.20.6",
     "@supabase/supabase-js": "^2.97.0",
     "clsx": "^2.1.1",
     "framer-motion": "^12.34.3",
@@ -39,6 +40,7 @@
     "eslint-config-next": "16.1.6",
     "tailwindcss": "^4",
     "typescript": "^5",
-    "wkx": "^0.5.0"
+    "wkx": "^0.5.0",
+    "wrangler": "^4.128.0"
   }
 }

@@ -1,0 +1,13 @@
+{
+  // Spike only (tuggi-app#686) — measures whether the site fits the Cloudflare
+  // Workers Free plan. Not deployed; not part of the production pipeline.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "main": ".open-next/worker.js",
+  "name": "tuggi-enterprise-spike",
+  "compatibility_date": "2024-12-30",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  }
+}
