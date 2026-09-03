@@ -134,6 +134,47 @@ function cameThroughOurEdge(headers: Headers, edgeSharedSecret: string): boolean
 }
 
 /**
+ * An address as contract §3 demands it be stored and counted: **without the
+ * `::ffff:` prefix, without a zone (`%eth0`) and without brackets**.
+ *
+ * IT USED TO DO ONLY THE FIRST OF THE THREE, and the other two were not
+ * theoretical. Measured 2026-09-03, forcing IPv6 against `ip4.tuggi.app`
+ * answers `::ffff:64.29.17.65` — the mapped form really is on the path, and
+ * anything reading the family off the raw string would call that IPv6. Brackets
+ * are the literal form (`[2804:14c::1]`) a proxy in front may forward, and a
+ * zone is what a link-local address carries; either one survives into a
+ * `varchar` column that the install match compares by string equality, so the
+ * same device stored twice in two shapes never matches itself.
+ *
+ * Order is load-bearing: brackets first, then the zone, then the mapped
+ * prefix — `[::ffff:1.2.3.4%eth0]` has to come out as `1.2.3.4`.
+ */
+function normalizeClientAddress(raw: string): string {
+  let value = raw.trim();
+  // `[addr]` and `[addr]:port`, the RFC 7239 shape for an IPv6 literal.
+  const bracketed = /^\[([^\]]*)\](?::\d+)?$/.exec(value);
+  if (bracketed) value = bracketed[1] ?? "";
+  // The zone runs to the end of the address by definition (RFC 4007 §11).
+  const zone = value.indexOf("%");
+  if (zone >= 0) value = value.slice(0, zone);
+  return value.trim().replace(/^::ffff:/i, "");
+}
+
+/**
+ * Whether a normalised address is IPv4 — which is the only family the click
+ * row keeps as of 2026-09-03 (contract §3, card #682).
+ *
+ * Strict dotted quad, and deliberately so: the value decides whether personal
+ * data is written at all, and "looks a bit like an address" is not a decision.
+ * Feed it `normalizeClientAddress`'s output — an IPv4-mapped `::ffff:1.2.3.4`
+ * is IPv4 and answers true only once the prefix is off, which is exactly why
+ * the two live side by side here.
+ */
+export function isIpv4Address(value: string): boolean {
+  return /^(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}$/.test(value);
+}
+
+/**
  * Which address a request came from, and it is read in the topology we
  * actually run — which has TWO ways in, not one.
  *
@@ -178,12 +219,15 @@ export function clientAddressOf(
     headers.get("x-real-ip"),
   ];
   for (const candidate of candidates) {
-    const trimmed = candidate?.trim();
-    // A Node server in front (self-hosted, or `next start`) reports IPv4 in the
-    // IPv6-mapped form. The app sends the plain one and the install match is a
-    // string equality on this value, so the prefix comes off here — once, for
-    // the counter and for the stored row alike.
-    if (trimmed) return trimmed.replace(/^::ffff:/i, "");
+    if (!candidate) continue;
+    // Normalised here and nowhere else — once, for the counter and for the
+    // stored row alike. A Node server in front (self-hosted, or `next start`)
+    // reports IPv4 in the IPv6-mapped form; a proxy may bracket an IPv6
+    // literal; a link-local address carries a zone. The install match is a
+    // string equality on this value, so any of the three surviving is the same
+    // device failing to match itself. See `normalizeClientAddress`.
+    const normalized = normalizeClientAddress(candidate);
+    if (normalized) return normalized;
   }
   return "unknown";
 }

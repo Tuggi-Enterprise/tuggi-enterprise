@@ -46,6 +46,68 @@ export const ATTRIBUTION_RETENTION_DAYS = 30;
  */
 export const ATTRIBUTION_COOKIE_MAX_AGE_SECONDS = ATTRIBUTION_RETENTION_DAYS * 24 * 60 * 60;
 
+// ── The IPv4 complement of a click — contract §3 and §4 ─────────────────────
+
+/**
+ * The path of the route that completes an existing click row with the
+ * visitor's IPv4 — `POST /api/attribution/ip`, BR-B2B-002.
+ *
+ * WHY A SECOND ROUTE EXISTS AT ALL. The two ends of the probabilistic match
+ * sat in disjoint address families and neither could reach the other: measured
+ * 2026-09-03, 100% of clicks arrive over IPv6 (every hostname Cloudflare
+ * proxies publishes AAAA, and browsers prefer v6 — RFC 8305) while every
+ * install measured — 219 of them — arrives over IPv4, because the Supabase
+ * endpoint publishes no AAAA at all and the app is forced onto v4 no matter
+ * what the handset has. No window, radius or extra signal crosses that; a
+ * second observation does.
+ *
+ * WHY THE PATH IS NOT CALLED `ip4`. `ip4.tuggi.app` is the SAME Vercel
+ * deployment, DNS-only so that it resolves A and nothing else. What forces
+ * IPv4 is the host, not the route — the route is reachable on `www` too, and
+ * there it will observe IPv6 and write nothing. Naming it `ip4` would make a
+ * promise the path cannot keep on its own.
+ */
+export const ATTRIBUTION_IP_PATH = "/api/attribution/ip";
+
+/**
+ * The origins allowed to call the route above from another host.
+ *
+ * The complement is fired from the site, so the request is cross-origin
+ * (`www.tuggi.app` → `ip4.tuggi.app`) and `Content-Type: application/json`
+ * earns it a preflight. The list is closed and echoed one entry at a time —
+ * never `*`, and never with credentials: the route writes through
+ * `service_role`, and the only thing it should ever accept from a browser is
+ * an id the caller already had.
+ */
+export const ATTRIBUTION_IP_ALLOWED_ORIGINS = [
+  "https://www.tuggi.app",
+  "https://tuggi.app",
+] as const;
+
+/**
+ * The IPv4-only origin, read at BUILD time — `NEXT_PUBLIC_ATTRIBUTION_IP_ORIGIN`.
+ *
+ * The name is spelled here as a literal on purpose and this is the one place
+ * it is: Next only inlines `process.env.NEXT_PUBLIC_*` into the browser bundle
+ * when the access is statically analysable, so `process.env[SOME_CONST]` would
+ * compile to `undefined` in the very place that needs it. One literal, one
+ * owner, and every caller goes through `attributionIpEndpoint()`.
+ *
+ * ABSENT IS A LEGAL STATE AND IT MEANS "DO NOT CALL". Until the operator has
+ * `ip4.tuggi.app` pointed at this deployment (DNS-only — proxied, Cloudflare
+ * publishes AAAA and the host loses its whole reason to exist), there is
+ * nothing to complement, and a tourist must never see an error for a hostname
+ * that is not his problem.
+ */
+const ATTRIBUTION_IP_ORIGIN = (process.env.NEXT_PUBLIC_ATTRIBUTION_IP_ORIGIN ?? "")
+  .trim()
+  .replace(/\/+$/, "");
+
+/** The absolute URL to complement a click with, or null when unconfigured. */
+export function attributionIpEndpoint(): string | null {
+  return ATTRIBUTION_IP_ORIGIN ? `${ATTRIBUTION_IP_ORIGIN}${ATTRIBUTION_IP_PATH}` : null;
+}
+
 /** The one string that crosses the store, in both channels — contract §2. */
 export const CLICK_REFERRER_PREFIX = "tuggi_click_";
 

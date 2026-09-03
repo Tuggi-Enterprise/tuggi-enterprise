@@ -30,8 +30,10 @@ import {
  *
  *  1. the identity of the CLICK travels through the store, not the identity of
  *     the partner — `referrer=tuggi_click_<uuid>` (contract §1 and §2);
- *  2. the row stores the visitor's IP and not the Cloudflare edge's, because
- *     Cloudflare proxies our Vercel deployment (contract §4);
+ *  2. the row stores NO address at all since 2026-09-03 — this route only ever
+ *     observes IPv6 and IPv6 is no longer kept, so the one address that reaches
+ *     the database comes from `/api/attribution/ip` over an IPv4-only host
+ *     (contract §3 and §4, card #682, and `attribution-ip-complement.spec.ts`);
  *  3. `language` and `timezone` are normalised on the way in, or the two ends
  *     write the same fact in two shapes and nothing ever matches (§3);
  *  4. the FIRST touch is the one that counts and it is never overwritten —
@@ -185,7 +187,15 @@ test.describe("/api/attribution", () => {
     );
     expect(res.ok()).toBe(true);
     return (await res.json()).row as
-      | { id: string; partner_id: string; ip_address: string; language: string | null; timezone: string | null }
+      | {
+          id: string;
+          partner_id: string;
+          /** Absent on purpose since 2026-09-03: this route writes no address. */
+          ip_address?: string;
+          ip_address_v4: string | null;
+          language: string | null;
+          timezone: string | null;
+        }
       | null;
   }
 
@@ -269,12 +279,22 @@ test.describe("/api/attribution", () => {
     expect(row!.timezone).toBeNull();
   });
 
-  test("BR-B2B-002: the IP comes from the Cloudflare header, and only against proof of our edge", async ({
+  test("BR-B2B-002: the capture writes no address at all, whatever the edge says", async ({
     request,
   }) => {
-    // Cloudflare proxies our Vercel deployment, so `x-forwarded-for` at the
-    // Function is the edge. Reading it stored 172.69/104.22 addresses in every
-    // row in production — personal data of nobody, useful to no match.
+    // IT USED TO WRITE ONE, AND THE CHANGE IS NOT A REGRESSION. Measured
+    // 2026-09-03: 100% of real clicks arrive over IPv6, because every hostname
+    // Cloudflare proxies publishes AAAA and browsers prefer v6 (RFC 8305),
+    // while 219 of 219 installs arrive over IPv4 — the Supabase endpoint has no
+    // AAAA at all. The families never met, so the column here could not match
+    // anything, and the operator chose on 2026-09-03 to keep only the LESS
+    // identifying family: a mobile IPv4 under CGNAT points at a crowd, a /64 of
+    // IPv6 points at a household. The one address the database gets now comes
+    // from `/api/attribution/ip`, over a host that can only answer A.
+    //
+    // The header is honoured all the same — it is still the rate limiter's key,
+    // and that counter is the only barrier in front of this `service_role`
+    // write. What this pins is that it stops at the counter.
     const partnerId = uniquePartnerId();
     const visitor = "198.51.100.23";
 
@@ -289,51 +309,25 @@ test.describe("/api/attribution", () => {
     expect(res.status()).toBe(201);
 
     const row = await storedFingerprint(request, partnerId);
-    expect(row!.ip_address).toBe(visitor);
-
+    // Not "some other address": no address column named at all. `ip_address`
+    // stays in the database only until the Edge Function has moved onto
+    // `ip_address_v4`, and writing it here would be the same fact in two
+    // places — the one thing CLAUDE.md §6 puts first.
+    expect(row!.ip_address).toBeUndefined();
+    expect(row!.ip_address_v4).toBeNull();
+    // And nothing of the visitor's leaked into the row through another name.
+    expect(JSON.stringify(row)).not.toContain(visitor);
   });
 
-  test("BR-B2B-002: without that proof the same header buys nothing", async ({ request }) => {
-    // THE ORIGIN ANSWERS WITHOUT CLOUDFLARE. Measured 2026-08-18: the
-    // .vercel.app URL replies with `server: Vercel` and no `cf-ray`, and on
-    // that path `CF-Connecting-IP` is whatever the caller typed. Honouring it
-    // filed a capture under a victim's address — the probabilistic leg of
-    // §7 then credits the partner for that person's install — and, because the
-    // counter is keyed on the same value, handed out a fresh 30/h budget on
-    // every request by changing one header.
-    //
-    // A separate test because the `request` fixture keeps a cookie jar: the
-    // capture above is a first touch, and a second call carrying its cookie
-    // would be answered from the cookie and write no row at all.
-    const partnerId = uniquePartnerId();
-    const chain = "198.51.100.24"; // its own counter, not a neighbour's
-    const victim = "203.0.113.7";
-
-    const res = await request.post("/api/attribution", {
-      headers: {
-        "CF-Connecting-IP": victim,
-        "x-forwarded-for": `${chain}, 10.0.0.1`,
-      },
-      data: { partner_id: partnerId, user_agent: "e2e-attribution" },
-    });
-    expect(res.status()).toBe(201);
-
-    // What Vercel guarantees, and it is the only address here nobody chose:
-    // Vercel "overwrite[s] the `X-Forwarded-For` header and do[es] not forward
-    // external IPs… to prevent IP spoofing" (vercel.com/docs/headers/
-    // request-headers, consulted 2026-08-18).
-    const row = await storedFingerprint(request, partnerId);
-    expect(row!.ip_address).toBe(chain);
-    expect(row!.ip_address).not.toBe(victim);
-  });
-
-  test("a client_ip in the body is ignored", async ({ request }) => {
+  test("BR-B2B-002: a client_ip in the body is ignored, and so is an ip_address_v4", async ({
+    request,
+  }) => {
     // The attack this closes: POST a partner of your choosing next to a
-    // victim's IP, and the app's IP-based install match hands that partner the
-    // commission for someone else's download.
+    // victim's IP, and the IP-based install match hands that partner the
+    // commission for someone else's download. It survives the column change,
+    // because the shape of the attempt just moves to the new column name.
     const partnerId = uniquePartnerId();
     const spoofed = "203.0.113.7"; // TEST-NET-3, never a real visitor
-
     const edge = "198.51.100.55"; // the chain behind Cloudflare, when there is one
 
     const res = await request.post("/api/attribution", {
@@ -341,6 +335,8 @@ test.describe("/api/attribution", () => {
       data: {
         partner_id: partnerId,
         client_ip: spoofed,
+        ip_address: spoofed,
+        ip_address_v4: spoofed,
         user_agent: "e2e-attribution",
         language: "en-US",
         timezone: "Europe/Lisbon",
@@ -350,9 +346,9 @@ test.describe("/api/attribution", () => {
 
     const row = await storedFingerprint(request, partnerId);
     expect(row).not.toBeNull();
-    expect(row!.ip_address).not.toBe(spoofed);
-    // The first entry of the forwarded chain, and never the body.
-    expect(row!.ip_address).toBe(edge);
+    expect(row!.ip_address_v4).toBeNull();
+    expect(JSON.stringify(row)).not.toContain(spoofed);
+    // The rest of the body is still read and still normalised.
     expect(row!.language).toBe("en");
   });
 

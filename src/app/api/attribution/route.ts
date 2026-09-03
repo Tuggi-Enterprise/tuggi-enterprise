@@ -38,10 +38,10 @@ import { attributionGateOf } from "@/lib/consent";
  * `drive.click_fingerprints` does accept an anonymous insert today
  * (`WITH CHECK (true)`), so the swap would appear to work. It would also mean
  * this row could be written without passing through the handler below, and the
- * handler is the whole point: it is what takes the IP from the edge header
- * instead of from the caller, what normalises the fields the match compares,
- * and what refuses the second partner of the same visitor. Narrowing this key
- * is a separate card with a `WITH CHECK` of its own to write first.
+ * handler is the whole point: it is what counts the caller against a budget,
+ * what normalises the fields the match compares, and what refuses the second
+ * partner of the same visitor. Narrowing this key is a separate card with a
+ * `WITH CHECK` of its own to write first.
  *
  * Built at module scope: a missing variable fails the build, not the request.
  */
@@ -61,28 +61,6 @@ function isHttps(req: Request): boolean {
   const proto = req.headers.get("x-forwarded-proto")?.split(",")[0]?.trim().toLowerCase();
   if (proto) return proto === "https";
   return new URL(req.url).protocol === "https:";
-}
-
-/**
- * The visitor's IP, taken from the edge and from nowhere else.
- *
- * `clientAddressOf` is the single owner of that reading, shared with the rate
- * limiter so the row and the counter can never disagree about who called. It
- * prefers `CF-Connecting-IP` — Cloudflare proxies our deployment, and before
- * that every row here stored a Cloudflare edge address, personal data with no
- * use — but ONLY when the request proves it came through that edge, because
- * the origin is also reachable without Cloudflare and there the header is
- * whatever the caller typed. The rule and the proof live there, once. The body
- * is never read for this either: accepting `client_ip` once let anyone pair a
- * partner of their choosing with a victim's address and take the commission
- * for someone else's install.
- *
- * The column is NOT NULL, so a request with no edge header at all (only
- * possible off-platform) stores loopback rather than refusing the capture.
- */
-function readClientIp(req: Request): string {
-  const address = clientAddressOf(req.headers);
-  return address === "unknown" ? "127.0.0.1" : address;
 }
 
 /**
@@ -139,7 +117,23 @@ export async function POST(req: Request) {
     }
     if (!gate.allowed) return refuseWithoutConsent();
 
-    const address = readClientIp(req);
+    // THE ADDRESS IS STILL READ, AND IT NO LONGER REACHES THE ROW — 2026-09-03,
+    // card #682. It is the key of the rate limiter, which is the only barrier
+    // in front of this `service_role` write, so removing the reading would
+    // remove the barrier; what was removed is the COLUMN. This route observes
+    // IPv6 and nothing else in practice (measured: 100% of real clicks arrive
+    // in `2804:…`, because every hostname Cloudflare proxies publishes AAAA),
+    // and IPv6 is no longer kept: the operator chose on 2026-09-03 to store the
+    // less identifying family only, and an IPv4 under CGNAT points at a crowd
+    // where a /64 prefix identifies a household. The one address that enters the
+    // database now comes from `POST /api/attribution/ip`, reached over a
+    // DNS-only host that can only answer A.
+    //
+    // `clientAddressOf` stays the single owner of the reading, shared with the
+    // limiter — and `unknown` is a perfectly good counter key, so there is no
+    // loopback fallback any more: it existed only because the column was NOT
+    // NULL, and there is no column.
+    const address = clientAddressOf(req.headers);
 
     // FIRST TOUCH, ENFORCED ON THE SERVER (BR-B2B-002). The browser also skips
     // the call when it already holds a cookie, but that check is a page away
@@ -199,7 +193,10 @@ export async function POST(req: Request) {
       .insert([
         {
           partner_id: partnerId,
-          ip_address: address,
+          // NO ADDRESS COLUMN AT ALL — see the reading above. `ip_address` was
+          // written here until 2026-09-03 and is left untouched from now on;
+          // it stays in the database only until the Edge Function has moved
+          // onto `ip_address_v4`, and it is `data`'s to drop after that.
           user_agent: readText(data?.user_agent, "Unknown"),
           // Normalised on the way in, both fields, because the match compares
           // stored values: `pt-BR` here against `pt` from the app never fired,

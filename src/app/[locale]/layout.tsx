@@ -13,6 +13,7 @@ import GoogleAnalyticsWrapper from "@/components/global/GoogleAnalyticsWrapper";
 import ApolloTracker from "@/components/global/ApolloTracker";
 import { CookieBanner } from "@/components/global/CookieBanner";
 import { AttributionGateProvider } from "@/components/global/AttributionGateProvider";
+import { AttributionIpComplement } from "@/components/global/AttributionIpComplement";
 import { JsonLd } from "@/components/global/JsonLd";
 import { buildAlternates } from "@/lib/seo";
 import "@/app/globals.css";
@@ -96,6 +97,12 @@ export default async function RootLayout({
               boundary still reads the closed answer (see the provider). The
               children stay server components: they are passed as a prop. */}
           <AttributionGateProvider>
+            {/* Completes an already-captured click with this browser's IPv4 —
+                BR-B2B-002, contract §4. Renders nothing; it is here rather than
+                on the partner page because the browser it exists for is the one
+                that comes back through any OTHER page. Inside the provider on
+                purpose: the id it reads is gated by it. */}
+            <AttributionIpComplement />
             <GlobalHeader currentLocale={locale} />
             <main id="main-content" className="min-h-screen bg-tuggi-bg">
               {children}
