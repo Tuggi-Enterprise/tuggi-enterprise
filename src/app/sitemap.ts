@@ -9,8 +9,7 @@ import {
   buildSitemapAlternatesForLeaf,
 } from "@/lib/seo";
 import { UPDATES_SECTION, getUpdateArticles, slugsByLocale } from "@/lib/updates";
-import { getSupabaseClient } from "@/lib/supabase-server";
-import { TUGGI_PARTNER_ID } from "@/lib/app-meta";
+import { listApprovedPartners } from "@/lib/partner";
 import {
   getAllRoutes,
   getCountriesForLocale,
@@ -191,33 +190,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   // Partner download pages: one clean, locale-agnostic URL per approved partner.
-  // Wrapped in try/catch so a DB hiccup never fails the sitemap (and the build).
-  try {
-    // service_role: as `anon` this same query answers zero rows with no error
-    // (see resolvePartner in src/lib/partner.ts), so the sitemap would ship
-    // silently short of every partner URL.
-    const supabase = getSupabaseClient("serviceRole");
-    const { data: partners } = await supabase
-      .schema("partner")
-      .from("clients")
-      .select("slug, updated_at")
-      .eq("status", "approved")
-      .not("slug", "is", null)
-      .neq("id", TUGGI_PARTNER_ID);
-
-    for (const p of partners ?? []) {
-      if (!p.slug) continue;
-      entries.push({
-        // Clean, locale-agnostic URL (matches the page's self-canonical) —
-        // NOT buildUrl(), which would prefix it with a locale.
-        url: `https://www.tuggi.app/d/${p.slug}`,
-        lastModified: p.updated_at ? new Date(p.updated_at) : new Date(),
-        changeFrequency: "monthly",
-        priority: 0.6,
-      });
-    }
-  } catch (err) {
-    console.error("sitemap: failed to load partner slugs", err);
+  // The list itself is `listApprovedPartners()` (src/lib/partner.ts) — the same
+  // one `/d/[slug]/opengraph-image` pre-renders its share cards from, so a URL
+  // submitted here always has a card built for it. It answers `[]` rather than
+  // throwing when the DB is unreachable: a hiccup costs this section, never the
+  // build.
+  for (const partner of await listApprovedPartners()) {
+    entries.push({
+      // Clean, locale-agnostic URL (matches the page's self-canonical) —
+      // NOT buildUrl(), which would prefix it with a locale.
+      url: `https://www.tuggi.app/d/${partner.slug}`,
+      lastModified: partner.updatedAt ? new Date(partner.updatedAt) : new Date(),
+      changeFrequency: "monthly",
+      priority: 0.6,
+    });
   }
 
   return entries;

@@ -20,6 +20,7 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { getTranslations } from "next-intl/server";
 import type { SiteLocale } from "@/i18n/locales";
+import { routing } from "@/i18n/routing";
 import { findUpdate, formatUpdateDate, listUpdates } from "@/lib/updates";
 import { COVER_VIEWBOX, buildCoverTrace } from "@/lib/updateCover";
 
@@ -27,8 +28,33 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 export const dynamic = "force-static";
 
-export function generateStaticParams({ params }: { params: { locale: string } }) {
-  return listUpdates(params.locale as SiteLocale).map((document) => ({ slug: document.slug }));
+type Params = { locale: string; slug: string };
+
+/**
+ * **The locale is enumerated here, and taking it from the parent is not
+ * enough** — same measurement as `coverage/opengraph-image.tsx` (#687,
+ * 2026-09-03). A *page* inherits the locale from `[locale]/layout.tsx`, and
+ * `updates/[slug]/page.tsx` next door does exactly that with `{ params }` and
+ * builds as `●`; a **metadata image route does not**. Returning only `{ slug }`
+ * here left the route as `ƒ` with `force-static` declared above it and no path
+ * at all in `prerender-manifest.json` — nothing written at build, and Satori +
+ * resvg rasterising the card again on every WhatsApp, Slack and LinkedIn fetch,
+ * because `next/og` answers `max-age=0, must-revalidate` and nothing caches the
+ * repeat either.
+ *
+ * The cross is per locale, not a cartesian product: an article carries its own
+ * leaf in each language (`hour-passes` / `pases-por-hora`), so the slugs come
+ * from `listUpdates(locale)` inside the loop. Pairing every slug with every
+ * locale would build cards for leaves that answer 404.
+ */
+export function generateStaticParams(): Params[] {
+  const params: Params[] = [];
+  for (const locale of routing.locales) {
+    for (const document of listUpdates(locale as SiteLocale)) {
+      params.push({ locale, slug: document.slug });
+    }
+  }
+  return params;
 }
 
 /**

@@ -30,6 +30,7 @@ import { ImageResponse } from "next/og";
 import { getTranslations } from "next-intl/server";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
+import { routing } from "@/i18n/routing";
 import { getCoverageData } from "@/lib/coverage";
 import {
   COVERAGE_COUNTRIES,
@@ -41,6 +42,28 @@ import { localizedCountryLabel } from "@/lib/countryNames";
 
 export const size        = { width: 1200, height: 630 };
 export const contentType = "image/png";
+/**
+ * The header of this file has claimed "generated at build time (SSG)" since it
+ * was written, and until #687 that was only an intention: the route was built
+ * as `ƒ`, and Satori + resvg rasterised the card again on every WhatsApp, Slack
+ * and LinkedIn preview fetch — `next/og` serves `max-age=0, must-revalidate`,
+ * so nothing cached the repeat either.
+ *
+ * **The four locales have to be listed here, and `[locale]/layout.tsx` naming
+ * them is not enough** — measured, 2026-09-03. A *page* inherits the layout's
+ * `generateStaticParams` (`/[locale]/coverage` builds as `●` with four paths
+ * and declares none of its own); a metadata image route does not. With
+ * `force-static` and no params of its own this route builds as `○`, and
+ * `prerender-manifest.json` holds no path for it at all: nothing is written at
+ * build, and the first request of each locale still pays for the raster.
+ * `tours/[country]/[slug]/opengraph-image.tsx` is the shape that works — it
+ * iterates `routing.locales` itself.
+ */
+export const dynamic = "force-static";
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
 
 /**
  * The signature on this card is the lockup, not the symbol and not a letter in
