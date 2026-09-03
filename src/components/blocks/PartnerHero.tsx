@@ -12,6 +12,7 @@ import {
 } from "@/lib/app-meta";
 import {
   useAttributionClickId,
+  useAttributionIpComplement,
   writeClickTokenToClipboard,
 } from "@/lib/conversionHooks";
 import { COOKIE_BANNER_HEIGHT_VAR } from "@/components/global/CookieBanner";
@@ -161,6 +162,16 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
    * remounted this tree opened another row for the same visitor.
    */
   const captureStartedRef = useRef(false);
+  /**
+   * And the click, once it exists, gets its IPv4 — BR-B2B-002, contract §4.
+   *
+   * The captured id is passed because this is the ONE place that has it before
+   * the cookie is readable: the visitor scanning the QR right now is exactly
+   * the one whose commission is at stake, and the global mount in the layout
+   * only ever sees the echo. Fire-and-forget, once per page load, and it never
+   * touches the path to the store.
+   */
+  useAttributionIpComplement(capturedClickId);
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [platform, setPlatform] = useState<"ios" | "android" | "other">("other");
 

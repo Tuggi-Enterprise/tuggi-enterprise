@@ -124,6 +124,16 @@ const CLIENTS_BY_SLUG = {
 const fingerprintsByPartner = new Map();
 
 /**
+ * The same rows, keyed by the id PostgREST handed back — the `click_id`.
+ *
+ * `POST /api/attribution/ip` completes a row by ID and never by partner, so
+ * without this index the double cannot answer the one `PATCH` it now has to
+ * understand, and the write-once assertion has nothing to look at. The two maps
+ * hold the SAME object, so a mutation through one is visible through the other.
+ */
+const fingerprintsById = new Map();
+
+/**
  * Rows the app inserted into campaign.inbound_leads, readable back over
  * `GET /__leads`. The partnership form of #294 is only verifiable from what
  * *arrived*: whether the WhatsApp-only path stores a row at all, and whether
@@ -322,8 +332,17 @@ const server = http.createServer((req, res) => {
       try {
         const rows = JSON.parse(raw);
         for (const row of Array.isArray(rows) ? rows : [rows]) {
-          const withId = { id: randomUUID(), created_at: new Date().toISOString(), ...row };
+          // `ip_address_v4` is spelled out rather than left undefined so the
+          // `ip_address_v4=is.null` filter of the complement route has a column
+          // to match, exactly as the nullable column in production does.
+          const withId = {
+            id: randomUUID(),
+            created_at: new Date().toISOString(),
+            ip_address_v4: null,
+            ...row,
+          };
           if (row?.partner_id) fingerprintsByPartner.set(row.partner_id, withId);
+          fingerprintsById.set(withId.id, withId);
           stored.push(withId);
         }
       } catch {
@@ -331,6 +350,64 @@ const server = http.createServer((req, res) => {
       }
       const single = (req.headers.accept ?? "").includes("vnd.pgrst.object");
       sendJson(res, 201, single ? (stored[0] ?? null) : stored);
+    });
+    return;
+  }
+
+  if (url.pathname === "/rest/v1/click_fingerprints" && req.method === "PATCH") {
+    // `POST /api/attribution/ip` completing a click with the visitor's IPv4 —
+    // BR-B2B-002, contract §4. ONE `UPDATE`, and the whole decision is in the
+    // predicate: the id, the write-once (`ip_address_v4 IS NULL`) and the
+    // window (`created_at >= floor`).
+    //
+    // THE DOUBLE DEMANDS ALL THREE FILTERS AND REFUSES OTHERWISE, loudly. A
+    // route that read the row first and then wrote it — or that dropped the
+    // null predicate — would still pass every assertion about the stored value
+    // on a quiet machine, and lose the race exactly once in production, where
+    // the later of two concurrent calls would overwrite the observation closest
+    // to the click. The missing filter is the only trace that defect leaves.
+    const idFilter = readEqFilter(url, "id");
+    const writeOnce = url.searchParams.get("ip_address_v4") === "is.null";
+    const windowFloor = url.searchParams.get("created_at");
+    if (!idFilter || !writeOnce || !windowFloor?.startsWith("gte.")) {
+      readBody(req).then(() =>
+        sendJson(res, 400, {
+          code: "TUGGI-WRITE-ONCE",
+          message:
+            "mock-supabase-server: completing a click_fingerprint needs id=eq., " +
+            "ip_address_v4=is.null and created_at=gte. in ONE update — see contract §4",
+        })
+      );
+      return;
+    }
+
+    readBody(req).then((raw) => {
+      let patch;
+      try {
+        patch = JSON.parse(raw);
+      } catch {
+        sendJson(res, 400, { code: "PGRST102", message: "malformed body" });
+        return;
+      }
+      const unknown = Object.keys(patch).find((key) => key !== "ip_address_v4");
+      if (unknown) {
+        sendJson(res, 400, {
+          code: "42703",
+          message: `mock-supabase-server refuses column "${unknown}" on this update`,
+        });
+        return;
+      }
+
+      const row = fingerprintsById.get(idFilter);
+      const withinWindow =
+        row && Date.parse(row.created_at) >= Date.parse(windowFloor.slice(4));
+      if (row && row.ip_address_v4 == null && withinWindow) {
+        row.ip_address_v4 = patch.ip_address_v4;
+      }
+      // What PostgREST answers an update with `Prefer: return=minimal`, matched
+      // or not: no body, and therefore no oracle about whether a row existed.
+      res.writeHead(204);
+      res.end();
     });
     return;
   }
@@ -469,9 +546,13 @@ const server = http.createServer((req, res) => {
   }
 
   if (url.pathname === "/__fingerprints" && req.method === "GET") {
+    // By partner for the capture, by id for the IPv4 complement — that route
+    // knows nothing but the click id, and a test of a row it never wrote (an
+    // id that does not exist) needs to be able to ask for exactly that.
     const partnerId = url.searchParams.get("partner_id");
+    const id = url.searchParams.get("id");
     sendJson(res, 200, {
-      row: (partnerId && fingerprintsByPartner.get(partnerId)) || null,
+      row: (id ? fingerprintsById.get(id) : partnerId && fingerprintsByPartner.get(partnerId)) || null,
     });
     return;
   }

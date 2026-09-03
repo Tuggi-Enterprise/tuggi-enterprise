@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { resolvePricing, type BaseMarketPricing } from "@/lib/pricing";
-import { clickToken, readStoredAttribution } from "@/lib/attribution";
+import { attributionIpEndpoint, clickToken, readStoredAttribution } from "@/lib/attribution";
 import { useAttributionAllowed } from "@/components/global/AttributionGateProvider";
 
 export type Platform = "ios" | "android" | "desktop";
@@ -105,6 +105,77 @@ export function useAttributionClickId(): string | null {
 
 const clientClickId = (): string | null => readStoredAttribution()?.click_id ?? null;
 const serverClickId = (): string | null => null;
+
+/**
+ * Once per page LOAD, not once per mount — a module flag and not a ref.
+ *
+ * The complement is fired from two call sites on purpose (see the hook below),
+ * and a remount of either would otherwise send it again. It is the same defect
+ * `captureStartedRef` guards against in `PartnerHero`, one level up: there a
+ * piece of state was resetting on every remount and opening a second row.
+ */
+let ipComplementSent = false;
+
+/**
+ * Completes this browser's click row with its IPv4 — BR-B2B-002, contract §4.
+ *
+ * FIRE AND FORGET, AND THAT IS THE REQUIREMENT AND NOT A SHORTCUT. There is
+ * already a race between the capture and the tourist tapping the store CTA
+ * (`CLIPBOARD_WRITE_GRACE_MS` is what it cost), and this request may not join
+ * it: nothing awaits it, nothing branches on it, and the empty `catch` is
+ * deliberate. `keepalive` lets it outlive the navigation to the store
+ * (fetch.spec.whatwg.org, §request); `credentials: 'omit'` because the route
+ * decides from the edge header and a cookie would only be a cookie sent to
+ * another host for nothing.
+ *
+ * NOT CONFIGURED IS "DO NOT CALL", NEVER AN ERROR. `attributionIpEndpoint()`
+ * answers null until `ip4.tuggi.app` exists as a DNS-only alias of this
+ * deployment; a tourist must never meet a failure for a hostname that is not
+ * his problem, and the deterministic path does not depend on any of this.
+ */
+function sendIpComplement(clickId: string): void {
+  const endpoint = attributionIpEndpoint();
+  if (!endpoint || typeof fetch === "undefined") return;
+  void fetch(endpoint, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    // The click id and NOTHING ELSE. The address is read from the edge on the
+    // other side; a body that carried one would be the spoof contract §4
+    // removed after it moved a partner's commission once.
+    body: JSON.stringify({ click_id: clickId }),
+    keepalive: true,
+    credentials: "omit",
+  }).catch(() => {});
+}
+
+/**
+ * The single owner of that call, and no CTA reimplements it — the same rule
+ * `writeClickTokenToClipboard` follows one screen down.
+ *
+ * IT FIRES FOR THE FIRST CLICK ID FROM EITHER SOURCE, and the second source is
+ * the reason this is a hook and not a line inside the capture. `capturedClickId`
+ * is what the capture just returned, which covers the tourist who is scanning
+ * the QR right now. The echo — `useAttributionClickId`, this browser's
+ * `tuggi_attr` — covers everybody captured BEFORE this deploy, whose row would
+ * otherwise carry no address for the whole 30 days it lives. The write is
+ * write-once on the server, so a browser that ends up sending both is inert.
+ *
+ * THE CONSENT GATE COMES FOR FREE ON THE ECHO SIDE — BR-USUARIO-033, item 6:
+ * `useAttributionClickId` answers null until the server's verdict says yes, so
+ * there is no second door to keep shut here. The captured id is the return of a
+ * capture the server already allowed. And the route gates again on its own,
+ * because a gate decided on the client is a gate the client edits (item 2).
+ */
+export function useAttributionIpComplement(capturedClickId?: string | null): void {
+  const storedClickId = useAttributionClickId();
+  const clickId = storedClickId ?? capturedClickId ?? null;
+
+  useEffect(() => {
+    if (!clickId || ipComplementSent) return;
+    ipComplementSent = true;
+    sendIpComplement(clickId);
+  }, [clickId]);
+}
 
 /**
  * How long a CTA may wait for the pasteboard before it gives up and navigates.

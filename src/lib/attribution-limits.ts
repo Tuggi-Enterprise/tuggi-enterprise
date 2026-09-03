@@ -26,7 +26,7 @@
 
 import { registerAttempt, type RateLimitDecision } from "@/lib/rate-limit";
 
-/** One hour, for both budgets — the same window, two ceilings. */
+/** One hour, for all three budgets — the same window, three ceilings. */
 export const CAPTURE_WINDOW_SECONDS = 60 * 60;
 
 /**
@@ -68,6 +68,39 @@ export const ECHO_LIMIT_PER_WINDOW = 300;
 /** The read's own bucket: it can neither spend nor be spent by the write above. */
 export const ECHO_BUCKET = "attribution-echo";
 
+/**
+ * How often one address may COMPLETE a click row with its IPv4: 120 in an hour
+ * — `POST /api/attribution/ip`, contract §4.
+ *
+ * WHY THIS ONE MATTERS MORE THAN THE OTHER TWO. Its host — `ip4.tuggi.app` —
+ * is DNS-only, which is the whole point of it: proxied, Cloudflare publishes
+ * AAAA and the route can never observe an IPv4. Outside the proxy there is no
+ * WAF and no edge rate limit, so this counter is the ONLY barrier in front of a
+ * `service_role` write that ignores RLS. It is not a nicety here; it is the
+ * barrier.
+ *
+ * WHY 120 AND NOT THE 30 OF A FIRST TOUCH. This fires once per PAGE LOAD and
+ * not once per visitor: the same crowd behind one hotel or rental-desk NAT
+ * reloads, and every load of a visitor who already carries `tuggi_attr` sends
+ * one of these. Four times the write ceiling covers that shape; mass planting
+ * of addresses into rows is orders of magnitude above it either way.
+ *
+ * WHY BEING REFUSED IS CHEAP, which is what lets the number be a ceiling rather
+ * than a guess. The write is write-once — a second call for the same click
+ * changes nothing by construction — and the DETERMINISTIC path does not read
+ * this column at all. A 429 here costs one probabilistic candidate, never an
+ * attribution, which is the opposite of a 429 on the capture.
+ *
+ * AND THE REFUSAL IS THE ONE ANSWER THIS ROUTE IS ALLOWED TO SPEAK ALOUD. Every
+ * other outcome is a mute `204` so the route cannot be used to enumerate click
+ * ids; the limit is about the ADDRESS and says nothing about any click, so a
+ * `204` there would erase the only evidence of mass planting there is.
+ */
+export const IP_COMPLEMENT_LIMIT_PER_WINDOW = 120;
+
+/** Its own bucket: completing a row may not spend a stranger's first touch. */
+export const IP_COMPLEMENT_BUCKET = "attribution-ip";
+
 /** Counts one attempt to WRITE a first touch, and says whether it may proceed. */
 export function registerCaptureAttempt(clientAddress: string): Promise<RateLimitDecision> {
   return registerAttempt({
@@ -85,5 +118,15 @@ export function registerEchoAttempt(clientAddress: string): Promise<RateLimitDec
     clientAddress,
     windowSeconds: CAPTURE_WINDOW_SECONDS,
     maxAttempts: ECHO_LIMIT_PER_WINDOW,
+  });
+}
+
+/** Counts one attempt to COMPLETE a click row with the caller's IPv4. */
+export function registerIpComplementAttempt(clientAddress: string): Promise<RateLimitDecision> {
+  return registerAttempt({
+    bucket: IP_COMPLEMENT_BUCKET,
+    clientAddress,
+    windowSeconds: CAPTURE_WINDOW_SECONDS,
+    maxAttempts: IP_COMPLEMENT_LIMIT_PER_WINDOW,
   });
 }
