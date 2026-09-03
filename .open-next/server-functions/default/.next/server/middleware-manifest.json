@@ -1,0 +1,68 @@
+{
+  "version": 3,
+  "middleware": {
+    "/": {
+      "files": [
+        "server/edge/chunks/[root-of-the-server]__cfc6ad0d._.js",
+        "server/edge/chunks/src_messages_it_json_e3f07adc._.js",
+        "server/edge/chunks/src_messages_pt_json_62ca1c59._.js",
+        "server/edge/chunks/src_messages_es_json_9447b998._.js",
+        "server/edge/chunks/node_modules_5c4c4abd._.js",
+        "server/edge/chunks/src_messages_en_json_a2d62f82._.js",
+        "server/edge/chunks/turbopack-node_modules_next_dist_esm_build_templates_edge-wrapper_37db5152.js"
+      ],
+      "name": "middleware",
+      "page": "/",
+      "matchers": [
+        {
+          "regexp": "^(?:\\/(_next\\/data\\/[^/]{1,}))?(?:\\/((?!api|_next|_vercel|.*\\..*).*))(\\\\.json)?[\\/#\\?]?$",
+          "originalSource": "/((?!api|_next|_vercel|.*\\..*).*)"
+        }
+      ],
+      "wasm": [],
+      "assets": [],
+      "env": {
+        "__NEXT_BUILD_ID": "sgcYRXgj6Q_bI4KL2gAqo",
+        "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "vRHJmOzWBEleGexCd/fvM1VYKg8DR5xk1bl5K+n1McI=",
+        "__NEXT_PREVIEW_MODE_ID": "337a4a2660de84dded8f833ff1f34e77",
+        "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "097a1864360e542b36ed78cb7bc1b19c58e2d964f0a05538bc10a093dd82bbf3",
+        "__NEXT_PREVIEW_MODE_SIGNING_KEY": "dc0173aca8e973d3650b294af07215887df30f172a2feccebe4ca3505b77d4f8"
+      }
+    }
+  },
+  "sortedMiddleware": [
+    "/"
+  ],
+  "functions": {
+    "/api/geo/route": {
+      "files": [
+        "server/middleware-build-manifest.js",
+        "server/interception-route-rewrite-manifest.js",
+        "required-server-files.js",
+        "server/server-reference-manifest.js",
+        "server/app/api/geo/route_client-reference-manifest.js",
+        "server/edge/chunks/_next-internal_server_app_api_geo_route_actions_613c9cb2.js",
+        "server/edge/chunks/[root-of-the-server]__a66f4487._.js",
+        "server/edge/chunks/node_modules_next_dist_4753ac0d._.js",
+        "server/edge/chunks/turbopack-node_modules_next_dist_esm_build_templates_edge-wrapper_341e15e8.js"
+      ],
+      "name": "app/api/geo/route",
+      "page": "/api/geo/route",
+      "matchers": [
+        {
+          "regexp": "^/api/geo(?:/)?$",
+          "originalSource": "/api/geo"
+        }
+      ],
+      "wasm": [],
+      "assets": [],
+      "env": {
+        "__NEXT_BUILD_ID": "sgcYRXgj6Q_bI4KL2gAqo",
+        "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "vRHJmOzWBEleGexCd/fvM1VYKg8DR5xk1bl5K+n1McI=",
+        "__NEXT_PREVIEW_MODE_ID": "337a4a2660de84dded8f833ff1f34e77",
+        "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "097a1864360e542b36ed78cb7bc1b19c58e2d964f0a05538bc10a093dd82bbf3",
+        "__NEXT_PREVIEW_MODE_SIGNING_KEY": "dc0173aca8e973d3650b294af07215887df30f172a2feccebe4ca3505b77d4f8"
+      }
+    }
+  }
+}

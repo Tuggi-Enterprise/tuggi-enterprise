@@ -1,0 +1,10 @@
+var R=require("../../../../chunks/[turbopack]_runtime.js")("server/app/[locale]/coverage/opengraph-image/route.js")
+R.c("server/chunks/[root-of-the-server]__c55b7f1b._.js")
+R.c("server/chunks/node_modules_next_f2da0d3e._.js")
+R.c("server/chunks/_6c9bc181._.js")
+R.c("server/chunks/_305b15ad._.js")
+R.c("server/chunks/[root-of-the-server]__0e43a126._.js")
+R.c("server/chunks/src_data_coverage-snapshot_json_307a6413._.js")
+R.c("server/chunks/ce889_server_app_[locale]_coverage_opengraph-image_route_actions_3d4e44d5.js")
+R.m(432850)
+module.exports=R.m(432850).exports

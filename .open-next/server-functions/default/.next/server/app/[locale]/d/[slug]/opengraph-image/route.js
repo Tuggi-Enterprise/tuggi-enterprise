@@ -1,0 +1,10 @@
+var R=require("../../../../../chunks/[turbopack]_runtime.js")("server/app/[locale]/d/[slug]/opengraph-image/route.js")
+R.c("server/chunks/[root-of-the-server]__e90bcafd._.js")
+R.c("server/chunks/node_modules_next_f2da0d3e._.js")
+R.c("server/chunks/_54c3a300._.js")
+R.c("server/chunks/_305b15ad._.js")
+R.c("server/chunks/src_lib_supabase-server_ts_832499e9._.js")
+R.c("server/chunks/[root-of-the-server]__0e43a126._.js")
+R.c("server/chunks/ce889_server_app_[locale]_d_[slug]_opengraph-image_route_actions_d1f9c4dd.js")
+R.m(244134)
+module.exports=R.m(244134).exports

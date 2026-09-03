@@ -1,0 +1,3 @@
+module.exports=[903363,a=>{"use strict";a.i(570396);var b=a.i(673727),c=a.i(885221);function d(){(0,b.redirect)(`/${c.routing.defaultLocale}`)}a.s(["default",()=>d])},571318,a=>{a.v(b=>Promise.all(["server/chunks/ssr/src_messages_en_json_f317a7a5._.js"].map(b=>a.l(b))).then(()=>b(84855)))},486096,a=>{a.v(b=>Promise.all(["server/chunks/ssr/src_messages_es_json_7a8e4146._.js"].map(b=>a.l(b))).then(()=>b(492077)))},866597,a=>{a.v(b=>Promise.all(["server/chunks/ssr/src_messages_it_json_a5d072f7._.js"].map(b=>a.l(b))).then(()=>b(711888)))},222102,a=>{a.v(b=>Promise.all(["server/chunks/ssr/src_messages_pt_json_c5a19513._.js"].map(b=>a.l(b))).then(()=>b(713350)))}];
+
+//# sourceMappingURL=src_293c40a2._.js.map

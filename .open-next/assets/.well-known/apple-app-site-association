@@ -1,0 +1,14 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "YBU5U3UVMX.com.tuggidrive.app",
+        "paths": ["/download*", "/d/*", "/redeem*"]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": ["YBU5U3UVMX.com.tuggidrive.app"]
+  }
+}
