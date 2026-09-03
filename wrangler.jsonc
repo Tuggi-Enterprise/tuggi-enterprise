@@ -1,9 +1,14 @@
 {
   // Spike only (tuggi-app#686) — measures whether the site fits the Cloudflare
-  // Workers Free plan. Not deployed; not part of the production pipeline.
+  // Workers Free plan. Name matches the "tuggi-enterprise" Worker already
+  // created on the dashboard: Cloudflare's git integration rejects a mismatch
+  // between this field and the connected project (developers.cloudflare.com,
+  // "Troubleshooting builds", consulted 2026-09-03). Nothing points DNS here
+  // yet, so a build from this branch is safe — it just won't be a separate
+  // "-spike" Worker any more.
   "$schema": "node_modules/wrangler/config-schema.json",
   "main": ".open-next/worker.js",
-  "name": "tuggi-enterprise-spike",
+  "name": "tuggi-enterprise",
   "compatibility_date": "2024-12-30",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   "assets": {
