@@ -58,3 +58,6 @@ https___*
 .claude/agent-memory/
 .claude/settings.local.json
 .open-next/
+.dev.vars
+.wrangler/
+dist-worker/
