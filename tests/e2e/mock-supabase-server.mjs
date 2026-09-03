@@ -47,6 +47,8 @@ const CLIENTS_BY_SLUG = {
   "e2e-sem-logo": {
     id: "11111111-1111-4111-8111-111111111111",
     slug: "e2e-sem-logo",
+    status: "approved",
+    updated_at: "2026-08-01T00:00:00Z",
     name: null,
     company_name: "Delícias do Vale do Café",
     welcome_poi_id: null,
@@ -63,6 +65,8 @@ const CLIENTS_BY_SLUG = {
   "e2e-com-logo": {
     id: "22222222-2222-4222-8222-222222222222",
     slug: "e2e-com-logo",
+    status: "approved",
+    updated_at: "2026-08-02T00:00:00Z",
     name: null,
     company_name: "Delícias do Vale do Café",
     welcome_poi_id: "33333333-3333-4333-8333-333333333333",
@@ -78,8 +82,28 @@ const CLIENTS_BY_SLUG = {
   "e2e-nome-fantasia": {
     id: "44444444-4444-4444-8444-444444444444",
     slug: "e2e-nome-fantasia",
+    status: "approved",
+    updated_at: "2026-08-03T00:00:00Z",
     name: "Cozi +",
     company_name: "Cozimais Restaurante e Café",
+    welcome_poi_id: null,
+    metadata: null,
+    client_type: "restaurant",
+    website: null,
+    social_handle: null,
+    avatar_url: null,
+  },
+  // Approved is a filter, not a formality: this row exists so the build-time
+  // enumeration below can be caught listing a partner that has no public page
+  // yet. Its /d/<slug> still resolves — `resolvePartner` matches on the slug
+  // alone — so what it proves is exactly the filter, and nothing else.
+  "e2e-nao-aprovado": {
+    id: "55555555-5555-4555-8555-555555555555",
+    slug: "e2e-nao-aprovado",
+    status: "pending",
+    updated_at: "2026-08-04T00:00:00Z",
+    name: "Ainda em análise",
+    company_name: "Ainda em análise Ltda.",
     welcome_poi_id: null,
     metadata: null,
     client_type: "restaurant",
@@ -252,6 +276,12 @@ function sendJson(res, status, body) {
 function readEqFilter(url, column) {
   const raw = url.searchParams.get(column);
   return raw?.startsWith("eq.") ? raw.slice(3) : null;
+}
+
+/** The same, for `column=neq.value` — the sitemap excludes the Tuggi row by id. */
+function readNeqFilter(url, column) {
+  const raw = url.searchParams.get(column);
+  return raw?.startsWith("neq.") ? raw.slice(4) : null;
 }
 
 function readBody(req) {
@@ -486,6 +516,27 @@ const server = http.createServer((req, res) => {
         message:
           "mock-supabase-server: the public proposal must not read partner.clients by tax_id — see BR-B2B-028 and clients_tax_id_normalized_uk",
       });
+      return;
+    }
+
+    // The build-time enumeration: `listApprovedPartners()` in src/lib/partner.ts,
+    // which `next build` calls twice — once for the sitemap and once for the
+    // pre-rendered /d/<slug> share cards (#687). No `slug=eq.`, a `status`
+    // filter, and an array in return; the by-slug lookup below answers a single
+    // object and would be the wrong shape for it.
+    // `slug=not.is.null` travels on the list query too, so the by-slug lookup is
+    // told apart by its `eq.` filter, never by the mere presence of the param.
+    const status = readEqFilter(url, "status");
+    if (status && !readEqFilter(url, "slug")) {
+      const excludedId = readNeqFilter(url, "id");
+      const approved = Object.values(CLIENTS_BY_SLUG).filter(
+        (c) => c.status === status && c.slug && c.id !== excludedId,
+      );
+      sendJson(
+        res,
+        200,
+        approved.map((c) => ({ slug: c.slug, updated_at: c.updated_at ?? null })),
+      );
       return;
     }
 

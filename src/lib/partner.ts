@@ -175,6 +175,69 @@ async function resolvePartner(
   }
 }
 
+/** An approved partner as the site publishes it: the slug of its /d/<slug> URL. */
+export interface ApprovedPartner {
+  slug: string;
+  /** `partner.clients.updated_at`, for the sitemap's `lastModified`. Null on a row that never had one. */
+  updatedAt: string | null;
+}
+
+type ApprovedPartnerRow = { slug: string | null; updated_at: string | null };
+
+/**
+ * Every partner whose `/d/<slug>` URL the site publishes.
+ *
+ * **One list, two consumers, and they have to agree**: `src/app/sitemap.ts`
+ * submits these URLs to Google, and `/d/[slug]/opengraph-image` pre-renders a
+ * share card for each of them at build time. A slug in one list and not in the
+ * other is an indexed URL whose preview is generated per request — which is the
+ * cost this enumeration exists to remove (#687). The filter therefore lives
+ * here, once, and not at either call site.
+ *
+ * Three exclusions, all deliberate:
+ *  - `status = 'approved'` — a partner still in review has no public page;
+ *  - a null `slug` has no `/d/` URL at all;
+ *  - the Tuggi row itself (`TUGGI_PARTNER_ID`) is the first-party bucket, not a
+ *    partner: `/d/tuggi` is where the site's own chrome CTAs point, and it is
+ *    deliberately absent from the sitemap.
+ *
+ * service_role, for the reason spelled out in `resolvePartner`: the only SELECT
+ * policy on `partner.clients` answers zero rows **and no error** to `anon`, so
+ * on the publishable key this would silently return an empty list and every
+ * partner URL would quietly disappear from both consumers.
+ *
+ * **Build time only.** Both callers run during `next build` — never on a
+ * request path — which is what keeps a table-wide read off the hot path.
+ *
+ * Failure is swallowed on purpose, and returning `[]` is what "the DB was
+ * unreachable" looks like to both callers: a hiccup here must not fail the
+ * build, it must cost a sitemap section and a batch of pre-rendered cards.
+ */
+export async function listApprovedPartners(): Promise<ApprovedPartner[]> {
+  try {
+    const supabase = getSupabaseClient("serviceRole");
+    const { data, error } = await supabase
+      .schema("partner")
+      .from("clients")
+      .select("slug, updated_at")
+      .eq("status", "approved")
+      .not("slug", "is", null)
+      .neq("id", TUGGI_PARTNER_ID);
+
+    if (error) {
+      console.error("Error listing approved partners:", error);
+      return [];
+    }
+
+    return ((data ?? []) as ApprovedPartnerRow[])
+      .filter((row): row is ApprovedPartnerRow & { slug: string } => Boolean(row.slug))
+      .map((row) => ({ slug: row.slug, updatedAt: row.updated_at }));
+  } catch (err) {
+    console.error("Error listing approved partners:", err);
+    return [];
+  }
+}
+
 // Wrapped in React cache() so generateMetadata and the page component share a
 // single DB lookup per request (same args → one query). `dbLang` is the
 // resolved welcome dialect (see src/lib/ptDialect.ts), part of the cache key.

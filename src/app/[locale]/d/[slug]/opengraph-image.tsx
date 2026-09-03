@@ -17,13 +17,48 @@ import { ImageResponse } from "next/og";
 import { getTranslations } from "next-intl/server";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { getDbLang, resolvePartnerOrCoupon } from "@/lib/partner";
+import { routing } from "@/i18n/routing";
+import { getDbLang, listApprovedPartners, resolvePartnerOrCoupon } from "@/lib/partner";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 export const alt = "TUGGI — Self-guided audio tour";
 
 type Params = { locale: string; slug: string };
+
+/**
+ * Every published partner URL × every locale, built once at deploy — the same
+ * shape as `tours/[country]/[slug]/opengraph-image.tsx`, over the list in
+ * `listApprovedPartners()` that `src/app/sitemap.ts` submits to Google (#687).
+ *
+ * Without this, the route had no known path to pre-render and was built as `ƒ`:
+ * every preview fetch re-ran Satori and resvg, and `next/og` answers
+ * `max-age=0, must-revalidate`, so no CDN absorbed the repeat. The card is a
+ * function of the partner row and the locale, both of which are known at build.
+ *
+ * The locale is in the params because the tagline is translated, even though
+ * the URL a partner shares (`/d/<slug>`) carries none — the middleware picks
+ * one per request and rewrites into one of these.
+ *
+ * **No `force-static` here, unlike `/coverage`, and that is the trade-off of
+ * this card**: `dynamicParams` stays at its default, so a partner approved
+ * *between two deploys* — absent from this list — still gets its card rendered
+ * on the first request that asks for it, exactly as before, until the next
+ * build writes it to disk. Turning that off would answer 404 instead, and the
+ * one page that names this route in its `openGraph.images` (the partner with a
+ * seal, `page.tsx`) would advertise a preview that does not exist. The cost is
+ * one render per new partner, not one per preview fetch.
+ */
+export async function generateStaticParams(): Promise<Params[]> {
+  const partners = await listApprovedPartners();
+  const params: Params[] = [];
+  for (const locale of routing.locales) {
+    for (const partner of partners) {
+      params.push({ locale, slug: partner.slug });
+    }
+  }
+  return params;
+}
 
 const FONT =
   "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
