@@ -33,7 +33,7 @@ const APP_PORT = 3100;
 // the whole suite goes red with framer-motion opacity errors that look like a
 // component defect. next.config.ts reads this via TUGGI_DIST_DIR.
 // Exported for the same reason as the port and the keys above: the spec that
-// reads the build's own prerender manifest (partner-og-static-params.spec.ts)
+// reads the build's own prerender manifest (og-static-params.spec.ts)
 // has to look inside the directory this build wrote to.
 export const DIST_DIR = ".next-e2e";
 

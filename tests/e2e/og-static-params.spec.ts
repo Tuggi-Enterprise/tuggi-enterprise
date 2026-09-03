@@ -5,11 +5,12 @@ import { DIST_DIR, MOCK_SUPABASE_PORT } from "../../playwright.config";
 // `LOCALES`, e não `routing.locales`: são a mesma lista (routing.ts é montado
 // a partir dela), mas importar `routing` aqui arrasta `createNavigation` e com
 // ele `next/navigation`, que não resolve fora do bundler do Next.
-import { LOCALES } from "../../src/i18n/locales";
+import { LOCALES, type SiteLocale } from "../../src/i18n/locales";
 import { TUGGI_PARTNER_ID } from "../../src/lib/app-meta";
+import { listUpdates } from "../../src/lib/updates";
 
 /**
- * #687 — as duas imagens de Open Graph que rasterizavam por requisição passam a
+ * #687 — as três imagens de Open Graph que rasterizavam por requisição passam a
  * ser escritas no build.
  *
  * `next/og` responde `cache-control: public, max-age=0, must-revalidate`, então
@@ -96,5 +97,33 @@ test.describe("#687 — os share cards são escritos no build, não por requisi�
       .map((locale) => `/${locale}/coverage/opengraph-image`)
       .filter((route) => !routes.has(route));
     expect(missing, "locale de /coverage sem card escrito no build").toEqual([]);
+  });
+
+  test("/updates/[slug]/opengraph-image pré-renderiza cada artigo no leaf do seu locale", () => {
+    // O registro editorial é quem sabe o slug de um artigo em cada idioma
+    // (`src/lib/updates.ts`), e é dele que os parâmetros gerados saem. Uma lista
+    // escrita aqui provaria só a si mesma — e, pior, esconderia justamente o
+    // erro que este cruzamento tem: parear todo locale com todo slug publica
+    // `/pt/updates/hour-passes`, que é 404, e deixa de fora
+    // `/pt/updates/passes-por-hora`, que é a URL que a página anuncia.
+    const routes = prerenderedRoutes();
+    const expected = LOCALES.flatMap((locale) =>
+      listUpdates(locale as SiteLocale).map(
+        (document) => `/${locale}/updates/${document.slug}/opengraph-image`,
+      ),
+    );
+    expect(expected.length, "o registro precisa de pelo menos um artigo").toBeGreaterThan(0);
+    expect(
+      expected.filter((route) => !routes.has(route)),
+      "artigo sem card escrito no build",
+    ).toEqual([]);
+
+    // A outra metade do par: nenhum caminho de artigo além dos que o registro
+    // conhece. Sem isto, o cruzamento cartesiano passaria — ele contém todos os
+    // pares certos, mais os que respondem 404.
+    const built = [...routes].filter((route) => /^\/[a-z]{2}\/updates\/[^/]+\/opengraph-image$/.test(route));
+    expect(built.sort(), "caminho de artigo escrito no build fora do registro").toEqual(
+      expected.sort(),
+    );
   });
 });
