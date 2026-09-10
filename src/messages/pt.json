@@ -1229,5 +1229,26 @@
       "columnPrice": "Preço",
       "note": "Compra única. Não renova. As horas de passes diferentes se somam."
     }
+  },
+  "Unsubscribe": {
+    "confirm": {
+      "title": "Cancelar inscrição",
+      "body": "Vamos remover {email} da nossa newsletter. Nada mudou ainda, é só confirmar abaixo.",
+      "notice": "Os e-mails da sua conta continuam chegando, como a confirmação de conta e a recuperação de senha.",
+      "confirmLabel": "Confirmar cancelamento"
+    },
+    "done": {
+      "title": "Inscrição cancelada",
+      "body": "Removemos {email} da nossa newsletter. Os e-mails da sua conta seguem chegando, como a recuperação de senha."
+    },
+    "invalid": {
+      "title": "Link inválido",
+      "body": "Não conseguimos validar este link. Ele costuma quebrar quando é copiado pela metade. Abra o e-mail mais recente e use o link do rodapé, ou escreva para {support}."
+    },
+    "failed": {
+      "title": "A falha foi nossa",
+      "body": "O seu link está certo, mas não conseguimos gravar o cancelamento agora. Tente de novo. Se continuar assim, escreva para {support}.",
+      "retryLabel": "Tentar de novo"
+    }
   }
 }

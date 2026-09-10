@@ -999,5 +999,26 @@
       "columnPrice": "Precio",
       "note": "Compra única. No se renueva. Las horas de distintos pases se suman."
     }
+  },
+  "Unsubscribe": {
+    "confirm": {
+      "title": "Cancelar suscripción",
+      "body": "Vamos a quitar {email} de nuestra newsletter. Todavía no ha cambiado nada, solo falta confirmar abajo.",
+      "notice": "Los emails de tu cuenta siguen llegando, como la confirmación de cuenta y la recuperación de contraseña.",
+      "confirmLabel": "Confirmar la baja"
+    },
+    "done": {
+      "title": "Suscripción cancelada",
+      "body": "Quitamos {email} de nuestra newsletter. Los emails de tu cuenta siguen llegando, como la recuperación de contraseña."
+    },
+    "invalid": {
+      "title": "Enlace inválido",
+      "body": "No pudimos validar este enlace. Suele romperse cuando se copia a medias. Abre el email más reciente y usa el enlace del pie, o escribe a {support}."
+    },
+    "failed": {
+      "title": "El error fue nuestro",
+      "body": "Tu enlace está bien, pero no pudimos guardar la baja ahora. Inténtalo de nuevo. Si sigue igual, escribe a {support}.",
+      "retryLabel": "Intentar de nuevo"
+    }
   }
 }

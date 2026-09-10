@@ -999,5 +999,26 @@
       "columnPrice": "Prezzo",
       "note": "Acquisto una tantum. Non si rinnova. Le ore di pass diversi si sommano."
     }
+  },
+  "Unsubscribe": {
+    "confirm": {
+      "title": "Annulla iscrizione",
+      "body": "Stiamo per togliere {email} dalla nostra newsletter. Non è ancora cambiato nulla, basta confermare qui sotto.",
+      "notice": "Le email del tuo account continuano ad arrivare, come la conferma dell'account e il recupero della password.",
+      "confirmLabel": "Conferma annullamento"
+    },
+    "done": {
+      "title": "Iscrizione annullata",
+      "body": "Abbiamo tolto {email} dalla nostra newsletter. Le email del tuo account continuano ad arrivare, come il recupero della password."
+    },
+    "invalid": {
+      "title": "Link non valido",
+      "body": "Non siamo riusciti a validare questo link. Di solito si rompe quando viene copiato a metà. Apri l'email più recente e usa il link in fondo, oppure scrivi a {support}."
+    },
+    "failed": {
+      "title": "L'errore è nostro",
+      "body": "Il tuo link è corretto, ma non siamo riusciti a salvare l'annullamento adesso. Riprova. Se continua così, scrivi a {support}.",
+      "retryLabel": "Riprova"
+    }
   }
 }

@@ -18,6 +18,14 @@ export const E2E_SERVICE_ROLE_KEY = "e2e-service-role-key";
  * recognises a repeat caller.
  */
 export const E2E_PARTNER_FORM_HASH_SECRET = "e2e-partner-form-hash-secret";
+
+/**
+ * The same secret the CMS Edge Function `send-newsletter` signs unsubscribe
+ * links with. Exported so a test can mint a valid signature instead of
+ * hard-coding one: the page refuses every link when this is unset, which is
+ * correct in production and would leave the whole flow untested here.
+ */
+export const E2E_NEWSLETTER_SECRET = "e2e-newsletter-secret";
 /**
  * The shared secret that proves a request reached the origin through our own
  * Cloudflare edge (`src/lib/rate-limit.ts`, `EDGE_SECRET_VAR`). Set here so the
@@ -86,6 +94,10 @@ export default defineConfig({
         // A fixed value here so the hash of one address is stable across the run
         // and the double can count repeats the way the RPC does.
         PARTNER_FORM_HASH_SECRET: E2E_PARTNER_FORM_HASH_SECRET,
+        // Unset, /unsubscribe refuses every link and shows the invalid screen —
+        // right in production, and it would hide the flow this suite has to
+        // prove: that a GET writes nothing and only the POST records the opt-out.
+        NEWSLETTER_SECRET: E2E_NEWSLETTER_SECRET,
         // Unset, this would degrade to reading `x-forwarded-for` — safe, and
         // the suite would then be unable to prove the honoured half.
         TUGGI_EDGE_SHARED_SECRET: E2E_EDGE_SHARED_SECRET,

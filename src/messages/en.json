@@ -999,5 +999,26 @@
       "columnPrice": "Price",
       "note": "One-time purchase. Does not renew. Hours from different passes add up."
     }
+  },
+  "Unsubscribe": {
+    "confirm": {
+      "title": "Unsubscribe",
+      "body": "We are about to remove {email} from our newsletter. Nothing has changed yet, just confirm below.",
+      "notice": "Your account emails keep arriving, such as account confirmation and password recovery.",
+      "confirmLabel": "Confirm unsubscribe"
+    },
+    "done": {
+      "title": "Unsubscribed",
+      "body": "We removed {email} from our newsletter. Your account emails keep arriving, such as password recovery."
+    },
+    "invalid": {
+      "title": "Invalid link",
+      "body": "We could not validate this link. It usually breaks when it is copied halfway. Open the most recent email and use the link in the footer, or write to {support}."
+    },
+    "failed": {
+      "title": "The error was ours",
+      "body": "Your link is fine, but we could not save the unsubscribe right now. Please try again. If it keeps failing, write to {support}.",
+      "retryLabel": "Try again"
+    }
   }
 }

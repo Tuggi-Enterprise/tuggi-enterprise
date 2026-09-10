@@ -142,6 +142,18 @@ const fingerprintsById = new Map();
 const inboundLeads = [];
 
 /**
+ * Every row the site upserted into `marketing.email_unsubscribes`, in order,
+ * readable at `GET /__unsubscribes` and clearable at `DELETE /__unsubscribes`.
+ *
+ * This one exists to prove a NEGATIVE. The unsubscribe page used to record the
+ * opt-out while rendering, and rendering is a GET — so a link scanner, a
+ * corporate prefetch or a chat unfurl unsubscribed the reader without a click.
+ * A test can only show that is fixed by opening the page and finding this list
+ * still empty, which needs the list.
+ */
+const emailUnsubscribes = [];
+
+/**
  * The three CHECK constraints of the real table, as migration `20260812150000`
  * (card #302) leaves them — it widened the business-type domain that migration
  * `20260812130000` (card #295) had created.
@@ -443,6 +455,29 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  if (url.pathname === "/rest/v1/email_unsubscribes" && req.method === "POST") {
+    readBody(req).then((raw) => {
+      let rows = [];
+      try {
+        const parsed = JSON.parse(raw);
+        rows = Array.isArray(parsed) ? parsed : [parsed];
+      } catch {
+        sendJson(res, 400, { code: "PGRST102", message: "malformed body" });
+        return;
+      }
+      // `ignoreDuplicates: true` on the caller side, so a repeat is a no-op and
+      // never overwrites the `source` of a row that is already there — the
+      // first reason someone left is the true one.
+      for (const row of rows) {
+        if (!row?.email) continue;
+        if (emailUnsubscribes.some((existing) => existing.email === row.email)) continue;
+        emailUnsubscribes.push(row);
+      }
+      sendJson(res, 201, { success: true });
+    });
+    return;
+  }
+
   if (url.pathname === "/rest/v1/rpc/record_partner_form_attempt" && req.method === "POST") {
     readBody(req).then((raw) => {
       let args;
@@ -534,6 +569,17 @@ const server = http.createServer((req, res) => {
         ? proposals.filter((row) => row?.answers?.trade_name === tradeName)
         : proposals,
     });
+    return;
+  }
+
+  if (url.pathname === "/__unsubscribes" && req.method === "GET") {
+    sendJson(res, 200, { rows: emailUnsubscribes });
+    return;
+  }
+
+  if (url.pathname === "/__unsubscribes" && req.method === "DELETE") {
+    emailUnsubscribes.length = 0;
+    sendJson(res, 200, { ok: true });
     return;
   }
 

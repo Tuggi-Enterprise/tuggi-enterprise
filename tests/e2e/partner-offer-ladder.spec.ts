@@ -549,7 +549,7 @@ const FAQ_ANSWERS = [1, 2, 3, 4, 5, 6].map((n) => `Partners.FAQ.a${n}`);
  * here, because that namespace exists in `pt` alone — the proposal is Brazil by construction —
  * and a loop over `LOCALES` around it would assert three absences.
  */
-const RULED_NAMESPACES = ["Partners", "Segments"] as const;
+const RULED_NAMESPACES = ["Partners", "Segments", "Unsubscribe"] as const;
 
 test.describe("DS-COPY-013 — the partner pages are punctuated by a person, and both halves count", () => {
   for (const locale of LOCALES) {
