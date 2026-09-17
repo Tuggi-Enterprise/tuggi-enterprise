@@ -68,7 +68,8 @@ export default async function PrivacyPolicyPage({ params }: { params: Promise<{ 
 
               `/contact` posts to the same route and is still undeclared — it
               waits on a purpose from `produto` — card #344 names it as the
-              next card, and it takes the next free number, `s1Item9`. */}
+              next card, and it takes the next free number, `s1Item10`
+              (`s1Item9` went to the date of birth, card #722). */}
           <li>{t.rich("s1Item5", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
           <li>{t.rich("s1Item6", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
           <li>{t.rich("s1Item7", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
@@ -97,6 +98,28 @@ export default async function PrivacyPolicyPage({ params }: { params: Promise<{ 
               BR-USUARIO-032 items 1, 3 and 6 still declare 90 days; that is
               `produto`'s to move, and it does not hold this page. */}
           <li>{t.rich("s1Item8", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
+          {/* `s1Item9` is the date of birth of the demographic collection —
+              card #722, and the transparency BR-USUARIO-043 item 7.d.iv
+              charges before the merge of #744 (LGPD Art. 14, §6). What it has
+              to say is fixed, not chosen: the category, the two purposes of
+              item 7.d.i (check the minimum age for entering the standings, and
+              derive the age range that composes the demography of item 4) and
+              the 14-year cut.
+
+              THE CUT IS A CONDITION OF THE STANDINGS, NOT OF THE ACCOUNT —
+              item 7.b: whoever declares less than 14 keeps everything else,
+              and no surface states that Tuggi has a minimum age of use. The
+              item also carries the minimisation of item 7.c (the date is not
+              shown to another traveller, does not segment any commercial
+              condition, and is not what the production decision reads) and the
+              optionality of item 2, whose only exception is entry to the
+              standings (item 2a). No parental consent is mentioned on purpose:
+              the base is the holder's own consent (item 7.d.ii), and the cut
+              at 14 sits above the child of Art. 14, §1.
+
+              The other six fields of the collection are still undeclared here
+              — pre-existing debt, not this card. */}
+          <li>{t.rich("s1Item9", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
         </ul>
       </section>
 
