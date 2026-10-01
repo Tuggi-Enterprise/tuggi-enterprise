@@ -3,49 +3,49 @@
     {
       "state": "Bayern",
       "country": "Germany",
-      "activeCount": 57835,
+      "activeCount": 57831,
       "comingSoonCount": 0
     },
     {
       "state": "Québec",
       "country": "Canada",
-      "activeCount": 57744,
+      "activeCount": 57743,
       "comingSoonCount": 0
     },
     {
       "state": "Ontario",
       "country": "Canada",
-      "activeCount": 55376,
+      "activeCount": 55374,
       "comingSoonCount": 0
     },
     {
       "state": "Nordrhein-Westfalen",
       "country": "Germany",
-      "activeCount": 44242,
+      "activeCount": 44247,
       "comingSoonCount": 0
     },
     {
       "state": "California",
       "country": "United States of America",
-      "activeCount": 43398,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "British Columbia",
-      "country": "Canada",
-      "activeCount": 35643,
+      "activeCount": 43394,
       "comingSoonCount": 0
     },
     {
       "state": "Baden-Württemberg",
       "country": "Germany",
-      "activeCount": 35013,
+      "activeCount": 35713,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "British Columbia",
+      "country": "Canada",
+      "activeCount": 35642,
       "comingSoonCount": 0
     },
     {
       "state": "Texas",
       "country": "United States of America",
-      "activeCount": 31665,
+      "activeCount": 31655,
       "comingSoonCount": 0
     },
     {
@@ -57,73 +57,73 @@
     {
       "state": "São Paulo",
       "country": "Brazil",
-      "activeCount": 24401,
+      "activeCount": 24372,
       "comingSoonCount": 0
     },
     {
       "state": "Michigan",
       "country": "United States of America",
-      "activeCount": 24224,
+      "activeCount": 24218,
       "comingSoonCount": 0
     },
     {
       "state": "Sachsen",
       "country": "Germany",
-      "activeCount": 22225,
+      "activeCount": 22223,
       "comingSoonCount": 0
     },
     {
       "state": "Brandenburg",
       "country": "Germany",
-      "activeCount": 21411,
+      "activeCount": 21410,
       "comingSoonCount": 0
     },
     {
       "state": "Hessen",
       "country": "Germany",
-      "activeCount": 21178,
+      "activeCount": 21176,
       "comingSoonCount": 0
     },
     {
       "state": "Illinois",
       "country": "United States of America",
-      "activeCount": 20637,
+      "activeCount": 20633,
       "comingSoonCount": 0
     },
     {
       "state": "Minnesota",
       "country": "United States of America",
-      "activeCount": 20116,
+      "activeCount": 20114,
       "comingSoonCount": 0
     },
     {
       "state": "Florida",
       "country": "United States of America",
-      "activeCount": 19485,
+      "activeCount": 19481,
       "comingSoonCount": 0
     },
     {
       "state": "Pennsylvania",
       "country": "United States of America",
-      "activeCount": 18404,
+      "activeCount": 18403,
       "comingSoonCount": 0
     },
     {
       "state": "Wisconsin",
       "country": "United States of America",
-      "activeCount": 18149,
+      "activeCount": 18143,
       "comingSoonCount": 0
     },
     {
       "state": "New York",
       "country": "United States of America",
-      "activeCount": 17904,
+      "activeCount": 17898,
       "comingSoonCount": 0
     },
     {
       "state": "Minas Gerais",
       "country": "Brazil",
-      "activeCount": 17440,
+      "activeCount": 17438,
       "comingSoonCount": 0
     },
     {
@@ -135,43 +135,43 @@
     {
       "state": "Massachusetts",
       "country": "United States of America",
-      "activeCount": 16560,
+      "activeCount": 16558,
       "comingSoonCount": 0
     },
     {
       "state": "Ohio",
       "country": "United States of America",
-      "activeCount": 16358,
+      "activeCount": 16357,
       "comingSoonCount": 0
     },
     {
       "state": "North Carolina",
       "country": "United States of America",
-      "activeCount": 16124,
+      "activeCount": 16119,
       "comingSoonCount": 0
     },
     {
       "state": "Virginia",
       "country": "United States of America",
-      "activeCount": 15665,
+      "activeCount": 15660,
       "comingSoonCount": 0
     },
     {
       "state": "Georgia",
       "country": "United States of America",
-      "activeCount": 15545,
+      "activeCount": 15543,
       "comingSoonCount": 0
     },
     {
       "state": "Rheinland-Pfalz",
       "country": "Germany",
-      "activeCount": 15407,
+      "activeCount": 15406,
       "comingSoonCount": 0
     },
     {
       "state": "Colorado",
       "country": "United States of America",
-      "activeCount": 15047,
+      "activeCount": 15044,
       "comingSoonCount": 0
     },
     {
@@ -189,13 +189,13 @@
     {
       "state": "Arizona",
       "country": "United States of America",
-      "activeCount": 13571,
+      "activeCount": 13566,
       "comingSoonCount": 0
     },
     {
       "state": "Maine",
       "country": "United States of America",
-      "activeCount": 12889,
+      "activeCount": 12888,
       "comingSoonCount": 0
     },
     {
@@ -207,13 +207,13 @@
     {
       "state": "Oregon",
       "country": "United States of America",
-      "activeCount": 12513,
+      "activeCount": 12509,
       "comingSoonCount": 0
     },
     {
       "state": "Connecticut",
       "country": "United States of America",
-      "activeCount": 11861,
+      "activeCount": 11860,
       "comingSoonCount": 0
     },
     {
@@ -225,13 +225,13 @@
     {
       "state": "Maryland",
       "country": "United States of America",
-      "activeCount": 10989,
+      "activeCount": 10988,
       "comingSoonCount": 0
     },
     {
       "state": "Buenos Aires",
       "country": "Argentina",
-      "activeCount": 10679,
+      "activeCount": 10678,
       "comingSoonCount": 0
     },
     {
@@ -255,13 +255,13 @@
     {
       "state": "Alberta",
       "country": "Canada",
-      "activeCount": 9885,
+      "activeCount": 9884,
       "comingSoonCount": 0
     },
     {
       "state": "Schleswig-Holstein",
       "country": "Germany",
-      "activeCount": 9858,
+      "activeCount": 9857,
       "comingSoonCount": 0
     },
     {
@@ -273,13 +273,13 @@
     {
       "state": "Utah",
       "country": "United States of America",
-      "activeCount": 9358,
+      "activeCount": 9355,
       "comingSoonCount": 0
     },
     {
       "state": "Tennessee",
       "country": "United States of America",
-      "activeCount": 9348,
+      "activeCount": 9347,
       "comingSoonCount": 0
     },
     {
@@ -297,7 +297,7 @@
     {
       "state": "Indiana",
       "country": "United States of America",
-      "activeCount": 9049,
+      "activeCount": 9047,
       "comingSoonCount": 0
     },
     {
@@ -315,7 +315,7 @@
     {
       "state": "Baleares",
       "country": "Spain",
-      "activeCount": 7920,
+      "activeCount": 7918,
       "comingSoonCount": 0
     },
     {
@@ -351,7 +351,7 @@
     {
       "state": "Turin",
       "country": "Italy",
-      "activeCount": 7499,
+      "activeCount": 7498,
       "comingSoonCount": 0
     },
     {
@@ -387,7 +387,7 @@
     {
       "state": "Roma",
       "country": "Italy",
-      "activeCount": 7084,
+      "activeCount": 7085,
       "comingSoonCount": 0
     },
     {
@@ -403,21 +403,21 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Gelderland",
+      "country": "Netherlands",
+      "activeCount": 6857,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Trento",
       "country": "Italy",
       "activeCount": 6852,
       "comingSoonCount": 0
     },
     {
-      "state": "Gelderland",
-      "country": "Netherlands",
-      "activeCount": 6824,
-      "comingSoonCount": 0
-    },
-    {
       "state": "Oklahoma",
       "country": "United States of America",
-      "activeCount": 6773,
+      "activeCount": 6771,
       "comingSoonCount": 0
     },
     {
@@ -435,7 +435,7 @@
     {
       "state": "Mecklenburg-Vorpommern",
       "country": "Germany",
-      "activeCount": 6625,
+      "activeCount": 6624,
       "comingSoonCount": 0
     },
     {
@@ -459,7 +459,7 @@
     {
       "state": "Isère",
       "country": "France",
-      "activeCount": 6430,
+      "activeCount": 6429,
       "comingSoonCount": 0
     },
     {
@@ -471,13 +471,13 @@
     {
       "state": "Alabama",
       "country": "United States of America",
-      "activeCount": 6264,
+      "activeCount": 6263,
       "comingSoonCount": 0
     },
     {
       "state": "Rio de Janeiro",
       "country": "Brazil",
-      "activeCount": 6146,
+      "activeCount": 6180,
       "comingSoonCount": 0
     },
     {
@@ -495,7 +495,7 @@
     {
       "state": "Bozen",
       "country": "Italy",
-      "activeCount": 5958,
+      "activeCount": 5959,
       "comingSoonCount": 0
     },
     {
@@ -543,19 +543,43 @@
     {
       "state": "Noord-Brabant",
       "country": "Netherlands",
-      "activeCount": 5310,
+      "activeCount": 5333,
       "comingSoonCount": 0
     },
     {
       "state": "Louisiana",
       "country": "United States of America",
-      "activeCount": 5302,
+      "activeCount": 5299,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Haute-Savoie",
+      "country": "France",
+      "activeCount": 5276,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Bern",
+      "country": "Switzerland",
+      "activeCount": 5257,
       "comingSoonCount": 0
     },
     {
       "state": "Milano",
       "country": "Italy",
-      "activeCount": 5205,
+      "activeCount": 5207,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Verbano-Cusio-Ossola",
+      "country": "Italy",
+      "activeCount": 5195,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Graubünden",
+      "country": "Switzerland",
+      "activeCount": 5171,
       "comingSoonCount": 0
     },
     {
@@ -567,7 +591,7 @@
     {
       "state": "Córdoba",
       "country": "Argentina",
-      "activeCount": 5126,
+      "activeCount": 5125,
       "comingSoonCount": 0
     },
     {
@@ -585,19 +609,13 @@
     {
       "state": "Kansas",
       "country": "United States of America",
-      "activeCount": 5092,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Verbano-Cusio-Ossola",
-      "country": "Italy",
-      "activeCount": 5066,
+      "activeCount": 5091,
       "comingSoonCount": 0
     },
     {
       "state": "Liege",
       "country": "Belgium",
-      "activeCount": 5053,
+      "activeCount": 5052,
       "comingSoonCount": 0
     },
     {
@@ -609,7 +627,7 @@
     {
       "state": "Zuid-Holland",
       "country": "Netherlands",
-      "activeCount": 4931,
+      "activeCount": 4950,
       "comingSoonCount": 0
     },
     {
@@ -699,7 +717,7 @@
     {
       "state": "Noord-Holland",
       "country": "Netherlands",
-      "activeCount": 4464,
+      "activeCount": 4485,
       "comingSoonCount": 0
     },
     {
@@ -709,15 +727,15 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Orense",
+      "state": "Burgos",
       "country": "Spain",
       "activeCount": 4313,
       "comingSoonCount": 0
     },
     {
-      "state": "Burgos",
+      "state": "Orense",
       "country": "Spain",
-      "activeCount": 4313,
+      "activeCount": 4312,
       "comingSoonCount": 0
     },
     {
@@ -735,7 +753,7 @@
     {
       "state": "Finistère",
       "country": "France",
-      "activeCount": 4213,
+      "activeCount": 4210,
       "comingSoonCount": 0
     },
     {
@@ -751,15 +769,9 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Haute-Savoie",
-      "country": "France",
-      "activeCount": 4114,
-      "comingSoonCount": 0
-    },
-    {
       "state": "Devon",
       "country": "United Kingdom",
-      "activeCount": 4057,
+      "activeCount": 4056,
       "comingSoonCount": 0
     },
     {
@@ -777,7 +789,13 @@
     {
       "state": "West Virginia",
       "country": "United States of America",
-      "activeCount": 4017,
+      "activeCount": 4015,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Zürich",
+      "country": "Switzerland",
+      "activeCount": 3961,
       "comingSoonCount": 0
     },
     {
@@ -801,7 +819,7 @@
     {
       "state": "Ain",
       "country": "France",
-      "activeCount": 3905,
+      "activeCount": 3910,
       "comingSoonCount": 0
     },
     {
@@ -829,6 +847,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Valais",
+      "country": "Switzerland",
+      "activeCount": 3846,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Valle del Cauca",
       "country": "Colombia",
       "activeCount": 3832,
@@ -837,7 +861,7 @@
     {
       "state": "Alpes-Maritimes",
       "country": "France",
-      "activeCount": 3797,
+      "activeCount": 3796,
       "comingSoonCount": 0
     },
     {
@@ -849,7 +873,7 @@
     {
       "state": "Kentucky",
       "country": "United States of America",
-      "activeCount": 3754,
+      "activeCount": 3753,
       "comingSoonCount": 0
     },
     {
@@ -867,7 +891,7 @@
     {
       "state": "Pontevedra",
       "country": "Spain",
-      "activeCount": 3709,
+      "activeCount": 3708,
       "comingSoonCount": 0
     },
     {
@@ -891,7 +915,7 @@
     {
       "state": "Varese",
       "country": "Italy",
-      "activeCount": 3652,
+      "activeCount": 3653,
       "comingSoonCount": 0
     },
     {
@@ -927,7 +951,7 @@
     {
       "state": "West Flanders",
       "country": "Belgium",
-      "activeCount": 3489,
+      "activeCount": 3488,
       "comingSoonCount": 0
     },
     {
@@ -949,15 +973,15 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Maine-et-Loire",
+      "state": "Haute-Rhin",
       "country": "France",
-      "activeCount": 3430,
+      "activeCount": 3436,
       "comingSoonCount": 0
     },
     {
-      "state": "Haute-Rhin",
+      "state": "Maine-et-Loire",
       "country": "France",
-      "activeCount": 3428,
+      "activeCount": 3430,
       "comingSoonCount": 0
     },
     {
@@ -970,6 +994,12 @@
       "state": "Bologna",
       "country": "Italy",
       "activeCount": 3379,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Como",
+      "country": "Italy",
+      "activeCount": 3372,
       "comingSoonCount": 0
     },
     {
@@ -991,6 +1021,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Aoste",
+      "country": "Italy",
+      "activeCount": 3324,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Espírito Santo",
       "country": "Brazil",
       "activeCount": 3317,
@@ -1009,12 +1045,6 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Aoste",
-      "country": "Italy",
-      "activeCount": 3290,
-      "comingSoonCount": 0
-    },
-    {
       "state": "Côte-d'Or",
       "country": "France",
       "activeCount": 3258,
@@ -1029,13 +1059,13 @@
     {
       "state": "Murcia",
       "country": "Spain",
-      "activeCount": 3228,
+      "activeCount": 3227,
       "comingSoonCount": 0
     },
     {
       "state": "Río Negro",
       "country": "Argentina",
-      "activeCount": 3221,
+      "activeCount": 3220,
       "comingSoonCount": 0
     },
     {
@@ -1047,13 +1077,13 @@
     {
       "state": "Oise",
       "country": "France",
-      "activeCount": 3205,
+      "activeCount": 3204,
       "comingSoonCount": 0
     },
     {
       "state": "Derbyshire",
       "country": "United Kingdom",
-      "activeCount": 3202,
+      "activeCount": 3200,
       "comingSoonCount": 0
     },
     {
@@ -1083,19 +1113,13 @@
     {
       "state": "Seien-et-Marne",
       "country": "France",
-      "activeCount": 3145,
+      "activeCount": 3144,
       "comingSoonCount": 0
     },
     {
       "state": "Pyrénées-Orientales",
       "country": "France",
       "activeCount": 3120,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Como",
-      "country": "Italy",
-      "activeCount": 3114,
       "comingSoonCount": 0
     },
     {
@@ -1129,6 +1153,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Vaud",
+      "country": "Switzerland",
+      "activeCount": 3067,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Kent",
       "country": "United Kingdom",
       "activeCount": 3059,
@@ -1137,7 +1167,7 @@
     {
       "state": "Cambridgeshire",
       "country": "United Kingdom",
-      "activeCount": 3049,
+      "activeCount": 3048,
       "comingSoonCount": 0
     },
     {
@@ -1149,13 +1179,13 @@
     {
       "state": "Loir-et-Cher",
       "country": "France",
-      "activeCount": 3034,
+      "activeCount": 3033,
       "comingSoonCount": 0
     },
     {
       "state": "Antwerp",
       "country": "Belgium",
-      "activeCount": 3033,
+      "activeCount": 3032,
       "comingSoonCount": 0
     },
     {
@@ -1165,14 +1195,14 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Staffordshire",
-      "country": "United Kingdom",
-      "activeCount": 2973,
+      "state": "Overijssel",
+      "country": "Netherlands",
+      "activeCount": 2987,
       "comingSoonCount": 0
     },
     {
-      "state": "Overijssel",
-      "country": "Netherlands",
+      "state": "Staffordshire",
+      "country": "United Kingdom",
       "activeCount": 2970,
       "comingSoonCount": 0
     },
@@ -1197,13 +1227,13 @@
     {
       "state": "Lancashire",
       "country": "United Kingdom",
-      "activeCount": 2924,
+      "activeCount": 2923,
       "comingSoonCount": 0
     },
     {
       "state": "Côtes-d'Armor",
       "country": "France",
-      "activeCount": 2921,
+      "activeCount": 2920,
       "comingSoonCount": 0
     },
     {
@@ -1231,33 +1261,27 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Oxfordshire",
-      "country": "United Kingdom",
-      "activeCount": 2846,
-      "comingSoonCount": 0
-    },
-    {
       "state": "Marne",
       "country": "France",
       "activeCount": 2846,
       "comingSoonCount": 0
     },
     {
+      "state": "Oxfordshire",
+      "country": "United Kingdom",
+      "activeCount": 2846,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Essex",
       "country": "United Kingdom",
-      "activeCount": 2828,
+      "activeCount": 2827,
       "comingSoonCount": 0
     },
     {
       "state": "Somme",
       "country": "France",
-      "activeCount": 2811,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Loiret",
-      "country": "France",
-      "activeCount": 2798,
+      "activeCount": 2810,
       "comingSoonCount": 0
     },
     {
@@ -1267,15 +1291,21 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Gipuzkoa",
-      "country": "Spain",
+      "state": "Limburg",
+      "country": "Netherlands",
+      "activeCount": 2798,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Loiret",
+      "country": "France",
       "activeCount": 2797,
       "comingSoonCount": 0
     },
     {
-      "state": "Limburg",
-      "country": "Netherlands",
-      "activeCount": 2785,
+      "state": "Gipuzkoa",
+      "country": "Spain",
+      "activeCount": 2797,
       "comingSoonCount": 0
     },
     {
@@ -1299,6 +1329,12 @@
     {
       "state": "Pará",
       "country": "Brazil",
+      "activeCount": 2746,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Sondrio",
+      "country": "Italy",
       "activeCount": 2746,
       "comingSoonCount": 0
     },
@@ -1335,7 +1371,7 @@
     {
       "state": "Doubs",
       "country": "France",
-      "activeCount": 2683,
+      "activeCount": 2689,
       "comingSoonCount": 0
     },
     {
@@ -1359,13 +1395,13 @@
     {
       "state": "Lincolnshire",
       "country": "United Kingdom",
-      "activeCount": 2658,
+      "activeCount": 2656,
       "comingSoonCount": 0
     },
     {
       "state": "Jura",
       "country": "France",
-      "activeCount": 2652,
+      "activeCount": 2654,
       "comingSoonCount": 0
     },
     {
@@ -1381,15 +1417,15 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Sondrio",
-      "country": "Italy",
-      "activeCount": 2593,
+      "state": "Ticino",
+      "country": "Switzerland",
+      "activeCount": 2594,
       "comingSoonCount": 0
     },
     {
       "state": "Perugia",
       "country": "Italy",
-      "activeCount": 2575,
+      "activeCount": 2574,
       "comingSoonCount": 0
     },
     {
@@ -1425,7 +1461,7 @@
     {
       "state": "Napoli",
       "country": "Italy",
-      "activeCount": 2517,
+      "activeCount": 2522,
       "comingSoonCount": 0
     },
     {
@@ -1455,7 +1491,7 @@
     {
       "state": "Landes",
       "country": "France",
-      "activeCount": 2482,
+      "activeCount": 2481,
       "comingSoonCount": 0
     },
     {
@@ -1491,7 +1527,7 @@
     {
       "state": "Cagliari",
       "country": "Italy",
-      "activeCount": 2414,
+      "activeCount": 2413,
       "comingSoonCount": 0
     },
     {
@@ -1545,7 +1581,7 @@
     {
       "state": "Venezia",
       "country": "Italy",
-      "activeCount": 2352,
+      "activeCount": 2355,
       "comingSoonCount": 0
     },
     {
@@ -1605,7 +1641,7 @@
     {
       "state": "Siena",
       "country": "Italy",
-      "activeCount": 2287,
+      "activeCount": 2285,
       "comingSoonCount": 0
     },
     {
@@ -1639,6 +1675,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Friesland",
+      "country": "Netherlands",
+      "activeCount": 2233,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Seine-Maritime",
       "country": "France",
       "activeCount": 2232,
@@ -1647,12 +1689,6 @@
     {
       "state": "Alajuela",
       "country": "Costa Rica",
-      "activeCount": 2220,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Friesland",
-      "country": "Netherlands",
       "activeCount": 2220,
       "comingSoonCount": 0
     },
@@ -1741,6 +1777,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Sankt Gallen",
+      "country": "Switzerland",
+      "activeCount": 2075,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Vienne",
       "country": "France",
       "activeCount": 2073,
@@ -1773,7 +1815,7 @@
     {
       "state": "Miranda",
       "country": "Venezuela",
-      "activeCount": 2017,
+      "activeCount": 2016,
       "comingSoonCount": 0
     },
     {
@@ -1785,13 +1827,19 @@
     {
       "state": "Badajoz",
       "country": "Spain",
-      "activeCount": 1986,
+      "activeCount": 1985,
       "comingSoonCount": 0
     },
     {
       "state": "Var",
       "country": "France",
       "activeCount": 1984,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Groningen",
+      "country": "Netherlands",
+      "activeCount": 1981,
       "comingSoonCount": 0
     },
     {
@@ -1804,12 +1852,6 @@
       "state": "Orne",
       "country": "France",
       "activeCount": 1975,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Groningen",
-      "country": "Netherlands",
-      "activeCount": 1972,
       "comingSoonCount": 0
     },
     {
@@ -1909,6 +1951,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Aargau",
+      "country": "Switzerland",
+      "activeCount": 1867,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Modena",
       "country": "Italy",
       "activeCount": 1863,
@@ -1933,14 +1981,14 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Shropshire",
-      "country": "United Kingdom",
+      "state": "Ávila",
+      "country": "Spain",
       "activeCount": 1852,
       "comingSoonCount": 0
     },
     {
-      "state": "Ávila",
-      "country": "Spain",
+      "state": "Shropshire",
+      "country": "United Kingdom",
       "activeCount": 1852,
       "comingSoonCount": 0
     },
@@ -1983,24 +2031,24 @@
     {
       "state": "Almería",
       "country": "Spain",
-      "activeCount": 1801,
+      "activeCount": 1800,
       "comingSoonCount": 0
     },
     {
       "state": "Tarn",
       "country": "France",
-      "activeCount": 1791,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Yucatán",
-      "country": "Mexico",
-      "activeCount": 1789,
+      "activeCount": 1790,
       "comingSoonCount": 0
     },
     {
       "state": "Maranhão",
       "country": "Brazil",
+      "activeCount": 1789,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Yucatán",
+      "country": "Mexico",
       "activeCount": 1789,
       "comingSoonCount": 0
     },
@@ -2041,15 +2089,15 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Toledo",
-      "country": "Spain",
-      "activeCount": 1736,
+      "state": "Utrecht",
+      "country": "Netherlands",
+      "activeCount": 1744,
       "comingSoonCount": 0
     },
     {
-      "state": "Utrecht",
-      "country": "Netherlands",
-      "activeCount": 1735,
+      "state": "Toledo",
+      "country": "Spain",
+      "activeCount": 1736,
       "comingSoonCount": 0
     },
     {
@@ -2071,14 +2119,14 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Álava",
-      "country": "Spain",
+      "state": "Pichincha",
+      "country": "Ecuador",
       "activeCount": 1711,
       "comingSoonCount": 0
     },
     {
-      "state": "Pichincha",
-      "country": "Ecuador",
+      "state": "Álava",
+      "country": "Spain",
       "activeCount": 1711,
       "comingSoonCount": 0
     },
@@ -2115,7 +2163,7 @@
     {
       "state": "Worcestershire",
       "country": "United Kingdom",
-      "activeCount": 1673,
+      "activeCount": 1672,
       "comingSoonCount": 0
     },
     {
@@ -2199,7 +2247,7 @@
     {
       "state": "Salerno",
       "country": "Italy",
-      "activeCount": 1589,
+      "activeCount": 1588,
       "comingSoonCount": 0
     },
     {
@@ -2241,7 +2289,7 @@
     {
       "state": "West Sussex",
       "country": "United Kingdom",
-      "activeCount": 1550,
+      "activeCount": 1549,
       "comingSoonCount": 0
     },
     {
@@ -2313,13 +2361,13 @@
     {
       "state": "Edinburgh",
       "country": "United Kingdom",
-      "activeCount": 1462,
+      "activeCount": 1461,
       "comingSoonCount": 0
     },
     {
       "state": "Camden",
       "country": "United Kingdom",
-      "activeCount": 1461,
+      "activeCount": 1460,
       "comingSoonCount": 0
     },
     {
@@ -2383,14 +2431,14 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Aube",
-      "country": "France",
+      "state": "Catamarca",
+      "country": "Argentina",
       "activeCount": 1420,
       "comingSoonCount": 0
     },
     {
-      "state": "Catamarca",
-      "country": "Argentina",
+      "state": "Aube",
+      "country": "France",
       "activeCount": 1420,
       "comingSoonCount": 0
     },
@@ -2403,7 +2451,7 @@
     {
       "state": "Powys",
       "country": "United Kingdom",
-      "activeCount": 1411,
+      "activeCount": 1409,
       "comingSoonCount": 0
     },
     {
@@ -2485,14 +2533,14 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Haute-Loire",
-      "country": "France",
+      "state": "Azuay",
+      "country": "Ecuador",
       "activeCount": 1334,
       "comingSoonCount": 0
     },
     {
-      "state": "Azuay",
-      "country": "Ecuador",
+      "state": "Haute-Loire",
+      "country": "France",
       "activeCount": 1334,
       "comingSoonCount": 0
     },
@@ -2581,15 +2629,15 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Macerata",
-      "country": "Italy",
-      "activeCount": 1220,
-      "comingSoonCount": 0
-    },
-    {
       "state": "Apurímac",
       "country": "Peru",
       "activeCount": 1215,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Macerata",
+      "country": "Italy",
+      "activeCount": 1212,
       "comingSoonCount": 0
     },
     {
@@ -2613,7 +2661,7 @@
     {
       "state": "Limerick",
       "country": "Ireland",
-      "activeCount": 1189,
+      "activeCount": 1188,
       "comingSoonCount": 0
     },
     {
@@ -2659,15 +2707,15 @@
       "comingSoonCount": 0
     },
     {
-      "state": "South Lanarkshire",
-      "country": "United Kingdom",
-      "activeCount": 1130,
-      "comingSoonCount": 0
-    },
-    {
       "state": "Coahuila",
       "country": "Mexico",
       "activeCount": 1129,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "South Lanarkshire",
+      "country": "United Kingdom",
+      "activeCount": 1128,
       "comingSoonCount": 0
     },
     {
@@ -2689,26 +2737,26 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Bari",
-      "country": "Italy",
-      "activeCount": 1108,
-      "comingSoonCount": 0
-    },
-    {
       "state": "Táchira",
       "country": "Venezuela",
       "activeCount": 1108,
       "comingSoonCount": 0
     },
     {
-      "state": "Oristrano",
+      "state": "Bari",
       "country": "Italy",
-      "activeCount": 1103,
+      "activeCount": 1108,
       "comingSoonCount": 0
     },
     {
       "state": "Guanajuato",
       "country": "Mexico",
+      "activeCount": 1103,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Oristrano",
+      "country": "Italy",
       "activeCount": 1103,
       "comingSoonCount": 0
     },
@@ -2763,7 +2811,7 @@
     {
       "state": "Drenthe",
       "country": "Netherlands",
-      "activeCount": 1077,
+      "activeCount": 1078,
       "comingSoonCount": 0
     },
     {
@@ -2788,6 +2836,12 @@
       "state": "Ciudad Real",
       "country": "Spain",
       "activeCount": 1057,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Uri",
+      "country": "Switzerland",
+      "activeCount": 1054,
       "comingSoonCount": 0
     },
     {
@@ -2823,7 +2877,7 @@
     {
       "state": "Los Ríos",
       "country": "Chile",
-      "activeCount": 1031,
+      "activeCount": 1030,
       "comingSoonCount": 0
     },
     {
@@ -2845,14 +2899,14 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Cauca",
-      "country": "Colombia",
+      "state": "Rieti",
+      "country": "Italy",
       "activeCount": 1020,
       "comingSoonCount": 0
     },
     {
-      "state": "Rieti",
-      "country": "Italy",
+      "state": "Cauca",
+      "country": "Colombia",
       "activeCount": 1020,
       "comingSoonCount": 0
     },
@@ -2913,7 +2967,7 @@
     {
       "state": "Cheshire East",
       "country": "United Kingdom",
-      "activeCount": 978,
+      "activeCount": 977,
       "comingSoonCount": 0
     },
     {
@@ -2935,14 +2989,14 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Distrito Federal",
-      "country": "Brazil",
+      "state": "Cartago",
+      "country": "Costa Rica",
       "activeCount": 969,
       "comingSoonCount": 0
     },
     {
-      "state": "Cartago",
-      "country": "Costa Rica",
+      "state": "Distrito Federal",
+      "country": "Brazil",
       "activeCount": 969,
       "comingSoonCount": 0
     },
@@ -3015,7 +3069,7 @@
     {
       "state": "Glasgow",
       "country": "United Kingdom",
-      "activeCount": 928,
+      "activeCount": 927,
       "comingSoonCount": 0
     },
     {
@@ -3034,6 +3088,12 @@
       "state": "Francisco Morazán",
       "country": "Honduras",
       "activeCount": 919,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Thurgau",
+      "country": "Switzerland",
+      "activeCount": 908,
       "comingSoonCount": 0
     },
     {
@@ -3067,12 +3127,6 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Graubünden",
-      "country": "Switzerland",
-      "activeCount": 881,
-      "comingSoonCount": 0
-    },
-    {
       "state": "Meta",
       "country": "Colombia",
       "activeCount": 877,
@@ -3094,6 +3148,12 @@
       "state": "Ouest",
       "country": "Haiti",
       "activeCount": 869,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Schwyz",
+      "country": "Switzerland",
+      "activeCount": 867,
       "comingSoonCount": 0
     },
     {
@@ -3129,7 +3189,13 @@
     {
       "state": "San Luis",
       "country": "Argentina",
-      "activeCount": 857,
+      "activeCount": 856,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Tirol",
+      "country": "Austria",
+      "activeCount": 851,
       "comingSoonCount": 0
     },
     {
@@ -3145,14 +3211,14 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Bogota",
-      "country": "Colombia",
+      "state": "Cheshire West and Chester",
+      "country": "United Kingdom",
       "activeCount": 838,
       "comingSoonCount": 0
     },
     {
-      "state": "Cheshire West and Chester",
-      "country": "United Kingdom",
+      "state": "Bogota",
+      "country": "Colombia",
       "activeCount": 838,
       "comingSoonCount": 0
     },
@@ -3223,6 +3289,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Lucerne",
+      "country": "Switzerland",
+      "activeCount": 801,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Guyane française",
       "country": "France",
       "activeCount": 798,
@@ -3265,14 +3337,14 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Pesaro e Urbino",
-      "country": "Italy",
+      "state": "Loja",
+      "country": "Ecuador",
       "activeCount": 780,
       "comingSoonCount": 0
     },
     {
-      "state": "Loja",
-      "country": "Ecuador",
+      "state": "Pesaro e Urbino",
+      "country": "Italy",
       "activeCount": 780,
       "comingSoonCount": 0
     },
@@ -3283,14 +3355,14 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Herefordshire",
-      "country": "United Kingdom",
+      "state": "Imperia",
+      "country": "Italy",
       "activeCount": 776,
       "comingSoonCount": 0
     },
     {
-      "state": "Imperia",
-      "country": "Italy",
+      "state": "Herefordshire",
+      "country": "United Kingdom",
       "activeCount": 776,
       "comingSoonCount": 0
     },
@@ -3301,14 +3373,14 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Sandwell",
-      "country": "United Kingdom",
+      "state": "Caldas",
+      "country": "Colombia",
       "activeCount": 769,
       "comingSoonCount": 0
     },
     {
-      "state": "Caldas",
-      "country": "Colombia",
+      "state": "Sandwell",
+      "country": "United Kingdom",
       "activeCount": 769,
       "comingSoonCount": 0
     },
@@ -3343,6 +3415,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Basel-Landschaft",
+      "country": "Switzerland",
+      "activeCount": 755,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Wicklow",
       "country": "Ireland",
       "activeCount": 752,
@@ -3373,21 +3451,15 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Laoighis",
-      "country": "Ireland",
-      "activeCount": 739,
-      "comingSoonCount": 0
-    },
-    {
       "state": "Colima",
       "country": "Mexico",
       "activeCount": 739,
       "comingSoonCount": 0
     },
     {
-      "state": "Tucumán",
-      "country": "Argentina",
-      "activeCount": 738,
+      "state": "Laoighis",
+      "country": "Ireland",
+      "activeCount": 739,
       "comingSoonCount": 0
     },
     {
@@ -3397,15 +3469,15 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Camagüey",
-      "country": "Cuba",
-      "activeCount": 732,
+      "state": "Tucumán",
+      "country": "Argentina",
+      "activeCount": 737,
       "comingSoonCount": 0
     },
     {
-      "state": "Taranto",
-      "country": "Italy",
-      "activeCount": 730,
+      "state": "Camagüey",
+      "country": "Cuba",
+      "activeCount": 732,
       "comingSoonCount": 0
     },
     {
@@ -3417,6 +3489,12 @@
     {
       "state": "Atlántico Norte",
       "country": "Nicaragua",
+      "activeCount": 730,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Taranto",
+      "country": "Italy",
       "activeCount": 730,
       "comingSoonCount": 0
     },
@@ -3466,12 +3544,6 @@
       "state": "Chinandega",
       "country": "Nicaragua",
       "activeCount": 712,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Tirol",
-      "country": "Austria",
-      "activeCount": 708,
       "comingSoonCount": 0
     },
     {
@@ -3529,15 +3601,15 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Prince Edward Island",
-      "country": "Canada",
+      "state": "Casanare",
+      "country": "Colombia",
       "activeCount": 679,
       "comingSoonCount": 0
     },
     {
-      "state": "Casanare",
-      "country": "Colombia",
-      "activeCount": 679,
+      "state": "Prince Edward Island",
+      "country": "Canada",
+      "activeCount": 678,
       "comingSoonCount": 0
     },
     {
@@ -3603,18 +3675,18 @@
     {
       "state": "Tower Hamlets",
       "country": "United Kingdom",
-      "activeCount": 644,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Risaralda",
-      "country": "Colombia",
-      "activeCount": 639,
+      "activeCount": 643,
       "comingSoonCount": 0
     },
     {
       "state": "Hammersmith and Fulham",
       "country": "United Kingdom",
+      "activeCount": 639,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Risaralda",
+      "country": "Colombia",
       "activeCount": 639,
       "comingSoonCount": 0
     },
@@ -3655,6 +3727,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Territoire de Belfort",
+      "country": "France",
+      "activeCount": 620,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Pescara",
       "country": "Italy",
       "activeCount": 615,
@@ -3663,18 +3741,18 @@
     {
       "state": "Lambeth",
       "country": "United Kingdom",
-      "activeCount": 613,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Sligo",
-      "country": "Ireland",
       "activeCount": 612,
       "comingSoonCount": 0
     },
     {
       "state": "Lecce",
       "country": "Italy",
+      "activeCount": 612,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Sligo",
+      "country": "Ireland",
       "activeCount": 612,
       "comingSoonCount": 0
     },
@@ -3691,9 +3769,9 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Territoire de Belfort",
-      "country": "France",
-      "activeCount": 604,
+      "state": "Neuchâtel",
+      "country": "Switzerland",
+      "activeCount": 607,
       "comingSoonCount": 0
     },
     {
@@ -3757,13 +3835,13 @@
       "comingSoonCount": 0
     },
     {
-      "state": "South Dublin",
+      "state": "Leitrim",
       "country": "Ireland",
       "activeCount": 567,
       "comingSoonCount": 0
     },
     {
-      "state": "Leitrim",
+      "state": "South Dublin",
       "country": "Ireland",
       "activeCount": 567,
       "comingSoonCount": 0
@@ -3790,6 +3868,12 @@
       "state": "Carmarthenshire",
       "country": "United Kingdom",
       "activeCount": 562,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Latina",
+      "country": "Italy",
+      "activeCount": 559,
       "comingSoonCount": 0
     },
     {
@@ -3823,12 +3907,6 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Latina",
-      "country": "Italy",
-      "activeCount": 544,
-      "comingSoonCount": 0
-    },
-    {
       "state": "Gorizia",
       "country": "Italy",
       "activeCount": 541,
@@ -3853,14 +3931,14 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Bath and North East Somerset",
-      "country": "United Kingdom",
+      "state": "Jura",
+      "country": "Switzerland",
       "activeCount": 521,
       "comingSoonCount": 0
     },
     {
-      "state": "Ticino",
-      "country": "Switzerland",
+      "state": "Bath and North East Somerset",
+      "country": "United Kingdom",
       "activeCount": 521,
       "comingSoonCount": 0
     },
@@ -3892,6 +3970,12 @@
       "state": "North Lanarkshire",
       "country": "United Kingdom",
       "activeCount": 508,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Suðurland",
+      "country": "Iceland",
+      "activeCount": 505,
       "comingSoonCount": 0
     },
     {
@@ -3952,6 +4036,12 @@
       "state": "Doncaster",
       "country": "United Kingdom",
       "activeCount": 484,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Nidwalden",
+      "country": "Switzerland",
+      "activeCount": 483,
       "comingSoonCount": 0
     },
     {
@@ -4021,14 +4111,14 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Cayo",
-      "country": "Belize",
+      "state": "Pinar del Río",
+      "country": "Cuba",
       "activeCount": 454,
       "comingSoonCount": 0
     },
     {
-      "state": "Pinar del Río",
-      "country": "Cuba",
+      "state": "Cayo",
+      "country": "Belize",
       "activeCount": 454,
       "comingSoonCount": 0
     },
@@ -4036,6 +4126,12 @@
       "state": "Rio San Juan",
       "country": "Nicaragua",
       "activeCount": 452,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Chimborazo",
+      "country": "Ecuador",
+      "activeCount": 449,
       "comingSoonCount": 0
     },
     {
@@ -4048,18 +4144,6 @@
       "state": "San Miguel",
       "country": "El Salvador",
       "activeCount": 449,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Chimborazo",
-      "country": "Ecuador",
-      "activeCount": 449,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Vaud",
-      "country": "Switzerland",
-      "activeCount": 448,
       "comingSoonCount": 0
     },
     {
@@ -4081,14 +4165,14 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Isernia",
-      "country": "Italy",
+      "state": "Santiago del Estero",
+      "country": "Argentina",
       "activeCount": 444,
       "comingSoonCount": 0
     },
     {
-      "state": "Santiago del Estero",
-      "country": "Argentina",
+      "state": "Isernia",
+      "country": "Italy",
       "activeCount": 444,
       "comingSoonCount": 0
     },
@@ -4111,14 +4195,14 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Matanzas",
-      "country": "Cuba",
-      "activeCount": 434,
+      "state": "Barletta-Andria Trani",
+      "country": "Italy",
+      "activeCount": 433,
       "comingSoonCount": 0
     },
     {
-      "state": "Barletta-Andria Trani",
-      "country": "Italy",
+      "state": "Matanzas",
+      "country": "Cuba",
       "activeCount": 433,
       "comingSoonCount": 0
     },
@@ -4201,14 +4285,14 @@
       "comingSoonCount": 0
     },
     {
-      "state": "West Berkshire",
-      "country": "United Kingdom",
+      "state": "Formosa",
+      "country": "Argentina",
       "activeCount": 400,
       "comingSoonCount": 0
     },
     {
-      "state": "Formosa",
-      "country": "Argentina",
+      "state": "West Berkshire",
+      "country": "United Kingdom",
       "activeCount": 400,
       "comingSoonCount": 0
     },
@@ -4225,14 +4309,14 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Arica y Parinacota",
-      "country": "Chile",
+      "state": "Amapá",
+      "country": "Brazil",
       "activeCount": 397,
       "comingSoonCount": 0
     },
     {
-      "state": "Amapá",
-      "country": "Brazil",
+      "state": "Arica y Parinacota",
+      "country": "Chile",
       "activeCount": 397,
       "comingSoonCount": 0
     },
@@ -4261,26 +4345,26 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Prato",
-      "country": "Italy",
-      "activeCount": 384,
-      "comingSoonCount": 0
-    },
-    {
       "state": "Haringey",
       "country": "United Kingdom",
       "activeCount": 384,
       "comingSoonCount": 0
     },
     {
-      "state": "Cañar",
-      "country": "Ecuador",
-      "activeCount": 383,
+      "state": "Prato",
+      "country": "Italy",
+      "activeCount": 384,
       "comingSoonCount": 0
     },
     {
       "state": "Cojedes",
       "country": "Venezuela",
+      "activeCount": 383,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Cañar",
+      "country": "Ecuador",
       "activeCount": 383,
       "comingSoonCount": 0
     },
@@ -4309,14 +4393,14 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Pasco",
-      "country": "Peru",
+      "state": "Medio Campidano",
+      "country": "Italy",
       "activeCount": 372,
       "comingSoonCount": 0
     },
     {
-      "state": "Medio Campidano",
-      "country": "Italy",
+      "state": "Pasco",
+      "country": "Peru",
       "activeCount": 372,
       "comingSoonCount": 0
     },
@@ -4327,21 +4411,27 @@
       "comingSoonCount": 0
     },
     {
-      "state": "La Guajira",
-      "country": "Colombia",
-      "activeCount": 369,
-      "comingSoonCount": 0
-    },
-    {
       "state": "Caltanissetta",
       "country": "Italy",
       "activeCount": 369,
       "comingSoonCount": 0
     },
     {
+      "state": "La Guajira",
+      "country": "Colombia",
+      "activeCount": 369,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Newport",
       "country": "United Kingdom",
-      "activeCount": 366,
+      "activeCount": 365,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Jutiapa",
+      "country": "Guatemala",
+      "activeCount": 364,
       "comingSoonCount": 0
     },
     {
@@ -4351,9 +4441,9 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Jutiapa",
-      "country": "Guatemala",
-      "activeCount": 364,
+      "state": "Fribourg",
+      "country": "Switzerland",
+      "activeCount": 360,
       "comingSoonCount": 0
     },
     {
@@ -4393,14 +4483,14 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Chuquisaca",
-      "country": "Bolivia",
+      "state": "Enna",
+      "country": "Italy",
       "activeCount": 350,
       "comingSoonCount": 0
     },
     {
-      "state": "Enna",
-      "country": "Italy",
+      "state": "Chuquisaca",
+      "country": "Bolivia",
       "activeCount": 350,
       "comingSoonCount": 0
     },
@@ -4419,12 +4509,6 @@
     {
       "state": "Izabal",
       "country": "Guatemala",
-      "activeCount": 345,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Valais",
-      "country": "Switzerland",
       "activeCount": 345,
       "comingSoonCount": 0
     },
@@ -4459,6 +4543,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Glarus",
+      "country": "Switzerland",
+      "activeCount": 332,
+      "comingSoonCount": 0
+    },
+    {
       "state": "San Marcos",
       "country": "Guatemala",
       "activeCount": 330,
@@ -4477,14 +4567,14 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Alto Paraná",
-      "country": "Paraguay",
+      "state": "Neath Port Talbot",
+      "country": "United Kingdom",
       "activeCount": 322,
       "comingSoonCount": 0
     },
     {
-      "state": "Neath Port Talbot",
-      "country": "United Kingdom",
+      "state": "Alto Paraná",
+      "country": "Paraguay",
       "activeCount": 322,
       "comingSoonCount": 0
     },
@@ -4519,8 +4609,8 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Bolivar",
-      "country": "Ecuador",
+      "state": "El Beni",
+      "country": "Bolivia",
       "activeCount": 315,
       "comingSoonCount": 0
     },
@@ -4531,8 +4621,8 @@
       "comingSoonCount": 0
     },
     {
-      "state": "El Beni",
-      "country": "Bolivia",
+      "state": "Bolivar",
+      "country": "Ecuador",
       "activeCount": 315,
       "comingSoonCount": 0
     },
@@ -4561,6 +4651,18 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Solothurn",
+      "country": "Switzerland",
+      "activeCount": 307,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Basel-Stadt",
+      "country": "Switzerland",
+      "activeCount": 305,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Boquerón",
       "country": "Paraguay",
       "activeCount": 302,
@@ -4585,14 +4687,14 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Las Tunas",
-      "country": "Cuba",
+      "state": "Chiquimula",
+      "country": "Guatemala",
       "activeCount": 296,
       "comingSoonCount": 0
     },
     {
-      "state": "Chiquimula",
-      "country": "Guatemala",
+      "state": "Las Tunas",
+      "country": "Cuba",
       "activeCount": 296,
       "comingSoonCount": 0
     },
@@ -4657,13 +4759,13 @@
       "comingSoonCount": 0
     },
     {
-      "state": "North Somerset",
+      "state": "Dungannon",
       "country": "United Kingdom",
       "activeCount": 284,
       "comingSoonCount": 0
     },
     {
-      "state": "Dungannon",
+      "state": "North Somerset",
       "country": "United Kingdom",
       "activeCount": 284,
       "comingSoonCount": 0
@@ -4713,7 +4815,7 @@
     {
       "state": "Zeeland",
       "country": "Netherlands",
-      "activeCount": 270,
+      "activeCount": 271,
       "comingSoonCount": 0
     },
     {
@@ -4725,6 +4827,12 @@
     {
       "state": "Louth",
       "country": "Ireland",
+      "activeCount": 268,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Reykjavík",
+      "country": "Iceland",
       "activeCount": 268,
       "comingSoonCount": 0
     },
@@ -4753,6 +4861,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Norðurland eystra",
+      "country": "Iceland",
+      "activeCount": 260,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Renfrewshire",
       "country": "United Kingdom",
       "activeCount": 260,
@@ -4771,6 +4885,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Höfuðborgarsvæði",
+      "country": "Iceland",
+      "activeCount": 254,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Santa Bárbara",
       "country": "Honduras",
       "activeCount": 253,
@@ -4780,6 +4900,12 @@
       "state": "Brent",
       "country": "United Kingdom",
       "activeCount": 252,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Austurland",
+      "country": "Iceland",
+      "activeCount": 251,
       "comingSoonCount": 0
     },
     {
@@ -4909,15 +5035,21 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Armagh",
+      "country": "United Kingdom",
+      "activeCount": 225,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Paysandú",
       "country": "Uruguay",
       "activeCount": 225,
       "comingSoonCount": 0
     },
     {
-      "state": "Armagh",
-      "country": "United Kingdom",
-      "activeCount": 225,
+      "state": "Zug",
+      "country": "Switzerland",
+      "activeCount": 224,
       "comingSoonCount": 0
     },
     {
@@ -4963,6 +5095,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Obwalden",
+      "country": "Switzerland",
+      "activeCount": 209,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Lavalleja",
       "country": "Uruguay",
       "activeCount": 209,
@@ -4981,26 +5119,26 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Craigavon",
-      "country": "United Kingdom",
-      "activeCount": 204,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Colón",
-      "country": "Panama",
-      "activeCount": 204,
-      "comingSoonCount": 0
-    },
-    {
       "state": "West Pomeranian",
       "country": "Poland",
       "activeCount": 204,
       "comingSoonCount": 0
     },
     {
+      "state": "Craigavon",
+      "country": "United Kingdom",
+      "activeCount": 204,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Esmeraldas",
       "country": "Ecuador",
+      "activeCount": 204,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Colón",
+      "country": "Panama",
       "activeCount": 204,
       "comingSoonCount": 0
     },
@@ -5017,20 +5155,26 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Vestfirðir",
+      "country": "Iceland",
+      "activeCount": 199,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Longford",
       "country": "Ireland",
       "activeCount": 198,
       "comingSoonCount": 0
     },
     {
-      "state": "Strabane",
-      "country": "United Kingdom",
+      "state": "Jihočeský",
+      "country": "Czech Republic",
       "activeCount": 197,
       "comingSoonCount": 0
     },
     {
-      "state": "Jihočeský",
-      "country": "Czech Republic",
+      "state": "Strabane",
+      "country": "United Kingdom",
       "activeCount": 197,
       "comingSoonCount": 0
     },
@@ -5042,6 +5186,12 @@
     },
     {
       "state": "Liverpool",
+      "country": "United Kingdom",
+      "activeCount": 195,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Enfield",
       "country": "United Kingdom",
       "activeCount": 195,
       "comingSoonCount": 0
@@ -5059,20 +5209,14 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Enfield",
+      "state": "Solihull",
       "country": "United Kingdom",
-      "activeCount": 195,
+      "activeCount": 194,
       "comingSoonCount": 0
     },
     {
       "state": "Lubusz",
       "country": "Poland",
-      "activeCount": 194,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Solihull",
-      "country": "United Kingdom",
       "activeCount": 194,
       "comingSoonCount": 0
     },
@@ -5083,14 +5227,14 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Carbonia-Iglesias",
-      "country": "Italy",
+      "state": "Oriental",
+      "country": "Morocco",
       "activeCount": 192,
       "comingSoonCount": 0
     },
     {
-      "state": "Oriental",
-      "country": "Morocco",
+      "state": "Carbonia-Iglesias",
+      "country": "Italy",
       "activeCount": 192,
       "comingSoonCount": 0
     },
@@ -5125,8 +5269,8 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Sipaliwini",
-      "country": "Suriname",
+      "state": "Colón",
+      "country": "Honduras",
       "activeCount": 184,
       "comingSoonCount": 0
     },
@@ -5137,26 +5281,32 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Colón",
-      "country": "Honduras",
+      "state": "Sipaliwini",
+      "country": "Suriname",
+      "activeCount": 184,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Vesturland",
+      "country": "Iceland",
       "activeCount": 184,
       "comingSoonCount": 0
     },
     {
       "state": "Bury",
       "country": "United Kingdom",
-      "activeCount": 183,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Caaguazú",
-      "country": "Paraguay",
       "activeCount": 182,
       "comingSoonCount": 0
     },
     {
       "state": "Cerro Largo",
       "country": "Uruguay",
+      "activeCount": 182,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Caaguazú",
+      "country": "Paraguay",
       "activeCount": 182,
       "comingSoonCount": 0
     },
@@ -5179,14 +5329,14 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Sunderland",
-      "country": "United Kingdom",
+      "state": "Retalhuleu",
+      "country": "Guatemala",
       "activeCount": 179,
       "comingSoonCount": 0
     },
     {
-      "state": "Retalhuleu",
-      "country": "Guatemala",
+      "state": "Sunderland",
+      "country": "United Kingdom",
       "activeCount": 179,
       "comingSoonCount": 0
     },
@@ -5197,14 +5347,14 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Santa Rosa",
-      "country": "Guatemala",
+      "state": "East Lothian",
+      "country": "United Kingdom",
       "activeCount": 177,
       "comingSoonCount": 0
     },
     {
-      "state": "East Lothian",
-      "country": "United Kingdom",
+      "state": "Santa Rosa",
+      "country": "Guatemala",
       "activeCount": 177,
       "comingSoonCount": 0
     },
@@ -5215,20 +5365,26 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Appenzell Ausserrhoden",
+      "country": "Switzerland",
+      "activeCount": 173,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Redbridge",
       "country": "United Kingdom",
       "activeCount": 172,
       "comingSoonCount": 0
     },
     {
-      "state": "Luxembourg",
-      "country": "Luxembourg",
+      "state": "Ballymena",
+      "country": "United Kingdom",
       "activeCount": 169,
       "comingSoonCount": 0
     },
     {
-      "state": "Ballymena",
-      "country": "United Kingdom",
+      "state": "Luxembourg",
+      "country": "Luxembourg",
       "activeCount": 169,
       "comingSoonCount": 0
     },
@@ -5269,6 +5425,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Genève",
+      "country": "Switzerland",
+      "activeCount": 165,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Gracias a Dios",
       "country": "Honduras",
       "activeCount": 163,
@@ -5287,21 +5449,15 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Upper Demerara-Berbice",
-      "country": "Guyana",
-      "activeCount": 160,
-      "comingSoonCount": 0
-    },
-    {
       "state": "Westmoreland",
       "country": "Jamaica",
       "activeCount": 160,
       "comingSoonCount": 0
     },
     {
-      "state": "Derry",
-      "country": "United Kingdom",
-      "activeCount": 158,
+      "state": "Upper Demerara-Berbice",
+      "country": "Guyana",
+      "activeCount": 160,
       "comingSoonCount": 0
     },
     {
@@ -5311,15 +5467,15 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Havering",
+      "state": "Derry",
       "country": "United Kingdom",
-      "activeCount": 157,
+      "activeCount": 158,
       "comingSoonCount": 0
     },
     {
-      "state": "Yoro",
-      "country": "Honduras",
-      "activeCount": 156,
+      "state": "Havering",
+      "country": "United Kingdom",
+      "activeCount": 157,
       "comingSoonCount": 0
     },
     {
@@ -5331,6 +5487,12 @@
     {
       "state": "Paraguarí",
       "country": "Paraguay",
+      "activeCount": 156,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Yoro",
+      "country": "Honduras",
       "activeCount": 156,
       "comingSoonCount": 0
     },
@@ -5371,14 +5533,14 @@
       "comingSoonCount": 0
     },
     {
-      "state": "La Unión",
-      "country": "El Salvador",
+      "state": "Liberecký",
+      "country": "Czech Republic",
       "activeCount": 151,
       "comingSoonCount": 0
     },
     {
-      "state": "Liberecký",
-      "country": "Czech Republic",
+      "state": "La Unión",
+      "country": "El Salvador",
       "activeCount": 151,
       "comingSoonCount": 0
     },
@@ -5425,14 +5587,14 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Plzeňský",
-      "country": "Czech Republic",
+      "state": "Putumayo",
+      "country": "Colombia",
       "activeCount": 145,
       "comingSoonCount": 0
     },
     {
-      "state": "Putumayo",
-      "country": "Colombia",
+      "state": "Plzeňský",
+      "country": "Czech Republic",
       "activeCount": 145,
       "comingSoonCount": 0
     },
@@ -5443,26 +5605,26 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Canindeyú",
-      "country": "Paraguay",
-      "activeCount": 144,
-      "comingSoonCount": 0
-    },
-    {
       "state": "Los Santos",
       "country": "Panama",
       "activeCount": 144,
       "comingSoonCount": 0
     },
     {
-      "state": "Suchitepéquez",
-      "country": "Guatemala",
-      "activeCount": 143,
+      "state": "Canindeyú",
+      "country": "Paraguay",
+      "activeCount": 144,
       "comingSoonCount": 0
     },
     {
       "state": "La Paz",
       "country": "El Salvador",
+      "activeCount": 143,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Suchitepéquez",
+      "country": "Guatemala",
       "activeCount": 143,
       "comingSoonCount": 0
     },
@@ -5491,9 +5653,9 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Lewisham",
-      "country": "United Kingdom",
-      "activeCount": 136,
+      "state": "Norðurland vestra",
+      "country": "Iceland",
+      "activeCount": 137,
       "comingSoonCount": 0
     },
     {
@@ -5503,14 +5665,20 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Saint Catherine",
-      "country": "Jamaica",
-      "activeCount": 135,
+      "state": "Lewisham",
+      "country": "United Kingdom",
+      "activeCount": 136,
       "comingSoonCount": 0
     },
     {
       "state": "Ahuachapán",
       "country": "El Salvador",
+      "activeCount": 135,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Saint Catherine",
+      "country": "Jamaica",
       "activeCount": 135,
       "comingSoonCount": 0
     },
@@ -5563,7 +5731,7 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Bracknell Forest",
+      "state": "Wolverhampton",
       "country": "United Kingdom",
       "activeCount": 122,
       "comingSoonCount": 0
@@ -5575,7 +5743,7 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Wolverhampton",
+      "state": "Bracknell Forest",
       "country": "United Kingdom",
       "activeCount": 122,
       "comingSoonCount": 0
@@ -5593,6 +5761,12 @@
       "comingSoonCount": 0
     },
     {
+      "state": "Pembrokeshire",
+      "country": "United Kingdom",
+      "activeCount": 119,
+      "comingSoonCount": 0
+    },
+    {
       "state": "Bournemouth",
       "country": "United Kingdom",
       "activeCount": 119,
@@ -5605,15 +5779,15 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Pembrokeshire",
-      "country": "United Kingdom",
-      "activeCount": 119,
-      "comingSoonCount": 0
-    },
-    {
       "state": "El Progreso",
       "country": "Guatemala",
       "activeCount": 118,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Vorarlberg",
+      "country": "Austria",
+      "activeCount": 117,
       "comingSoonCount": 0
     },
     {
@@ -5647,15 +5821,15 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Blaenau Gwent",
-      "country": "United Kingdom",
+      "state": "Jalapa",
+      "country": "Guatemala",
       "activeCount": 112,
       "comingSoonCount": 0
     },
     {
-      "state": "Jalapa",
-      "country": "Guatemala",
-      "activeCount": 112,
+      "state": "Blaenau Gwent",
+      "country": "United Kingdom",
+      "activeCount": 111,
       "comingSoonCount": 0
     },
     {
@@ -5665,21 +5839,15 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Nord-Est",
-      "country": "Haiti",
-      "activeCount": 110,
-      "comingSoonCount": 0
-    },
-    {
       "state": "Castlereagh",
       "country": "United Kingdom",
       "activeCount": 110,
       "comingSoonCount": 0
     },
     {
-      "state": "Hamburg",
-      "country": "Germany",
-      "activeCount": 109,
+      "state": "Nord-Est",
+      "country": "Haiti",
+      "activeCount": 110,
       "comingSoonCount": 0
     },
     {
@@ -5695,9 +5863,9 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Jura",
-      "country": "Switzerland",
-      "activeCount": 108,
+      "state": "Hamburg",
+      "country": "Germany",
+      "activeCount": 109,
       "comingSoonCount": 0
     },
     {
@@ -5710,12 +5878,6 @@
       "state": "Pedernales",
       "country": "Dominican Republic",
       "activeCount": 107,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Genève",
-      "country": "Switzerland",
-      "activeCount": 104,
       "comingSoonCount": 0
     },
     {
@@ -5737,9 +5899,9 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Aargau",
-      "country": "Switzerland",
-      "activeCount": 100,
+      "state": "Swansea",
+      "country": "United Kingdom",
+      "activeCount": 98,
       "comingSoonCount": 0
     },
     {
@@ -5755,26 +5917,20 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Swansea",
-      "country": "United Kingdom",
-      "activeCount": 98,
-      "comingSoonCount": 0
-    },
-    {
       "state": "Colonia",
       "country": "Uruguay",
       "activeCount": 97,
       "comingSoonCount": 0
     },
     {
-      "state": "Delta Amacuro",
-      "country": "Venezuela",
+      "state": "Valle",
+      "country": "Honduras",
       "activeCount": 96,
       "comingSoonCount": 0
     },
     {
-      "state": "Valle",
-      "country": "Honduras",
+      "state": "Delta Amacuro",
+      "country": "Venezuela",
       "activeCount": 96,
       "comingSoonCount": 0
     },
@@ -5827,26 +5983,26 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Herrera",
-      "country": "Panama",
-      "activeCount": 87,
-      "comingSoonCount": 0
-    },
-    {
       "state": "Slough",
       "country": "United Kingdom",
       "activeCount": 87,
       "comingSoonCount": 0
     },
     {
-      "state": "Ngöbe Buglé",
+      "state": "Herrera",
       "country": "Panama",
-      "activeCount": 86,
+      "activeCount": 87,
       "comingSoonCount": 0
     },
     {
       "state": "Monseñor Nouel",
       "country": "Dominican Republic",
+      "activeCount": 86,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Ngöbe Buglé",
+      "country": "Panama",
       "activeCount": 86,
       "comingSoonCount": 0
     },
@@ -5857,21 +6013,15 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Monte Plata",
-      "country": "Dominican Republic",
-      "activeCount": 85,
-      "comingSoonCount": 0
-    },
-    {
       "state": "Tacuarembó",
       "country": "Uruguay",
       "activeCount": 85,
       "comingSoonCount": 0
     },
     {
-      "state": "Islington",
-      "country": "United Kingdom",
-      "activeCount": 83,
+      "state": "Monte Plata",
+      "country": "Dominican Republic",
+      "activeCount": 85,
       "comingSoonCount": 0
     },
     {
@@ -5881,14 +6031,20 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Corozal",
-      "country": "Belize",
-      "activeCount": 81,
+      "state": "Islington",
+      "country": "United Kingdom",
+      "activeCount": 83,
       "comingSoonCount": 0
     },
     {
       "state": "Clackmannanshire",
       "country": "United Kingdom",
+      "activeCount": 81,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Corozal",
+      "country": "Belize",
       "activeCount": 81,
       "comingSoonCount": 0
     },
@@ -5923,13 +6079,19 @@
       "comingSoonCount": 0
     },
     {
-      "state": "East Berbice-Corentyne",
-      "country": "Guyana",
-      "activeCount": 77,
+      "state": "Peterborough",
+      "country": "United Kingdom",
+      "activeCount": 76,
       "comingSoonCount": 0
     },
     {
-      "state": "Peterborough",
+      "state": "East Berbice-Corentyne",
+      "country": "Guyana",
+      "activeCount": 76,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Sefton",
       "country": "United Kingdom",
       "activeCount": 76,
       "comingSoonCount": 0
@@ -5937,12 +6099,6 @@
     {
       "state": "Guainía",
       "country": "Colombia",
-      "activeCount": 76,
-      "comingSoonCount": 0
-    },
-    {
-      "state": "Sefton",
-      "country": "United Kingdom",
       "activeCount": 76,
       "comingSoonCount": 0
     },
@@ -5965,14 +6121,14 @@
       "comingSoonCount": 0
     },
     {
-      "state": "San José",
-      "country": "Uruguay",
+      "state": "Saint James",
+      "country": "Jamaica",
       "activeCount": 73,
       "comingSoonCount": 0
     },
     {
-      "state": "Saint James",
-      "country": "Jamaica",
+      "state": "San José",
+      "country": "Uruguay",
       "activeCount": 73,
       "comingSoonCount": 0
     },
@@ -5995,12 +6151,6 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Kingston upon Thames",
-      "country": "United Kingdom",
-      "activeCount": 70,
-      "comingSoonCount": 0
-    },
-    {
       "state": "Hartlepool",
       "country": "United Kingdom",
       "activeCount": 70,
@@ -6009,6 +6159,12 @@
     {
       "state": "Treinta y Tres",
       "country": "Uruguay",
+      "activeCount": 70,
+      "comingSoonCount": 0
+    },
+    {
+      "state": "Kingston upon Thames",
+      "country": "United Kingdom",
       "activeCount": 70,
       "comingSoonCount": 0
     },
@@ -6049,14 +6205,14 @@
       "comingSoonCount": 0
     },
     {
-      "state": "María Trinidad Sánchez",
-      "country": "Dominican Republic",
+      "state": "Durazno",
+      "country": "Uruguay",
       "activeCount": 60,
       "comingSoonCount": 0
     },
     {
-      "state": "Durazno",
-      "country": "Uruguay",
+      "state": "María Trinidad Sánchez",
+      "country": "Dominican Republic",
       "activeCount": 60,
       "comingSoonCount": 0
     },
@@ -6067,14 +6223,14 @@
       "comingSoonCount": 0
     },
     {
-      "state": "Saint Elizabeth",
-      "country": "Jamaica",
+      "state": "Sežana",
+      "country": "Slovenia",
       "activeCount": 57,
       "comingSoonCount": 0
     },
     {
-      "state": "Sežana",
-      "country": "Slovenia",
+      "state": "Saint Elizabeth",
+      "country": "Jamaica",
       "activeCount": 57,
       "comingSoonCount": 0
     },
@@ -6115,11 +6271,11 @@
       "comingSoonCount": 0
     }
   ],
-  "totalActiveRaw": 2610091,
-  "totalActive": 2406307,
+  "totalActiveRaw": 2648669,
+  "totalActive": 2444515,
   "totalComingSoon": 0,
-  "totalCountries": 42,
-  "totalActiveCountries": 42,
-  "totalActiveRegions": 1019,
-  "generatedAt": "2026-08-21T16:30:01.941Z"
+  "totalCountries": 43,
+  "totalActiveCountries": 43,
+  "totalActiveRegions": 1045,
+  "generatedAt": "2026-10-01T15:11:30.688Z"
 }
