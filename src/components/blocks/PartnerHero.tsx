@@ -18,10 +18,8 @@ import {
 import { COOKIE_BANNER_HEIGHT_VAR } from "@/components/global/CookieBanner";
 import { PartnerCampaignHero } from "./PartnerCampaignHero";
 
-interface CouponPreview {
-  code: string;
-  days: number;
-}
+// Type-only: erased at build, so the client bundle never pulls the server module.
+import type { CouponPreview } from "@/lib/partner";
 
 interface PartnerHeroProps {
   partnerId?: string;
@@ -436,7 +434,9 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
     if (coupon?.code) {
       trackEvent("redeem_landing_page_view", {
         code: coupon.code,
+        grant_kind: coupon.grantKind,
         days: coupon.days,
+        hours: coupon.hours,
       });
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -460,7 +460,9 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
     if (!coupon?.code) return;
     trackEvent("redeem_cta_clicked", {
       code: coupon.code,
+      grant_kind: coupon.grantKind,
       days: coupon.days,
+      hours: coupon.hours,
     });
     // Universal Link. tuggi.app/redeem is registered in both
     // apple-app-site-association and the Android AndroidManifest intent
@@ -882,9 +884,23 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
                     {tCoupon("block_title")}
                   </div>
 
-                  <p className="text-sm text-tuggi-slate text-center -mt-1">
-                    {tCoupon("block_subtitle", { days: coupon.days })}
-                  </p>
+                  {/* BR-MONETIZACAO-047: the block names the concession the
+                      coupon actually grants — days of access, or hours of
+                      guide balance plus the one line on when it is spent. */}
+                  {coupon.grantKind === "minutes" ? (
+                    <>
+                      <p className="text-sm text-tuggi-slate text-center -mt-1">
+                        {tCoupon("block_subtitle_hours", { count: coupon.hours })}
+                      </p>
+                      <p className="text-xs text-tuggi-slate/80 text-center -mt-1 leading-relaxed">
+                        {tCoupon("hours_balance_note")}
+                      </p>
+                    </>
+                  ) : (
+                    <p className="text-sm text-tuggi-slate text-center -mt-1">
+                      {tCoupon("block_subtitle", { days: coupon.days })}
+                    </p>
+                  )}
 
                   <p className="text-[10px] uppercase tracking-[0.18em] text-tuggi-slate/70 font-semibold mt-1">
                     {tCoupon("code_label")}

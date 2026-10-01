@@ -6,10 +6,8 @@ import { PartnerHero } from "./PartnerHero";
 
 import { useTranslations } from "next-intl";
 
-interface CouponPreview {
-  code: string;
-  days: number;
-}
+// Type-only: erased at build, so the client bundle never pulls the server module.
+import type { CouponPreview } from "@/lib/partner";
 
 interface WrapperProps {
   partnerData: any;

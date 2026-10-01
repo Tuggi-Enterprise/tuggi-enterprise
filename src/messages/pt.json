@@ -815,6 +815,8 @@
   "Coupon": {
     "block_title": "Presente especial",
     "block_subtitle": "Você ganha {days} dias de Tuggi Premium grátis",
+    "block_subtitle_hours": "{count, plural, one {Você ganha # hora de guia} other {Você ganha # horas de guia}}",
+    "hours_balance_note": "Seu saldo só é descontado com o guia ativo e você em movimento.",
     "code_label": "Seu código",
     "copy": "Copiar código",
     "copied": "Código copiado!",

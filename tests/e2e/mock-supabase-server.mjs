@@ -288,6 +288,18 @@ function readApiKey(req) {
   return typeof auth === "string" ? auth.replace(/^Bearer\s+/i, "") : null;
 }
 
+/**
+ * `drive.get_coupon_preview` envelopes, shaped as migration
+ * 20260928120000 returns them (BR-MONETIZACAO-047): `grant_kind` names the
+ * concession, `days` is null on a `minutes` coupon and `minutes` is null on an
+ * `until` one. Owned by Tuggi (no owner client), so the hero is the plain one.
+ */
+const COUPON_FIXTURES = {
+  E2EHORAS2: { grant_kind: "minutes", minutes: 120, days: null, owner_client_id: null },
+  E2EHORA1: { grant_kind: "minutes", minutes: 60, days: null, owner_client_id: null },
+  E2EDIAS7: { grant_kind: "until", minutes: null, days: 7, owner_client_id: null },
+};
+
 function sendJson(res, status, body) {
   const json = JSON.stringify(body);
   res.writeHead(status, { "Content-Type": "application/json" });
@@ -698,9 +710,19 @@ const server = http.createServer((req, res) => {
   }
 
   if (url.pathname === "/rest/v1/rpc/get_coupon_preview" && req.method === "POST") {
-    // No coupon fixtures in this suite — every /d/<slug> under test resolves
-    // as a plain partner, never the coupon-redeem variant.
-    sendJson(res, 200, { found: false });
+    // Only the codes in COUPON_FIXTURES are coupons; every other /d/<slug>
+    // (the partner fixtures above included) answers `found:false` and falls
+    // through to the partner pass, as an unknown code does in production.
+    readBody(req).then((raw) => {
+      let code = "";
+      try {
+        code = String(JSON.parse(raw || "{}").p_code ?? "").toUpperCase();
+      } catch {
+        // Malformed body: treated as an unknown code.
+      }
+      const fixture = COUPON_FIXTURES[code];
+      sendJson(res, 200, fixture ? { found: true, code, ...fixture } : { found: false });
+    });
     return;
   }
 

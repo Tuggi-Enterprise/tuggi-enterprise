@@ -260,10 +260,14 @@ export const getPartnerBySlug = cache(
 // read of drive.coupons from the web layer.
 // ────────────────────────────────────────────────────────────────────────────
 
-export interface CouponPreview {
-  code: string;
-  days: number;
-}
+/**
+ * The two concessions a coupon can grant (BR-MONETIZACAO-047), as the redeem
+ * block needs them: an `until` coupon is measured in `days`, a `minutes`
+ * coupon in whole `hours` of guide balance. Exactly one of the two is set.
+ */
+export type CouponPreview =
+  | { code: string; grantKind: "until"; days: number; hours?: undefined }
+  | { code: string; grantKind: "minutes"; hours: number; days?: undefined };
 
 export interface CouponContext {
   /** Owner of the coupon rendered as a partner — drives the existing audio/CTA UI. */
@@ -274,13 +278,35 @@ export interface CouponContext {
 interface GetCouponPreviewRpcResult {
   found: boolean;
   code?: string;
-  days?: number;
+  /** `drive.coupons.duration_days` — null on a `minutes` coupon. */
+  days?: number | null;
+  /** BR-MONETIZACAO-047. Absent on a pre-20260928120000 envelope, which only knew `until`. */
+  grant_kind?: "until" | "minutes" | null;
+  /** `drive.coupons.grant_minutes` — null on an `until` coupon. */
+  minutes?: number | null;
   owner_client_id?: string | null;
   owner_slug?: string | null;
   owner_name?: string | null;
   owner_avatar_url?: string | null;
   owner_bio?: string | null;
   owner_poi_id?: string | null;
+}
+
+/**
+ * BR-MONETIZACAO-047: reads the concession off the RPC envelope. A coupon
+ * whose amount cannot be shown (no days, or under one whole hour) is not
+ * rendered as a coupon at all — the URL falls through to the partner pass,
+ * exactly as an unknown code does, rather than promising "0 hours".
+ */
+function toCouponPreview(
+  code: string,
+  result: GetCouponPreviewRpcResult
+): CouponPreview | null {
+  if (result.grant_kind === "minutes") {
+    const hours = Math.floor((result.minutes ?? 0) / 60);
+    return hours >= 1 ? { code, grantKind: "minutes", hours } : null;
+  }
+  return result.days ? { code, grantKind: "until", days: result.days } : null;
 }
 
 async function resolveCoupon(
@@ -303,7 +329,9 @@ async function resolveCoupon(
     }
 
     const result = data as GetCouponPreviewRpcResult | null;
-    if (!result || !result.found || !result.code || !result.days) return null;
+    if (!result || !result.found || !result.code) return null;
+    const coupon = toCouponPreview(result.code, result);
+    if (!coupon) return null;
 
     const welcome = await fetchLocalizedWelcome(supabase, result.owner_poi_id, dbLang);
     const ownerClientId = result.owner_client_id ?? "";
@@ -323,7 +351,7 @@ async function resolveCoupon(
 
     return {
       partner,
-      coupon: { code: result.code, days: result.days },
+      coupon,
     };
   } catch (err) {
     console.error("Error resolving coupon:", err);

@@ -814,6 +814,8 @@
   "Coupon": {
     "block_title": "Special gift",
     "block_subtitle": "You get {days} days of Tuggi Premium free",
+    "block_subtitle_hours": "{count, plural, one {You get # hour of guide time} other {You get # hours of guide time}}",
+    "hours_balance_note": "Your balance is only used while the guide is on and you're moving.",
     "code_label": "Your code",
     "copy": "Copy code",
     "copied": "Code copied!",
