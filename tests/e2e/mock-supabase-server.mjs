@@ -300,6 +300,13 @@ const COUPON_FIXTURES = {
   E2EDIAS7: { grant_kind: "until", minutes: null, days: 7, owner_client_id: null },
 };
 
+/** Invite codes of /c/<code> (card #840): code → inviter's nickname. */
+const REFERRAL_FIXTURES = {
+  "7K3MQ2": "PioneerMystic510",
+};
+/** Every `p_code` the invite page asked about, in order. */
+const referralLookups = [];
+
 function sendJson(res, status, body) {
   const json = JSON.stringify(body);
   res.writeHead(status, { "Content-Type": "application/json" });
@@ -723,6 +730,30 @@ const server = http.createServer((req, res) => {
       const fixture = COUPON_FIXTURES[code];
       sendJson(res, 200, fixture ? { found: true, code, ...fixture } : { found: false });
     });
+    return;
+  }
+
+  if (url.pathname === "/rest/v1/rpc/get_referral_code_public" && req.method === "POST") {
+    // The invite page (/c/<code>, card #840). Shape per #839: `valid` with the
+    // inviter's nickname, `invalid` otherwise — never an id or a count
+    // (BR-USUARIO-042). Every call is counted so the spec can prove a code
+    // that can never exist is not forwarded.
+    readBody(req).then((raw) => {
+      let code = "";
+      try {
+        code = String(JSON.parse(raw || "{}").p_code ?? "");
+      } catch {
+        // Malformed body: an unknown code.
+      }
+      referralLookups.push(code);
+      const nickname = REFERRAL_FIXTURES[code];
+      sendJson(res, 200, nickname ? { status: "valid", nickname } : { status: "invalid", nickname: null });
+    });
+    return;
+  }
+
+  if (url.pathname === "/__referral-lookups" && req.method === "GET") {
+    sendJson(res, 200, referralLookups);
     return;
   }
 

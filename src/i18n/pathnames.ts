@@ -14,7 +14,7 @@
  *    a segment is one object in the registry, not a line in this file
  *    (DS-COMPONENTE-005). Only *published* segments enter the map: a reserved
  *    route has its word decided and no URL (spec §1.2).
- *  - **`/download` and `/d/[slug]` never translate**, and this is not a
+ *  - **`/download`, `/d/[slug]` and `/c/[code]` never translate**, and this is not a
  *    preference: `middleware.ts` rewrites them *before* next-intl,
  *    deliberately without a locale prefix, because the URL is printed on QR
  *    codes and lives in partner links. Translating the slug breaks physical
@@ -47,6 +47,7 @@ const SHARED_SLUG_ROUTES = [
   "/",
   "/download",
   "/d/[slug]",
+  "/c/[code]",
   "/drive",
   "/purpose",
   "/contact",

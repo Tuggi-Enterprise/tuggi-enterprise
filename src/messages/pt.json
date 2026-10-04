@@ -1264,5 +1264,22 @@
       "body": "O seu link está certo, mas não conseguimos gravar o cancelamento agora. Tente de novo. Se continuar assim, escreva para {support}.",
       "retryLabel": "Tentar de novo"
     }
+  },
+  "Referral": {
+    "metaTitle": "{nickname} invited you to Tuggi",
+    "invitedBy": "{nickname} invited you",
+    "lead": "Copy this code for {referralFriendHours} free hours on Tuggi.",
+    "copy": "Copy",
+    "copied": "Copied",
+    "pasteWithin": "Paste it in the app within {referralRedeemWindowDays} days of creating your account.",
+    "getAppAfterCode": "Then get the app",
+    "getApp": "Get the app",
+    "inactiveTitle": "This invite isn't active anymore",
+    "metaDescInactive": "Tuggi is a guide that tells the stories of the places you drive by.",
+    "howTitle": "How Tuggi works",
+    "step1": "Create your account and open the Passport.",
+    "step2": "Paste the code — your {referralFriendHours} hours are ready.",
+    "step3": "Start driving. The guide narrates what you pass by.",
+    "mapAlt": "The Tuggi map with a route and the places along it"
   }
 }

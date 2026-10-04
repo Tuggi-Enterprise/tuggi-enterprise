@@ -20,7 +20,11 @@ export default function middleware(req: NextRequest) {
   // NOTE: the welcome AUDIO/TEXT dialect (pt-br vs pt-pt) is resolved separately
   // inside the page from geo/?lang (see src/lib/ptDialect.ts) — independent of
   // this unified UI locale.
-  if (pathname === "/download" || pathname.startsWith("/d/")) {
+  //
+  // The invite link of the referral programme (/c/<code>, card #840) takes the
+  // same path for the same reason: it is typed once into a share sheet and
+  // opened by a friend in any language.
+  if (pathname === "/download" || pathname.startsWith("/d/") || pathname.startsWith("/c/")) {
     // 1. Explicit ?lang (legacy pt-br/pt-pt normalised to pt)
     let locale = normalizeLocale(searchParams.get("lang"));
 
@@ -44,7 +48,7 @@ export default function middleware(req: NextRequest) {
 
     locale = locale || routing.defaultLocale;
 
-    // Internal rewrite to /[locale]/download or /[locale]/d/<slug>
+    // Internal rewrite to /[locale]/download, /[locale]/d/<slug> or /[locale]/c/<code>
     const url = req.nextUrl.clone();
     url.pathname = `/${locale}${pathname}`;
     return NextResponse.rewrite(url);
