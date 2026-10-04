@@ -110,7 +110,10 @@ export default async function ReferralInvitePage({ params }: { params: Params })
           </section>
         )}
 
-        <section aria-labelledby="referral-stores" className="w-full mt-10 flex flex-col items-center gap-4">
+        <section
+          data-testid="referral-stores"
+          aria-labelledby="referral-stores"
+          className="w-full mt-10 flex flex-col items-center gap-4">
           <h2 id="referral-stores" className="text-base font-bold text-tuggi-dark">
             {isValid ? t("getAppAfterCode") : t("getApp")}
           </h2>

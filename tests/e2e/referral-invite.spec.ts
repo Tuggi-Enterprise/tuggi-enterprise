@@ -106,8 +106,8 @@ test.describe("invite page /c/<code> — card #840, BR-USUARIO-042", () => {
       "This invite isn't active anymore"
     );
     await expect(page.getByTestId("referral-code")).toHaveCount(0);
-    await expect(page.locator('a[href^="https://apps.apple.com/"]')).toHaveCount(1);
-    await expect(page.locator('a[href^="https://play.google.com/"]').first()).toBeVisible();
+    await expect(page.getByTestId("referral-stores").locator('a[href^="https://apps.apple.com/"]')).toHaveCount(1);
+    await expect(page.getByTestId("referral-stores").locator('a[href^="https://play.google.com/"]')).toBeVisible();
     // The dead segment is not echoed into the share tags.
     await expect(page.locator('meta[property="og:url"]')).toHaveCount(0);
   });
@@ -139,7 +139,7 @@ test.describe("invite page /c/<code> — card #840, BR-USUARIO-042", () => {
     await expect(page.getByRole("button", { name: "Copied" })).toBeVisible();
     expect(writes).toEqual([{ text: VALID, insideTap: true }]);
 
-    const appStore = page.locator('a[href^="https://apps.apple.com/"]');
+    const appStore = page.getByTestId("referral-stores").locator('a[href^="https://apps.apple.com/"]');
     const [popup] = await Promise.all([page.waitForEvent("popup"), appStore.click()]);
     await popup.close();
 
@@ -149,21 +149,11 @@ test.describe("invite page /c/<code> — card #840, BR-USUARIO-042", () => {
 
   test("store links carry the stamps tag and no partner token", async ({ page }) => {
     await page.goto(`/c/${VALID}`);
-    const play = await page.locator('a[href^="https://play.google.com/"]').first().getAttribute("href");
+    const play = await page.getByTestId("referral-stores").locator('a[href^="https://play.google.com/"]').getAttribute("href");
     expect(play).toBeTruthy();
     const referrer = new URL(play!).searchParams.get("referrer") ?? "";
     expect(referrer).toContain("utm_campaign=stamps");
     expect(referrer).not.toContain("tuggi_click_");
-  });
-
-  test("the language follows the visitor, with no locale in the shared URL", async ({ browser }) => {
-    const context = await browser.newContext({ extraHTTPHeaders: { "accept-language": "it-IT,it" } });
-    const page = await context.newPage();
-    const response = await page.goto(`/c/${VALID}`);
-    expect(response?.status()).toBe(200);
-    expect(new URL(page.url()).pathname).toBe(`/c/${VALID}`);
-    await expect(page.locator("html")).toHaveAttribute("lang", "it");
-    await context.close();
   });
 
   test("the lookup uses the publishable key, not service_role", async ({ page, request }) => {
@@ -172,5 +162,18 @@ test.describe("invite page /c/<code> — card #840, BR-USUARIO-042", () => {
       byRoute: Record<string, string>;
     };
     expect(keys.byRoute["POST /rest/v1/rpc/get_referral_code_public"]).toBe(E2E_PUBLISHABLE_KEY);
+  });
+});
+
+test.describe("invite page /c/<code> — language", () => {
+  // `locale` and not an `accept-language` header: Chromium derives the header
+  // from the context locale, and the device preset above sets it to en-US.
+  test.use({ locale: "it-IT", extraHTTPHeaders: {} });
+
+  test("the language follows the visitor, with no locale in the shared URL", async ({ page }) => {
+    const response = await page.goto(`/c/${VALID}`);
+    expect(response?.status()).toBe(200);
+    expect(new URL(page.url()).pathname).toBe(`/c/${VALID}`);
+    await expect(page.locator("html")).toHaveAttribute("lang", "it");
   });
 });

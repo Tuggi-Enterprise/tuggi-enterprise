@@ -484,6 +484,9 @@ const PUBLISHED_ON: Record<string, string[]> = {
   // first of them publishes.
   "/partners": ["Segments.steps.s4Body", "Partners.FAQ.a5"],
   "/download": ["Download.metaDesc"],
+  // The invite page of the referral programme (#840), on the valid code of the
+  // mock fixture: the inactive variant states no figure at all.
+  "/c/7K3MQ2": ["Referral.lead", "Referral.pasteWithin", "Referral.step2"],
   "/trust-center/accessibility": [
     "Legal.Accessibility.s1Item1",
     "Legal.Accessibility.s2Item3",
