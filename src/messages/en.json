@@ -68,7 +68,8 @@
     "coverage": "Global Coverage",
     "updates": "Updates",
     "audioTours": "Audio Tours",
-    "rights": "All rights reserved."
+    "rights": "All rights reserved.",
+    "cookiePreferences": "Cookie preferences"
   },
   "Home": {
     "FAQ": {
@@ -584,7 +585,7 @@
     },
     "Privacy": {
       "title": "Privacy Policy",
-      "lastUpdated": "September/2026",
+      "lastUpdated": "October/2026",
       "intro": "TUGGI Technologies values your privacy. This policy describes how we collect, use, protect, and handle your data, in strict compliance with the General Data Protection Law (LGPD - Brazil) and the General Data Protection Regulation (GDPR - European Union).",
       "s1Title": "1. Data We Collect",
       "s1Intro": "For TUGGI to function as your cultural copilot, we collect the information below. The list does not stop at the app. It also covers the data of people who approach Tuggi about a partnership, even if they have never had an account.",
@@ -597,13 +598,18 @@
       "s1Item7": "<strong>Record of Contract Acceptance:</strong> When someone accepts the partnership contract on screen, we store the record of that act. It holds the name and role of the person who accepted, the email we sent the link to, the date and time from our server, the connection's IP address, the identification the browser declares, the code of the document shown and the template version. Here the IP address is stored as it is, and not turned into a code, because the purpose is a different one. This record serves one purpose only, which is to prove who accepted the contract, what they accepted, when and from where. It feeds no metric, it is not used for contact, and it is kept as proof of the contract.",
       "s1Item8": "<strong>Visit to a Partner Page:</strong> When you reach a partner page on this site, through a QR code or through a link of theirs, we record that visit. If you are browsing from outside Brazil and the United States, that record is only created after you accept cookies on this site. Until you accept, we store nothing of that visit and write no cookie on your device. We store your connection's IP address, the identification the browser declares, the browser language and the device time zone. We also store which partner you visited and the time. Alongside that we write a cookie of this site, named tuggi_attr, which lasts 30 days and holds the partner identifier, the identifier of that visit and the date. This record serves one purpose only, which is to know which partner brought you to the app, because that is how we pay that partner. It feeds no advertising and it is not used for contact. The IP address and the browser identification leave that record after 48 hours, and the whole record is deleted after 30 days, by a routine that runs every day. When that record exists and you tap a button that leads to the store, the identifier of that visit travels inside the link, and section 3 tells what happens to it.",
       "s1Item9": "<strong>Date of Birth:</strong> In the app profile you can tell us your date of birth. Answering is optional, and leaving it blank blocks nothing: the only thing this date opens is entry to the standings. It serves two purposes, and no other. The first is to check the minimum age for entering the standings, which is 14. The second is to derive your age range, which joins the audience picture we use to decide which content to produce next — that picture reads the range, never the date. If the date works out to less than 14 years, the profile stays out of the standings and nothing else changes: the account, the audios and purchases stay the same. Your date of birth is not shown to other users, and it does not change prices, offers or what you can buy.",
+      "s1Item10": "<strong>Measurement Cookies and Your Consent:</strong> This site and the Portal Locais (places.tuggi.app), where businesses sign up to join TUGGI, show a cookie notice until you answer it. The measurement tools described in the next three items are loaded only after you click “Accept” in that notice. If you click “Decline”, or do not answer, they are not loaded and do not store any cookie on your device. Your answer is stored in your own browser under the name tuggi_cookie_consent, and each of the two addresses keeps its own answer. You can change your mind at any time, and section 5 explains how.",
+      "s1Item11": "<strong>Google Analytics:</strong> This site and the Portal Locais use Google Analytics, by Google, to measure how many people visit us and where they give up. On the Portal Locais this includes the sign-up step where a person stops and how long they spend on each step. Google Analytics stores a cookie named _ga in your browser, holding a random identifier that recognizes the same browser from one visit to the next, and it receives the pages you open and what you do on them, such as clicks, scrolling and moving from one step to the next. Google also receives your connection's IP address, which it uses to estimate the country and city the visit comes from. On the Portal Locais, Google Analytics does not receive what you type into the sign-up fields, such as name, email, CNPJ, phone number or address, and Google's advertising signals are turned off for that measurement.",
+      "s1Item12": "<strong>Microsoft Clarity:</strong> This site uses Microsoft Clarity, by Microsoft, to see where browsing gets stuck. It records how you use the pages, with clicks, scrolling and pointer movement, so we can build heatmaps and replays of the visit, and it stores its own cookies in your browser to recognize the same visit. The Portal Locais does not use Clarity.",
+      "s1Item13": "<strong>Apollo:</strong> This site uses Apollo, a sales prospecting service, so our sales team can know which companies visit the site. Apollo receives your connection's IP address and the pages you open, and uses the IP address to identify the company the visit appears to come from. The Portal Locais does not use Apollo.",
       "s2Title": "2. How We Use Your Data (Anonymized Telemetry)",
       "s2Item1": "<strong>Service Operation:</strong> We use your location strictly to calculate the direction vector and proximity to cultural triggers, ensuring audio delivery at the correct timing.",
       "s2Item2": "<strong>Territorial Intelligence (The B2G Standard):</strong> Geolocation and audio playback data are <strong>de-linked from your personal identity (anonymized)</strong> before being stored for flow analysis. We provide aggregated reports to Governments and Rental Companies (e.g., \"How many plays occurred at monument X today\") without ever exposing who the user was. In those reports we track cultural flows, not individuals.",
       "s3Title": "3. Data Sharing",
       "s3Item1": "<strong>We do not sell your data.</strong> TUGGI does not trade Personally Identifiable Information (PII) with data brokers or ad networks.",
-      "s3Item2": "Beyond the case described below, we share data only with infrastructure providers strictly necessary for the app to function, such as secure cloud services (e.g., Supabase for database/authentication and Google Cloud for the Text-to-Speech engine). These partners operate under strict confidentiality agreements.",
+      "s3Item2": "Beyond the cases described below, we share data only with infrastructure providers strictly necessary for the app to function, such as secure cloud services (e.g., Supabase for database/authentication and Google Cloud for the Text-to-Speech engine). These partners operate under strict confidentiality agreements.",
       "s3Item3": "<strong>The Partner Visit Identifier:</strong> On Android that identifier travels inside the Google Play link, so Google receives it when you go to install the app from the store. It is a code on our side, and it carries neither your name nor your email. On iPhone that route does not exist. There we copy the same identifier to your device's clipboard, at the moment you tap the button, for the app to read the first time it opens.",
+      "s3Item4": "<strong>The Measurement Tools:</strong> When you accept cookies, Google (Google Analytics), Microsoft (Microsoft Clarity) and Apollo receive the data described in section 1, each one only from the addresses where it runs.",
       "s4Title": "4. Security and Retention",
       "s4Item1": "We employ end-to-end encryption in transit and at rest. Access to corporate databases and the City OS dashboard is protected by Role-Based Access Control (RBAC), ensuring data isolation.",
       "s4Item2": "We retain your personal data only for as long as necessary to provide the service. Anonymized telemetry data may be retained permanently for product improvement.",
@@ -619,6 +625,7 @@
       "s5ItemLead2": " asking for removal: we close any contact cycle under way and delete your details from our business contact list. The data deletion page is only for app accounts.",
       "s5ItemPartner1": "<strong>Removal of the data you sent in a partnership proposal</strong>, as far as it is not needed for the partnership under way. Write to ",
       "s5ItemPartner2": " telling us what you want removed. If you ask us not to contact you again, contact stops immediately. The record of acceptance of a contract already signed stays as proof of it, and a request to remove contact details does not erase that record.",
+      "s5ItemCookies": "<strong>Withdrawal of your cookie consent</strong> on this site and on the Portal Locais. Use the “Cookie preferences” link in the footer of each one: the cookie notice appears again, and the measurement tools in section 1 stop being loaded until you accept again.",
       "s6Title": "6. Contacting the Data Protection Officer (DPO)",
       "s6P1": "If you have questions about this policy or the processing of your data, please contact our Data Protection Officer (DPO) through our ",
       "s6P2": "Contact",
@@ -681,7 +688,8 @@
   "CookieBanner": {
     "text": "We use cookies to measure this site's audience, and also to know which partner brought you to the app, which is how we pay that partner. By clicking 'Accept', you agree to both uses.",
     "accept": "Accept",
-    "decline": "Decline"
+    "decline": "Decline",
+    "policyLink": "See the Privacy Policy"
   },
   "Purpose": {
     "Hero": {

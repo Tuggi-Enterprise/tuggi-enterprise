@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link } from "@/i18n/routing";
 import {
   CONSENT_GRANTED,
   CONSENT_KEY,
@@ -104,7 +105,15 @@ export const CookieBanner = () => {
         >
           <div className="max-w-7xl mx-auto bg-tuggi-dark text-white p-6 rounded-2xl shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6 border border-white/10">
             <p className="text-sm md:text-base text-slate-300 max-w-3xl text-center md:text-left leading-relaxed">
-              {t("text")}
+              {t("text")}{" "}
+              {/* The policy names each tool this banner switches on — card #818,
+                  BR-USUARIO-028 item 1. `cookies` is the id of `s1Item10`. */}
+              <Link
+                href={{ pathname: "/trust-center/privacy-policy", hash: "cookies" }}
+                className="underline text-white hover:text-tuggi-primary transition-colors"
+              >
+                {t("policyLink")}
+              </Link>
             </p>
             <div className="flex items-center gap-4 shrink-0">
               <button

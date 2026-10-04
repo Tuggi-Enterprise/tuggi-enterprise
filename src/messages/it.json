@@ -68,7 +68,8 @@
     "coverage": "Copertura Globale",
     "updates": "Aggiornamenti",
     "audioTours": "Audioguide",
-    "rights": "Tutti i diritti riservati."
+    "rights": "Tutti i diritti riservati.",
+    "cookiePreferences": "Preferenze cookie"
   },
   "Home": {
     "FAQ": {
@@ -584,7 +585,7 @@
     },
     "Privacy": {
       "title": "Informativa sulla Privacy",
-      "lastUpdated": "Settembre/2026",
+      "lastUpdated": "Ottobre/2026",
       "intro": "TUGGI Technologies tiene alla tua privacy. La presente informativa descrive come raccogliamo, usiamo, proteggiamo e gestiamo i tuoi dati, nel pieno rispetto della Legge Generale sulla Protezione dei Dati (LGPD - Brasile) e del Regolamento Generale sulla Protezione dei Dati (GDPR - Unione Europea).",
       "s1Title": "1. Dati che Raccogliamo",
       "s1Intro": "Affinché TUGGI funzioni come il tuo copilota culturale, raccogliamo le informazioni qui sotto. L'elenco non si ferma all'app. Comprende anche i dati di chi contatta Tuggi per una partnership, anche senza aver mai avuto un account.",
@@ -597,13 +598,18 @@
       "s1Item7": "<strong>Registro dell'Accettazione del Contratto:</strong> Quando qualcuno accetta il contratto di partnership sullo schermo, conserviamo il registro di quell'atto. Contiene il nome e il ruolo di chi ha accettato, l'email a cui abbiamo mandato il link, la data e l'ora del nostro server, l'indirizzo IP della connessione, l'identificazione che dichiara il browser, il codice del documento mostrato e la versione del modello. Qui l'indirizzo IP resta conservato così come è, e non trasformato in un codice, perché la finalità è un'altra. Questo registro serve a una cosa sola, cioè provare chi ha accettato il contratto, che cosa ha accettato, quando e da dove. Non alimenta nessuna metrica, non serve per il contatto, e resta conservato come prova del contratto.",
       "s1Item8": "<strong>Visita alla Pagina di un Partner:</strong> Quando arrivi alla pagina di un partner su questo sito, con un Codice QR o con un suo link, registriamo quella visita. Se ti colleghi da un paese che non sia il Brasile o gli Stati Uniti, quel registro nasce solo dopo che accetti i cookie su questo sito. Finché non accetti, non conserviamo nulla di quella visita e non scriviamo cookie sul tuo dispositivo. Conserviamo l'indirizzo IP della tua connessione, l'identificazione che dichiara il browser, la lingua del browser e il fuso orario del dispositivo. Conserviamo anche quale partner hai visitato e l'ora. Insieme a questo scriviamo un cookie di questo stesso sito, chiamato tuggi_attr, che dura 30 giorni e conserva l'identificativo del partner, l'identificativo di quella visita e la data. Questo registro serve a una sola finalità, cioè sapere quale partner ti ha portato all'app, perché è così che paghiamo quel partner. Non alimenta pubblicità e non serve per il contatto. L'indirizzo IP e l'identificazione del browser escono da quel registro dopo 48 ore, e il registro intero viene cancellato dopo 30 giorni, con una routine che gira ogni giorno. Quando quel registro esiste e tocchi un pulsante che porta allo store, l'identificativo di quella visita viaggia dentro il link, e la sezione 3 racconta che cosa succede con lui.",
       "s1Item9": "<strong>Data di Nascita:</strong> Nel profilo dell'app puoi indicare la tua data di nascita. Rispondere è facoltativo, e lasciare il campo vuoto non blocca nulla: l'unica cosa che questa data apre è l'ingresso in classifica. Serve a due finalità, e a nessun'altra. La prima è verificare l'età minima di ingresso in classifica, che è di 14 anni. La seconda è ricavare la tua fascia d'età, che entra nel quadro di pubblico con cui decidiamo quali contenuti produrre in seguito: quel quadro legge la fascia, mai la data. Se dalla data risultano meno di 14 anni, il profilo resta fuori dalla classifica e non cambia nient'altro: l'account, gli audio e gli acquisti restano identici. La tua data di nascita non è mostrata ad altri utenti, e non modifica prezzi, offerte né ciò che puoi acquistare.",
+      "s1Item10": "<strong>Cookie di Misurazione e il Tuo Consenso:</strong> Questo sito e il Portal Locais (places.tuggi.app), dove le attività si registrano per entrare in TUGGI, mostrano un avviso sui cookie finché non rispondi. Gli strumenti di misurazione descritti nelle tre voci seguenti vengono caricati solo dopo che clicchi su “Accetta” in quell'avviso. Se clicchi su “Rifiuta”, o non rispondi, non vengono caricati e non salvano alcun cookie sul tuo dispositivo. La tua risposta resta salvata nel tuo browser, con il nome tuggi_cookie_consent, e ciascuno dei due indirizzi conserva la propria risposta separatamente. Puoi cambiare idea quando vuoi, e la sezione 5 spiega come.",
+      "s1Item11": "<strong>Google Analytics:</strong> Questo sito e il Portal Locais usano Google Analytics, di Google, per misurare quante persone ci visitano e in quale punto rinunciano. Nel Portal Locais questo include la fase della registrazione in cui una persona si ferma e quanto tempo trascorre in ciascuna. Google Analytics salva nel tuo browser un cookie chiamato _ga, con un identificatore casuale che riconosce lo stesso browser da una visita all'altra, e riceve le pagine che apri e ciò che fai al loro interno, come clic, scorrimento e il passaggio da una fase all'altra. Google riceve anche l'indirizzo IP della tua connessione, e lo usa per stimare da quale paese e città arriva la visita. Nel Portal Locais, Google Analytics non riceve ciò che scrivi nei campi della registrazione, come nome, e-mail, CNPJ, telefono o indirizzo, e i segnali di Google per la pubblicità sono disattivati in questa misurazione.",
+      "s1Item12": "<strong>Microsoft Clarity:</strong> Questo sito usa Microsoft Clarity, di Microsoft, per vedere dove la navigazione si inceppa. Registra come usi le pagine, con clic, scorrimento e movimento del puntatore, per permetterci di costruire mappe di calore e riproduzioni della visita, e salva cookie propri nel tuo browser per riconoscere la stessa visita. Il Portal Locais non usa Clarity.",
+      "s1Item13": "<strong>Apollo:</strong> Questo sito usa Apollo, un servizio di prospezione commerciale, perché il nostro team commerciale sappia quali aziende visitano il sito. Apollo riceve l'indirizzo IP della tua connessione e le pagine che apri, e a partire dall'IP identifica l'azienda da cui sembra provenire la visita. Il Portal Locais non usa Apollo.",
       "s2Title": "2. Come Usiamo i Tuoi Dati (Telemetria Anonimizzata)",
       "s2Item1": "<strong>Funzionamento del Servizio:</strong> Usiamo la tua posizione esclusivamente per calcolare il vettore di direzione e la prossimità ai trigger culturali, garantendo la riproduzione dell'audio al momento giusto.",
       "s2Item2": "<strong>Intelligenza Territoriale (Lo Standard B2G):</strong> I dati di geolocalizzazione e di riproduzione audio sono <strong>scollegati dalla tua identità personale (anonimizzati)</strong> prima di essere archiviati per l'analisi dei flussi. Forniamo report aggregati a Governi e Società di Noleggio (es. \"Quante riproduzioni sono avvenute al monumento X oggi\") senza mai rivelare chi fosse l'utente. In quei report tracciamo i flussi culturali, non gli individui.",
       "s3Title": "3. Condivisione dei Dati",
       "s3Item1": "<strong>Non vendiamo i tuoi dati.</strong> TUGGI non commercia Informazioni di Identificazione Personale (PII) con data broker o reti pubblicitarie.",
-      "s3Item2": "Oltre al caso descritto qui sotto, condividiamo i dati solo con i fornitori di infrastruttura strettamente necessari al funzionamento dell'app, come i servizi cloud sicuri (es. Supabase per database/autenticazione e Google Cloud per il motore Text-to-Speech). Questi partner operano sotto rigorosi accordi di riservatezza.",
+      "s3Item2": "Oltre ai casi descritti qui sotto, condividiamo i dati solo con i fornitori di infrastruttura strettamente necessari al funzionamento dell'app, come i servizi cloud sicuri (es. Supabase per database/autenticazione e Google Cloud per il motore Text-to-Speech). Questi partner operano sotto rigorosi accordi di riservatezza.",
       "s3Item3": "<strong>L'Identificativo della Visita al Partner:</strong> Su Android, quell'identificativo viaggia dentro il link di Google Play, quindi Google lo riceve quando vai a installare l'app dallo store. È un codice dalla nostra parte, e non porta il tuo nome né la tua email. Su iPhone quella strada non esiste. Lì copiamo lo stesso identificativo negli appunti del tuo dispositivo, nell'istante in cui tocchi il pulsante, perché l'app lo legga quando apre la prima volta.",
+      "s3Item4": "<strong>Gli Strumenti di Misurazione:</strong> Quando accetti i cookie, Google (Google Analytics), Microsoft (Microsoft Clarity) e Apollo ricevono i dati descritti nella sezione 1, ciascuno solo dagli indirizzi in cui è attivo.",
       "s4Title": "4. Sicurezza e Conservazione",
       "s4Item1": "Impieghiamo la crittografia end-to-end in transito e a riposo. L'accesso ai database aziendali e al dashboard City OS è protetto da Controllo degli Accessi Basato sui Ruoli (RBAC), garantendo l'isolamento dei dati.",
       "s4Item2": "Conserviamo i tuoi dati personali solo per il tempo necessario a fornire il servizio. I dati di telemetria anonimizzati possono essere conservati in modo permanente per il miglioramento del prodotto.",
@@ -619,6 +625,7 @@
       "s5ItemLead2": " chiedendo la rimozione: chiudiamo il contatto in corso e cancelliamo i tuoi dati dal nostro elenco di contatti commerciali. La pagina di cancellazione dei dati serve solo per gli account dell'app.",
       "s5ItemPartner1": "<strong>La rimozione dei dati che hai inviato in una proposta di partnership</strong>, per quello che non è necessario alla partnership in corso. Scrivi a ",
       "s5ItemPartner2": " dicendo che cosa vuoi rimuovere. Se chiedi di non essere più contattato, il contatto si ferma subito. Il registro dell'accettazione di un contratto già firmato si conserva come prova, e una richiesta di rimozione del contatto non cancella quel registro.",
+      "s5ItemCookies": "<strong>La revoca del consenso ai cookie</strong> su questo sito e sul Portal Locais. Usa il link “Preferenze cookie” nel piè di pagina di ciascuno: l'avviso sui cookie ricompare, e gli strumenti di misurazione della sezione 1 smettono di essere caricati finché non accetti di nuovo.",
       "s6Title": "6. Contattare il Responsabile della Protezione dei Dati (DPO)",
       "s6P1": "Se hai domande su questa informativa o sul trattamento dei tuoi dati, contatta il nostro Responsabile della Protezione dei Dati (DPO) tramite la nostra pagina ",
       "s6P2": "Contatti",
@@ -681,7 +688,8 @@
   "CookieBanner": {
     "text": "Usiamo i cookie per misurare il pubblico di questo sito, e anche per sapere quale partner ti ha portato all'app, perché è così che paghiamo quel partner. Cliccando su 'Accetta', dai il consenso a questi due usi.",
     "accept": "Accetta",
-    "decline": "Rifiuta"
+    "decline": "Rifiuta",
+    "policyLink": "Vedi l'Informativa sulla privacy"
   },
   "Purpose": {
     "Hero": {

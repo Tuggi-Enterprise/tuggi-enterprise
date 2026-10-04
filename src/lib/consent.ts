@@ -47,6 +47,22 @@ export const ATTRIBUTION_GATE_ENDPOINT = "/api/attribution/gate";
 /** A year, the lifetime `CookieBanner` gives the answer in both stores. */
 export const CONSENT_MAX_AGE_SECONDS = 31536000;
 
+/**
+ * The way back, BR-USUARIO-028 item 1 and card #818: forget the answer in BOTH
+ * stores, so the banner asks again and the trackers stop loading until a new
+ * yes. Clearing only `localStorage` would leave the cookie saying "true" to the
+ * attribution gate on the server — a revocation the browser shows and the
+ * server ignores.
+ *
+ * The cookie is cleared with the same attributes `CookieBanner` writes it with
+ * — `path=/` and NO `domain`, i.e. a host-only cookie — because a cookie is only
+ * overwritten by one that matches its name, path and domain.
+ */
+export function forgetConsent(): void {
+  localStorage.removeItem(CONSENT_KEY);
+  document.cookie = `${CONSENT_KEY}=; path=/; max-age=0; samesite=lax`;
+}
+
 /** Whether a raw stored value (cookie or `localStorage`) is a yes. */
 export function consentGranted(raw: string | null | undefined): boolean {
   return raw === CONSENT_GRANTED;

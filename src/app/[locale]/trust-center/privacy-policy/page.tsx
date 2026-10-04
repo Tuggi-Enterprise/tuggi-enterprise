@@ -68,8 +68,9 @@ export default async function PrivacyPolicyPage({ params }: { params: Promise<{ 
 
               `/contact` posts to the same route and is still undeclared — it
               waits on a purpose from `produto` — card #344 names it as the
-              next card, and it takes the next free number, `s1Item10`
-              (`s1Item9` went to the date of birth, card #722). */}
+              next card, and it takes the next free number, `s1Item14`
+              (`s1Item9` went to the date of birth, card #722, and `s1Item10`
+              to `s1Item13` to the measurement trackers, card #818). */}
           <li>{t.rich("s1Item5", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
           <li>{t.rich("s1Item6", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
           <li>{t.rich("s1Item7", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
@@ -120,6 +121,15 @@ export default async function PrivacyPolicyPage({ params }: { params: Promise<{ 
               The other six fields of the collection are still undeclared here
               — pre-existing debt, not this card. */}
           <li>{t.rich("s1Item9", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
+          {/* `s1Item10` to `s1Item13` are the measurement trackers behind the
+              consent banner — card #818, BR-USUARIO-028 item 1: the policy names
+              each tool, the banner links here (the `cookies` anchor below is
+              what `CookieBanner` and the Portal Locais banner point at), and
+              section 5 says how to take the answer back. */}
+          <li id="cookies">{t.rich("s1Item10", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
+          <li>{t.rich("s1Item11", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
+          <li>{t.rich("s1Item12", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
+          <li>{t.rich("s1Item13", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
         </ul>
       </section>
 
@@ -142,6 +152,7 @@ export default async function PrivacyPolicyPage({ params }: { params: Promise<{ 
               this policy is read as speaking for the whole domain. */}
           <li>{t("s3Item2")}</li>
           <li>{t.rich("s3Item3", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
+          <li>{t.rich("s3Item4", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
         </ul>
       </section>
 
@@ -187,6 +198,7 @@ export default async function PrivacyPolicyPage({ params }: { params: Promise<{ 
             <a href={`mailto:${t("s5ItemLeadEmail")}`}>{t("s5ItemLeadEmail")}</a>
             {t("s5ItemPartner2")}
           </li>
+          <li>{t.rich("s5ItemCookies", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
         </ul>
       </section>
 

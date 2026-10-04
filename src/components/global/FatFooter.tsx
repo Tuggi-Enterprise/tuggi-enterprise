@@ -2,6 +2,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import Image from "next/image";
 import { FooterStoreBadges } from "@/components/blocks/FooterStoreBadges";
+import { CookiePreferencesButton } from "@/components/global/CookiePreferencesButton";
 
 export function FatFooter() {
   const t = useTranslations("Footer");
@@ -97,6 +98,7 @@ export function FatFooter() {
             <Link href="/trust-center/privacy-policy" className="text-sm text-slate-400 hover:text-white transition-colors duration-200 block mb-3 focus-visible:ring-2 focus-visible:ring-tuggi-primary-text focus:outline-none rounded-sm w-max">
               {t("privacy")}
             </Link>
+            <CookiePreferencesButton className="text-sm text-left text-slate-400 hover:text-white transition-colors duration-200 block mb-3 focus-visible:ring-2 focus-visible:ring-tuggi-primary-text focus:outline-none rounded-sm w-max" />
             <Link href="/trust-center/accessibility" className="text-sm text-slate-400 hover:text-white transition-colors duration-200 block mb-3 focus-visible:ring-2 focus-visible:ring-tuggi-primary-text focus:outline-none rounded-sm w-max">
               {t("accessibility")}
             </Link>

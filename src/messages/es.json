@@ -68,7 +68,8 @@
     "coverage": "Cobertura Global",
     "updates": "Novedades",
     "audioTours": "Audioguías",
-    "rights": "Todos los derechos reservados."
+    "rights": "Todos los derechos reservados.",
+    "cookiePreferences": "Preferencias de cookies"
   },
   "Home": {
     "FAQ": {
@@ -584,7 +585,7 @@
     },
     "Privacy": {
       "title": "Política de Privacidad",
-      "lastUpdated": "Septiembre/2026",
+      "lastUpdated": "Octubre/2026",
       "intro": "TUGGI Technologies valora su privacidad. Esta política describe cómo recopilamos, usamos, protegemos y manejamos sus datos, en estricto cumplimiento con la Ley General de Protección de Datos (LGPD - Brasil) y el Reglamento General de Protección de Datos (RGPD - Unión Europea).",
       "s1Title": "1. Datos que Recopilamos",
       "s1Intro": "Para que TUGGI funcione como su copiloto cultural, recopilamos la información que aparece abajo. La lista no termina en la aplicación. También incluye los datos de quien busca a Tuggi para hacer una alianza, aunque nunca haya tenido una cuenta.",
@@ -597,13 +598,18 @@
       "s1Item7": "<strong>Registro de la Aceptación del Contrato:</strong> Cuando alguien acepta el contrato de alianza en pantalla, guardamos el registro de ese acto. Tiene el nombre y el cargo de quien aceptó, el correo al que enviamos el enlace, la fecha y la hora de nuestro servidor, la dirección IP de la conexión, la identificación que declara el navegador, el código del documento mostrado y la versión del modelo. Aquí la dirección IP queda guardada tal como es, y no convertida en un código, porque la finalidad es otra. Este registro sirve para una sola cosa, que es probar quién aceptó el contrato, qué aceptó, cuándo y desde dónde. No alimenta ninguna métrica, no se usa para contacto, y se conserva como prueba del contrato.",
       "s1Item8": "<strong>Visita a la Página de un Aliado:</strong> Cuando llega a la página de un aliado en este sitio, por un Código QR o por un enlace suyo, registramos esa visita. Si usted accede desde fuera de Brasil y de los Estados Unidos, ese registro solo se crea después de que usted acepta las cookies en este sitio. Mientras usted no acepte, no guardamos nada de esa visita ni escribimos cookie en su aparato. Guardamos la dirección IP de su conexión, la identificación que declara el navegador, el idioma del navegador y la zona horaria del aparato. Guardamos también a qué aliado visitó y la hora. Junto a eso escribimos una cookie de este mismo sitio, llamada tuggi_attr, que dura 30 días y guarda el identificador del aliado, el identificador de esa visita y la fecha. Este registro sirve para una sola finalidad, que es saber qué aliado lo llevó hasta la aplicación, porque así es como le pagamos a ese aliado. No alimenta publicidad y no se usa para contacto. La dirección IP y la identificación del navegador salen del registro después de 48 horas, y el registro entero se borra después de 30 días, por una rutina que corre todos los días. Cuando ese registro existe y usted toca un botón que lleva a la tienda, el identificador de esa visita va dentro del enlace, y la sección 3 cuenta qué pasa con él.",
       "s1Item9": "<strong>Fecha de Nacimiento:</strong> En el perfil de la aplicación usted puede indicar su fecha de nacimiento. Responder es opcional, y dejarlo en blanco no bloquea nada: lo único que esa fecha abre es la entrada en la clasificación. Sirve para dos finalidades, y para ninguna otra. La primera es comprobar la edad mínima de entrada en la clasificación, que es de 14 años. La segunda es derivar su franja de edad, que entra en el retrato de público con el que decidimos qué contenido producir a continuación: ese retrato lee la franja, nunca la fecha. Si de la fecha resultan menos de 14 años, el perfil queda fuera de la clasificación y nada más cambia: la cuenta, los audios y las compras siguen iguales. Su fecha de nacimiento no se muestra a otros usuarios, y no altera precios, ofertas ni lo que usted puede comprar.",
+      "s1Item10": "<strong>Cookies de Medición y su Consentimiento:</strong> Este sitio y el Portal Locais (places.tuggi.app), donde los establecimientos se registran para entrar en TUGGI, muestran un aviso de cookies mientras usted no lo responda. Las herramientas de medición descritas en los tres ítems siguientes solo se cargan después de que usted hace clic en “Aceptar” en ese aviso. Si hace clic en “Rechazar”, o no responde, no se cargan y no guardan ninguna cookie en su dispositivo. Su respuesta queda guardada en su propio navegador, con el nombre tuggi_cookie_consent, y cada una de las dos direcciones guarda su respuesta por separado. Puede cambiar de opinión cuando quiera, y la sección 5 explica cómo.",
+      "s1Item11": "<strong>Google Analytics:</strong> Este sitio y el Portal Locais usan Google Analytics, de Google, para medir cuántas personas nos visitan y en qué punto abandonan. En el Portal Locais esto incluye en qué paso del registro se detiene la persona y cuánto tiempo pasa en cada uno. Google Analytics guarda en su navegador una cookie llamada _ga, con un identificador aleatorio que reconoce el mismo navegador de una visita a otra, y recibe las páginas que usted abre y lo que hace en ellas, como clics, desplazamiento y el paso de una etapa a la siguiente. Google también recibe la dirección IP de su conexión, y con ella estima de qué país y ciudad viene la visita. En el Portal Locais, Google Analytics no recibe lo que usted escribe en los campos del registro, como nombre, correo electrónico, CNPJ, teléfono o dirección, y las señales de Google para publicidad están desactivadas en esa medición.",
+      "s1Item12": "<strong>Microsoft Clarity:</strong> Este sitio usa Microsoft Clarity, de Microsoft, para ver dónde se traba la navegación. Registra cómo usa usted las páginas, con clics, desplazamiento y movimiento del puntero, para que armemos mapas de calor y reproducciones de la visita, y guarda cookies propias en su navegador para reconocer la misma visita. El Portal Locais no usa Clarity.",
+      "s1Item13": "<strong>Apollo:</strong> Este sitio usa Apollo, un servicio de prospección comercial, para que nuestro equipo comercial sepa qué empresas visitan el sitio. Apollo recibe la dirección IP de su conexión y las páginas que usted abre, y a partir de la IP identifica la empresa de la que parece venir la visita. El Portal Locais no usa Apollo.",
       "s2Title": "2. Cómo Usamos Sus Datos (Telemetría Anonimizada)",
       "s2Item1": "<strong>Operación del Servicio:</strong> Usamos su ubicación estrictamente para calcular el vector de dirección y la proximidad a los activadores culturales, asegurando la entrega del audio en el momento adecuado.",
       "s2Item2": "<strong>Inteligencia Territorial (El Estándar B2G):</strong> Los datos de geolocalización y reproducción de audio se <strong>desvinculan de su identidad personal (anonimizados)</strong> antes de ser almacenados para análisis de flujo. Proporcionamos informes agregados a Gobiernos y Empresas de Alquiler de Vehículos (ej: \"Cuántas reproducciones ocurrieron en el monumento X hoy\") sin revelar nunca quién fue el usuario. En esos informes rastreamos flujos culturales, no personas.",
       "s3Title": "3. Compartir Datos",
       "s3Item1": "<strong>No vendemos sus datos.</strong> TUGGI no comercializa Datos Personales Identificables (PII) con corredores de datos (data brokers) o redes de anuncios.",
-      "s3Item2": "Más allá del caso descrito abajo, compartimos datos solo con proveedores de infraestructura estrictamente necesarios para el funcionamiento de la app, como servicios en la nube seguros (ej: Supabase para base de datos/autenticación y Google Cloud para el motor Text-to-Speech). Estos socios operan bajo estrictos acuerdos de confidencialidad.",
+      "s3Item2": "Más allá de los casos descritos abajo, compartimos datos solo con proveedores de infraestructura estrictamente necesarios para el funcionamiento de la app, como servicios en la nube seguros (ej: Supabase para base de datos/autenticación y Google Cloud para el motor Text-to-Speech). Estos socios operan bajo estrictos acuerdos de confidencialidad.",
       "s3Item3": "<strong>El Identificador de la Visita al Aliado:</strong> En Android, ese identificador viaja dentro del enlace de Google Play, así que Google lo recibe cuando usted va a instalar la aplicación desde la tienda. Es un código de nuestro lado, y no lleva su nombre ni su correo electrónico. En iPhone ese camino no existe. Ahí copiamos el mismo identificador al portapapeles de su aparato, en el instante en que toca el botón, para que la aplicación lo lea cuando abra por primera vez.",
+      "s3Item4": "<strong>Las Herramientas de Medición:</strong> Cuando usted acepta las cookies, Google (Google Analytics), Microsoft (Microsoft Clarity) y Apollo reciben los datos descritos en la sección 1, cada uno solo de las direcciones en las que funciona.",
       "s4Title": "4. Seguridad y Retención",
       "s4Item1": "Empleamos encriptación de extremo a extremo en tránsito y en reposo. El acceso a las bases de datos corporativas y del panel City OS está protegido por Control de Acceso Basado en Roles (RBAC), asegurando el aislamiento de los datos.",
       "s4Item2": "Retenemos sus datos personales solo por el tiempo necesario para proporcionar el servicio. Los datos de telemetría anonimizados pueden retenerse permanentemente para mejorar el producto.",
@@ -619,6 +625,7 @@
       "s5ItemLead2": " pidiendo la eliminación: cerramos el contacto en curso y borramos sus datos de nuestra lista de contactos comerciales. La página de eliminación de datos sirve solo para cuentas de la aplicación.",
       "s5ItemPartner1": "<strong>La eliminación de los datos que envió en una propuesta de alianza</strong>, en lo que no sea necesario para la alianza en curso. Escriba a ",
       "s5ItemPartner2": " diciendo qué quiere eliminar. Si pide no ser contactado más, el contacto se detiene de inmediato. El registro de la aceptación de un contrato ya firmado se conserva como prueba, y un pedido de eliminación de contacto no borra ese registro.",
+      "s5ItemCookies": "<strong>La revocación de su consentimiento de cookies</strong> en este sitio y en el Portal Locais. Use el enlace “Preferencias de cookies” en el pie de página de cada uno: el aviso de cookies vuelve a aparecer, y las herramientas de medición de la sección 1 dejan de cargarse hasta que usted acepte de nuevo.",
       "s6Title": "6. Contacto del Delegado de Protección de Datos (DPO)",
       "s6P1": "Si tiene preguntas sobre esta política o sobre el tratamiento de sus datos, contacte a nuestro Delegado de Protección de Datos (DPO) a través de nuestra página de ",
       "s6P2": "Contacto",
@@ -681,7 +688,8 @@
   "CookieBanner": {
     "text": "Usamos cookies para medir el público de este sitio, y también para saber qué aliado lo llevó hasta la aplicación, que es como le pagamos a ese aliado. Al hacer clic en 'Aceptar', usted acepta los dos usos.",
     "accept": "Aceptar",
-    "decline": "Rechazar"
+    "decline": "Rechazar",
+    "policyLink": "Ver la Política de Privacidad"
   },
   "Purpose": {
     "Hero": {

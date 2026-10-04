@@ -96,6 +96,11 @@ const UI_NAVIGATION: RegExp[] = [
   /\bmain\s+navigation\b/i,
   /\bmobile\s+navigation\b/i,
   /voiceover|talkback|screen\s*readers?|leitor(?:es)?\s+de\s+tela|lector(?:es)?\s+de\s+pantalla|lettori?\s+di\s+schermo/i,
+  // Browsing the site's pages, as session-replay measurement sees it —
+  // `Legal.Privacy.s1Item12` (Microsoft Clarity, card #818: "onde a navegação
+  // trava"). The heat-map marker names web analytics and never accompanies a
+  // claim that Tuggi routes a trip.
+  /mapas?\s+de\s+calor|heat\s*maps?|mapp[ae]\s+di\s+calore/i,
 ];
 
 /**
