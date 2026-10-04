@@ -2,8 +2,8 @@ import { test, expect, devices, type Page } from "@playwright/test";
 import { MOCK_SUPABASE_PORT, E2E_PUBLISHABLE_KEY } from "../../playwright.config";
 
 /**
- * The invite page of the referral programme — `/c/<code>`, card #840 (rule in
- * card #836; the BR id is pending at the `produto`, cite it here once it exists).
+ * The invite page of the referral programme — `/c/<code>`, card #840,
+ * BR-MONETIZACAO-085 item 2.
  *
  * What is proven:
  *  - two states only, valid and inactive — no "exhausted" for the friend
@@ -76,7 +76,7 @@ async function spyOnClipboard(page: Page): Promise<{ text: string; insideTap: bo
   return writes;
 }
 
-test.describe("invite page /c/<code> — card #840, BR-USUARIO-042", () => {
+test.describe("invite page /c/<code> — BR-MONETIZACAO-085 item 2, BR-USUARIO-042", () => {
   test("a valid code shows the nickname, the code and Copy, and is noindex", async ({ page }) => {
     await page.goto(`/c/${VALID}`);
 

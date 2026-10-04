@@ -278,7 +278,7 @@ export const PARTNER_TRIAGE_HOURS = 72;
 
 /**
  * The ceiling of free hours a friend gets from an invite code — the referral
- * programme, card #836 (BR id pending at the `produto`). "Up to": a friend who
+ * programme, **BR-MONETIZACAO-085** item 4. "Up to": a friend who
  * already activated the welcome hours gets the difference, computed by the
  * database. The invite page (`/c/<code>`) states the ceiling and nothing else.
  */
@@ -286,7 +286,7 @@ export const REFERRAL_FRIEND_HOURS = 5;
 
 /**
  * How old an account may be and still accept an invite code, in days since
- * sign-up — card #836 item 5. The redeem function enforces it; the invite page
+ * sign-up — **BR-MONETIZACAO-085** item 3. The redeem function enforces it; the invite page
  * only tells the friend about it.
  */
 export const REFERRAL_REDEEM_WINDOW_DAYS = 7;

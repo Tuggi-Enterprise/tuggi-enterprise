@@ -17,7 +17,7 @@ import { getSupabaseClient } from "@/lib/supabase-server";
  */
 
 /**
- * The shape of a code — #836/#839: six characters, upper case, from an
+ * The shape of a code — BR-MONETIZACAO-085 item 2: six characters, upper case, from an
  * alphabet without the ambiguous 0/O and 1/I.
  *
  * It is checked before the database is asked, so a URL that can never be a
