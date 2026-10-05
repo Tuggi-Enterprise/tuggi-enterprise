@@ -1034,5 +1034,22 @@
       "body": "Tu enlace está bien, pero no pudimos guardar la baja ahora. Inténtalo de nuevo. Si sigue igual, escribe a {support}.",
       "retryLabel": "Intentar de nuevo"
     }
+  },
+  "Referral": {
+    "metaTitle": "{nickname} te invitó a Tuggi",
+    "invitedBy": "{nickname} te invitó",
+    "lead": "Copia este código de invitación y recibe {referralFriendHours} horas gratis en Tuggi.",
+    "copy": "Copiar",
+    "copied": "Copiado",
+    "pasteWithin": "Pégalo en la app dentro de los {referralRedeemWindowDays} días posteriores a crear tu cuenta.",
+    "getAppAfterCode": "Después, descarga la app",
+    "getApp": "Descargar la app",
+    "inactiveTitle": "Esta invitación ya no está activa",
+    "metaDescInactive": "Tuggi es una guía que cuenta la historia de los lugares por donde pasas.",
+    "howTitle": "Cómo funciona Tuggi",
+    "step1": "Crea tu cuenta y abre el Pasaporte.",
+    "step2": "Pega el código de invitación: tus {referralFriendHours} horas ya están ahí.",
+    "step3": "Empieza a conducir. La guía narra los lugares por donde pasas.",
+    "mapAlt": "El mapa de Tuggi con una ruta y los lugares a lo largo de ella"
   }
 }
