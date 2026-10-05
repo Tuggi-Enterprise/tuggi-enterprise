@@ -1036,20 +1036,20 @@
     }
   },
   "Referral": {
-    "metaTitle": "{nickname} invited you to Tuggi",
-    "invitedBy": "{nickname} invited you",
-    "lead": "Copy this code for {referralFriendHours} free hours on Tuggi.",
-    "copy": "Copy",
-    "copied": "Copied",
-    "pasteWithin": "Paste it in the app within {referralRedeemWindowDays} days of creating your account.",
-    "getAppAfterCode": "Then get the app",
-    "getApp": "Get the app",
-    "inactiveTitle": "This invite isn't active anymore",
-    "metaDescInactive": "Tuggi is a guide that tells the stories of the places you drive by.",
-    "howTitle": "How Tuggi works",
-    "step1": "Create your account and open the Passport.",
-    "step2": "Paste the code — your {referralFriendHours} hours are ready.",
-    "step3": "Start driving. The guide narrates what you pass by.",
-    "mapAlt": "The Tuggi map with a route and the places along it"
+    "metaTitle": "{nickname} ti ha invitato su Tuggi",
+    "invitedBy": "{nickname} ti ha invitato",
+    "lead": "Copia questo codice invito e ricevi {referralFriendHours} ore gratis su Tuggi.",
+    "copy": "Copia",
+    "copied": "Copiato",
+    "pasteWithin": "Incollalo nell'app entro {referralRedeemWindowDays} giorni dalla creazione dell'account.",
+    "getAppAfterCode": "Poi scarica l'app",
+    "getApp": "Scarica l'app",
+    "inactiveTitle": "Questo invito non è più attivo",
+    "metaDescInactive": "Tuggi è una guida che racconta la storia dei luoghi da cui passi.",
+    "howTitle": "Come funziona Tuggi",
+    "step1": "Crea il tuo account e apri il Passaporto.",
+    "step2": "Incolla il codice invito: le tue {referralFriendHours} ore sono già lì.",
+    "step3": "Inizia a guidare. La guida racconta i luoghi da cui passi.",
+    "mapAlt": "La mappa di Tuggi con un percorso e i luoghi lungo il tragitto"
   }
 }
