@@ -366,12 +366,58 @@ export const getCouponBySlug = cache(
 );
 
 /**
- * Resolves a /d/<slug> URL in two passes:
- *   1. Coupon code (UPPERCASE convention: WEBSUMMIT26). Returns the owner +
- *      coupon metadata so the page renders the redeem block.
- *   2. Partner slug (lowercase-with-hyphens convention: neymar-jr). Returns
- *      just the owner — existing behaviour.
- * `null` means neither matched and the caller should 404.
+ * What the one resolver of `/d/{slug}` says about a slug — `partner.resolve_partner_slug`,
+ * BR-B2B-037 item 2 (docs/contracts/places-portal-rascunho.md §9).
+ *
+ * - `soon`: a place whose slug was reserved at submit and is not approved yet. Its kit may
+ *   already be printed (BR-B2B-050 item 1), so the QR must land somewhere that is not an error.
+ * - `client`: the slug belongs to `clientSlug`; when they differ, the printed one redirects.
+ * - `retired`: a rejected place. Blocked forever, never names the place.
+ * - `null`: unknown slug — no row.
+ * - `"unavailable"`: the RPC failed. Until migration 20261006230000 is applied the function does
+ *   not exist, and the caller must keep today's behaviour instead of breaking the page.
+ */
+type SlugResolution =
+  | { state: "soon" }
+  | { state: "retired" }
+  | { state: "client"; clientSlug: string };
+
+const resolveSlug = cache(
+  async (slug: string): Promise<SlugResolution | null | "unavailable"> => {
+    try {
+      const { data, error } = await getSupabaseClient("serviceRole")
+        .schema("partner")
+        .rpc("resolve_partner_slug", { p_slug: slug });
+      if (error || !Array.isArray(data)) return "unavailable";
+      const row = data[0] as { state?: string; client_slug?: string | null } | undefined;
+      if (!row) return null;
+      if (row.state === "soon") return { state: "soon" };
+      if (row.state === "retired") return { state: "retired" };
+      if (row.state === "client" && row.client_slug) {
+        return { state: "client", clientSlug: row.client_slug };
+      }
+      return "unavailable";
+    } catch {
+      return "unavailable";
+    }
+  }
+);
+
+export type PartnerSlugResult =
+  | { kind: "partner"; partner: PartnerData; coupon: CouponPreview | null }
+  | { kind: "redirect"; slug: string }
+  | { kind: "soon" }
+  | { kind: "retired" };
+
+/**
+ * Resolves a /d/<slug> URL:
+ *   1. Coupon code (UPPERCASE convention: WEBSUMMIT26) — its own door, BR-MONETIZACAO-015/016.
+ *      Returns the owner + coupon metadata so the page renders the redeem block.
+ *   2. `partner.resolve_partner_slug` (BR-B2B-037 item 2): `soon`, `retired`, or the client —
+ *      redirect when the printed slug is not the client's own (item 4: it never stops resolving).
+ *   3. The client by slug, as before. Also the whole partner pass while the resolver RPC is
+ *      unavailable (migration not applied yet).
+ * `null` means nothing matched: the page serves the plain download LP, `noindex`.
  *
  * Lives here because the page and its opengraph-image both resolve the same
  * URL and must agree on what it is.
@@ -379,12 +425,20 @@ export const getCouponBySlug = cache(
 export async function resolvePartnerOrCoupon(
   slug: string,
   dbLang: string
-): Promise<{ partner: PartnerData; coupon: CouponPreview | null } | null> {
+): Promise<PartnerSlugResult | null> {
   const coupon = await getCouponBySlug(slug, dbLang);
-  if (coupon) return { partner: coupon.partner, coupon: coupon.coupon };
+  if (coupon) return { kind: "partner", partner: coupon.partner, coupon: coupon.coupon };
+
+  const resolution = await resolveSlug(slug);
+  if (resolution === null) return null;
+  if (resolution !== "unavailable") {
+    if (resolution.state === "soon") return { kind: "soon" };
+    if (resolution.state === "retired") return { kind: "retired" };
+    if (resolution.clientSlug !== slug) return { kind: "redirect", slug: resolution.clientSlug };
+  }
 
   const partner = await getPartnerBySlug(slug, dbLang);
-  if (partner) return { partner, coupon: null };
+  if (partner) return { kind: "partner", partner, coupon: null };
 
   return null;
 }
