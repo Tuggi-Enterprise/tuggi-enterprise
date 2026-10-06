@@ -102,7 +102,7 @@ export default async function Image({ params }: { params: Promise<Params> }) {
   const { locale, slug } = await params;
 
   const resolved = await resolvePartnerOrCoupon(slug, getDbLang(locale));
-  const partner = resolved?.partner;
+  const partner = resolved?.kind === "partner" ? resolved.partner : null;
   if (!partner?.logoUrl || !partner.name) return staticCard();
 
   const seal = await fetchSealDataUri(partner.logoUrl);

@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { cookies, headers } from "next/headers";
+import { permanentRedirect } from "next/navigation";
 import { PartnerHeroWrapper } from "@/components/blocks/PartnerHeroWrapper";
 import { resolvePartnerOrCoupon } from "@/lib/partner";
+import { kitPieceOf, recordActivationScan } from "@/lib/activation-scan";
 import { resolveWelcomeLang } from "@/lib/ptDialect";
 import { buildTwitterCard, defaultRobots } from "@/lib/seo";
 import { PRODUCT_FACTS } from "@/lib/product-facts";
@@ -44,7 +46,9 @@ export async function generateMetadata({
 
   // Unknown slug → the page still serves the plain download LP (see below),
   // and that LP is the same on every dead slug: keep it out of the index.
-  if (!resolved) {
+  // A reserved slug (`soon`) is not public until approval, and a `retired` one
+  // never will be (#815, direction of 2026-10-04): same treatment.
+  if (!resolved || resolved.kind !== "partner") {
     return { robots: { index: false, follow: false } };
   }
 
@@ -92,14 +96,28 @@ export default async function PartnerSlugPage({
   searchParams,
 }: {
   params: Promise<{ locale: string; slug: string }>;
-  searchParams: Promise<{ lang?: string }>;
+  searchParams: Promise<{ lang?: string; k?: string | string[] }>;
 }) {
   const { locale, slug } = await params;
-  const { lang } = await searchParams;
+  const { lang, k } = await searchParams;
   setRequestLocale(locale);
 
+  // A kit QR carries `?k={piece}` (#815): count it before the render, without
+  // letting the count delay or break the page. The function itself refuses an
+  // unknown or retired slug.
+  const piece = kitPieceOf(k);
+  const scan = piece ? recordActivationScan(slug, piece, new Headers(await headers())) : null;
+
   const dbLang = await resolveDbLang(locale, lang);
-  const resolved = await resolvePartnerOrCoupon(slug, dbLang);
+  const [resolved] = await Promise.all([resolvePartnerOrCoupon(slug, dbLang), scan]);
+
+  // The printed slug is not the client's own (the client inherited another one,
+  // or the URL differs in case): it keeps resolving, as a permanent redirect —
+  // BR-B2B-037 item 4. `k` is dropped, it was counted above.
+  if (resolved?.kind === "redirect") {
+    const query = typeof lang === "string" ? `?lang=${encodeURIComponent(lang)}` : "";
+    permanentRedirect(`/d/${encodeURIComponent(resolved.slug)}${query}`);
+  }
 
   /**
    * A SLUG THAT NO LONGER RESOLVES STILL GETS THE APP — BR-B2B-001.
@@ -117,9 +135,29 @@ export default async function PartnerSlugPage({
    * index, which is what stops `/d/<anything>` from becoming an unbounded
    * surface of thin pages.
    */
-  if (!resolved) {
+  // `retired` (a rejected place) gets exactly this page too: neutral, it does
+  // not name the place (#815, direction of 2026-10-04, item 4).
+  if (!resolved || resolved.kind === "retired") {
     return (
       <main>
+        <PartnerHeroWrapper partnerData={null} />
+      </main>
+    );
+  }
+
+  // `soon`: the place sent its registration and printed its kit before the
+  // approval (BR-B2B-050 item 1). The QR lands on the download page with one
+  // line saying the place is on its way — no date promised, nothing credited.
+  if (resolved.kind === "soon") {
+    const t = await getTranslations({ locale, namespace: "Download" });
+    return (
+      <main>
+        <p
+          data-testid="partner-slug-soon"
+          className="px-6 pt-24 text-center text-base font-semibold text-tuggi-dark"
+        >
+          {t("soonNotice")}
+        </p>
         <PartnerHeroWrapper partnerData={null} />
       </main>
     );

@@ -307,6 +307,21 @@ const REFERRAL_FIXTURES = {
 /** Every `p_code` the invite page asked about, in order. */
 const referralLookups = [];
 
+/**
+ * `partner.resolve_partner_slug` (#815, BR-B2B-037): slug → the row it answers.
+ * `[]` is "no row" (unknown slug). Every slug NOT listed answers 404 PGRST202,
+ * which is production before migration 20261006230000: the site has to fall
+ * back to today's lookup — and every older /d/ spec keeps passing through it.
+ */
+const RESOLVER_FIXTURES = {
+  "e2e-em-breve": [{ state: "soon", client_id: null, client_slug: null }],
+  "e2e-recusado": [{ state: "retired", client_id: null, client_slug: null }],
+  "e2e-slug-impresso": [{ state: "client", client_id: "e2e", client_slug: "e2e-sem-logo" }],
+  "e2e-desconhecido": [],
+};
+/** Every `partner.record_activation_scan` call that reached the database, in order. */
+const activationScans = [];
+
 function sendJson(res, status, body) {
   const json = JSON.stringify(body);
   res.writeHead(status, { "Content-Type": "application/json" });
@@ -749,6 +764,40 @@ const server = http.createServer((req, res) => {
       const nickname = REFERRAL_FIXTURES[code];
       sendJson(res, 200, nickname ? { status: "valid", nickname } : { status: "invalid", nickname: null });
     });
+    return;
+  }
+
+  if (url.pathname === "/rest/v1/rpc/resolve_partner_slug" && req.method === "POST") {
+    readBody(req).then((raw) => {
+      let slug = "";
+      try {
+        slug = String(JSON.parse(raw || "{}").p_slug ?? "");
+      } catch {
+        // Malformed body: an unlisted slug.
+      }
+      const rows = RESOLVER_FIXTURES[slug];
+      if (rows) sendJson(res, 200, rows);
+      else sendJson(res, 404, { code: "PGRST202", message: "Could not find the function partner.resolve_partner_slug" });
+    });
+    return;
+  }
+
+  if (url.pathname === "/rest/v1/rpc/record_activation_scan" && req.method === "POST") {
+    readBody(req).then((raw) => {
+      let body = {};
+      try {
+        body = JSON.parse(raw || "{}");
+      } catch {
+        // Malformed body: recorded as-is so the spec sees it.
+      }
+      activationScans.push({ slug: body.p_slug, piece: body.p_piece });
+      sendJson(res, 200, true);
+    });
+    return;
+  }
+
+  if (url.pathname === "/__activation-scans" && req.method === "GET") {
+    sendJson(res, 200, activationScans);
     return;
   }
 
