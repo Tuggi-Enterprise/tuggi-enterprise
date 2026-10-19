@@ -121,6 +121,9 @@ export default async function PrivacyPolicyPage({ params }: { params: Promise<{ 
               The other six fields of the collection are still undeclared here
               — pre-existing debt, not this card. */}
           <li>{t.rich("s1Item9", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
+          {/* `s1Item14` is the email to the tourist, card #959, BR-COMUNICACAO-020:
+              it sits before `s1Item10` so "the three items below" there stays true. */}
+          <li>{t.rich("s1Item14", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
           {/* `s1Item10` to `s1Item13` are the measurement trackers behind the
               consent banner — card #818, BR-USUARIO-028 item 1: the policy names
               each tool, the banner links here (the `cookies` anchor below is
@@ -153,6 +156,7 @@ export default async function PrivacyPolicyPage({ params }: { params: Promise<{ 
           <li>{t("s3Item2")}</li>
           <li>{t.rich("s3Item3", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
           <li>{t.rich("s3Item4", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
+          <li>{t.rich("s3Item5", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
         </ul>
       </section>
 
@@ -199,6 +203,7 @@ export default async function PrivacyPolicyPage({ params }: { params: Promise<{ 
             {t("s5ItemPartner2")}
           </li>
           <li>{t.rich("s5ItemCookies", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
+          <li>{t.rich("s5ItemEmail", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
         </ul>
       </section>
 
