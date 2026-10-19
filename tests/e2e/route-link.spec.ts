@@ -185,6 +185,11 @@ test.describe("route page /r/<slug> — served HTML (#946)", () => {
 });
 
 test.describe("route page /r/<slug> — in the browser (#946)", () => {
+  // The link carries no locale: the page follows Accept-Language, and a bare
+  // Chromium context sends en-US. The copy asserted below is the pt one, so
+  // the visitor has to be Brazilian; clipboard-read is what readText() needs.
+  test.use({ locale: "pt-BR", permissions: ["clipboard-read", "clipboard-write"] });
+
   async function stubTheStores(page: Page): Promise<void> {
     await page.context().route(/apps\.apple\.com|play\.google\.com/, (route) =>
       route.fulfill({ status: 200, contentType: "text/html", body: "<html>store stub</html>" })
