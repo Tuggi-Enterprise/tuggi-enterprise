@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { headers } from "next/headers";
 import { permanentRedirect } from "next/navigation";
-import { getRouteLink } from "@/lib/route-link";
+import { getRouteLink, routeLinkOf } from "@/lib/route-link";
+import { APP_STORE_ID } from "@/lib/app-meta";
 import { buildTwitterCard } from "@/lib/seo";
 import { RouteLinkView } from "@/components/blocks/RouteLinkView";
 
@@ -54,6 +55,13 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
       images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "TUGGI" }],
     },
     twitter: buildTwitterCard({ title, description, image: OG_IMAGE }),
+    // Safari's Smart App Banner, on this page only (#946): "Open" with the app
+    // installed, "Get" without it. The argument is the route's link, which the
+    // app reads as it reads the Universal Link.
+    itunes: {
+      appId: APP_STORE_ID,
+      ...(route.status === "available" ? { appArgument: routeLinkOf(route.slug) } : {}),
+    },
   };
 }
 

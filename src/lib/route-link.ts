@@ -2,6 +2,7 @@ import { cache } from "react";
 import { getSupabaseClient } from "@/lib/supabase-server";
 import { getDbLang } from "@/lib/partner";
 import { PLAY_STORE_URL } from "@/lib/app-meta";
+import { UUID_PATTERN } from "@/lib/attribution";
 
 /**
  * The route page's one door to the app database — `tuggi.app/r/<slug>`, card
@@ -24,6 +25,18 @@ export const ROUTE_LINK_ORIGIN = "https://tuggi.app";
 
 export function routeLinkOf(slug: string): string {
   return `${ROUTE_LINK_ORIGIN}/r/${slug}`;
+}
+
+/**
+ * The "Open in the app" link (#946): the app's own scheme, which opens the app
+ * even where the Universal Link does not fire (a link pasted in Safari's
+ * address bar, an AASA not yet re-read). The form is the one
+ * `DeepLinkService.handleDeepLink` (`tuggi-drive-v2`, `case '/route'`) already
+ * accepts, `tuggi://route?id=<uuid>`, so the build already in the stores
+ * understands it; `tuggi://r/<slug>` does not route there.
+ */
+export function routeAppSchemeUrl(id: string): string {
+  return `tuggi://route?id=${encodeURIComponent(id)}`;
 }
 
 /**
@@ -63,6 +76,8 @@ export type RouteAvailability =
 export type RouteLink =
   | {
       status: "available";
+      /** The route's uuid, only when it has that shape: it feeds the app scheme link. */
+      id: string | null;
       slug: string;
       name: string;
       region: string | null;
@@ -113,6 +128,7 @@ export function parseRouteRow(data: unknown, requestedSlug: string): RouteLink {
 
   return {
     status: "available",
+    id: UUID_PATTERN.test(row.id) ? row.id : null,
     slug,
     name,
     region: text(row.region),
@@ -157,7 +173,6 @@ export const getRouteLink = cache(async (rawSlug: string, locale: string): Promi
  * before #946. Null when it cannot be resolved; the caller shows the
  * not-found page, which still has the store.
  */
-const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export const getRouteSlugById = cache(async (rawId: string): Promise<string | null> => {
   const id = rawId.trim();

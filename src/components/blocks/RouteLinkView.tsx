@@ -1,8 +1,8 @@
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
-import { routeLinkOf, routePlayStoreUrl, type RouteLink } from "@/lib/route-link";
+import { routeAppSchemeUrl, routeLinkOf, routePlayStoreUrl, type RouteLink } from "@/lib/route-link";
 import { PLAY_STORE_URL } from "@/lib/app-meta";
-import { RouteCopyCode, RouteStoreBadge, type StorePlatform } from "@/components/blocks/RouteLinkClient";
+import { RouteCopyCode, RouteOpenAppButton, RouteStoreBadge, type StorePlatform } from "@/components/blocks/RouteLinkClient";
 
 /**
  * The body of the route page (`/r/<slug>`, card #946, spec §1.1 and §1.2),
@@ -95,6 +95,13 @@ export async function RouteLinkView({
           aria-labelledby="route-stores-title"
           className="w-full mt-8 flex flex-col items-center gap-3"
         >
+          {available && route.id && platform !== "other" ? (
+            // Above the badges: whoever already has the app leaves here (#946).
+            // Phone only; a desktop has no app to open.
+            <div className="w-full mb-5">
+              <RouteOpenAppButton href={routeAppSchemeUrl(route.id)} slug={route.slug} />
+            </div>
+          ) : null}
           <h2 id="route-stores-title" className="text-base font-bold text-tuggi-dark">
             {available ? t("storeHeading") : t("getApp")}
           </h2>

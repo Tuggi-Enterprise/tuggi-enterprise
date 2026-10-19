@@ -1061,6 +1061,7 @@
     "stops": "{count, plural, one {# tappa} other {# tappe}}",
     "lead": "Aprilo nell'app per vedere il tragitto e scoprire la storia di ogni tappa.",
     "metaDesc": "Un itinerario da aprire nell'app Tuggi per scoprire la storia di ogni tappa.",
+    "openInApp": "Apri nell'app",
     "storeHeading": "Scarica Tuggi per aprirlo",
     "otherAndroid": "Usi Android? Scaricala su Google Play",
     "otherIphone": "Usi iPhone? Scaricala sull'App Store",

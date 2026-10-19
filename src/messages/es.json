@@ -1061,6 +1061,7 @@
     "stops": "{count, plural, one {# parada} other {# paradas}}",
     "lead": "Ábrelo en la app para ver el camino y conocer la historia de cada parada.",
     "metaDesc": "Un itinerario para abrir en la app Tuggi y conocer la historia de cada parada.",
+    "openInApp": "Abrir en la app",
     "storeHeading": "Descarga Tuggi para abrirlo",
     "otherAndroid": "¿Usas Android? Descárgala en Google Play",
     "otherIphone": "¿Usas iPhone? Descárgala en la App Store",

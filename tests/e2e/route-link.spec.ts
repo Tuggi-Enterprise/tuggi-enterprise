@@ -116,6 +116,37 @@ test.describe("route page /r/<slug> — served HTML (#946)", () => {
     expect(body).toContain('data-testid="route-store-play"');
   });
 
+  test("#946: on a phone, Open in the app sits above the badges and opens the app by its scheme", async ({ request }) => {
+    for (const ua of [IPHONE_UA, ANDROID_UA]) {
+      const { body } = await html(request, "/r/litoral-norte", ua);
+      const button = body.match(/<a[^>]*data-testid="route-open-app"[^>]*>([^<]*)</);
+      expect(button?.[0]).toContain(`href="tuggi://route?id=${ROUTE_ID}"`);
+      expect(button?.[1]).toBe("Abrir no app");
+      // Not sent to the store on its own: a plain link, no target, no redirect.
+      expect(button?.[0]).not.toContain("target=");
+      const store = ua === IPHONE_UA ? 'data-testid="route-store-app"' : 'data-testid="route-store-play"';
+      expect(body.indexOf('data-testid="route-open-app"')).toBeLessThan(body.indexOf(store));
+    }
+  });
+
+  test("#946: no Open in the app on desktop or on a route that cannot open", async ({ request }) => {
+    expect((await html(request, "/r/litoral-norte", DESKTOP_UA)).body).not.toContain('data-testid="route-open-app"');
+    for (const slug of ["em-revisao", "tirado-do-ar", "nao-existe"]) {
+      expect((await html(request, `/r/${slug}`)).body).not.toContain('data-testid="route-open-app"');
+    }
+  });
+
+  test("#946: the Smart App Banner names the app and hands it the route link", async ({ request }) => {
+    const { body } = await html(request, "/r/litoral-norte");
+    expect(body).toContain(
+      '<meta name="apple-itunes-app" content="app-id=6744379818, app-argument=https://tuggi.app/r/litoral-norte"/>'
+    );
+    // Unavailable: the banner still offers the app, with no route to hand over.
+    expect((await html(request, "/r/nao-existe")).body).toContain(
+      '<meta name="apple-itunes-app" content="app-id=6744379818"/>'
+    );
+  });
+
   test("an old slug redirects permanently to the current one", async ({ request }) => {
     const { status } = await html(request, "/r/litoral-antigo");
     expect(status).toBe(308);

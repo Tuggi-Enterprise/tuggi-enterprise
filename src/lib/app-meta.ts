@@ -18,7 +18,9 @@ export const SITE_URL = "https://www.tuggi.app";
  */
 export const SUPPORT_EMAIL = "suporte@tuggi.app";
 
-export const APP_STORE_URL = "https://apps.apple.com/app/tuggi-drive/id6744379818";
+/** App Store id of the app. Read by the store URL and by the Smart App Banner of `/r/<slug>` (#946). */
+export const APP_STORE_ID = "6744379818";
+export const APP_STORE_URL = `https://apps.apple.com/app/tuggi-drive/id${APP_STORE_ID}`;
 export const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.tuggidrive.app";
 
 // ── Download attribution ────────────────────────────────────────────────────

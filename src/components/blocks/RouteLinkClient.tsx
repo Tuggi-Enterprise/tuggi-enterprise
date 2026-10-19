@@ -209,3 +209,24 @@ export function RouteStoreBadge({
     </div>
   );
 }
+
+/**
+ * "Open in the app" (#946): with the app installed, a link pasted in Safari's
+ * address bar never fires the Universal Link, and this page shows instead. The
+ * button opens the app through its own scheme (`routeAppSchemeUrl`). A plain
+ * link on purpose: if the app does not open, the page stays as it is, with the
+ * store right below; nothing sends the visitor to the store on its own.
+ */
+export function RouteOpenAppButton({ href, slug }: { href: string; slug: string }) {
+  const t = useTranslations("RouteLink");
+  return (
+    <a
+      href={href}
+      onClick={() => sendGAEvent({ event: "route_open_app", placement: "route_link", route_slug: slug })}
+      data-testid="route-open-app"
+      className="w-full flex items-center justify-center gap-2 min-h-12 py-3 px-6 bg-tuggi-dark text-white font-bold rounded-xl hover:bg-slate-800 transition-colors shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text"
+    >
+      {t("openInApp")}
+    </a>
+  );
+}
