@@ -24,7 +24,16 @@ export default function middleware(req: NextRequest) {
   // The invite link of the referral programme (/c/<code>, card #840) takes the
   // same path for the same reason: it is typed once into a share sheet and
   // opened by a friend in any language.
-  if (pathname === "/download" || pathname.startsWith("/d/") || pathname.startsWith("/c/")) {
+  //
+  // The route link (/r/<slug>, card #946) and the /route/<uuid> the app shared
+  // before it: printed on a hotel's QR card, read in any language.
+  if (
+    pathname === "/download" ||
+    pathname.startsWith("/d/") ||
+    pathname.startsWith("/c/") ||
+    pathname.startsWith("/r/") ||
+    pathname.startsWith("/route/")
+  ) {
     // 1. Explicit ?lang (legacy pt-br/pt-pt normalised to pt)
     let locale = normalizeLocale(searchParams.get("lang"));
 
@@ -48,7 +57,8 @@ export default function middleware(req: NextRequest) {
 
     locale = locale || routing.defaultLocale;
 
-    // Internal rewrite to /[locale]/download, /[locale]/d/<slug> or /[locale]/c/<code>
+    // Internal rewrite to /[locale]/download, /[locale]/d/<slug>, /[locale]/c/<code>,
+    // /[locale]/r/<slug> or /[locale]/route/<id>
     const url = req.nextUrl.clone();
     url.pathname = `/${locale}${pathname}`;
     return NextResponse.rewrite(url);

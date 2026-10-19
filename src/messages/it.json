@@ -1052,5 +1052,30 @@
     "step2": "Incolla il codice invito: le tue {referralFriendHours} ore sono già lì.",
     "step3": "Inizia a guidare. La guida racconta i luoghi da cui passi.",
     "mapAlt": "La mappa di Tuggi con un percorso e i luoghi lungo il tragitto"
+  },
+  "RouteLink": {
+    "eyebrow": "Itinerario su Tuggi",
+    "stops": "{count, plural, one {# tappa} other {# tappe}}",
+    "lead": "Aprilo nell'app per vedere il tragitto e scoprire la storia di ogni tappa.",
+    "metaDesc": "Un itinerario da aprire nell'app Tuggi per scoprire la storia di ogni tappa.",
+    "storeHeading": "Scarica Tuggi per aprirlo",
+    "otherAndroid": "Usi Android? Scaricala su Google Play",
+    "otherIphone": "Usi iPhone? Scaricala sull'App Store",
+    "copiedNote": "Abbiamo copiato il codice. Se l'itinerario non si apre da solo, incollalo nell'app.",
+    "codeLabel": "Codice dell'itinerario",
+    "copy": "Copia",
+    "copied": "Copiato",
+    "howTitle": "Come aprirlo",
+    "step1": "Scarica Tuggi e crea il tuo account.",
+    "step2": "Apri l'app. Se l'itinerario non compare, inquadra il QR o apri di nuovo questo link.",
+    "step3": "Oppure digita il codice <strong>{code}</strong> nella scheda Itinerari.",
+    "getApp": "Scarica l'app",
+    "reviewTitle": "Questo itinerario non è ancora disponibile",
+    "reviewLead": "È in revisione. Riprova ad aprire il link più tardi.",
+    "goneTitle": "Questo itinerario non è più disponibile",
+    "goneLead": "Nell'app trovi altri itinerari vicino a dove ti trovi.",
+    "notFoundTitle": "Non troviamo questo itinerario",
+    "notFoundLead": "Controlla il link. Nell'app trovi altri itinerari vicino a dove ti trovi.",
+    "mapAlt": "La mappa di Tuggi con un itinerario e i luoghi lungo il tragitto"
   }
 }

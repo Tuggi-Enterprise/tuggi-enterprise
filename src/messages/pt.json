@@ -1282,5 +1282,30 @@
     "step2": "Cole o código de convite — suas {referralFriendHours} horas já estão lá.",
     "step3": "Comece a dirigir. O guia narra os lugares por onde você passa.",
     "mapAlt": "O mapa do Tuggi com uma rota e os lugares ao longo dela"
+  },
+  "RouteLink": {
+    "eyebrow": "Roteiro no Tuggi",
+    "stops": "{count, plural, one {# parada} other {# paradas}}",
+    "lead": "Abra no app para ver o caminho e conhecer a história de cada parada.",
+    "metaDesc": "Um roteiro para abrir no app Tuggi e conhecer a história de cada parada.",
+    "storeHeading": "Baixe o Tuggi para abrir",
+    "otherAndroid": "Usa Android? Baixe no Google Play",
+    "otherIphone": "Usa iPhone? Baixe na App Store",
+    "copiedNote": "Copiamos o código. Se o roteiro não abrir sozinho, cole no app.",
+    "codeLabel": "Código do roteiro",
+    "copy": "Copiar",
+    "copied": "Copiado",
+    "howTitle": "Como abrir",
+    "step1": "Baixe o Tuggi e crie sua conta.",
+    "step2": "Abra o app. Se o roteiro não aparecer, leia o QR ou abra este link de novo.",
+    "step3": "Ou digite o código <strong>{code}</strong> na aba Roteiros.",
+    "getApp": "Baixar o app",
+    "reviewTitle": "Este roteiro ainda não está disponível",
+    "reviewLead": "Ele está em revisão. Tente abrir o link de novo mais tarde.",
+    "goneTitle": "Este roteiro não está mais disponível",
+    "goneLead": "No app você encontra outros roteiros perto de onde estiver.",
+    "notFoundTitle": "Não achamos este roteiro",
+    "notFoundLead": "Confira o link. No app você encontra outros roteiros perto de onde estiver.",
+    "mapAlt": "O mapa do Tuggi com um roteiro e os lugares ao longo dele"
   }
 }
