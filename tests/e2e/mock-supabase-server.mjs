@@ -308,6 +308,47 @@ const REFERRAL_FIXTURES = {
 const referralLookups = [];
 
 /**
+ * Routes of `/r/<slug>` (card #946), shaped as `core.get_custom_route_by_slug`
+ * of #943 answers them: the row always comes when the route exists, with
+ * `availability`; for a stranger the name is null in review and after
+ * moderation. `slug` is the CURRENT one, so an old slug answers the new one.
+ * A slug not listed answers no row; `e2e-sem-funcao` answers PGRST202, the
+ * migration not applied yet.
+ */
+const ROUTE_ROW = {
+  id: "6a1f3c2e-9b7d-4e21-8f00-1c2d3e4f5a6b",
+  name: "Litoral Norte",
+  translated_name: null,
+  region: "Ubatuba",
+  country: "Brasil",
+  stops_count: 4,
+  partner_name: null,
+  slug: "litoral-norte",
+  availability: "ok",
+  is_mine: false,
+};
+const ROUTE_FIXTURES = {
+  "litoral-norte": ROUTE_ROW,
+  "litoral-antigo": ROUTE_ROW,
+  "roteiro-vencido": { ...ROUTE_ROW, id: "7b2e4d3f-0c8e-4f32-9011-2d3e4f5a6b7c", slug: "roteiro-vencido", availability: "expired" },
+  "roteiro-do-hotel-3f9a1c": {
+    ...ROUTE_ROW,
+    id: "8c3f5e40-1d9f-4043-a122-3e4f5a6b7c8d",
+    name: "Roteiro do Hotel",
+    slug: "roteiro-do-hotel-3f9a1c",
+    stops_count: 0,
+    region: null,
+    country: null,
+    partner_name: "Pousada Mar Azul",
+  },
+  "em-revisao": { ...ROUTE_ROW, name: null, slug: "em-revisao", availability: "pending_review" },
+  "tirado-do-ar": { ...ROUTE_ROW, slug: "tirado-do-ar", availability: "removed_by_author" },
+  "removido": { ...ROUTE_ROW, name: null, slug: "removido", availability: "removed_by_moderation" },
+};
+/** `get_custom_route_by_id` for the legacy `/route/<uuid>` link. */
+const ROUTE_BY_ID = { [ROUTE_ROW.id]: ROUTE_ROW };
+
+/**
  * `partner.resolve_partner_slug` (#815, BR-B2B-037): slug → the row it answers.
  * `[]` is "no row" (unknown slug). Every slug NOT listed answers 404 PGRST202,
  * which is production before migration 20261006230000: the site has to fall
@@ -763,6 +804,38 @@ const server = http.createServer((req, res) => {
       referralLookups.push(code);
       const nickname = REFERRAL_FIXTURES[code];
       sendJson(res, 200, nickname ? { status: "valid", nickname } : { status: "invalid", nickname: null });
+    });
+    return;
+  }
+
+  if (url.pathname === "/rest/v1/rpc/get_custom_route_by_slug" && req.method === "POST") {
+    readBody(req).then((raw) => {
+      let slug = "";
+      try {
+        slug = String(JSON.parse(raw || "{}").p_slug ?? "");
+      } catch {
+        // Malformed body: an unknown slug.
+      }
+      if (slug === "e2e-sem-funcao") {
+        sendJson(res, 404, { code: "PGRST202", message: "Could not find the function core.get_custom_route_by_slug" });
+        return;
+      }
+      const row = ROUTE_FIXTURES[slug];
+      sendJson(res, 200, row ? [row] : []);
+    });
+    return;
+  }
+
+  if (url.pathname === "/rest/v1/rpc/get_custom_route_by_id" && req.method === "POST") {
+    readBody(req).then((raw) => {
+      let id = "";
+      try {
+        id = String(JSON.parse(raw || "{}").p_route_id ?? "");
+      } catch {
+        // Malformed body: an unknown id.
+      }
+      const row = ROUTE_BY_ID[id];
+      sendJson(res, 200, row ? [row] : []);
     });
     return;
   }

@@ -1055,5 +1055,30 @@
     "step2": "Paste the code — your {referralFriendHours} hours are ready.",
     "step3": "Start driving. The guide narrates what you pass by.",
     "mapAlt": "The Tuggi map with a route and the places along it"
+  },
+  "RouteLink": {
+    "eyebrow": "Itinerary on Tuggi",
+    "stops": "{count, plural, one {# stop} other {# stops}}",
+    "lead": "Open it in the app to see the way and learn the story of each stop.",
+    "metaDesc": "An itinerary to open in the Tuggi app and learn the story of each stop.",
+    "storeHeading": "Get Tuggi to open it",
+    "otherAndroid": "On Android? Get it on Google Play",
+    "otherIphone": "On iPhone? Get it on the App Store",
+    "copiedNote": "We copied the code. If the itinerary doesn't open by itself, paste it in the app.",
+    "codeLabel": "Itinerary code",
+    "copy": "Copy",
+    "copied": "Copied",
+    "howTitle": "How to open it",
+    "step1": "Get Tuggi and create your account.",
+    "step2": "Open the app. If the itinerary doesn't show up, scan the QR or open this link again.",
+    "step3": "Or type the code <strong>{code}</strong> in the Itineraries tab.",
+    "getApp": "Get the app",
+    "reviewTitle": "This itinerary isn't available yet",
+    "reviewLead": "It's under review. Try the link again later.",
+    "goneTitle": "This itinerary is no longer available",
+    "goneLead": "In the app you'll find other itineraries near wherever you are.",
+    "notFoundTitle": "We couldn't find this itinerary",
+    "notFoundLead": "Check the link. In the app you'll find other itineraries near wherever you are.",
+    "mapAlt": "The Tuggi map with an itinerary and the places along it"
   }
 }
