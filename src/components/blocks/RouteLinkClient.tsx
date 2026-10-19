@@ -60,7 +60,7 @@ export function RouteCopyCode({ code }: { code: string }) {
         <span
           ref={codeRef}
           data-testid="route-code"
-          className="select-all min-w-0 break-all text-left font-extrabold text-2xl text-tuggi-dark"
+          className="select-all min-w-0 break-all text-left font-extrabold text-lg sm:text-xl text-tuggi-dark"
         >
           {code}
         </span>
