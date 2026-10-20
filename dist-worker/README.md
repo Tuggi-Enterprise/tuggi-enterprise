@@ -1,1 +1,0 @@
-This folder contains the built output assets for the worker "tuggi-enterprise-spike" generated at 2026-09-03T13:11:13.240Z.
