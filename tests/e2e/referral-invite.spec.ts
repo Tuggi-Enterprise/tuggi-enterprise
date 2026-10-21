@@ -1,5 +1,6 @@
 import { test, expect, devices, type Page } from "@playwright/test";
 import { MOCK_SUPABASE_PORT, E2E_PUBLISHABLE_KEY } from "../../playwright.config";
+import { visitorHeaders } from "./visitor-headers";
 
 /**
  * The invite page of the referral programme — `/c/<code>`, card #840,
@@ -25,7 +26,7 @@ const NICKNAME = "PioneerMystic510";
 test.use({
   ...devices["iPhone 13"],
   browserName: "chromium",
-  extraHTTPHeaders: { "accept-language": "en-US,en;q=0.9" },
+  extraHTTPHeaders: { ...visitorHeaders(), "accept-language": "en-US,en;q=0.9" },
   permissions: ["clipboard-read", "clipboard-write"],
 });
 
@@ -168,7 +169,7 @@ test.describe("invite page /c/<code> — BR-MONETIZACAO-085 item 2, BR-USUARIO-0
 test.describe("invite page /c/<code> — language", () => {
   // `locale` and not an `accept-language` header: Chromium derives the header
   // from the context locale, and the device preset above sets it to en-US.
-  test.use({ locale: "it-IT", extraHTTPHeaders: {} });
+  test.use({ locale: "it-IT", extraHTTPHeaders: visitorHeaders() });
 
   test("the language follows the visitor, with no locale in the shared URL", async ({ page }) => {
     const response = await page.goto(`/c/${VALID}`);

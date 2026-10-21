@@ -7,6 +7,7 @@ import {
   E2E_SERVICE_ROLE_KEY,
 } from "../../playwright.config";
 import { SUPABASE_KEY_ENV } from "../../src/lib/supabase-server";
+import { visitorHeaders } from "./visitor-headers";
 
 /**
  * Which Supabase key each part of the site connects with — card #132.
@@ -135,7 +136,7 @@ test.describe("each consumer connects with the key it is entitled to", () => {
       // order the workers happened to run in.
       // The territory too: since BR-USUARIO-033 a capture with no resolvable
       // country is gated, and a gated request never reaches the key under test.
-      headers: { "x-forwarded-for": "198.51.100.201", "x-vercel-ip-country": "BR" },
+      headers: visitorHeaders({ address: "198.51.100.201", country: "BR" }),
       data: { partner_id: partnerId, user_agent: "key-boundary-probe" },
     });
     expect(response.status()).toBe(201);
@@ -176,7 +177,7 @@ test.describe("each consumer connects with the key it is entitled to", () => {
     // Swapping this for a `SECURITY DEFINER` RPC granted to `anon` was deferred by scope in
     // #396, not by merit. The day it lands, this expectation is what has to change first.
     const response = await request.post("/api/partner-proposal", {
-      headers: { "x-forwarded-for": "203.0.113.90" },
+      headers: visitorHeaders({ address: "203.0.113.90" }),
       data: { answers: { trade_name: "Key Boundary Probe" } },
     });
     // Refused for missing fields, and that is enough: the attempt counter runs BEFORE the body

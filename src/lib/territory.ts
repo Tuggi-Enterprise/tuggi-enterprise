@@ -11,7 +11,15 @@
  * reading them to decide whether the gate applies would be doing, in order to
  * decide, exactly what the gate exists to prevent.
  *
- * WHICH HEADER, AND WHY IN THIS ORDER.
+ * ON THE CLOUDFLARE WORKER (tuggi-app#987), NO HEADER AT ALL. The country is
+ * `request.cf.country`, which Cloudflare's runtime fills from the real client
+ * address and no client can write (`src/lib/cloudflare-request.ts`). Headers
+ * are not consulted there even when `cf` has no country: `cf-ipcountry` is only
+ * added when the zone's visitor-location transform is on, and a header the
+ * zone did not set is one the client did. Missing means `null`, never a
+ * fallback.
+ *
+ * ON VERCEL, during the cut-over only: WHICH HEADER, AND WHY IN THIS ORDER.
  *
  * 1. `cf-ipcountry`, but only against proof that the request came through our
  *    own Cloudflare edge (`x-tuggi-edge`, the same proof `clientAddressOf`
@@ -40,23 +48,41 @@
  * difference from `CF-Connecting-IP`, which arrives verbatim off the proxied
  * path. Re-measure this before trusting it on a new host.
  *
- * WHAT THIS DOES NOT OWN, AND IT IS ON PURPOSE. `src/middleware.ts` and the
- * two landing pages also read `x-vercel-ip-country`, to pick a locale and the
- * welcome dialect (`src/lib/ptDialect.ts`). They are a HINT — the worst case is
- * greeting a visitor in the wrong flavour of Portuguese — while the two callers
- * here are a published price and a legal gate, and the guarantees they need
- * (never guess a country, fail closed) would be wrong defaults for a greeting.
- * Folding them in is a separate card, and it is not an oversight.
+ * THE LOCALE HINT READS THE SAME FUNCTION. `src/middleware.ts` and the two
+ * landing pages also ask where the visitor is, to pick a locale and the
+ * welcome dialect (`src/lib/ptDialect.ts`). They used to read
+ * `x-vercel-ip-country` themselves, and the move to the Worker (#987) is what
+ * that cost: five readers of a header one host stops sending. They now call
+ * `countryOf` without the edge proof and treat `null` as "no hint", which is
+ * what a missing header always meant to them. They stay a HINT: the worst case
+ * is greeting a visitor in the wrong flavour of Portuguese.
  *
  * NO FALLBACK COUNTRY, EVER. `null` means "not determined" and both callers
  * treat it as such: the price publishes nothing (BR-MONETIZACAO-069) and the
  * capture is gated (BR-USUARIO-033, item 2).
  */
 
-/** Set by Vercel's network on every request to a deployment. */
+import { cloudflareRequestFacts, type CloudflareRequestFacts } from "@/lib/cloudflare-request";
+
+/**
+ * Set by Vercel's network on every request to a deployment. Read on Vercel
+ * only, so it goes away with the Vercel project.
+ */
 export const VERCEL_COUNTRY_HEADER = "x-vercel-ip-country";
-/** Set by Cloudflare when IP geolocation is on; only read against edge proof. */
+/**
+ * Set by Cloudflare when the visitor-location transform is on. Read on Vercel
+ * only, and only against edge proof; the Worker reads `request.cf` instead.
+ */
 export const CLOUDFLARE_COUNTRY_HEADER = "cf-ipcountry";
+/**
+ * Vercel's city, percent-encoded per RFC 3986: without `decodeURIComponent`
+ * São Paulo arrives as `S%C3%A3o%20Paulo` (Vercel, *Request headers*,
+ * consulted 2026-08-12). Read on Vercel only.
+ */
+export const VERCEL_CITY_HEADER = "x-vercel-ip-city";
+
+/** The part of `Headers` read here, so `next/headers`' read-only view fits. */
+type HeaderReader = Pick<Headers, "get">;
 
 /** ISO-3166-1 alpha-2, and nothing else. */
 const COUNTRY_CODE = /^[A-Za-z]{2}$/;
@@ -74,22 +100,54 @@ const NOT_A_COUNTRY = new Set(["XX", "T1"]);
  * The visitor's country, or `null` when it could not be determined.
  *
  * @param edgeProven Whether the request proved it came through our Cloudflare
- * edge. Callers running on Node get it from `requestCameThroughOurEdge`
- * (`src/lib/rate-limit.ts`); the edge-runtime `/api/geo` cannot import that
- * module (it is built on `node:crypto`) and passes `false`, which costs it
- * only the accuracy note above and never trust.
+ * edge, from `requestCameThroughOurEdge` (`src/lib/rate-limit.ts`). Matters on
+ * Vercel only; a locale hint passes nothing, which costs it only the accuracy
+ * note above and never trust.
+ * @param cloudflare `request.cf` when serving inside the Worker, `null`
+ * elsewhere. Only the test passes this; production callers get the runtime's
+ * answer. It is never derived from the request headers.
  */
-export function countryOf(headers: Headers, edgeProven = false): string | null {
-  const candidates = [
-    edgeProven ? headers.get(CLOUDFLARE_COUNTRY_HEADER) : null,
-    headers.get(VERCEL_COUNTRY_HEADER),
-  ];
+export function countryOf(
+  headers: HeaderReader,
+  edgeProven = false,
+  cloudflare: CloudflareRequestFacts | null = cloudflareRequestFacts()
+): string | null {
+  const candidates = cloudflare
+    ? [cloudflare.country]
+    : [
+        edgeProven ? headers.get(CLOUDFLARE_COUNTRY_HEADER) : null,
+        headers.get(VERCEL_COUNTRY_HEADER),
+      ];
   for (const candidate of candidates) {
     const value = candidate?.trim().toUpperCase() ?? "";
     if (!COUNTRY_CODE.test(value) || NOT_A_COUNTRY.has(value)) continue;
     return value;
   }
   return null;
+}
+
+/**
+ * The approximate city of the connection, or `null`. Only the partnership
+ * lead reads it (`src/app/api/leads/route.ts`), and never next to the IP.
+ *
+ * On the Worker it is `request.cf.city`. On Vercel it is the percent-encoded
+ * header, and a value that does not decode is dropped: a lead is not worth
+ * losing over a city nobody asked for.
+ *
+ * @param cloudflare Only the test passes this; see `countryOf`.
+ */
+export function cityOf(
+  headers: HeaderReader,
+  cloudflare: CloudflareRequestFacts | null = cloudflareRequestFacts()
+): string | null {
+  if (cloudflare) return cloudflare.city;
+  const raw = headers.get(VERCEL_CITY_HEADER);
+  if (!raw) return null;
+  try {
+    return decodeURIComponent(raw).trim() || null;
+  } catch {
+    return null;
+  }
 }
 
 /**

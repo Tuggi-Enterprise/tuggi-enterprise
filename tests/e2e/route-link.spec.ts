@@ -1,5 +1,6 @@
 import { test, expect, devices, type APIRequestContext, type Page } from "@playwright/test";
 import { MOCK_SUPABASE_PORT, E2E_PUBLISHABLE_KEY } from "../../playwright.config";
+import { visitorHeaders } from "./visitor-headers";
 
 /**
  * The route page — `tuggi.app/r/<slug>`, card #946, spec
@@ -42,7 +43,7 @@ const count = (body: string, needle: string) => body.split(needle).length - 1;
 test.use({
   ...devices["iPhone 13"],
   browserName: "chromium",
-  extraHTTPHeaders: { "accept-language": "pt-BR,pt;q=0.9" },
+  extraHTTPHeaders: { ...visitorHeaders(), "accept-language": "pt-BR,pt;q=0.9" },
   permissions: ["clipboard-read", "clipboard-write"],
 });
 

@@ -54,6 +54,7 @@ import {
   longestBreath,
   runningTextOf,
 } from "./support/copy-ruler";
+import { visitorHeaders } from "./visitor-headers";
 
 /**
  * The partnership proposal, moved from `tuggi-cms` to the site — card #396.
@@ -163,7 +164,7 @@ async function submit(
   answers: Record<string, string>
 ) {
   return request.post("/api/partner-proposal", {
-    headers: { "content-type": "application/json", "x-forwarded-for": address },
+    headers: { "content-type": "application/json", ...visitorHeaders({ address }) },
     data: { answers },
     maxRedirects: 0,
   });
@@ -1195,7 +1196,7 @@ test.describe("nothing surprises the person at the end that could have been said
     // only difference this test introduced.
     const response = await request.post("/api/partner-proposal", {
       data: { answers: validAnswers({ trade_name: `Probe 400 ${Date.now()}` }) },
-      headers: { "x-forwarded-for": `10.40.0.${Math.floor(Math.random() * 200) + 1}` },
+      headers: visitorHeaders({ address: `10.40.0.${Math.floor(Math.random() * 200) + 1}` }),
     });
     expect([200, 429, 503]).toContain(response.status());
   });

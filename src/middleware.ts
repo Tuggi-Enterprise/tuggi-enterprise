@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import createMiddleware from "next-intl/middleware";
 import { routing } from "./i18n/routing";
+import { countryOf } from "./lib/territory";
 
 const intlMiddleware = createMiddleware(routing);
 
@@ -40,9 +41,10 @@ export default function middleware(req: NextRequest) {
     // 2. Fallback to cookie (legacy pt-br/pt-pt normalised to pt)
     if (!locale) locale = normalizeLocale(req.cookies.get("NEXT_LOCALE")?.value);
 
-    // 3. Fallback to IP / Accept-Language
+    // 3. Fallback to IP / Accept-Language. `countryOf` is the one reader of
+    // where the visitor is, on Vercel and on the Cloudflare Worker alike.
     if (!locale) {
-      const country = req.headers.get("x-vercel-ip-country") || "";
+      const country = countryOf(req.headers) ?? "";
       if (country === "BR" || country === "PT") locale = "pt";
       else if (country === "IT") locale = "it";
       else if (["ES", "MX", "AR", "CO", "CL", "PE"].includes(country)) locale = "es";
@@ -77,7 +79,7 @@ export default function middleware(req: NextRequest) {
   const legacyPtCookie = cookieLocale === "pt-br" || cookieLocale === "pt-pt";
 
   if (!hasLocale && (!hasValidCookie || legacyPtCookie)) {
-    const country = req.headers.get("x-vercel-ip-country") || "";
+    const country = countryOf(req.headers) ?? "";
 
     let ipLocale: string | null = null;
     if (legacyPtCookie || country === "BR" || country === "PT") ipLocale = "pt";

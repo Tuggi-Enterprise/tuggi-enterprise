@@ -1,5 +1,5 @@
 /**
- * Edge geo lookup for the base-market price. Answers the country code, or
+ * Geo lookup for the base-market price. Answers the country code, or
  * `null` when there is no usable one.
  *
  * **No fallback country, ever** — BR-MONETIZACAO-069. This route used to answer
@@ -14,23 +14,28 @@
  * The reading itself is NOT here: `src/lib/territory.ts` owns which header
  * says where a visitor is, because the consent gate of the attribution capture
  * (BR-USUARIO-033) asks the same question and two answers to it is exactly the
- * kind of split this repo has paid for before. This route passes `false` for
- * the edge proof: verifying it is built on `node:crypto`, which this runtime
- * does not have, and the price is not a legal gate.
+ * kind of split this repo has paid for before. This route used to run on
+ * `runtime = "edge"` and pass `false` for the edge proof, because verifying it
+ * is built on `node:crypto`. The Cloudflare adapter does not support the edge
+ * runtime ("The edge runtime is not supported yet with
+ * `@opennextjs/cloudflare`", opennext.js.org/cloudflare/get-started, consulted
+ * 2026-10-20), so it runs on Node now (#987) and asks for the proof like the
+ * consent gate does. On the Worker the proof is moot: the country is
+ * `request.cf.country`.
  *
  * The shape of the answer is deliberate: `country` is `string | null`, so the
  * client has one thing to read and no sentinel to interpret.
  *
  * Keeps /drive statically generated — only this endpoint is request-time.
  */
+import { requestCameThroughOurEdge } from "@/lib/rate-limit";
 import { countryOf } from "@/lib/territory";
 
-export const runtime = "edge";
 export const dynamic = "force-dynamic";
 
 export function GET(request: Request): Response {
   return Response.json(
-    { country: countryOf(request.headers) },
+    { country: countryOf(request.headers, requestCameThroughOurEdge(request.headers)) },
     { headers: { "cache-control": "no-store" } }
   );
 }

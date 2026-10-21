@@ -4,6 +4,7 @@ import {
   EDGE_PROOF_HEADER,
   EDGE_SECRET_VAR,
   isIpv4Address,
+  requestCameThroughOurEdge,
 } from "../../src/lib/rate-limit";
 
 /**
@@ -38,6 +39,47 @@ const CF_CLAIMED_IP = "203.0.113.7";
 /** What Vercel put there, which is the only address nobody chose. */
 const VERCEL_IP = "198.51.100.4";
 const EDGE_SECRET = "an-edge-shared-secret-for-the-test";
+
+test.describe("on the Cloudflare Worker, the address is cf-connecting-ip and nothing else (#987)", () => {
+  // Cloudflare sets `cf-connecting-ip` on every request it delivers to the
+  // Worker and the client cannot choose it (developers.cloudflare.com,
+  // "Cloudflare HTTP headers", consulted 2026-10-20). `x-forwarded-for` is the
+  // opposite there: Cloudflare appends to whatever the client sent, so its
+  // first entry is the caller's choice.
+  const WORKER = true;
+
+  test("BR-B2B-002: the Worker reads cf-connecting-ip with or without the edge proof", () => {
+    const headers = new Headers({
+      "cf-connecting-ip": CF_CLAIMED_IP,
+      "x-forwarded-for": VERCEL_IP,
+    });
+    expect(clientAddressOf(headers, "", WORKER)).toBe(CF_CLAIMED_IP);
+    expect(clientAddressOf(headers, EDGE_SECRET, WORKER)).toBe(CF_CLAIMED_IP);
+  });
+
+  test("BR-B2B-002: the Worker never falls back to x-forwarded-for or x-real-ip", () => {
+    // A request without the Cloudflare header lands in the shared `unknown`
+    // bucket: a stricter limit, never one the caller chose.
+    const forged = new Headers({ "x-forwarded-for": VERCEL_IP, "x-real-ip": VERCEL_IP });
+    expect(clientAddressOf(forged, EDGE_SECRET, WORKER)).toBe("unknown");
+  });
+
+  test("BR-B2B-002: the Worker normalises the address like the Vercel path does", () => {
+    expect(
+      clientAddressOf(new Headers({ "cf-connecting-ip": "::ffff:64.29.17.65" }), "", WORKER)
+    ).toBe("64.29.17.65");
+    expect(
+      clientAddressOf(new Headers({ "cf-connecting-ip": "2804:14c::1" }), "", WORKER)
+    ).toBe("2804:14c::1");
+  });
+
+  test("BR-USUARIO-033: on the Worker every request came through our edge", () => {
+    // The proof exists for Vercel, which also answers without Cloudflare in
+    // front. The Worker has no such door.
+    expect(requestCameThroughOurEdge(new Headers(), "", WORKER)).toBe(true);
+    expect(requestCameThroughOurEdge(new Headers(), EDGE_SECRET, false)).toBe(false);
+  });
+});
 
 test.describe("cf-connecting-ip is honoured only against proof of our edge", () => {
   test("BR-B2B-002: with the shared secret, the visitor's address is the Cloudflare one", () => {

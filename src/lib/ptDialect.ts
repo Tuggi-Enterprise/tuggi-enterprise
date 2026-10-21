@@ -3,7 +3,7 @@ import { getDbLang } from "@/lib/partner";
 export interface WelcomeLangSignals {
   /** ?lang= query param (may be "pt-pt"/"pt-br" as an explicit dialect override). */
   langParam?: string | null;
-  /** x-vercel-ip-country header (e.g. "PT", "BR"). */
+  /** Visitor country from `countryOf` (`src/lib/territory.ts`), e.g. "PT", "BR". */
   country?: string | null;
   /** accept-language header. */
   acceptLanguage?: string | null;

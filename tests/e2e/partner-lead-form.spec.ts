@@ -6,6 +6,7 @@ import { localizedPathname } from "../../src/i18n/pathnames";
 import { LOCALES } from "../../src/i18n/locales";
 import { toE164 } from "../../src/lib/phone";
 import { businessTypeCode, LEAD_BUSINESS_TYPES } from "../../src/lib/business-types";
+import { cityOf } from "../../src/lib/territory";
 import { measuredTextContrast } from "./support/contrast";
 
 /**
@@ -237,10 +238,22 @@ test.describe("BR-USUARIO-029 — the lead is stored on the channel the prospect
     expect(Object.keys(row)).not.toContain("user_agent");
     expect(serialized).not.toMatch(/mozilla|chrome\/|headless/);
     expect(serialized).not.toMatch(/\b\d{1,3}(\.\d{1,3}){3}\b/);
-    // The city is resolved from `x-vercel-ip-city`, which no local request
-    // carries: absent header, absent city. What may never happen is a city
-    // the visitor typed — this form does not ask for one.
+    // The city comes from the host (`cityOf`), and no local request carries
+    // one: absent city on both servers of the suite. What may never happen is
+    // a city the visitor typed — this form does not ask for one.
     expect(row.city).toBeNull();
+  });
+
+  test("#987: the city is request.cf on the Worker and the decoded Vercel header elsewhere", () => {
+    // Vercel percent-encodes the header; Cloudflare's runtime hands a plain
+    // string. On the Worker the header is never read: a client can send it.
+    const vercel = new Headers({ "x-vercel-ip-city": "S%C3%A3o%20Paulo" });
+    expect(cityOf(vercel, null)).toBe("São Paulo");
+    expect(cityOf(new Headers({ "x-vercel-ip-city": "%E0%A4%A" }), null)).toBeNull();
+    expect(cityOf(new Headers(), null)).toBeNull();
+
+    expect(cityOf(vercel, { country: "BR", city: "Búzios" })).toBe("Búzios");
+    expect(cityOf(vercel, { country: "BR", city: null })).toBeNull();
   });
 
   test("#294: the route refuses the malformed number with a 400, never a 500", async ({

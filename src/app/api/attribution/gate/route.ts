@@ -11,15 +11,12 @@
  * so the READ of that cookie is itself a gated operation, and so is the
  * pasteboard write the App Store CTA makes out of it.
  *
- * WHY IT IS NOT `/api/geo`, WHICH ALSO ANSWERS A COUNTRY. That route runs on
- * `runtime = "edge"` and therefore passes `edgeProven = false` to `countryOf`:
- * it cannot verify our Cloudflare proof, because that verification is built on
- * `node:crypto`. Without the proof the answer falls back to
- * `x-vercel-ip-country`, which for a South American visitor served from the
- * Miami PoP reads `US` — the PERMISSIVE side of this gate. A price published
- * one market off is a bug; a legal gate that opens on the same mistake is the
- * defect item 2 exists to forbid. So this route runs on Node and asks the very
- * same `attributionGateOf` the capture asks. There is no second source of
+ * WHY IT IS NOT `/api/geo`, WHICH ALSO ANSWERS A COUNTRY. That route answers
+ * the country itself, and this one must not: see below. It also used to run on
+ * the edge runtime without the Cloudflare proof, so on Vercel a South American
+ * visitor served from the Miami PoP read `US` there, the PERMISSIVE side of
+ * this gate. Both now ask the proof, but the gate keeps its own route and asks
+ * the very same `attributionGateOf` the capture asks. There is no second source of
  * truth about territory anywhere on this site — `src/lib/territory.ts` is it.
  *
  * WHAT IT DOES NOT ANSWER, ON PURPOSE. Not the country, not the consent flag,
@@ -35,6 +32,7 @@ import { requestCameThroughOurEdge } from "@/lib/rate-limit";
  * Node, and it is load-bearing rather than a default left alone: the edge
  * runtime has no `node:crypto`, so `requestCameThroughOurEdge` cannot run
  * there and the route would silently degrade to the permissive reading above.
+ * The Cloudflare adapter does not support the edge runtime either (#987).
  */
 export const runtime = "nodejs";
 /** Per visitor, per request. `no-store` below is the half Cloudflare reads. */
@@ -46,10 +44,11 @@ export function GET(req: Request): Response {
 
   // THE SIGNAL BR-USUARIO-033 ASKS FOR, and it is not a copy of the POST's:
   // that one only fires on a partner page, and this route runs on every page
-  // of the site, which is where a first touch is now READ. Vercel's network
-  // sets the country header on every request, so in production a line here
-  // means something is broken and the FREQUENCY is the finding — a handful is
-  // a proxy or a bot, a flood is the edge configuration. No IP, no user agent,
+  // of the site, which is where a first touch is now READ. The host sets the
+  // country on every request (Vercel's header, Cloudflare's `request.cf`), so
+  // in production a line here means something is broken and the FREQUENCY is
+  // the finding — a handful is a proxy or a bot, a flood is the edge
+  // configuration. No IP, no user agent,
   // no partner: the counting item 7 permits is aggregate, and nothing here can
   // re-find the person.
   if (!gate.country) {

@@ -7,6 +7,7 @@ import {
 } from "@/lib/business-types";
 import { toE164 } from "@/lib/phone";
 import { PARTNER_LEAD_TYPE } from "@/lib/lead-form";
+import { cityOf } from "@/lib/territory";
 
 /**
  * The one lead endpoint of the site — `campaign.inbound_leads`.
@@ -46,12 +47,12 @@ import { PARTNER_LEAD_TYPE } from "@/lib/lead-form";
  * ---------------------------------------------------------------------------
  *
  * The partnership form does not ask for the city — five fields is the budget,
- * and it is the one field the connection already knows. Vercel sends it as
- * `x-vercel-ip-city`, **percent-encoded per RFC 3986**: without
- * `decodeURIComponent` São Paulo arrives as `S%C3%A3o%20Paulo`
- * (Vercel, *Request headers*, consulted 2026-08-12). It is resolved here and
- * not in the browser because an extra `fetch` before the POST is one more
- * chance for the submission to fail, and the header is on the server anyway.
+ * and it is the one field the connection already knows. `cityOf`
+ * (`src/lib/territory.ts`) reads it: `request.cf.city` on the Cloudflare
+ * Worker, Vercel's percent-encoded header during the cut-over (#987). It is
+ * resolved here and not in the browser because an extra `fetch` before the
+ * POST is one more chance for the submission to fail, and the value is on the
+ * server anyway.
  *
  * It is read **only** for `B2B_PARTNER`: on `/contact` the city is typed by the
  * visitor, and deriving one there would collect a field that funnel never
@@ -95,22 +96,6 @@ function text(value: unknown): string | null {
   if (typeof value !== "string") return null;
   const trimmed = value.trim();
   return trimmed ? trimmed : null;
-}
-
-/**
- * The approximate city of the connection. Never the IP, which is read and
- * dropped in the same expression.
- */
-function cityFromHeaders(req: Request): string | null {
-  const raw = req.headers.get("x-vercel-ip-city");
-  if (!raw) return null;
-  try {
-    return text(decodeURIComponent(raw));
-  } catch {
-    // A header we cannot decode is a header we do not store — a lead is not
-    // worth losing over a city nobody asked for.
-    return null;
-  }
 }
 
 export async function POST(req: Request) {
@@ -160,7 +145,7 @@ export async function POST(req: Request) {
           business_type: businessType ? businessTypeCode(businessType) : null,
           role: text(data.role),
           city:
-            leadType === PARTNER_LEAD_TYPE ? cityFromHeaders(req) : text(data.city),
+            leadType === PARTNER_LEAD_TYPE ? cityOf(req.headers) : text(data.city),
           company: text(data.company),
           fleet_size: text(data.fleet_size),
           locale: text(data.locale) || "en",

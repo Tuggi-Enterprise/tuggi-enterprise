@@ -3,6 +3,7 @@ import { cookies, headers } from "next/headers";
 import { PartnerHeroWrapper } from "@/components/blocks/PartnerHeroWrapper";
 import { getPartnerById } from "@/lib/partner";
 import { resolveWelcomeLang } from "@/lib/ptDialect";
+import { countryOf } from "@/lib/territory";
 import { buildAlternates } from "@/lib/seo";
 import { PRODUCT_FACTS } from "@/lib/product-facts";
 
@@ -47,7 +48,7 @@ export default async function DownloadPage({
   const [h, c] = await Promise.all([headers(), cookies()]);
   const dbLang = resolveWelcomeLang(locale, {
     langParam: lang,
-    country: h.get("x-vercel-ip-country"),
+    country: countryOf(h),
     acceptLanguage: h.get("accept-language"),
     cookie: c.get("NEXT_LOCALE")?.value,
   });

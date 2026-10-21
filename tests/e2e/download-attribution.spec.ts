@@ -19,6 +19,7 @@ import {
   CAPTURE_LIMIT_PER_WINDOW,
   ECHO_LIMIT_PER_WINDOW,
 } from "../../src/lib/attribution-limits";
+import { visitorHeaders } from "./visitor-headers";
 
 /**
  * Attribution of a download to the partner who caused it — the only reason
@@ -49,7 +50,7 @@ import {
  * about: it is exempt from prior consent (item 1) and it is the only place with
  * partners today. The gate itself is `attribution-consent-gate.spec.ts`.
  */
-test.use({ extraHTTPHeaders: { "x-vercel-ip-country": "BR" } });
+test.use({ extraHTTPHeaders: visitorHeaders({ country: "BR" }) });
 
 /**
  * Fixture partners. See mock-supabase-server.mjs.
@@ -510,7 +511,7 @@ test.describe("every way out of the site carries the first touch", () => {
   // loopback bucket. `test.use` REPLACES the option, so the territory above has
   // to be repeated here.
   test.use({
-    extraHTTPHeaders: { "x-forwarded-for": "198.51.100.211", "x-vercel-ip-country": "BR" },
+    extraHTTPHeaders: visitorHeaders({ address: "198.51.100.211", country: "BR" }),
   });
 
   test("BR-B2B-002: the campaign badge and the floating CTA carry the captured click", async ({
@@ -583,7 +584,7 @@ test.describe("every way out of the site carries the first touch", () => {
 
 test.describe("a partner slug that no longer resolves", () => {
   test.use({
-    extraHTTPHeaders: { "x-forwarded-for": "198.51.100.212", "x-vercel-ip-country": "BR" },
+    extraHTTPHeaders: visitorHeaders({ address: "198.51.100.212", country: "BR" }),
   });
 
   test("BR-B2B-001: it still offers the app, and stays out of the index", async ({ page }) => {

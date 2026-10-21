@@ -13,9 +13,10 @@
  * spend the proposal budget of the restaurant owner sitting at the same Wi-Fi,
  * and neither can lock the other out.
  *
- * THE COUNT IS THE DATABASE'S. An in-process `Map` on Vercel is a brake on a
- * double-click and never a barrier: instances are per burst, and a caller that
- * spreads requests meets a fresh counter almost every time.
+ * THE COUNT IS THE DATABASE'S. An in-process `Map` on a serverless host
+ * (Vercel functions, Worker isolates) is a brake on a double-click and never a
+ * barrier: instances are per burst, and a caller that spreads requests meets a
+ * fresh counter almost every time.
  *
  * The RPC and its table are still named `..._partner_form_...`, from when the
  * proposal was the only door. They are a counter of `(hash, timestamp)` and
@@ -25,6 +26,7 @@
  */
 
 import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
+import { runsOnCloudflareWorker } from "@/lib/cloudflare-request";
 import { getSupabaseClient } from "@/lib/supabase-server";
 
 /**
@@ -59,8 +61,10 @@ export interface RateLimitDecision {
 
 /**
  * The environment variable holding the secret that PROVES a request reached
- * this Function through our own Cloudflare edge, and the header that carries
- * it.
+ * the Vercel Function through our own Cloudflare edge, and the header that
+ * carries it. Vercel only: on the Worker the request reached us through
+ * Cloudflare by construction, and the proof is the runtime itself
+ * (`src/lib/cloudflare-request.ts`). It goes away with the Vercel project.
  *
  * A Transform Rule on Cloudflare SETS `x-tuggi-edge` on every request it
  * forwards to the origin (Cloudflare, *Request header modification*, consulted
@@ -176,9 +180,21 @@ export function isIpv4Address(value: string): boolean {
 
 /**
  * Which address a request came from, and it is read in the topology we
- * actually run — which has TWO ways in, not one.
+ * actually run.
  *
- * WHY `CF-Connecting-IP` IS NOT TRUSTWORTHY ON ITS OWN, and this is the part
+ * ON THE CLOUDFLARE WORKER (tuggi-app#987), `cf-connecting-ip` and nothing
+ * else. Cloudflare sets it on every request it delivers to the Worker, and the
+ * client cannot choose it (`src/lib/cloudflare-request.ts` cites the doc).
+ * `x-forwarded-for` is never read there, not even as a fallback: Cloudflare
+ * APPENDS to the header a client sent, so its first entry is whatever the
+ * caller typed, and a fallback to it would hand back the spoof below on any
+ * request that arrives without the Cloudflare header. A Worker request without
+ * it answers `unknown`, which the counter treats as one shared bucket: the
+ * failure is a stricter limit, never a free one.
+ *
+ * ON VERCEL, during the cut-over only, the topology has TWO ways in, not one.
+ *
+ * WHY `CF-Connecting-IP` IS NOT TRUSTWORTHY ON ITS OWN THERE, and this is the part
  * that reads backwards. Cloudflare does proxy tuggi.app, and on that path
  * `x-forwarded-for` at the Function is the Cloudflare edge while
  * `CF-Connecting-IP` is the visitor (developers.cloudflare.com, "Restoring
@@ -208,16 +224,22 @@ export function isIpv4Address(value: string): boolean {
  * environment at module scope; the parameter exists because the four cases
  * (valid proof, absent secret, wrong proof, no proof at all) cannot otherwise
  * be exercised in one process. It is never derived from the request.
+ * @param onWorker Only the test passes this, for the same reason: the
+ * Playwright process is not a Worker. Production callers get the runtime's
+ * answer. It is never derived from the request.
  */
 export function clientAddressOf(
   headers: Headers,
-  edgeSharedSecret: string = EDGE_SHARED_SECRET
+  edgeSharedSecret: string = EDGE_SHARED_SECRET,
+  onWorker: boolean = runsOnCloudflareWorker()
 ): string {
-  const candidates = [
-    cameThroughOurEdge(headers, edgeSharedSecret) ? headers.get("cf-connecting-ip") : null,
-    headers.get("x-forwarded-for")?.split(",")[0],
-    headers.get("x-real-ip"),
-  ];
+  const candidates = onWorker
+    ? [headers.get("cf-connecting-ip")]
+    : [
+        cameThroughOurEdge(headers, edgeSharedSecret) ? headers.get("cf-connecting-ip") : null,
+        headers.get("x-forwarded-for")?.split(",")[0],
+        headers.get("x-real-ip"),
+      ];
   for (const candidate of candidates) {
     if (!candidate) continue;
     // Normalised here and nowhere else — once, for the counter and for the
@@ -239,15 +261,18 @@ export function clientAddressOf(
  * the request depends on it: which country header may be believed
  * (`src/lib/territory.ts`). One proof, read one way — a caller that decided
  * "came through the edge" on its own would be the second opinion this module
- * exists to prevent.
+ * exists to prevent. On the Worker the answer is always yes: there is no
+ * other way into it.
  *
  * @param edgeSharedSecret Only the test passes this; see `clientAddressOf`.
+ * @param onWorker Only the test passes this; see `clientAddressOf`.
  */
 export function requestCameThroughOurEdge(
   headers: Headers,
-  edgeSharedSecret: string = EDGE_SHARED_SECRET
+  edgeSharedSecret: string = EDGE_SHARED_SECRET,
+  onWorker: boolean = runsOnCloudflareWorker()
 ): boolean {
-  return cameThroughOurEdge(headers, edgeSharedSecret);
+  return onWorker || cameThroughOurEdge(headers, edgeSharedSecret);
 }
 
 /**

@@ -3,6 +3,7 @@ import { APP_STORE_URL } from "../../src/lib/app-meta";
 import { ATTRIBUTION_COOKIE, UUID_PATTERN, serializeAttribution } from "../../src/lib/attribution";
 import { CONSENT_GRANTED, CONSENT_KEY } from "../../src/lib/consent";
 import { writeClickTokenToClipboard } from "../../src/lib/conversionHooks";
+import { appCookieDomain, visitorHeaders } from "./visitor-headers";
 
 /**
  * The iOS half of the attribution — contract §5, BR-B2B-002.
@@ -42,7 +43,7 @@ test.use({
   // Brazil: exempt from prior consent (BR-USUARIO-033, item 1) and the only
   // territory with partners today. The gated half is at the bottom of the file.
   // A local build carries no country header, and "not determined" is gated.
-  extraHTTPHeaders: { "x-forwarded-for": "198.51.100.231", "x-vercel-ip-country": "BR" },
+  extraHTTPHeaders: visitorHeaders({ address: "198.51.100.231", country: "BR" }),
   permissions: ["clipboard-read", "clipboard-write"],
 });
 
@@ -364,7 +365,7 @@ test.describe("a visitor nobody referred", () => {
           click_id: "e2e-sem-logo",
           ts: new Date().toISOString(),
         }),
-        domain: "127.0.0.1",
+        domain: appCookieDomain(),
         path: "/",
       },
     ]);
@@ -384,7 +385,7 @@ test.describe("in a territory that requires consent", () => {
   // device write it forbids is the same one this file is about: item 5 names
   // the four things a refusal costs, and the pasteboard is the fourth.
   test.use({
-    extraHTTPHeaders: { "x-forwarded-for": "198.51.100.232", "x-vercel-ip-country": "PT" },
+    extraHTTPHeaders: visitorHeaders({ address: "198.51.100.232", country: "PT" }),
   });
 
   test("BR-USUARIO-033: without consent nothing is captured, so nothing is written", async ({
@@ -480,15 +481,14 @@ test.describe("a first touch carried across a border", () => {
             ts: new Date().toISOString(),
           })
         ),
-        domain: "127.0.0.1",
+        domain: appCookieDomain(),
         path: "/",
       },
     ]);
 
   test("BR-USUARIO-033: in a gated territory no App Store exit writes it", async ({ page }) => {
     await page.setExtraHTTPHeaders({
-      "x-forwarded-for": "198.51.100.233",
-      "x-vercel-ip-country": "PT",
+      ...visitorHeaders({ address: "198.51.100.233", country: "PT" }),
     });
     const writes = await spyOnClipboard(page);
     await stubTheStores(page);
@@ -509,8 +509,7 @@ test.describe("a first touch carried across a border", () => {
     // the test above and fail this one; a build that ignores the verdict
     // passes this one and fails the one above. Neither passes both.
     await page.setExtraHTTPHeaders({
-      "x-forwarded-for": "198.51.100.234",
-      "x-vercel-ip-country": "BR",
+      ...visitorHeaders({ address: "198.51.100.234", country: "BR" }),
     });
     const writes = await spyOnClipboard(page);
     await stubTheStores(page);

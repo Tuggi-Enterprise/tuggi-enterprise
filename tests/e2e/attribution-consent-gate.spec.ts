@@ -19,6 +19,7 @@ import {
   requiresPriorConsent,
 } from "../../src/lib/territory";
 import { requestCameThroughOurEdge } from "../../src/lib/rate-limit";
+import { appCookieDomain, visitorHeaders } from "./visitor-headers";
 
 /**
  * The consent gate of the attribution capture — BR-USUARIO-033, and the
@@ -86,6 +87,26 @@ test.describe("which territory the visitor is in", () => {
     // 806cf45, asked again about the country instead of the address.
     expect(countryOf(headers, requestCameThroughOurEdge(headers, ""))).toBe(OPEN_TERRITORY);
     expect(countryOf(headers)).toBe(OPEN_TERRITORY);
+  });
+
+  test("BR-USUARIO-033: on the Cloudflare Worker the territory is request.cf, never a header (#987)", () => {
+    // Every header a client could send, all claiming the open territory.
+    const forged = new Headers({
+      "x-tuggi-edge": E2E_EDGE_SHARED_SECRET,
+      "cf-ipcountry": OPEN_TERRITORY,
+      [VERCEL_COUNTRY_HEADER]: OPEN_TERRITORY,
+    });
+
+    // Cloudflare's runtime placed the visitor elsewhere, and that is the answer.
+    expect(countryOf(forged, true, { country: GATED_TERRITORY, city: null })).toBe(GATED_TERRITORY);
+    expect(countryOf(forged, false, { country: " pt ", city: null })).toBe("PT");
+
+    // No country in request.cf is "not determined", which is gated: the
+    // headers do not get a second chance on a host where the client wrote them.
+    expect(countryOf(forged, true, { country: null, city: null })).toBeNull();
+    for (const notACountry of ["XX", "T1"]) {
+      expect(countryOf(forged, true, { country: notACountry, city: null })).toBeNull();
+    }
   });
 
   test("BR-USUARIO-033: a value that is not a territory resolves to nothing", () => {
@@ -156,14 +177,14 @@ test.describe("POST /api/attribution honours the gate", () => {
   // Its own address, so the 30/h budget this spec spends is not the one every
   // browser-driven visit of the suite shares (the counter of the double is
   // process-wide and survives a reused server).
-  test.use({ extraHTTPHeaders: { "x-forwarded-for": "198.51.100.221" } });
+  test.use({ extraHTTPHeaders: visitorHeaders({ address: "198.51.100.221" }) });
 
   test("BR-USUARIO-033, BR-B2B-002: a territory without a gate captures with no question asked", async ({
     request,
   }) => {
     const partnerId = uniquePartnerId();
     const res = await request.post("/api/attribution", {
-      headers: { [VERCEL_COUNTRY_HEADER]: OPEN_TERRITORY },
+      headers: { ...visitorHeaders({ country: OPEN_TERRITORY }) },
       data: { partner_id: partnerId, user_agent: "e2e-gate" },
     });
 
@@ -178,7 +199,7 @@ test.describe("POST /api/attribution honours the gate", () => {
   }) => {
     const partnerId = uniquePartnerId();
     const res = await request.post("/api/attribution", {
-      headers: { [VERCEL_COUNTRY_HEADER]: GATED_TERRITORY },
+      headers: { ...visitorHeaders({ country: GATED_TERRITORY }) },
       data: { partner_id: partnerId, user_agent: "e2e-gate" },
     });
 
@@ -200,7 +221,7 @@ test.describe("POST /api/attribution honours the gate", () => {
     const partnerId = uniquePartnerId();
     const res = await request.post("/api/attribution", {
       headers: {
-        [VERCEL_COUNTRY_HEADER]: GATED_TERRITORY,
+        ...visitorHeaders({ country: GATED_TERRITORY }),
         cookie: `${CONSENT_KEY}=${CONSENT_GRANTED}`,
       },
       data: { partner_id: partnerId, user_agent: "e2e-gate" },
@@ -237,7 +258,7 @@ test.describe("POST /api/attribution honours the gate", () => {
     // protection that is not theirs to waive.
     const partnerId = uniquePartnerId();
     const res = await request.post("/api/attribution", {
-      headers: { "cf-ipcountry": OPEN_TERRITORY, [VERCEL_COUNTRY_HEADER]: GATED_TERRITORY },
+      headers: { "cf-ipcountry": OPEN_TERRITORY, ...visitorHeaders({ country: GATED_TERRITORY }) },
       data: { partner_id: partnerId, user_agent: "e2e-gate" },
     });
 
@@ -254,8 +275,7 @@ test.describe("POST /api/attribution honours the gate", () => {
 test.describe("the partner page in a gated territory", () => {
   test.use({
     extraHTTPHeaders: {
-      "x-forwarded-for": "198.51.100.222",
-      [VERCEL_COUNTRY_HEADER]: GATED_TERRITORY,
+      ...visitorHeaders({ address: "198.51.100.222", country: GATED_TERRITORY }),
     },
   });
 
@@ -347,7 +367,7 @@ async function seedFirstTouch(page: import("@playwright/test").Page): Promise<vo
       ),
       // Domain and path rather than a URL: cookies ignore the port, and the
       // port of the harness is `playwright.config.ts`'s to own.
-      domain: "127.0.0.1",
+      domain: appCookieDomain(),
       path: "/",
     },
   ]);
@@ -369,7 +389,7 @@ async function everyPlayExitCarriesTheToken(page: import("@playwright/test").Pag
 }
 
 test.describe("GET /api/attribution/gate answers the same question the capture asks", () => {
-  test.use({ extraHTTPHeaders: { "x-forwarded-for": "198.51.100.223" } });
+  test.use({ extraHTTPHeaders: visitorHeaders({ address: "198.51.100.223" }) });
 
   test("BR-USUARIO-033: the verdict follows territory and consent, and nothing else", async ({
     request,
@@ -383,11 +403,11 @@ test.describe("GET /api/attribution/gate answers the same question the capture a
       return (await res.json()).allowed;
     };
 
-    expect(await verdict({ [VERCEL_COUNTRY_HEADER]: OPEN_TERRITORY })).toBe(true);
-    expect(await verdict({ [VERCEL_COUNTRY_HEADER]: GATED_TERRITORY })).toBe(false);
+    expect(await verdict({ ...visitorHeaders({ country: OPEN_TERRITORY }) })).toBe(true);
+    expect(await verdict({ ...visitorHeaders({ country: GATED_TERRITORY }) })).toBe(false);
     expect(
       await verdict({
-        [VERCEL_COUNTRY_HEADER]: GATED_TERRITORY,
+        ...visitorHeaders({ country: GATED_TERRITORY }),
         cookie: `${CONSENT_KEY}=${CONSENT_GRANTED}`,
       })
     ).toBe(true);
@@ -400,7 +420,7 @@ test.describe("GET /api/attribution/gate answers the same question the capture a
     // route runs on Node instead of reusing `/api/geo`, which runs on the edge,
     // cannot verify the proof, and therefore reads the permissive side.
     expect(
-      await verdict({ "cf-ipcountry": OPEN_TERRITORY, [VERCEL_COUNTRY_HEADER]: GATED_TERRITORY })
+      await verdict({ "cf-ipcountry": OPEN_TERRITORY, ...visitorHeaders({ country: GATED_TERRITORY }) })
     ).toBe(false);
   });
 });
@@ -410,8 +430,7 @@ test.describe("a first touch the browser already carries", () => {
     page,
   }) => {
     await page.setExtraHTTPHeaders({
-      "x-forwarded-for": "198.51.100.224",
-      [VERCEL_COUNTRY_HEADER]: GATED_TERRITORY,
+      ...visitorHeaders({ address: "198.51.100.224", country: GATED_TERRITORY }),
     });
     await seedFirstTouch(page);
     await page.goto("/en");
@@ -436,8 +455,7 @@ test.describe("a first touch the browser already carries", () => {
     // The control, and it is what makes the test above worth anything: a build
     // that simply never reads the cookie passes the gated case and fails here.
     await page.setExtraHTTPHeaders({
-      "x-forwarded-for": "198.51.100.225",
-      [VERCEL_COUNTRY_HEADER]: OPEN_TERRITORY,
+      ...visitorHeaders({ address: "198.51.100.225", country: OPEN_TERRITORY }),
     });
     await seedFirstTouch(page);
     await page.goto("/en");
@@ -447,12 +465,11 @@ test.describe("a first touch the browser already carries", () => {
 
   test("BR-USUARIO-033: consent reopens the door in the gated territory", async ({ page }) => {
     await page.setExtraHTTPHeaders({
-      "x-forwarded-for": "198.51.100.226",
-      [VERCEL_COUNTRY_HEADER]: GATED_TERRITORY,
+      ...visitorHeaders({ address: "198.51.100.226", country: GATED_TERRITORY }),
     });
     await seedFirstTouch(page);
     await page.context().addCookies([
-      { name: CONSENT_KEY, value: CONSENT_GRANTED, domain: "127.0.0.1", path: "/" },
+      { name: CONSENT_KEY, value: CONSENT_GRANTED, domain: appCookieDomain(), path: "/" },
     ]);
     await page.goto("/en");
 

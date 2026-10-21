@@ -5,6 +5,7 @@ import {
   ATTRIBUTION_IP_PATH,
 } from "../../src/lib/attribution";
 import { IP_COMPLEMENT_LIMIT_PER_WINDOW } from "../../src/lib/attribution-limits";
+import { visitorHeaders } from "./visitor-headers";
 
 /**
  * `POST /api/attribution/ip` — the IPv4 complement of a click already
@@ -49,7 +50,7 @@ import { IP_COMPLEMENT_LIMIT_PER_WINDOW } from "../../src/lib/attribution-limits
  * build carries no `x-vercel-ip-country`, and "not determined" is gated. The
  * refusal has a test of its own below, which overrides this header.
  */
-test.use({ extraHTTPHeaders: { "x-vercel-ip-country": "BR" } });
+test.use({ extraHTTPHeaders: visitorHeaders({ country: "BR" }) });
 
 const MOCK_BASE = `http://127.0.0.1:${MOCK_SUPABASE_PORT}`;
 
@@ -228,9 +229,14 @@ test.describe("POST /api/attribution/ip", () => {
     const address = uniqueAddress();
 
     const res = await request.post(ATTRIBUTION_IP_PATH, {
-      // No edge proof: `x-forwarded-for` is the floor Vercel guarantees, and
-      // the bracket-and-zone shape is the RFC 7239 one a proxy may forward.
-      headers: { "x-forwarded-for": `[::ffff:${address}%eth0] , 172.71.0.1` },
+      // No edge proof: on Vercel `x-forwarded-for` is the floor it guarantees,
+      // on the Worker `cf-connecting-ip` is the only reading (#987). The
+      // bracket-and-zone shape is the RFC 7239 one a proxy may forward, and it
+      // has to come out as the dotted quad on both.
+      headers: {
+        "x-forwarded-for": `[::ffff:${address}%eth0] , 172.71.0.1`,
+        "cf-connecting-ip": `[::ffff:${address}%eth0]`,
+      },
       data: { click_id: clickId },
     });
     expect(res.status()).toBe(204);
@@ -329,7 +335,7 @@ test.describe("POST /api/attribution/ip", () => {
     const res = await complement(request, {
       address: uniqueAddress(),
       body: { click_id: clickId },
-      headers: { "x-vercel-ip-country": "FR" },
+      headers: visitorHeaders({ country: "FR" }),
     });
     expect(res.status()).toBe(204);
     expect((await storedById(request, clickId))!.ip_address_v4).toBeNull();

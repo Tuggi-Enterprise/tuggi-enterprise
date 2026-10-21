@@ -6,6 +6,7 @@ import { PartnerHeroWrapper } from "@/components/blocks/PartnerHeroWrapper";
 import { resolvePartnerOrCoupon } from "@/lib/partner";
 import { kitPieceOf, recordActivationScan } from "@/lib/activation-scan";
 import { resolveWelcomeLang } from "@/lib/ptDialect";
+import { countryOf } from "@/lib/territory";
 import { buildTwitterCard, defaultRobots } from "@/lib/seo";
 import { PRODUCT_FACTS } from "@/lib/product-facts";
 
@@ -25,7 +26,7 @@ async function resolveDbLang(locale: string, langParam?: string | null): Promise
   const [h, c] = await Promise.all([headers(), cookies()]);
   return resolveWelcomeLang(locale, {
     langParam,
-    country: h.get("x-vercel-ip-country"),
+    country: countryOf(h),
     acceptLanguage: h.get("accept-language"),
     cookie: c.get("NEXT_LOCALE")?.value,
   });
