@@ -13,6 +13,12 @@
   // nodejs_compat is required by OpenNext; global_fetch_strictly_public is in
   // its get-started config.
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  // Public, not a secret, so it lives here: every deploy rewrites the Worker's
+  // plain variables from this file, and a value typed only on the dashboard is
+  // lost. Without it at runtime /d/<slug> rendered without its partner (#987, qa).
+  "vars": {
+    "SUPABASE_URL": "https://tysnkzmljlmmqpbotkxv.supabase.co"
+  },
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
