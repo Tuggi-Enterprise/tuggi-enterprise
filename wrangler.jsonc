@@ -28,8 +28,40 @@
   "images": {
     "binding": "IMAGES"
   },
-  // OpenNext calls its own Worker through this binding. The get-started config
-  // declares it; `service` must match `name` above, and changes with it.
+  // The incremental cache (open-next.config.ts). The binding name is the one the
+  // adapter reads (`BINDING_NAME` in r2-incremental-cache.js, and
+  // opennext.js.org/cloudflare/caching, consulted 2026-10-20). The bucket is
+  // created by the operator on the account; locally `preview` runs on the R2
+  // that Miniflare emulates under `.wrangler/state`, and nothing remote is
+  // touched. `deploy` fills it with the build output before publishing.
+  "r2_buckets": [
+    {
+      "binding": "NEXT_INC_CACHE_R2_BUCKET",
+      "bucket_name": "tuggi-enterprise-cache"
+    }
+  ],
+  // The revalidation queue of OpenNext (open-next.config.ts): a route with a
+  // `revalidate` that went stale is refreshed through it. Binding, class and
+  // migration as the caching doc gives them, the same shape as
+  // reserve-on-site/wrangler.jsonc. Removing the class later takes a
+  // `deleted_classes` migration, which deletes the Durable Object.
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "NEXT_CACHE_DO_QUEUE",
+        "class_name": "DOQueueHandler"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["DOQueueHandler"]
+    }
+  ],
+  // OpenNext calls its own Worker through this binding: the image optimizer and
+  // the revalidation queue above both do. The get-started config declares it;
+  // `service` must match `name` above, and changes with it.
   "services": [
     {
       "binding": "WORKER_SELF_REFERENCE",
