@@ -28,8 +28,6 @@
 
 import { ImageResponse } from "next/og";
 import { getTranslations } from "next-intl/server";
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
 import { routing } from "@/i18n/routing";
 import { getCoverageData } from "@/lib/coverage";
 import {
@@ -39,6 +37,7 @@ import {
 } from "@/lib/product-facts";
 import { activeCountries } from "@/lib/coverage-density";
 import { localizedCountryLabel } from "@/lib/countryNames";
+import { publicAssetDataUrl } from "@/lib/public-asset";
 
 export const size        = { width: 1200, height: 630 };
 export const contentType = "image/png";
@@ -71,12 +70,10 @@ export function generateStaticParams() {
  * (DS-MARCA-007 item 7). The white two-colour variant is the one that is
  * correct over a dark background (DS-MARCA-005).
  *
- * Read once at module scope — the file never changes between requests.
+ * Read inside the card and memoised, never at module scope: on the Worker a
+ * module-scope read took the whole page down with it (`src/lib/public-asset.ts`).
  */
-const LOCKUP = await readFile(
-  join(process.cwd(), "public", "images", "logo_tuggi_full_white.png"),
-  "base64"
-).then((data) => `data:image/png;base64,${data}`);
+const LOCKUP_PATH = "images/logo_tuggi_full_white.png";
 
 /** Fixed height, automatic width: the lockup is 3.02:1 and is never stretched
  *  (DS-MARCA-007 item 1). Satori reads the intrinsic ratio from the buffer. */
@@ -99,6 +96,7 @@ export default async function Image({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  const LOCKUP    = await publicAssetDataUrl(LOCKUP_PATH, "image/png");
   const t         = await getTranslations({ locale, namespace: "SEO_COVERAGE" });
   const coverage  = await getCoverageData();
   // Names, and nothing beside them. `activeCountries` is the same listing the

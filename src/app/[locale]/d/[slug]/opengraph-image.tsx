@@ -15,10 +15,9 @@
 
 import { ImageResponse } from "next/og";
 import { getTranslations } from "next-intl/server";
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
 import { routing } from "@/i18n/routing";
 import { getDbLang, listApprovedPartners, resolvePartnerOrCoupon } from "@/lib/partner";
+import { publicAssetDataUrl } from "@/lib/public-asset";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
@@ -63,11 +62,9 @@ export async function generateStaticParams(): Promise<Params[]> {
 const FONT =
   "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
 
-// Read once at module scope: the file never changes between requests.
-const FALLBACK_IMAGE = await readFile(
-  join(process.cwd(), "public", "images", "og-image-tuggi.jpg"),
-  "base64"
-).then((data) => `data:image/jpeg;base64,${data}`);
+// Read inside the card and memoised, never at module scope: on the Worker a
+// module-scope read took the whole page down with it (`src/lib/public-asset.ts`).
+const FALLBACK_IMAGE_PATH = "images/og-image-tuggi.jpg";
 
 /**
  * Satori fetches remote images itself, but a failure there throws and the whole
@@ -87,7 +84,8 @@ async function fetchSealDataUri(url: string): Promise<string | null> {
 }
 
 /** The image the route served before partner seals existed. */
-function staticCard() {
+async function staticCard() {
+  const FALLBACK_IMAGE = await publicAssetDataUrl(FALLBACK_IMAGE_PATH, "image/jpeg");
   return new ImageResponse(
     (
       <div style={{ display: "flex", width: "100%", height: "100%" }}>

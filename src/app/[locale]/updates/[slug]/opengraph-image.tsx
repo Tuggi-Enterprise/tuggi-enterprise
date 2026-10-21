@@ -16,9 +16,8 @@
  * the summary fight each other and WhatsApp cuts the preview in half.
  */
 import { ImageResponse } from "next/og";
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
 import { getTranslations } from "next-intl/server";
+import { publicAssetDataUrl } from "@/lib/public-asset";
 import type { SiteLocale } from "@/i18n/locales";
 import { routing } from "@/i18n/routing";
 import { findUpdate, formatUpdateDate, listUpdates } from "@/lib/updates";
@@ -62,11 +61,11 @@ export function generateStaticParams(): Params[] {
  * *discover* the brand (`DS-MARCA-007` item 7), and white is the variant that
  * is correct over a dark background (`DS-MARCA-005`). White on `#0b1220`
  * measures 18,72:1.
+ *
+ * Read inside the card and memoised, never at module scope: on the Worker a
+ * module-scope read took the whole page down with it (`src/lib/public-asset.ts`).
  */
-const LOCKUP = await readFile(
-  join(process.cwd(), "public", "images", "logo_tuggi_full_white.png"),
-  "base64"
-).then((data) => `data:image/png;base64,${data}`);
+const LOCKUP_PATH = "images/logo_tuggi_full_white.png";
 
 /** Fixed height, automatic width: the lockup is 3.06:1 and is never stretched
  *  (`DS-MARCA-007` item 1). Satori reads the intrinsic ratio from the buffer. */
@@ -87,6 +86,7 @@ export default async function Image({
   params: Promise<{ locale: string; slug: string }>;
 }) {
   const { locale, slug } = await params;
+  const LOCKUP = await publicAssetDataUrl(LOCKUP_PATH, "image/png");
   const article = findUpdate(locale as SiteLocale, slug);
   const t = await getTranslations({ locale, namespace: "Updates.type" });
 
