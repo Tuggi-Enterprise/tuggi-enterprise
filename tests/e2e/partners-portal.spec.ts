@@ -10,8 +10,8 @@ import { PROPOSAL_LOCALE, PROPOSAL_ROUTE } from "../../src/lib/partner-proposal/
  * BR-B2B-043 makes the portal (`tuggi-places`, at `PARTNER_PORTAL_URL`) the one door through
  * which an establishment registers and pays, and the site's partnership page was a detour in
  * front of it. So the page left: its four URLs answer 301 to the portal, the menu item opens
- * the portal in a new tab, and the sitemap stops asking Google to index it. The proposal
- * subroute (`/partners/proposal`) is a different surface and stays.
+ * the portal in a new tab, and the sitemap stops asking Google to index it. The whole subtree
+ * leaves with it, the proposal subroute (`/partners/proposal`) included.
  *
  * Every URL here is derived from the route map, never typed, so a renamed slug moves the test
  * with it (CLAUDE.md §6).
@@ -52,15 +52,15 @@ test.describe("BR-B2B-043 / #990 — the partnership page answers 301 to the Loc
     });
   }
 
-  test("#990: the proposal subroute is not caught by the redirect and still answers 200", async ({
-    request,
-  }) => {
+  test("#990: the proposal subroute leaves for the portal too", async ({ request }) => {
     const proposal = `/${PROPOSAL_LOCALE}${localizedPathname(PROPOSAL_LOCALE, PROPOSAL_ROUTE)}`;
     expect(proposal.startsWith(`/${PROPOSAL_LOCALE}${localizedPathname(PROPOSAL_LOCALE, HUB)}/`))
       .toBe(true);
 
     const response = await request.get(proposal, { maxRedirects: 0 });
-    expect(response.status(), proposal).toBe(200);
+    expect(response.status(), proposal).toBe(301);
+    // Next writes the root of a `/:path*` destination with its trailing slash.
+    expect(new URL(response.headers()["location"]).href, proposal).toBe(new URL(PORTAL).href);
   });
 
   test("#990: the sitemap lists none of the four hub URLs", async ({ request }) => {

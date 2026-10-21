@@ -74,17 +74,20 @@ const nextConfig: NextConfig = {
     // Routes whose page left for another product (src/i18n/pathnames.ts,
     // EXTERNAL_ROUTES): every public slug, with and without the locale prefix,
     // leaves in one hop. The un-prefixed form is there because the middleware
-    // would otherwise send `/parcerias` to `/pt/parcerias` first. A source is
-    // an exact path, so `/pt/parcerias/proposta` is not caught.
+    // would otherwise send `/parcerias` to `/pt/parcerias` first. The whole
+    // subtree leaves too (`/pt/parcerias/proposta`): the page is gone, and the
+    // portal is the one address for a partner (operator, 2026-10-21, #990).
     const EXTERNAL = EXTERNAL_ROUTES.flatMap(({ from, to }) => {
       const slugs = LOCALES.map((locale) => [locale, localizedPathname(locale, from)] as const);
       const prefixed = slugs.map(([locale, slug]) => `/${locale}${slug}`);
       const bare = [...new Set(slugs.map(([, slug]) => slug))];
-      return [...prefixed, ...bare].map((source) => ({
-        source,
-        destination: to,
-        statusCode: 301 as const,
-      }));
+      return [...prefixed, ...bare].flatMap((source) =>
+        [source, `${source}/:path*`].map((pattern) => ({
+          source: pattern,
+          destination: to,
+          statusCode: 301 as const,
+        })),
+      );
     });
 
     return [
