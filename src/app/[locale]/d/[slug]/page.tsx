@@ -3,7 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { cookies, headers } from "next/headers";
 import { permanentRedirect } from "next/navigation";
 import { PartnerHeroWrapper } from "@/components/blocks/PartnerHeroWrapper";
-import { resolvePartnerOrCoupon } from "@/lib/partner";
+import { lookupPartnerSlug } from "@/lib/partner";
 import { kitPieceOf, recordActivationScan } from "@/lib/activation-scan";
 import { resolveWelcomeLang } from "@/lib/ptDialect";
 import { countryOf } from "@/lib/territory";
@@ -43,7 +43,7 @@ export async function generateMetadata({
   const { lang } = await searchParams;
   const t = await getTranslations({ locale, namespace: "Download" });
   const dbLang = await resolveDbLang(locale, lang);
-  const resolved = await resolvePartnerOrCoupon(slug, dbLang);
+  const resolved = await lookupPartnerSlug(slug, dbLang);
 
   // Unknown slug → the page still serves the plain download LP (see below),
   // and that LP is the same on every dead slug: keep it out of the index.
@@ -92,6 +92,15 @@ export async function generateMetadata({
   };
 }
 
+/**
+ * THIS PAGE IS RENDERED ON EVERY REQUEST, AND MUST STAY SO (#987). It reads
+ * the visitor's country and cookies for the welcome language, `?lang` and
+ * `?k`, and counts the kit scan of each visit. A stored copy would freeze the
+ * language of its first visitor and stop counting scans. What is kept is the
+ * partner read underneath (`lookupPartnerSlug`), for at most 5 minutes per
+ * slug and language: that is how long an edit or a deactivation in the CMS
+ * takes to show here.
+ */
 export default async function PartnerSlugPage({
   params,
   searchParams,
@@ -110,7 +119,7 @@ export default async function PartnerSlugPage({
   const scan = piece ? recordActivationScan(slug, piece, new Headers(await headers())) : null;
 
   const dbLang = await resolveDbLang(locale, lang);
-  const [resolved] = await Promise.all([resolvePartnerOrCoupon(slug, dbLang), scan]);
+  const [resolved] = await Promise.all([lookupPartnerSlug(slug, dbLang), scan]);
 
   // The printed slug is not the client's own (the client inherited another one,
   // or the URL differs in case): it keeps resolving, as a permanent redirect —

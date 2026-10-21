@@ -363,6 +363,25 @@ const RESOLVER_FIXTURES = {
 /** Every `partner.record_activation_scan` call that reached the database, in order. */
 const activationScans = [];
 
+/**
+ * Partners approved AFTER the build (tuggi-app#987): `POST /__late-partner`
+ * adds one, so its `/d/<slug>` and share card exist only at runtime, the way a
+ * partner approved between two deploys does. The slug starts with `e2e-late-`
+ * and is unique per test run, because the Worker preview keeps its R2 between
+ * runs. Its welcome POI is the slug itself, and the welcome text names the
+ * language asked for, so a spec can tell a pt-pt visit from a pt-br one.
+ */
+const LATE_PREFIX = "e2e-late-";
+
+/** Database reads made for a `/d/<slug>`, per slug: `GET /__partner-lookups?slug=`. */
+const partnerLookups = new Map();
+function countLookup(slug, kind) {
+  if (!slug) return;
+  const counts = partnerLookups.get(slug) ?? { clients: 0, resolver: 0, coupon: 0, welcome: 0 };
+  counts[kind] += 1;
+  partnerLookups.set(slug, counts);
+}
+
 function sendJson(res, status, body) {
   const json = JSON.stringify(body);
   res.writeHead(status, { "Content-Type": "application/json" });
@@ -743,6 +762,7 @@ const server = http.createServer((req, res) => {
     }
 
     const slug = readEqFilter(url, "slug");
+    countLookup(slug, "clients");
     const client = slug ? CLIENTS_BY_SLUG[slug] : null;
     if (!client) {
       // Shape PostgREST returns for `.single()` with zero matching rows —
@@ -763,6 +783,15 @@ const server = http.createServer((req, res) => {
       sendJson(res, 406, { code: "PGRST116", message: "no rows" });
       return;
     }
+    if (attractionId.startsWith(LATE_PREFIX)) {
+      countLookup(attractionId, "welcome");
+      const language = readEqFilter(url, "language");
+      sendJson(res, 200, {
+        audio_url: `http://${HOST}:${APP_PORT}/audio/call_en-us-male.mp3`,
+        description: `Late partner welcome, ${language}.`,
+      });
+      return;
+    }
     // Answers in every language rather than only the requested one: the page's
     // own en-us fallback is not what this fixture is here to exercise.
     sendJson(res, 200, {
@@ -779,7 +808,9 @@ const server = http.createServer((req, res) => {
     readBody(req).then((raw) => {
       let code = "";
       try {
-        code = String(JSON.parse(raw || "{}").p_code ?? "").toUpperCase();
+        const sent = String(JSON.parse(raw || "{}").p_code ?? "");
+        countLookup(sent, "coupon");
+        code = sent.toUpperCase();
       } catch {
         // Malformed body: treated as an unknown code.
       }
@@ -848,6 +879,7 @@ const server = http.createServer((req, res) => {
       } catch {
         // Malformed body: an unlisted slug.
       }
+      countLookup(slug, "resolver");
       const rows = RESOLVER_FIXTURES[slug];
       if (rows) sendJson(res, 200, rows);
       else sendJson(res, 404, { code: "PGRST202", message: "Could not find the function partner.resolve_partner_slug" });
@@ -866,6 +898,36 @@ const server = http.createServer((req, res) => {
       activationScans.push({ slug: body.p_slug, piece: body.p_piece });
       sendJson(res, 200, true);
     });
+    return;
+  }
+
+  if (url.pathname === "/__late-partner" && req.method === "POST") {
+    const slug = url.searchParams.get("slug") ?? "";
+    if (!slug.startsWith(LATE_PREFIX)) {
+      sendJson(res, 400, { message: `a late partner slug starts with ${LATE_PREFIX}` });
+      return;
+    }
+    CLIENTS_BY_SLUG[slug] = {
+      id: randomUUID(),
+      slug,
+      status: "approved",
+      updated_at: new Date().toISOString(),
+      name: "Late Partner",
+      company_name: null,
+      welcome_poi_id: slug,
+      metadata: null,
+      client_type: "restaurant",
+      website: null,
+      social_handle: null,
+      avatar_url: null,
+    };
+    sendJson(res, 201, { slug });
+    return;
+  }
+
+  if (url.pathname === "/__partner-lookups" && req.method === "GET") {
+    const slug = url.searchParams.get("slug") ?? "";
+    sendJson(res, 200, partnerLookups.get(slug) ?? { clients: 0, resolver: 0, coupon: 0, welcome: 0 });
     return;
   }
 

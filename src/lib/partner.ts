@@ -1,4 +1,5 @@
 import { cache } from "react";
+import { unstable_cache } from "next/cache";
 import { getSupabaseClient } from "@/lib/supabase-server";
 import { isPublicStorageUrl } from "@/lib/storage";
 import { TUGGI_PARTNER_ID } from "@/lib/app-meta";
@@ -148,31 +149,36 @@ async function buildPartnerData(
   };
 }
 
+/** What PostgREST answers to `.single()` when no row matched: an answer, not a failure. */
+const NO_ROWS = "PGRST116";
+
+/**
+ * Throws when the database could not answer, and returns null only when it
+ * answered "no such client". The two used to look the same, and the partner
+ * read of `/d/<slug>` is now cached (`lookupPartnerSlug`): a failure taken for
+ * "no partner" must never be kept as one.
+ */
 async function resolvePartner(
   column: "id" | "slug",
   value: string,
   dbLang: string
 ): Promise<PartnerData | null> {
-  try {
-    // service_role, and here it is load-bearing: the only SELECT policy on
-    // `partner.clients` requires an admin `cms_users` row or a matching
-    // `auth.uid()`, so as `anon` this query returns zero rows **and no error**
-    // — every partner landing would 404 and drop out of the sitemap with
-    // nothing logged anywhere.
-    const supabase = getSupabaseClient("serviceRole");
-    const { data: client, error } = await supabase
-      .schema("partner")
-      .from("clients")
-      .select(CLIENT_COLUMNS)
-      .eq(column, value)
-      .single();
+  // service_role, and here it is load-bearing: the only SELECT policy on
+  // `partner.clients` requires an admin `cms_users` row or a matching
+  // `auth.uid()`, so as `anon` this query returns zero rows **and no error**
+  // — every partner landing would 404 and drop out of the sitemap with
+  // nothing logged anywhere.
+  const supabase = getSupabaseClient("serviceRole");
+  const { data: client, error } = await supabase
+    .schema("partner")
+    .from("clients")
+    .select(CLIENT_COLUMNS)
+    .eq(column, value)
+    .single();
 
-    if (error || !client) return null;
-    return await buildPartnerData(supabase, client as ClientRow, dbLang);
-  } catch (err) {
-    console.error(`Error fetching partner by ${column}:`, err);
-    return null;
-  }
+  if (error?.code === NO_ROWS || (!error && !client)) return null;
+  if (error) throw new Error(`partner.clients by ${column}: ${error.code} ${error.message}`);
+  return await buildPartnerData(supabase, client as ClientRow, dbLang);
 }
 
 /** An approved partner as the site publishes it: the slug of its /d/<slug> URL. */
@@ -242,13 +248,23 @@ export async function listApprovedPartners(): Promise<ApprovedPartner[]> {
 // single DB lookup per request (same args → one query). `dbLang` is the
 // resolved welcome dialect (see src/lib/ptDialect.ts), part of the cache key.
 
-/** Resolve a partner by client UUID (legacy /download?ID= flow). */
+/**
+ * Resolve a partner by client UUID (legacy /download?ID= flow). Uncached; a
+ * failed read is logged and served as "no partner", as it always was.
+ */
 export const getPartnerById = cache(
-  (id: string, dbLang: string): Promise<PartnerData | null> => resolvePartner("id", id, dbLang)
+  async (id: string, dbLang: string): Promise<PartnerData | null> => {
+    try {
+      return await resolvePartner("id", id, dbLang);
+    } catch (err) {
+      console.error("Error fetching partner by id:", err);
+      return null;
+    }
+  }
 );
 
-/** Resolve a partner by friendly slug (new /d/<slug> flow). */
-export const getPartnerBySlug = cache(
+/** Resolve a partner by friendly slug (new /d/<slug> flow). Throws when the read failed. */
+const getPartnerBySlug = cache(
   (slug: string, dbLang: string): Promise<PartnerData | null> => resolvePartner("slug", slug, dbLang)
 );
 
@@ -309,58 +325,51 @@ function toCouponPreview(
   return result.days ? { code, grantKind: "until", days: result.days } : null;
 }
 
+/** Throws when the RPC failed, so a failure is never cached as "not a coupon". */
 async function resolveCoupon(
   rawCode: string,
   dbLang: string
 ): Promise<CouponContext | null> {
-  try {
-    // `get_coupon_preview` is SECURITY DEFINER and `anon` may execute it, so
-    // this one call would survive the publishable key. It stays on
-    // service_role with the rest of the partner page: the reads around it
-    // (`partner.clients`, above) do not.
-    const supabase = getSupabaseClient("serviceRole");
-    const { data, error } = await supabase
-      .schema("drive")
-      .rpc("get_coupon_preview", { p_code: rawCode });
+  // `get_coupon_preview` is SECURITY DEFINER and `anon` may execute it, so
+  // this one call would survive the publishable key. It stays on
+  // service_role with the rest of the partner page: the reads around it
+  // (`partner.clients`, above) do not.
+  const supabase = getSupabaseClient("serviceRole");
+  const { data, error } = await supabase
+    .schema("drive")
+    .rpc("get_coupon_preview", { p_code: rawCode });
 
-    if (error) {
-      console.error("Error calling get_coupon_preview:", error);
-      return null;
-    }
+  if (error) throw new Error(`drive.get_coupon_preview: ${error.code} ${error.message}`);
 
-    const result = data as GetCouponPreviewRpcResult | null;
-    if (!result || !result.found || !result.code) return null;
-    const coupon = toCouponPreview(result.code, result);
-    if (!coupon) return null;
+  const result = data as GetCouponPreviewRpcResult | null;
+  if (!result || !result.found || !result.code) return null;
+  const coupon = toCouponPreview(result.code, result);
+  if (!coupon) return null;
 
-    const welcome = await fetchLocalizedWelcome(supabase, result.owner_poi_id, dbLang);
-    const ownerClientId = result.owner_client_id ?? "";
-    const isTuggi = !ownerClientId || ownerClientId === TUGGI_PARTNER_ID;
+  const welcome = await fetchLocalizedWelcome(supabase, result.owner_poi_id, dbLang);
+  const ownerClientId = result.owner_client_id ?? "";
+  const isTuggi = !ownerClientId || ownerClientId === TUGGI_PARTNER_ID;
 
-    const partner: PartnerData = {
-      id: ownerClientId,
-      slug: result.owner_slug ?? null,
-      name: isTuggi ? null : (result.owner_name ?? null),
-      isTuggi,
-      audioLang: dbLang,
-      // Same seal as the partner flow: the RPC already returns the owner's
-      // avatar, and a coupon LP renders the very same hero.
-      logoUrl: isTuggi ? null : toLogoUrl(result.owner_avatar_url),
-      ...welcome,
-    };
+  const partner: PartnerData = {
+    id: ownerClientId,
+    slug: result.owner_slug ?? null,
+    name: isTuggi ? null : (result.owner_name ?? null),
+    isTuggi,
+    audioLang: dbLang,
+    // Same seal as the partner flow: the RPC already returns the owner's
+    // avatar, and a coupon LP renders the very same hero.
+    logoUrl: isTuggi ? null : toLogoUrl(result.owner_avatar_url),
+    ...welcome,
+  };
 
-    return {
-      partner,
-      coupon,
-    };
-  } catch (err) {
-    console.error("Error resolving coupon:", err);
-    return null;
-  }
+  return {
+    partner,
+    coupon,
+  };
 }
 
-/** Resolve an active redeemable coupon by raw code (case-insensitive). */
-export const getCouponBySlug = cache(
+/** Resolve an active redeemable coupon by raw code (case-insensitive). Throws when the RPC failed. */
+const getCouponBySlug = cache(
   (code: string, dbLang: string): Promise<CouponContext | null> =>
     resolveCoupon(code, dbLang)
 );
@@ -374,32 +383,33 @@ export const getCouponBySlug = cache(
  * - `client`: the slug belongs to `clientSlug`; when they differ, the printed one redirects.
  * - `retired`: a rejected place. Blocked forever, never names the place.
  * - `null`: unknown slug — no row.
- * - `"unavailable"`: the RPC failed. Until migration 20261006230000 is applied the function does
- *   not exist, and the caller must keep today's behaviour instead of breaking the page.
+ * - `"unavailable"`: the function does not exist (PGRST202, the migration not applied), and the
+ *   caller keeps the lookup by slug instead of breaking the page. Any other failure throws, so it
+ *   is never cached as an answer.
  */
 type SlugResolution =
   | { state: "soon" }
   | { state: "retired" }
   | { state: "client"; clientSlug: string };
 
+const FUNCTION_MISSING = "PGRST202";
+
 const resolveSlug = cache(
   async (slug: string): Promise<SlugResolution | null | "unavailable"> => {
-    try {
-      const { data, error } = await getSupabaseClient("serviceRole")
-        .schema("partner")
-        .rpc("resolve_partner_slug", { p_slug: slug });
-      if (error || !Array.isArray(data)) return "unavailable";
-      const row = data[0] as { state?: string; client_slug?: string | null } | undefined;
-      if (!row) return null;
-      if (row.state === "soon") return { state: "soon" };
-      if (row.state === "retired") return { state: "retired" };
-      if (row.state === "client" && row.client_slug) {
-        return { state: "client", clientSlug: row.client_slug };
-      }
-      return "unavailable";
-    } catch {
-      return "unavailable";
+    const { data, error } = await getSupabaseClient("serviceRole")
+      .schema("partner")
+      .rpc("resolve_partner_slug", { p_slug: slug });
+    if (error?.code === FUNCTION_MISSING) return "unavailable";
+    if (error) throw new Error(`partner.resolve_partner_slug: ${error.code} ${error.message}`);
+    if (!Array.isArray(data)) return "unavailable";
+    const row = data[0] as { state?: string; client_slug?: string | null } | undefined;
+    if (!row) return null;
+    if (row.state === "soon") return { state: "soon" };
+    if (row.state === "retired") return { state: "retired" };
+    if (row.state === "client" && row.client_slug) {
+      return { state: "client", clientSlug: row.client_slug };
     }
+    return "unavailable";
   }
 );
 
@@ -418,11 +428,9 @@ export type PartnerSlugResult =
  *   3. The client by slug, as before. Also the whole partner pass while the resolver RPC is
  *      unavailable (migration not applied yet).
  * `null` means nothing matched: the page serves the plain download LP, `noindex`.
- *
- * Lives here because the page and its opengraph-image both resolve the same
- * URL and must agree on what it is.
+ * It throws when a read failed. Callers go through `lookupPartnerSlug`.
  */
-export async function resolvePartnerOrCoupon(
+async function resolvePartnerOrCoupon(
   slug: string,
   dbLang: string
 ): Promise<PartnerSlugResult | null> {
@@ -442,3 +450,81 @@ export async function resolvePartnerOrCoupon(
 
   return null;
 }
+
+/**
+ * How long the site keeps what it read about a partner from the CMS, in
+ * seconds: an edit reaches `/d/<slug>` and its share card within 5 minutes.
+ * Decision of the operator, 2026-10-20 (tuggi-app#987), written in
+ * docs/contracts/cms-para-site.md. The share card repeats it as a literal
+ * (`revalidate` of `d/[slug]/opengraph-image.tsx`) and asserts the two agree.
+ */
+export const PARTNER_CACHE_SECONDS = 300;
+
+/** The cached answer, stamped with when the database gave it. */
+type CachedSlugResult = { readAt: number; result: PartnerSlugResult };
+
+/** An unknown slug is not kept; see `lookupPartnerSlug`. */
+class UnknownSlug extends Error {}
+
+/**
+ * The read of `/d/<slug>` in the data cache of Next (R2 on the Worker, the
+ * `.next/cache` folder under `next start`).
+ *
+ * THE KEY IS THE SLUG AND THE WELCOME LANGUAGE, AND NOTHING ELSE ABOUT THE
+ * VISITOR. `dbLang` comes out of a closed list (`getDbLang`,
+ * `resolveWelcomeLang`): it is which text and audio the partner shows, not who
+ * asked. The value holds only what the CMS published.
+ *
+ * AN UNKNOWN SLUG THROWS INSTEAD OF RETURNING, so nothing is written for it:
+ * anyone can type `/d/<anything>`, and each new string would otherwise be one
+ * more object in the bucket. It also means a slug that becomes a partner shows
+ * up on the very next request.
+ *
+ * The welcome text and audio are the one read that still fails soft
+ * (`fetchLocalizedWelcome`): on a failure there, the partner is kept without
+ * them for at most `PARTNER_CACHE_SECONDS`. Who the partner is never is.
+ */
+const readSlugThroughCache = unstable_cache(
+  async (slug: string, dbLang: string): Promise<CachedSlugResult> => {
+    const result = await resolvePartnerOrCoupon(slug, dbLang);
+    if (!result) throw new UnknownSlug(slug);
+    return { readAt: Date.now(), result };
+  },
+  ["partner-slug-lookup"],
+  { revalidate: PARTNER_CACHE_SECONDS }
+);
+
+/**
+ * What `/d/<slug>` is, for the page, its metadata and its share card, read at
+ * most once per `PARTNER_CACHE_SECONDS` for each slug and language (#987).
+ *
+ * THE 5 MINUTES ARE A CEILING, NOT A MINIMUM GAP BETWEEN READS. Past
+ * `revalidate`, `unstable_cache` answers with the old value and refreshes it
+ * after the response: on a page nobody opened for an hour, the first visitor
+ * would get the hour-old answer, and so would the curator checking an edit.
+ * An answer older than the limit is therefore read again here, in the same
+ * request, and served fresh; the cache refreshes behind it. If that read
+ * fails, the old answer beats an error.
+ *
+ * Any failure is logged and served as `null`, the plain download page, which
+ * is what the page did before the cache: the QR still gets the app.
+ */
+export const lookupPartnerSlug = cache(
+  async (slug: string, dbLang: string): Promise<PartnerSlugResult | null> => {
+    let stale: PartnerSlugResult;
+    try {
+      const entry = await readSlugThroughCache(slug, dbLang);
+      if (Date.now() - entry.readAt < PARTNER_CACHE_SECONDS * 1000) return entry.result;
+      stale = entry.result;
+    } catch (err) {
+      if (!(err instanceof UnknownSlug)) console.error("Error resolving /d/ slug:", err);
+      return null;
+    }
+    try {
+      return await resolvePartnerOrCoupon(slug, dbLang);
+    } catch (err) {
+      console.error("Error resolving /d/ slug, serving the previous answer:", err);
+      return stale;
+    }
+  }
+);

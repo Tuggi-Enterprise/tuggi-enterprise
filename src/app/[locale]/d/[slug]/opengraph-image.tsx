@@ -16,7 +16,12 @@
 import { ImageResponse } from "next/og";
 import { getTranslations } from "next-intl/server";
 import { routing } from "@/i18n/routing";
-import { getDbLang, listApprovedPartners, resolvePartnerOrCoupon } from "@/lib/partner";
+import {
+  getDbLang,
+  listApprovedPartners,
+  lookupPartnerSlug,
+  PARTNER_CACHE_SECONDS,
+} from "@/lib/partner";
 import { publicAssetDataUrl } from "@/lib/public-asset";
 
 export const size = { width: 1200, height: 630 };
@@ -42,12 +47,28 @@ type Params = { locale: string; slug: string };
  * **No `force-static` here, unlike `/coverage`, and that is the trade-off of
  * this card**: `dynamicParams` stays at its default, so a partner approved
  * *between two deploys* — absent from this list — still gets its card rendered
- * on the first request that asks for it, exactly as before, until the next
- * build writes it to disk. Turning that off would answer 404 instead, and the
- * one page that names this route in its `openGraph.images` (the partner with a
- * seal, `page.tsx`) would advertise a preview that does not exist. The cost is
- * one render per new partner, not one per preview fetch.
+ * on the first request that asks for it. Turning that off would answer 404
+ * instead, and the one page that names this route in its `openGraph.images`
+ * (the partner with a seal, `page.tsx`) would advertise a preview that does
+ * not exist.
+ *
+ * **That first render is kept, and redrawn at most every 5 minutes** (#987,
+ * `revalidate` below). Before it, on the Cloudflare Worker, nothing kept it:
+ * the cache there was read-only, so a card missing from the build was drawn
+ * again on every preview fetch. The same `revalidate` refreshes the cards the
+ * build wrote, so a seal or a name edited in the CMS reaches the preview too.
+ * Past the 5 minutes, the first fetch still gets the previous card and
+ * triggers the redraw; the one after it gets the new card.
  */
+// A LITERAL, because Next reads segment config statically and refuses an
+// imported value. It is `PARTNER_CACHE_SECONDS`, and the check below keeps the
+// two from drifting apart.
+export const revalidate = 300;
+
+if (revalidate !== PARTNER_CACHE_SECONDS) {
+  throw new Error("d/[slug]/opengraph-image: `revalidate` drifted from PARTNER_CACHE_SECONDS");
+}
+
 export async function generateStaticParams(): Promise<Params[]> {
   const partners = await listApprovedPartners();
   const params: Params[] = [];
@@ -99,7 +120,7 @@ async function staticCard() {
 export default async function Image({ params }: { params: Promise<Params> }) {
   const { locale, slug } = await params;
 
-  const resolved = await resolvePartnerOrCoupon(slug, getDbLang(locale));
+  const resolved = await lookupPartnerSlug(slug, getDbLang(locale));
   const partner = resolved?.kind === "partner" ? resolved.partner : null;
   if (!partner?.logoUrl || !partner.name) return staticCard();
 
