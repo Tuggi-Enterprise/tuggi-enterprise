@@ -8,11 +8,17 @@
     "start": "next start",
     "lint": "eslint",
     "test:e2e": "playwright test",
+    "test:e2e:worker": "playwright test --config playwright.worker.config.ts",
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "update-coverage": "node scripts/update-coverage.mjs",
     "update-routes": "node scripts/update-routes.mjs"
   },
   "dependencies": {
     "@next/third-parties": "^16.1.6",
+    "@opennextjs/cloudflare": "^1.20.12",
     "@supabase/supabase-js": "^2.97.0",
     "clsx": "^2.1.1",
     "framer-motion": "^12.34.3",
@@ -39,6 +45,7 @@
     "eslint-config-next": "16.1.6",
     "tailwindcss": "^4",
     "typescript": "^5",
-    "wkx": "^0.5.0"
+    "wkx": "^0.5.0",
+    "wrangler": "^4.151.3"
   }
 }

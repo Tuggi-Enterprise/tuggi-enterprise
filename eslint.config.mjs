@@ -12,6 +12,14 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Build output of the e2e suite (TUGGI_DIST_DIR) and of the Cloudflare
+    // Worker (#987). Bundled code, megabytes of it: linting it runs eslint
+    // out of memory.
+    ".next-*/**",
+    ".open-next/**",
+    "dist-worker/**",
+    ".wrangler/**",
+    "cloudflare-env.d.ts",
   ]),
 ]);
 

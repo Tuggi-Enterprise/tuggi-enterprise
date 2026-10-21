@@ -1,0 +1,45 @@
+{
+  // The site as a Cloudflare Worker, built by @opennextjs/cloudflare (tuggi-app#987).
+  // Shape from opennext.js.org/cloudflare/get-started, consulted 2026-10-20.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "main": ".open-next/worker.js",
+  // The Worker already created on the Cloudflare dashboard. Its git integration
+  // refuses a deploy when this field differs from the connected Worker.
+  "name": "tuggi-enterprise",
+  // The newest date the installed wrangler 4.151.3 knows (`DEFAULT_COMPAT_DATE`
+  // in node_modules/wrangler/wrangler-dist/cli.js). A later date has no effect,
+  // because workerd implements nothing past its own build. Revisit on upgrade.
+  "compatibility_date": "2026-10-19",
+  // nodejs_compat is required by OpenNext; global_fetch_strictly_public is in
+  // its get-started config.
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  // The optimizer behind `next/image`. Without it OpenNext's `/_next/image`
+  // returns the original file (`templates/images.js`), so every image would
+  // ship at full size where Vercel resized and converted it. Shape from
+  // opennext.js.org/cloudflare/howtos/image; the same binding runs on
+  // reserve-on-site. Billed as Images Transformed: 5,000 unique per month free;
+  // past that, the Images Free plan fails new ones with 9422 and charges
+  // nothing, the Paid plan charges per 1,000 (developers.cloudflare.com/images/
+  // pricing, consulted 2026-10-20).
+  "images": {
+    "binding": "IMAGES"
+  },
+  // OpenNext calls its own Worker through this binding. The get-started config
+  // declares it; `service` must match `name` above, and changes with it.
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "tuggi-enterprise"
+    }
+  ],
+  // `wrangler deploy` reapplies the whole Worker and turns off logs enabled only
+  // on the dashboard. The rate limiter and the consent gate log through
+  // console.error and console.warn, and that is the only evidence they leave.
+  "observability": {
+    "enabled": true
+  }
+}
