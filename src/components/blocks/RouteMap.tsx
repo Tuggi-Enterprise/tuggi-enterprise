@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import type { Map as LeafletMap, Marker, Point } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { toLatLngs } from "@/lib/tourFormat";
+import { BASEMAP } from "@/lib/basemap";
 
 export interface RouteMapStop {
   name: string;
@@ -93,7 +94,7 @@ function truncate(s: string): string {
  * The map is a two-way control: `activeStop` highlights a pin (and pans to it
  * if it scrolled out of view), and tapping a pin reports back via
  * `onSelectStop`. All data comes from props (the static snapshot) — there is NO
- * network call to our backend. Tiles are public CARTO/OSM.
+ * network call to our backend. Tiles come from `BASEMAP` (src/lib/basemap.ts).
  *
  * The numbered itinerary is the accessible equivalent of this map, so the
  * labels are aria-hidden rather than duplicated to screen readers.
@@ -134,19 +135,8 @@ export function RouteMap({
       });
       mapRef.current = map;
 
-      // CARTO Voyager basemap — free, NO API key required (attribution only),
-      // and far cleaner cartography than raw OSM tiles. `detectRetina` serves
-      // crisp tiles on high-DPI screens.
-      L.tileLayer(
-        "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
-        {
-          subdomains: "abcd",
-          maxZoom: 20,
-          detectRetina: true,
-          attribution:
-            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
-        }
-      ).addTo(map);
+      // Tile server and its required credit live in one place (card #989).
+      L.tileLayer(BASEMAP.url, BASEMAP.options).addTo(map);
 
       const bounds: [number, number][] = [];
 
