@@ -9,7 +9,8 @@ import ptMessages from "@/messages/pt.json";
 
 /**
  * The partnership proposal — the public form an establishment fills in after talking to the
- * Tuggi, and, from #396, the one it can also reach from `/partners`.
+ * Tuggi. From #396 to #990 it was also reachable from the site's partnership page, which is now
+ * the Locais portal.
  *
  * It used to be `tuggi-cms/app/[locale]/parceria/page.tsx`. The conference, the promotion and
  * the contract stay in the CMS, authenticated (BR-B2B-026, items 1 and 4); only the door the
@@ -79,10 +80,14 @@ export default async function PartnerProposalPage({
   return (
     <NextIntlClientProvider
       locale={PROPOSAL_LOCALE}
-      messages={{ PartnerProposal: ptMessages.PartnerProposal }}
+      messages={{
+        PartnerProposal: ptMessages.PartnerProposal,
+        // Only the new-tab announcement of the way out to the portal (#990).
+        A11y: { opensInNewTab: ptMessages.A11y.opensInNewTab },
+      }}
     >
       {/* The address is not written inside a copy value — it comes from the one key that owns
-          it, the same way `Partners.form.noscript` already takes it (DS-COPY-018). */}
+          it (DS-COPY-018). */}
       <PartnerProposalForm contactEmail={tContact("pressValue")} />
     </NextIntlClientProvider>
   );

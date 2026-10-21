@@ -2,7 +2,7 @@ import createNextIntlPlugin from 'next-intl/plugin';
 import type { NextConfig } from "next";
 import { getStorageHost, STORAGE_PUBLIC_PATH } from "./src/lib/storage";
 import { DEFAULT_LOCALE, LOCALES } from "./src/i18n/locales";
-import { MOVED_ROUTES, localizedPathname } from "./src/i18n/pathnames";
+import { EXTERNAL_ROUTES, MOVED_ROUTES, localizedPathname } from "./src/i18n/pathnames";
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
@@ -71,6 +71,22 @@ const nextConfig: NextConfig = {
       return rules;
     });
 
+    // Routes whose page left for another product (src/i18n/pathnames.ts,
+    // EXTERNAL_ROUTES): every public slug, with and without the locale prefix,
+    // leaves in one hop. The un-prefixed form is there because the middleware
+    // would otherwise send `/parcerias` to `/pt/parcerias` first. A source is
+    // an exact path, so `/pt/parcerias/proposta` is not caught.
+    const EXTERNAL = EXTERNAL_ROUTES.flatMap(({ from, to }) => {
+      const slugs = LOCALES.map((locale) => [locale, localizedPathname(locale, from)] as const);
+      const prefixed = slugs.map(([locale, slug]) => `/${locale}${slug}`);
+      const bare = [...new Set(slugs.map(([, slug]) => slug))];
+      return [...prefixed, ...bare].map((source) => ({
+        source,
+        destination: to,
+        statusCode: 301 as const,
+      }));
+    });
+
     return [
       // Unified Portuguese locale (pt-br / pt-pt → pt).
       { source: "/pt-br", destination: "/pt", statusCode: 301 },
@@ -89,6 +105,7 @@ const nextConfig: NextConfig = {
       ]),
 
       ...MOVED,
+      ...EXTERNAL,
     ];
   },
 };

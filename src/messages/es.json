@@ -217,133 +217,11 @@
       "cta": "Solicitar Demostración B2B"
     }
   },
-  "Partners": {
-    "hero": {
-      "eyebrow": "Para quien recibe turistas",
-      "title": "Aparece ante el turista que ya está en tu calle",
-      "subtitle": "Tu negocio puede formar parte de la historia de esa calle: todo turista de Tuggi encuentra y lee tu local, y quien lleva la guía encendida lo escucha. Ningún plan de Tuggi te esconde del turista."
-    },
-    "grid": {
-      "title": "Elige tu tipo de negocio",
-      "lead": "Cada negocio encuentra al turista en un momento distinto del día. Busca el tuyo y hablamos de él.",
-      "actionOpen": "Ver cómo funciona"
-    },
-    "mechanism": {
-      "place": "el mostrador, la habitación, el coche"
-    },
-    "seo": {
-      "primaryTerm": "programa de alianzas",
-      "title": "Programa de alianzas para quien recibe turistas",
-      "description": "Restaurantes, hoteles, transfers y alquiler de coches: mira cómo tu negocio puede aparecer ante el turista que ya usa Tuggi en tu calle, con el plan que tenga."
-    },
-    "cta": {
-      "action": "Quiero aparecer en Tuggi"
-    },
-    "FAQ": {
-      "title": "Las preguntas que más nos hacen",
-      "q1": "¿Cuánto cuesta?",
-      "a1": "Aparecer en Tuggi no cuesta nada: te registras, te aprobamos, muestras el Código QR y, tras la evaluación, tu local queda publicado, encontrado y leído por todo turista. Tuggi tampoco se queda con parte de tus ventas, y tú no pagas el acceso de nadie. Quien paga por Tuggi es el turista. Hay una parte de la alianza que es de pago, fuera de esa lista, y la vemos contigo.",
-      "q2": "¿Tengo que cambiar algo en mi operación?",
-      "a2": "Dos cosas. Pones el Código QR donde el turista ya mira —en la carta, en la recepción, en el mostrador, en el respaldo del asiento— y nos cuentas la historia de tu local, una sola vez. Fuera de eso, la alianza no exige integración con tu sistema, ni equipos, ni software que tu equipo tenga que manejar.",
-      "q3": "¿Mi local entra de verdad en Tuggi?",
-      "a3": "No es automático, y preferimos decirlo ahora. Una vez aprobada la alianza, nuestro equipo evalúa tu local. Entran lugares permanentes, abiertos al público y con historia propia que contar. No hace falta ser famoso ni antiguo. Si falta algo, te decimos qué fue, y puedes corregirlo y presentarlo de nuevo.",
-      "q4": "¿Y si mi local no entra?",
-      "a4": "Sigues siendo aliado. Tu Código QR, el turista atribuido a ti y tu participación en los ingresos no dependen de eso. Nada de lo que ya tienes desaparece.",
-      "q5": "¿Y si mi huésped no habla español?",
-      "a5": "Tuggi habla {contentLanguages} idiomas con el turista. Cuando tu local está publicado, se lee en el idioma de quien llegue. Y quien lleva la guía encendida lo escucha en ese mismo idioma. Producimos la narración en el momento en que alguien la pide en ese idioma.",
-      "q6": "¿Cuánto gano con esto?",
-      "a6": "El turista descarga Tuggi con tu Código QR y queda atribuido a ti. A partir de ahí, toda compra que haga entra en el cálculo de tu participación en los ingresos. El porcentaje se define en un acuerdo comercial, y de eso hablamos cuando dejas tu contacto aquí abajo."
-    },
-    "form": {
-      "title": "El primer paso es una conversación",
-      "body": "Deja tu contacto y te respondemos por el canal que elijas, con lo que la alianza hace en tu caso. Dejar el contacto no cuesta nada y no te compromete a nada.",
-      "allRequired": "Todos los campos son obligatorios.",
-      "name": "Tu nombre",
-      "business": "Nombre de tu negocio",
-      "businessType": "Tipo de negocio",
-      "businessTypePlaceholder": "Selecciona una opción",
-      "businessTypeOther": "Otro",
-      "channelLegend": "¿Cómo prefieres que hablemos contigo?",
-      "channelWhatsapp": "WhatsApp",
-      "channelEmail": "Correo",
-      "whatsappLabel": "Tu WhatsApp",
-      "whatsappHint": "Con código de país y prefijo. Ejemplo: +34 600 000 000.",
-      "emailLabel": "Tu correo electrónico",
-      "emailHint": "Puede ser el correo que ya usas cada día.",
-      "sending": "Enviando…",
-      "consent": "Autorizo a Tuggi a guardar estos datos y a contactarme por llamada, WhatsApp o correo — solo sobre esta alianza. Lee la <policy>Política de Privacidad</policy>.",
-      "consentLinkNewTab": "se abre en una pestaña nueva",
-      "errorSummary": "Revisa los campos marcados abajo antes de enviar.",
-      "errorName": "Escribe tu nombre.",
-      "errorBusiness": "Escribe el nombre de tu negocio.",
-      "errorBusinessType": "Elige el tipo de negocio.",
-      "errorWhatsapp": "Escribe el número con código de país y prefijo — por ejemplo, +34 600 000 000.",
-      "errorEmail": "Escribe un correo con @ y dominio — por ejemplo, nombre@ejemplo.com.",
-      "errorConsent": "Marca la autorización para que podamos contactarte.",
-      "errorSend": "No se pudo enviar ahora. Inténtalo de nuevo en un momento: lo que escribiste sigue aquí.",
-      "successTitle": "Recibimos tu contacto.",
-      "successBody": "Hablamos contigo por el canal que elegiste, para entender cómo llega el turista a tu negocio. El registro en sí se hace después, dentro de la aplicación de Tuggi, y te mostramos el camino.",
-      "noscript": "Sin JavaScript el envío no funciona. Escribe a {email} y te respondemos."
-    }
-  },
   "Segments": {
     "commercial": {
       "title": "Cómo funciona tu participación en los ingresos",
       "lead": "Ofreces Tuggi a tu cliente. Cuando compra, una parte de la venta vuelve a ti.",
       "note": "El porcentaje se define en el acuerdo comercial."
-    },
-    "steps": {
-      "title": "Cómo funciona la alianza",
-      "s1Title": "Te registras y lo aprobamos",
-      "s1Body": "El registro se hace en la aplicación de Tuggi. Nuestro equipo revisa los datos y aprueba la alianza.",
-      "s2Title": "Muestras tu Código QR",
-      "s2Body": "Una vez aprobado, recibes tu Código QR y lo colocas donde el turista ya está: {place}. Quien descarga Tuggi con ese código queda atribuido a ti.",
-      "s3Title": "Tu participación en los ingresos",
-      "s3Body": "Cada compra del turista atribuido a ti cuenta para tu participación en los ingresos. El porcentaje se define en el acuerdo comercial.",
-      "s4Title": "Tu local puede entrar en Tuggi",
-      "s4Body": "Aprobada la alianza, nuestro equipo evalúa si registra tu local como punto de interés. Es una decisión editorial de Tuggi y no es automática. En un máximo de {partnerTriageHours} horas después de la aprobación tienes el desenlace. Y tu Código QR y tu participación en los ingresos no dependen de él.",
-      "lead": "De tu lado son dos cosas: mostrar el Código QR y contarnos la historia de tu local. El resto pasa en el móvil del turista."
-    },
-    "cta": {
-      "title": "Cuéntanos cómo llega el turista hasta ti",
-      "body": "Te respondemos con lo que la alianza hace en tu caso, sin compromiso.",
-      "action": "Hablar con Tuggi"
-    },
-    "car-rental": {
-      "hub": {
-        "cardTitle": "Alquiler de coches",
-        "cardBody": "El turista recoge el coche y se lleva la guía con él. El Código QR va en el mostrador o dentro del vehículo."
-      }
-    },
-    "lodging": {
-      "hub": {
-        "cardTitle": "Alojamiento",
-        "cardBody": "El huésped llega sin saber qué hacer en la ciudad. El Código QR va en recepción o en la habitación."
-      }
-    },
-    "transfer": {
-      "hub": {
-        "cardTitle": "Traslados y taxi",
-        "cardBody": "Del aeropuerto al hotel es la primera media hora del viaje. El Código QR va en el respaldo o en la ventanilla."
-      }
-    },
-    "motorhome": {
-      "hub": {
-        "cardTitle": "Autocaravanas",
-        "cardBody": "Quien viaja en autocaravana pasa el día en la carretera. El Código QR va en la entrega del vehículo, junto con las llaves."
-      }
-    },
-    "restaurants": {
-      "hub": {
-        "cardTitle": "Restaurantes",
-        "cardBody": "Quien se sienta a comer tiene tiempo de escuchar. El Código QR va en la carta o en la cuenta."
-      }
-    },
-    "receptive": {
-      "hub": {
-        "cardTitle": "Receptivos y excursiones",
-        "cardBody": "El pasajero pasa el día contigo y quiere oír sobre lo que está viendo. El Código QR va en el voucher o en el punto de encuentro."
-      }
     }
   },
   "Technology": {
@@ -975,7 +853,8 @@
     "toggleCaptions": "Activar o desactivar los subtítulos",
     "skipToContent": "Ir al contenido principal",
     "playAudio": "Reproducir audio",
-    "pauseAudio": "Pausar audio"
+    "pauseAudio": "Pausar audio",
+    "opensInNewTab": "se abre en una pestaña nueva"
   },
   "Updates": {
     "seo": {

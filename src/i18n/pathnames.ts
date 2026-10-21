@@ -21,8 +21,9 @@
  *    material already handed out and drops commission attribution in silence
  *    (DS-COPY-006, edge case 1).
  *  - **A route with no page still 404s.** Declaring a word here does not
- *    publish anything; `/partners` is in the map and the hub does not exist
- *    yet. tests/e2e/routing.spec.ts asserts exactly that.
+ *    publish anything. tests/e2e/routing.spec.ts asserts exactly that. The one
+ *    exception is a route whose page left for another product: it stays in the
+ *    map so its old URLs can answer 301 (`EXTERNAL_ROUTES` below).
  *
  * Not translated yet, by cost and not by preference (spec §8.3 and §8.4):
  * `/tours` and its subtree (49 routes × 4 locales = 244 indexable URLs — its
@@ -35,6 +36,7 @@
  */
 import { LOCALES, type SiteLocale } from "./locales";
 import { SEGMENTS, segmentPathname } from "../lib/segments";
+import { PARTNER_PORTAL_URL } from "../lib/partner-portal";
 
 /** An entry is either one slug for every locale, or a slug per locale. */
 type PathnameEntry = string | Record<SiteLocale, string>;
@@ -71,6 +73,8 @@ const sharedSlugPathnames = Object.fromEntries(
 
 /** Routes whose slug is translated. Words from spec §8.3. */
 const TRANSLATED_ROUTES = {
+  // No page since #990: the four slugs stay because the proposal is composed from them and
+  // because the old URLs answer 301 to the Locais portal (`EXTERNAL_ROUTES`).
   "/partners": {
     pt: "/parcerias",
     en: "/partners",
@@ -268,3 +272,16 @@ export const MOVED_ROUTES = [
   { from: "/technology", to: "/technology" },
   { from: "/enterprise/city-os", to: "/destinations" },
 ] as const satisfies readonly { from: string; to: StaticAppPathname }[];
+
+/**
+ * Routes whose page left the site for another product, answered with a permanent redirect to it.
+ *
+ * `/partners` is the Locais portal since #990: the portal is where an establishment registers
+ * and pays (BR-B2B-043), and the site's own partnership page was a detour before it. Only the
+ * exact path moves; `/partners/proposal` keeps its page. next.config.ts turns this into
+ * `redirects()` for the four public slugs and their un-prefixed forms, and
+ * tests/e2e/partners-portal.spec.ts asserts the 301s.
+ */
+export const EXTERNAL_ROUTES = [
+  { from: "/partners", to: PARTNER_PORTAL_URL },
+] as const satisfies readonly { from: StaticAppPathname; to: `https://${string}` }[];

@@ -1135,45 +1135,17 @@ const CLAIM_FAMILIES: ClaimFamily[] = [
         ],
         why:
           'The Italian "Acquista 10 ore nell\'app" is the *traveller* buying a pass ' +
-          "inside the app — the same word, for the same money flow, as the two " +
-          "waivers below. Nothing here is bought, licensed or invoiced by a partner: " +
+          "inside the app — the same word, for the same money flow, as the " +
+          "waiver below. Nothing here is bought, licensed or invoiced by a partner: " +
           "the passes are sold to the tourist by the store (BR-MONETIZACAO-048 and " +
           "061), and B2B partners distribute without paying (BR-B2B-004). The pattern " +
           "reads the verb, not who pays.",
       },
       {
-        keys: ["Segments.steps.s3Body"],
-        why:
-          "The same Italian word for the same fact, published by #195: what the " +
-          "*traveller* buys is the input of the partner's revenue share " +
-          "(BR-B2B-007 item 4, BR-B2B-005). The pattern reads the verb and not who " +
-          "pays, which is why Fleets.Financial.col3Desc is waived above for the " +
-          "same word — the vocabulary of the two is deliberately identical (copy " +
-          "doc §2, step three). Nothing here is bought, licensed or invoiced by " +
-          "the partner. Partners.seo.description was waived alongside this key " +
-          "until #316 rewrote its closing clause: the word is gone from all four " +
-          "locales, and a waiver that covers nothing is a hole waiting for the " +
-          "next sentence.",
-      },
-      // Partners.FAQ.a1 was waived here for the invoice it denied and for the
-      // Italian purchase it named. #316 rewrote the answer under BR-B2B-015
-      // items 4 and 8 — the denial is now scoped to a named list and neither
-      // word survives in any locale — so the waiver goes with the sentence that
-      // needed it.
-      {
-        keys: ["Partners.FAQ.a6"],
-        why:
-          "The same Italian word for the same fact as Segments.steps.s3Body: what " +
-          "the *traveller* buys is the input of the partner's revenue share " +
-          "(BR-B2B-007 item 4, BR-B2B-005). The answer publishes no percentage, no " +
-          "band and no projection — the percentage is a commercial agreement, which " +
-          "is what the sentence says.",
-      },
-      {
         keys: ["Segments.commercial.lead"],
         why:
           "The Italian verb of buying, and the buyer is the *traveller* — the same " +
-          "fact and the same money flow as Segments.steps.s3Body above " +
+          "fact and the same money flow as Fleets.Financial.col3Desc above " +
           "(BR-B2B-007 item 4, BR-B2B-005). The denial of investment this waiver " +
           "used to cover is gone: #316 cut it under BR-B2B-015 item 4, which bans " +
           "it in letter, and the sentence now states the revenue share and nothing " +
@@ -1267,10 +1239,7 @@ const PARTNER_NAMESPACES = [
   "Fleets",
   "CityOS",
   "Technology",
-  // The hub's own copy (#195). `Segments` was here before it and covers the
-  // blocks the hub shares with the segment template; `Partners` is the half
-  // that only the hub reads, and it was outside every scope until now.
-  "Partners",
+  // `Partners`, the hub's own copy (#195), left with the hub in #990.
   "Segments",
   "SEO_FLEETS",
   "SEO_CITY_OS",
@@ -1284,10 +1253,8 @@ const PARTNER_NAMESPACES = [
  * the 301 and stop checking the page it names.
  */
 const PARTNER_PAGES = [
-  // The hub, published by #195. It is the surface this whole file is about —
-  // the page a business owner reads before anything else — so it is read like
-  // the other three rather than trusted because its copy came reviewed.
-  "/partners",
+  // The hub of #195 was here until #990 turned `/partners` into a 301 to the
+  // Locais portal, whose copy is checked in tuggi-places.
   "/enterprise/fleets",
   "/destinations",
   "/technology",

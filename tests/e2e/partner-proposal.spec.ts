@@ -6,6 +6,7 @@ import { MOCK_SUPABASE_PORT } from "../../playwright.config";
 import { LOCALES, type SiteLocale } from "../../src/i18n/locales";
 import { localizedPathname } from "../../src/i18n/pathnames";
 import { PROPOSAL_LOCALE, PROPOSAL_ROUTE } from "../../src/lib/partner-proposal/link";
+import { PARTNER_PORTAL_URL } from "../../src/lib/partner-portal";
 import {
   DEFAULT_PLAN_CHOICE,
   FORBIDDEN_FIELDS,
@@ -216,54 +217,29 @@ test.describe("the proposal answers at one address, in one language", () => {
 });
 
 /* -------------------------------------------------------------------------- */
-/* 2. DS-COMPONENTE-026 — the bridge, and the way back                        */
+/* 2. The way back                                                            */
 /* -------------------------------------------------------------------------- */
 
-test.describe("DS-COMPONENTE-026: a bridge only where the destination can be completed", () => {
-  test("the pt hub links to the proposal and the other three hubs do not", async ({ request }) => {
-    const pt = await (await request.get(urlFor("pt", "/partners"))).text();
-    expect(pt, "pt hub links to the proposal").toContain(`href="${PROPOSAL_URL}"`);
-
-    for (const locale of LOCALES.filter((one) => one !== PROPOSAL_LOCALE)) {
-      const html = await (await request.get(urlFor(locale, "/partners"))).text();
-      // Every slug variant, not just this locale's: a link built with the wrong locale would be
-      // a path to the same unfinishable task.
-      for (const variant of LOCALES) {
-        expect(html, `${locale} hub must not link to the ${variant} slug`).not.toContain(
-          `href="${urlFor(variant, PROPOSAL_ROUTE)}"`
-        );
-      }
-    }
-  });
-
-  test("the way back is above the first field, and it points at the landing form", async ({
+test.describe("the way back from the proposal", () => {
+  test("#990: the way back is above the first field, and it opens the Locais portal in a new tab", async ({
     request,
   }) => {
+    // The bridge from the site's partnership page into this form left with that page in #990;
+    // the way back now leads to the portal, the one partnership door (BR-B2B-043).
     const html = await (await request.get(PROPOSAL_URL)).text();
-    const backHref = `${urlFor("pt", "/partners")}#lead-form`;
 
-    const back = html.indexOf(`href="${backHref}"`);
+    const back = html.indexOf(`href="${PARTNER_PORTAL_URL}"`);
     const firstInput = html.indexOf("<input");
 
-    expect(back, `link to ${backHref}`).toBeGreaterThan(-1);
+    expect(back, `link to ${PARTNER_PORTAL_URL}`).toBeGreaterThan(-1);
     expect(firstInput, "the page renders a field").toBeGreaterThan(-1);
     // Whoever landed on the wrong surface has to find out before 21 fields, not after three
     // steps.
     expect(back, "the way back comes before the first <input>").toBeLessThan(firstInput);
-  });
 
-  test("the bridge is not a button: it carries no filled-surface class", async ({ request }) => {
-    const html = await (await request.get(urlFor("pt", "/partners"))).text();
-    const anchor = html.slice(
-      html.indexOf(`href="${PROPOSAL_URL}"`) - 400,
-      html.indexOf(`href="${PROPOSAL_URL}"`) + 200
-    );
-    // The page has one destination by a registered decision; a second target with the weight of
-    // a button divides the funnel.
-    expect(anchor, "the bridge must not use the filled action surface").not.toContain(
-      "bg-tuggi-secondary"
-    );
-    expect(anchor).toContain("underline");
+    const anchor = html.slice(html.lastIndexOf("<a", back), html.indexOf(">", back) + 1);
+    expect(anchor, "the way back opens a new tab").toContain('target="_blank"');
+    expect(anchor, "the way back carries noopener").toMatch(/rel="[^"]*\bnoopener\b/);
   });
 });
 
@@ -292,8 +268,7 @@ test.describe("DS-COPY-018: the copy points at a channel that exists", () => {
     const offenders = [...values]
       .filter(([, value]) => /@\s*tuggi\.app/i.test(value))
       .map(([key]) => key);
-    // One owner for the address: `Contact.Sidebar.pressValue`, the way `Partners.form.noscript`
-    // already takes it.
+    // One owner for the address: `Contact.Sidebar.pressValue`.
     expect(offenders).toEqual([]);
 
     // `states.taxIdRegisteredBody` left this list on 2026-08-19 with the refusal it belonged to;
@@ -896,28 +871,6 @@ test.describe("BR-B2B-026: the proposal takes the number the site taught one cli
     }
   });
 
-  test("BR-B2B-026: the example published on the landing page passes this form's validation", () => {
-    // THE POINT OF THIS TEST IS THE JOIN, not either side. `Partners.form.whatsappHint` is the
-    // hint under the telephone field of the landing form, one click before this one, and it
-    // publishes a number with the country code. Until #402 this form answered "Escreva o
-    // telefone com DDD" to that exact number — a message that denied what the person had just
-    // done and asked for a correction they had already made.
-    const hint = flatten(messagesFor("pt").Partners as Record<string, unknown>).get(
-      "form.whatsappHint"
-    );
-    expect(hint, "Partners.form.whatsappHint exists in pt.json").toBeTruthy();
-
-    const example = hint!.match(/\+\d[\d\s()-]*\d/)?.[0];
-    expect(example, `the hint publishes a number to copy — got "${hint}"`).toBeTruthy();
-
-    // Editing either side alone turns this red: change the hint's example to a shape the form
-    // refuses, or narrow `PHONE_DIGITS` back, and the divergence is caught here instead of by a
-    // merchant on step 2 of 4.
-    expect(phoneProblems(example!), `the published example "${example}" must be accepted`).toEqual(
-      []
-    );
-  });
-
   test("BR-B2B-026: the field's own help carries an example this form accepts", () => {
     const help = flatten(messagesFor("pt").PartnerProposal).get(
       "fields.representative_phone.help"
@@ -985,7 +938,7 @@ test.describe("DS-COMPONENTE-026: the language switcher offers what the route se
   });
 
   test("a route that serves the four still offers the four", async ({ page }) => {
-    await page.goto(urlFor("pt", "/partners"));
+    await page.goto(urlFor("pt", "/destinations"));
     await page.locator("[data-locale-trigger]").click();
 
     // THE MUTATION THIS CATCHES: making the switcher single-locale everywhere instead of on the

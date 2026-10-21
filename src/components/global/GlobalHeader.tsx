@@ -1,12 +1,12 @@
 "use client";
 
-import { useCallback, useState, useEffect, useRef } from "react";
+import { useCallback, useState, useEffect, useRef, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { Link, usePathname } from "@/i18n/routing";
 import Image from "next/image";
 import { ChevronDown, Menu, X, Smartphone } from "lucide-react";
-import { VISIBLE_NAV_ITEMS } from "@/lib/nav";
+import { VISIBLE_NAV_ITEMS, isExternalHref, type NavItem } from "@/lib/nav";
 import type { SiteLocale } from "@/i18n/locales";
 import { localesServedOn } from "@/i18n/served-locales";
 
@@ -16,6 +16,47 @@ import { localesServedOn } from "@/i18n/served-locales";
  * catching things whose focusability depends on state we do not control.
  */
 const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+/**
+ * One menu entry, in either of its two shapes. A page of this site goes through the typed
+ * `<Link>`, which resolves the slug of the current locale. Another product (the Locais portal,
+ * since #990) is a plain anchor that opens in a new tab and says so to a screen reader, so the
+ * visitor keeps the site open behind it. `noopener` and not `noreferrer`: the portal is ours,
+ * and the referrer is how it knows the visitor came from the site.
+ */
+function NavLink({
+  item,
+  className,
+  onClick,
+  children,
+}: {
+  item: NavItem;
+  className: string;
+  onClick?: () => void;
+  children: ReactNode;
+}) {
+  const tA11y = useTranslations("A11y");
+  if (isExternalHref(item.href)) {
+    return (
+      <a
+        href={item.href}
+        target="_blank"
+        rel="noopener"
+        data-nav-item={item.labelKey}
+        onClick={onClick}
+        className={className}
+      >
+        {children}
+        <span className="sr-only">{` ${tA11y("opensInNewTab")}`}</span>
+      </a>
+    );
+  }
+  return (
+    <Link href={item.href} data-nav-item={item.labelKey} onClick={onClick} className={className}>
+      {children}
+    </Link>
+  );
+}
 
 export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
   const t = useTranslations("Header");
@@ -202,14 +243,13 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
               renders, so the two widths cannot drift apart again. */}
           <div className="hidden lg:flex items-center gap-8">
             {VISIBLE_NAV_ITEMS.map((item) => (
-              <Link
+              <NavLink
                 key={item.href}
-                href={item.href}
-                data-nav-item={item.labelKey}
+                item={item}
                 className="text-sm font-semibold text-slate-600 hover:text-tuggi-primary-text transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text rounded-sm py-2 whitespace-nowrap"
               >
                 {t(item.labelKey)}
-              </Link>
+              </NavLink>
             ))}
           </div>
 
@@ -341,16 +381,15 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
         <div className="flex-1 overflow-y-auto bg-white py-4">
           <nav data-nav-scope="mobile" className="flex flex-col" aria-label={tA11y("sitePages")}>
             {VISIBLE_NAV_ITEMS.map((item) => (
-              <Link
+              <NavLink
                 key={item.href}
-                href={item.href}
-                data-nav-item={item.labelKey}
+                item={item}
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="flex items-center justify-between px-6 py-5 text-[15px] font-semibold text-slate-700 hover:bg-slate-50 border-b border-slate-50 transition-colors"
               >
                 <span>{t(item.labelKey)}</span>
                 <ChevronDown className="w-4 h-4 text-slate-300 -rotate-90" />
-              </Link>
+              </NavLink>
             ))}
           </nav>
         </div>

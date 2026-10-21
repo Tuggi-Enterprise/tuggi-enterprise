@@ -12,8 +12,7 @@ import {
 import { AlertCircle, CheckCircle2, Loader2, WifiOff } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
-import { localizedPathname } from "@/i18n/pathnames";
-import { LEAD_FORM_ID } from "@/lib/lead-form";
+import { PARTNER_PORTAL_URL } from "@/lib/partner-portal";
 import {
   PARTNER_FORM_STEP_COUNT,
   PARTNER_FORM_FIELDS,
@@ -33,7 +32,6 @@ import {
   type FieldProblem,
   type PartnerAnswers,
 } from "@/lib/partner-proposal/schema";
-import { PROPOSAL_LOCALE } from "@/lib/partner-proposal/link";
 import { clearMirror, readMirror, writeMirror } from "@/lib/partner-proposal/draft-mirror";
 import { isCompletePostalCode, postalCodeDigits } from "@/lib/partner-proposal/field-format";
 import {
@@ -108,16 +106,6 @@ type AskStep = PartnerField["step"];
 
 type Failure = "submit" | "unavailable" | "too_many" | null;
 
-/**
- * Where the "I have not spoken to anyone yet" link goes: the landing page, at its form.
- *
- * Built from the route map and from `LEAD_FORM_ID`, so neither the slug nor the anchor is
- * written twice — and as a plain `<a>` because next-intl's typed `Link` has no place for a hash
- * in this version, and inventing one by string-concatenating onto a typed href would be the
- * same slug written twice with extra steps.
- */
-const BACK_TO_LANDING = `/${PROPOSAL_LOCALE}${localizedPathname(PROPOSAL_LOCALE, "/partners")}#${LEAD_FORM_ID}`;
-
 /** Required fields, counted once: the denominator of the progress bar. */
 const REQUIRED_FIELD_IDS = PARTNER_FORM_FIELDS.filter((field) => field.required).map(
   (field) => field.id
@@ -125,6 +113,7 @@ const REQUIRED_FIELD_IDS = PARTNER_FORM_FIELDS.filter((field) => field.required)
 
 export function PartnerProposalForm({ contactEmail }: { contactEmail: string }) {
   const t = useTranslations("PartnerProposal");
+  const tA11y = useTranslations("A11y");
 
   // Read once, on the first render, and never again: re-reading would fight the person's
   // typing, and `useState` with an initialiser is the form React sanctions for this.
@@ -438,8 +427,12 @@ export function PartnerProposalForm({ contactEmail }: { contactEmail: string }) 
       <p className="mb-2 text-base text-tuggi-slate leading-relaxed">
         {t.rich("lede", {
           lp: (chunks) => (
-            <a href={BACK_TO_LANDING} className={LINK_INLINE}>
+            // The "I have not spoken to anyone yet" way out: the Locais portal, the one
+            // partnership door since #990 (BR-B2B-043). A new tab, so whoever opened this form
+            // by mistake does not lose it on the way out.
+            <a href={PARTNER_PORTAL_URL} target="_blank" rel="noopener" className={LINK_INLINE}>
               {chunks}
+              <span className="sr-only">{` ${tA11y("opensInNewTab")}`}</span>
             </a>
           ),
         })}

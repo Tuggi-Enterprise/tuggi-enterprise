@@ -14,32 +14,36 @@
  *
  * Contact is deliberately not here. It lives in the CTA of each partner page
  * and in the footer (§8.6): the header CTA is "Download app", which is the
- * traveller; contact is the partner, and he arrives through Partners.
+ * traveller; contact is the partner, and he arrives through Partners, which is the Locais
+ * portal since #990.
  */
 import type { StaticAppPathname } from "@/i18n/pathnames";
+import { PARTNER_PORTAL_URL } from "@/lib/partner-portal";
 
-/**
- * The partners hub (`/partners`). True since #195: the page and its copy in
- * the four locales landed together, and the item is the first of the menu.
- *
- * The flag stays because it is half of a pair. `src/app/[locale]/partners/
- * page.tsx` is the other half, and tests/e2e/routing.spec.ts fails if the two
- * disagree in either direction: the flag alone puts a 404 in the menu, the
- * page alone leaves a published page nobody can navigate to.
- */
-export const PARTNERS_HUB_PUBLISHED = true;
+/** A destination that is another product, not a page of this site. */
+export type ExternalHref = `https://${string}`;
 
 export type NavItem = {
   /** Key inside the `Header` i18n namespace. */
   labelKey: string;
-  /** Internal pathname; the public slug per locale comes from the route map. */
-  href: StaticAppPathname;
+  /**
+   * Internal pathname, whose public slug per locale comes from the route map, or the absolute
+   * URL of another product, which the header opens in a new tab.
+   */
+  href: StaticAppPathname | ExternalHref;
   /** False while the destination has no page. */
   published: boolean;
 };
 
+/** Whether a menu destination lives outside the site. */
+export function isExternalHref(href: NavItem["href"]): href is ExternalHref {
+  return href.startsWith("https://");
+}
+
 export const NAV_ITEMS: readonly NavItem[] = [
-  { labelKey: "navPartners", href: "/partners", published: PARTNERS_HUB_PUBLISHED },
+  // Partners is the Locais portal since #990: the site's own partnership page is gone and its
+  // URLs answer 301 there (`EXTERNAL_ROUTES` in src/i18n/pathnames.ts).
+  { labelKey: "navPartners", href: PARTNER_PORTAL_URL, published: true },
   { labelKey: "navDestinations", href: "/destinations", published: true },
   { labelKey: "navTech", href: "/technology", published: true },
   // "Plans" is the visible label and has been for a while; the slug is still
@@ -74,6 +78,8 @@ export const VISIBLE_NAV_ITEMS = NAV_ITEMS.filter((item) => item.published);
  */
 const ARTICLE_RAIL_HREFS: readonly StaticAppPathname[] = ["/tours", "/destinations", "/drive"];
 
-export const ARTICLE_RAIL_ITEMS: readonly NavItem[] = ARTICLE_RAIL_HREFS.map((href) =>
-  VISIBLE_NAV_ITEMS.find((item) => item.href === href)
-).filter((item): item is NavItem => item !== undefined);
+export const ARTICLE_RAIL_ITEMS: readonly (NavItem & { href: StaticAppPathname })[] =
+  ARTICLE_RAIL_HREFS.map((href) => VISIBLE_NAV_ITEMS.find((item) => item.href === href)).filter(
+    (item): item is NavItem & { href: StaticAppPathname } =>
+      item !== undefined && !isExternalHref(item.href)
+  );

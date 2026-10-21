@@ -2,6 +2,7 @@ import { test, expect } from "@playwright/test";
 import fs from "node:fs";
 import path from "node:path";
 import {
+  EXTERNAL_ROUTES,
   MOVED_ROUTES,
   buildSegmentPathnames,
   localizedPathname,
@@ -14,7 +15,7 @@ import {
   segmentPathname,
   type Segment,
 } from "../../src/lib/segments";
-import { NAV_ITEMS, PARTNERS_HUB_PUBLISHED, VISIBLE_NAV_ITEMS } from "../../src/lib/nav";
+import { NAV_ITEMS, VISIBLE_NAV_ITEMS, isExternalHref, type NavItem } from "../../src/lib/nav";
 
 /**
  * DS-COPY-006 — "the slug is text shown to the user: translated, unaccented,
@@ -73,11 +74,16 @@ function url(locale: string, internalRoute: string): string {
   return slug === "/" ? `/${locale}` : `/${locale}${slug}`;
 }
 
+/** The href a menu item renders: another product's URL as is, a page of the site per locale. */
+function menuHref(locale: string, item: NavItem): string {
+  return isExternalHref(item.href) ? item.href : url(locale, item.href);
+}
+
 /**
  * Declared, but with no page: the word is decided and the URL does not exist.
  *
  * Two kinds, and the same rule answers for both. A route that sits in the map
- * with no page file — `/partners` was that case until #195 built the hub — and
+ * with no page file, and
  * a **reserved** segment (spec §1.2), whose four slugs are decided in
  * `SEGMENTS` and which deliberately never enters the map. So `pathnames` alone
  * cannot be where this list looks: it would have gone empty the day the hub
@@ -88,11 +94,19 @@ function url(locale: string, internalRoute: string): string {
  * and hand back `/pt/parcerias/restaurants` — an address nobody declared, so a
  * 404 for the wrong reason.
  */
+/**
+ * Routes whose page left for another product answer 301 there, not 404 — that
+ * is asserted in tests/e2e/partners-portal.spec.ts, so they are out of here.
+ */
+const LEFT_THE_SITE: string[] = EXTERNAL_ROUTES.map(({ from }) => from);
+
 const DECLARED_WITHOUT_PAGE: { route: string; urlFor: (locale: SiteLocale) => string }[] = [
-  ...STATIC_ROUTES.filter((route) => !hasPage(route)).map((route) => ({
-    route,
-    urlFor: (locale: SiteLocale) => url(locale, route),
-  })),
+  ...STATIC_ROUTES.filter((route) => !hasPage(route) && !LEFT_THE_SITE.includes(route)).map(
+    (route) => ({
+      route,
+      urlFor: (locale: SiteLocale) => url(locale, route),
+    })
+  ),
   ...SEGMENTS.filter((segment) => !segment.published).map((segment) => ({
     route: segmentPathname(segment.key),
     urlFor: (locale: SiteLocale) => `/${locale}/${segment.slugs[locale]}`,
@@ -435,7 +449,7 @@ test.describe("main menu", () => {
     for (const locale of LOCALES) {
       await page.goto(`/${locale}`);
 
-      const expectedHrefs = VISIBLE_NAV_ITEMS.map((item) => url(locale, item.href));
+      const expectedHrefs = VISIBLE_NAV_ITEMS.map((item) => menuHref(locale, item));
 
       // `data-nav-scope`, not the landmark name: the names are copy now
       // (A11y.mainNavigation / A11y.mobileNavigation, #198) and change with the
@@ -471,9 +485,11 @@ test.describe("main menu", () => {
     // page file exists, in both directions, and the menu has to show exactly
     // the ones that do. Listing the hidden hrefs by hand is what would have
     // gone quietly true-because-empty the day the list emptied.
+    // An item that is another product (the Locais portal, #990) has no page
+    // file here by definition; what it must be is published.
     for (const item of NAV_ITEMS) {
       expect(item.published, `${item.href}: published flag vs. its page file`).toBe(
-        hasPage(item.href)
+        isExternalHref(item.href) || hasPage(item.href)
       );
     }
 
@@ -490,25 +506,15 @@ test.describe("main menu", () => {
       // `hidden`.)
       await expect(header, `desktop nav in ${locale}`).toHaveCount(1);
       for (const item of hidden) {
-        await expect(header.locator(`a[href="${url(locale, item.href)}"]`)).toHaveCount(0);
+        await expect(header.locator(`a[href="${menuHref(locale, item)}"]`)).toHaveCount(0);
       }
       // The other half, and it is what keeps the loop above from proving
       // nothing while `hidden` is empty: what is published is on screen.
       for (const item of VISIBLE_NAV_ITEMS) {
         await expect(
-          header.locator(`a[data-nav-item][href="${url(locale, item.href)}"]`)
+          header.locator(`a[data-nav-item][href="${menuHref(locale, item)}"]`)
         ).toHaveCount(1);
       }
     }
-  });
-
-  test("the hub flag and the hub page agree with each other", () => {
-    // This is the whole switch: adding src/app/[locale]/partners/page.tsx
-    // without flipping PARTNERS_HUB_PUBLISHED leaves the item invisible, and
-    // flipping it without the page puts a 404 in the menu. Either one fails
-    // here instead of in production.
-    const hubPage = path.join(APP_DIR, "partners/page.tsx");
-    expect(PARTNERS_HUB_PUBLISHED, "PARTNERS_HUB_PUBLISHED vs. src/app/[locale]/partners/page.tsx")
-      .toBe(fs.existsSync(hubPage));
   });
 });

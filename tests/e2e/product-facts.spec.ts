@@ -475,14 +475,6 @@ const PUBLISHED_ON: Record<string, string[]> = {
     "Drive.Comparison.langTuggi",
     "Drive.PlansExplainer.p3",
   ],
-  // The partner hub, mounted by #195. Two strings of the partner copy are fed
-  // by the module, and #306 is what split them: `Segments.steps.s4Body` keeps
-  // `partnerTriageHours` (BR-B2B-010 item 4), and `contentLanguages`
-  // (BR-IDIOMA-001 item 2) moved out of that step into the answer that asks
-  // for it — `Partners.FAQ.a5`, the guest who does not speak the language.
-  // The segment pages read the step, so this entry grows a sibling when the
-  // first of them publishes.
-  "/partners": ["Segments.steps.s4Body", "Partners.FAQ.a5"],
   "/download": ["Download.metaDesc"],
   // The invite page of the referral programme (#840), on the valid code of the
   // mock fixture: the inactive variant states no figure at all.

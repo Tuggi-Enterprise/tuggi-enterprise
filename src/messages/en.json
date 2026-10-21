@@ -217,133 +217,11 @@
       "cta": "Request B2B Demo"
     }
   },
-  "Partners": {
-    "hero": {
-      "eyebrow": "For businesses that welcome travellers",
-      "title": "Be found by the traveller who is already on your street",
-      "subtitle": "Your business can be part of the story of that street: every Tuggi traveller finds and reads your place, and whoever has the guide on hears it. No Tuggi plan hides you from the traveller."
-    },
-    "grid": {
-      "title": "Choose your type of business",
-      "lead": "Every business catches the traveller at a different moment of the day. Find yours, and we will talk about it.",
-      "actionOpen": "See how it works"
-    },
-    "mechanism": {
-      "place": "the counter, the room, the car"
-    },
-    "seo": {
-      "primaryTerm": "partner program",
-      "title": "Partner program for businesses that host travellers",
-      "description": "Restaurants, hotels, transfers and car rentals: see how your business can appear to the traveller already using Tuggi on your street, on any plan."
-    },
-    "cta": {
-      "action": "I want to appear on Tuggi"
-    },
-    "FAQ": {
-      "title": "The questions we hear most",
-      "q1": "What does it cost?",
-      "a1": "Appearing on Tuggi costs nothing: you sign up, we approve you, you display the QR Code and, after we assess it, your place is published, found and read by every traveller. Tuggi also takes no cut of your sales, and you pay for nobody's access. The one who pays for Tuggi is the traveller. There is one paid part of the partnership, outside that list, and we go over it with you.",
-      "q2": "Do I have to change anything in how I work?",
-      "a2": "Two things. You put the QR Code where the traveller is already looking — on the menu, at the front desk, on the counter, on the back of the seat — and you tell us the story of your place, once. Beyond that, the partnership requires no integration with your system, no equipment and no software for your staff to operate.",
-      "q3": "Will my place really get into Tuggi?",
-      "a3": "It is not automatic, and we would rather say so now. Once the partnership is approved, our team assesses your place. What gets in is permanent, open to the public and has a story of its own to tell. It does not have to be famous or old. If something is missing, we tell you what it was, and you can fix it and put it forward again.",
-      "q4": "And if my place does not get in?",
-      "a4": "You are still a partner. Your QR Code, the traveller attributed to you and your revenue share do not depend on it. Nothing you already have goes away.",
-      "q5": "What if my guest does not speak English?",
-      "a5": "Tuggi speaks {contentLanguages} languages to the traveller. When your place is published, it is read in the language of whoever arrives. And whoever has the guide on hears it in that same language. We produce the narration the moment someone asks for it in that language.",
-      "q6": "What do I earn from this?",
-      "a6": "The traveller downloads Tuggi through your QR Code and is attributed to you. From then on, every purchase they make counts towards your revenue share. The percentage is set in a commercial agreement, and that is what we talk about when you leave your details below."
-    },
-    "form": {
-      "title": "The first step is a conversation",
-      "body": "Leave your details and we will reply on the channel you choose, with what the partnership does in your case. Leaving your details costs nothing and commits you to nothing.",
-      "allRequired": "All fields are required.",
-      "name": "Your name",
-      "business": "Name of your business",
-      "businessType": "Type of business",
-      "businessTypePlaceholder": "Select an option",
-      "businessTypeOther": "Other",
-      "channelLegend": "How would you like us to get in touch?",
-      "channelWhatsapp": "WhatsApp",
-      "channelEmail": "Email",
-      "whatsappLabel": "Your WhatsApp number",
-      "whatsappHint": "With country and area code. Example: +1 555 000 0000.",
-      "emailLabel": "Your email",
-      "emailHint": "It can be the address you already use every day.",
-      "sending": "Sending…",
-      "consent": "I allow Tuggi to store these details and to contact me by phone call, WhatsApp or email — about this partnership only. Read the <policy>Privacy Policy</policy>.",
-      "consentLinkNewTab": "opens in a new tab",
-      "errorSummary": "Check the fields marked below before sending.",
-      "errorName": "Enter your name.",
-      "errorBusiness": "Enter the name of your business.",
-      "errorBusinessType": "Choose the type of business.",
-      "errorWhatsapp": "Enter the number with country and area code — for example, +1 555 000 0000.",
-      "errorEmail": "Enter an email with @ and a domain — for example, name@example.com.",
-      "errorConsent": "Tick the consent box so we can get in touch.",
-      "errorSend": "We could not send it just now. Try again in a moment — what you typed is still here.",
-      "successTitle": "We have your details.",
-      "successBody": "We will reach out on the channel you chose, to understand how travellers arrive at your business. The partner registration itself happens later, inside the Tuggi app — and we will walk you through it.",
-      "noscript": "Without JavaScript the form cannot be sent. Write to {email} and we will answer."
-    }
-  },
   "Segments": {
     "commercial": {
       "title": "How your revenue share works",
       "lead": "You offer Tuggi to your customer. When they buy, part of the sale comes back to you.",
       "note": "The percentage is set in the commercial agreement."
-    },
-    "steps": {
-      "title": "How the partnership works",
-      "s1Title": "You sign up and we approve",
-      "s1Body": "Registration happens in the Tuggi app. Our team checks your details and approves the partnership.",
-      "s2Title": "You display your QR Code",
-      "s2Body": "Once approved, you get your QR Code and put it where the traveller already is: {place}. Whoever downloads Tuggi through that code is attributed to you.",
-      "s3Title": "Your revenue share",
-      "s3Body": "Every purchase made by a traveller attributed to you counts towards your revenue share. The percentage is set in the commercial agreement.",
-      "s4Title": "Your venue can join Tuggi",
-      "s4Body": "Once the partnership is approved, our team assesses whether to register your place as a point of interest. It is an editorial decision at Tuggi, and it is not automatic. Within {partnerTriageHours} hours of the approval you have the outcome. And your QR Code and your revenue share do not depend on it.",
-      "lead": "On your side it is two things: display the QR Code and tell us the story of your place. The rest happens on the traveller's phone."
-    },
-    "cta": {
-      "title": "Tell us how travellers reach you",
-      "body": "We will come back with what the partnership does in your case, with no commitment.",
-      "action": "Talk to Tuggi"
-    },
-    "car-rental": {
-      "hub": {
-        "cardTitle": "Car rental",
-        "cardBody": "The traveller picks up the car and takes the guide along. The QR Code goes on the counter or inside the vehicle."
-      }
-    },
-    "lodging": {
-      "hub": {
-        "cardTitle": "Hotels and lodging",
-        "cardBody": "Guests arrive without knowing what to do in the city. The QR Code goes at reception or in the room."
-      }
-    },
-    "transfer": {
-      "hub": {
-        "cardTitle": "Transfer and taxi",
-        "cardBody": "Airport to hotel is the first half hour of the trip. The QR Code goes on the seat back or on the window."
-      }
-    },
-    "motorhome": {
-      "hub": {
-        "cardTitle": "Motorhome",
-        "cardBody": "Motorhome travellers spend the day on the road. The QR Code goes with the keys at handover."
-      }
-    },
-    "restaurants": {
-      "hub": {
-        "cardTitle": "Restaurants",
-        "cardBody": "People sitting down to eat have time to listen. The QR Code goes on the menu or on the bill."
-      }
-    },
-    "receptive": {
-      "hub": {
-        "cardTitle": "Tour operators",
-        "cardBody": "Your guest spends the day with you and wants to hear about what they are seeing. The QR Code goes on the voucher or at the meeting point."
-      }
     }
   },
   "Technology": {
@@ -975,7 +853,8 @@
     "toggleCaptions": "Turn captions on or off",
     "skipToContent": "Skip to main content",
     "playAudio": "Play audio",
-    "pauseAudio": "Pause audio"
+    "pauseAudio": "Pause audio",
+    "opensInNewTab": "opens in a new tab"
   },
   "Updates": {
     "seo": {

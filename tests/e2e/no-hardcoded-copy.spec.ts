@@ -283,8 +283,7 @@ test.describe("copy does not live in code", () => {
  * CNPJ with a check digit, a Brazilian UF and an eight-digit CEP, so an
  * establishment reading the site in Italian cannot finish it. Under
  * `DS-COMPONENTE-026` the page therefore serves `pt` and redirects the other
- * three, and the bridge on the landing page renders only in `pt` — which makes
- * these keys unreachable in en/es/it. A key nobody can read is an orphan
+ * three, which makes these keys unreachable in en/es/it. A key nobody can read is an orphan
  * (CLAUDE.md §6), and 339 translated strings for a door the reader cannot walk
  * through is work thrown away.
  *
@@ -295,10 +294,6 @@ test.describe("copy does not live in code", () => {
  */
 const PT_ONLY_PREFIXES = [
   { prefix: "PartnerProposal.", reason: "the proposal page serves pt and redirects en/es/it" },
-  {
-    prefix: "Partners.form.proposalBridge",
-    reason: "the bridge to the proposal renders only where the proposal can be completed",
-  },
 ];
 
 function isPtOnly(key: string): boolean {
@@ -336,7 +331,7 @@ test.describe("the four message files stay in step", () => {
     expect(
       leaked,
       "A translated copy of these keys is a promise the surface does not keep: the " +
-        "page redirects to pt and the bridge is not rendered. Opening the proposal to " +
+        "page redirects to pt. Opening the proposal to " +
         "another country removes the entry from PT_ONLY_PREFIXES first.",
     ).toEqual([]);
   });

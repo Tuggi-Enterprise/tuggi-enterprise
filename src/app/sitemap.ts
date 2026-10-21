@@ -44,15 +44,13 @@ import {
  * anybody retyping it. The type makes a route that left the map a compile
  * error, and tests/e2e/routing.spec.ts asserts none of these 404.
  *
- * `/partners` joined with #195. It is the entrance for the audience that
- * arrives from a search for a partner program rather than for a destination,
- * and leaving a published page out of the sitemap is how it stays unfound.
+ * `/partners` left with #990: its URLs answer 301 to the Locais portal, and a
+ * sitemap that lists a redirect asks Google to index a page that is not there.
  */
 const routes: StaticAppPathname[] = [
   "/",
   "/drive",
   "/destinations",
-  "/partners",
   "/enterprise/fleets",
   "/technology",
   "/purpose",

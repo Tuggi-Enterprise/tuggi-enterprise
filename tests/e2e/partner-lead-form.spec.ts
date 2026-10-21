@@ -1,4 +1,4 @@
-import { test, expect, type APIRequestContext, type Page } from "@playwright/test";
+import { test, expect, type APIRequestContext } from "@playwright/test";
 import fs from "node:fs";
 import path from "node:path";
 import { MOCK_SUPABASE_PORT } from "../../playwright.config";
@@ -7,12 +7,16 @@ import { LOCALES } from "../../src/i18n/locales";
 import { toE164 } from "../../src/lib/phone";
 import { businessTypeCode, LEAD_BUSINESS_TYPES } from "../../src/lib/business-types";
 import { cityOf } from "../../src/lib/territory";
-import { measuredTextContrast } from "./support/contrast";
 
 /**
- * The partnership lead form of `/parcerias` — card #294, §3 of
+ * The partnership leads of `/api/leads` — card #294, §3 of
  * `docs/design/spec-lp-parcerias-2026-08.md`, and the columns card #295 added
  * to `campaign.inbound_leads`.
+ *
+ * The form that sent them lived on the site's partnership page, which became
+ * the Locais portal in #990. What stays under test is the route, which still
+ * accepts `B2B_PARTNER`, and the privacy policy, which still declares the
+ * contacts already stored.
  *
  * Rules under test, each cited where it is proved: **BR-USUARIO-029** (the
  * contact has one purpose, two channels and a finite cycle — what is testable
@@ -54,13 +58,6 @@ function at(messages: Messages, dotted: string): string {
   return value as string;
 }
 
-/** The form's own block, so a `role="alert"` from the framework is not read as ours. */
-const FORM = '[data-block="partner-lead-form"]';
-
-function hubUrl(locale: string): string {
-  return `/${locale}${localizedPathname(locale, "/partners")}`;
-}
-
 type StoredLead = Record<string, string | null>;
 
 /** The rows the app inserted for one full_name — see the double. */
@@ -76,24 +73,6 @@ async function storedLeads(request: APIRequestContext, fullName: string): Promis
  */
 function uniqueName(label: string): string {
   return `E2E ${label} ${Math.random().toString(36).slice(2, 10)}`;
-}
-
-/**
- * The consent banner is `fixed` at the bottom with `z-[100]` and the form is
- * the last block of the page, so on a first visit it sits over the submit
- * button. Declining it up front is the state of a returning visitor and keeps
- * these tests about the form; the banner itself is `partner-hero.spec.ts`.
- */
-test.beforeEach(async ({ page }) => {
-  await page.addInitScript(() => {
-    window.localStorage.setItem("tuggi_cookie_consent", "false");
-  });
-});
-
-async function fillCommonFields(page: Page, fullName: string) {
-  await page.locator("#lead-name").fill(fullName);
-  await page.locator("#lead-business").fill("Pousada E2E");
-  await page.locator("#lead-business-type").selectOption("lodging");
 }
 
 /* -------------------------------------------------------------------------- */
@@ -166,71 +145,32 @@ test.describe("#295 — the phone reaches the column in the only shape it accept
 });
 
 /* -------------------------------------------------------------------------- */
-/* Half 2 — the two paths that have to store a row                            */
+/* Half 2 — what the route stores and what it refuses                         */
 /* -------------------------------------------------------------------------- */
 
-test.describe("BR-USUARIO-029 — the lead is stored on the channel the prospect chose", () => {
-  test("the WhatsApp-only path stores a row, with the number normalized before the POST", async ({
-    page,
-    request,
-  }) => {
-    // #295 relaxed `email NOT NULL` for exactly this path: the owner of a
-    // restaurant answers WhatsApp and does not open commercial email.
-    const fullName = uniqueName("whatsapp");
-    await page.goto(hubUrl("pt"));
-    await fillCommonFields(page, fullName);
-    // Typed the way a human types it — parentheses, space and dash, all of
-    // which the column refuses.
-    await page.locator("#lead-contact").fill("+55 (22) 99999-8888");
-    await page.locator("#lead-consent").check();
-    await page.getByRole("button", { name: at(messagesFor("pt"), "Segments.cta.action") }).click();
-
-    await expect(page.getByText(at(messagesFor("pt"), "Partners.form.successTitle"))).toBeVisible();
-
-    const [row] = await storedLeads(request, fullName);
-    expect(row, "no row reached campaign.inbound_leads").toBeTruthy();
-    expect(row.phone_e164).toBe("+5522999998888");
-    expect(row.email).toBeNull();
-    expect(row.lead_type).toBe("B2B_PARTNER");
-    expect(row.business_type).toBe("hotel_inn");
-    expect(row.locale).toBe("pt");
-  });
-
-  test("the email-only path stores a row, and freemail goes through", async ({ page, request }) => {
-    // Criterion 16 of spec §9: `ContactRouter` rejects gmail and this funnel
-    // may not — the owner of a restaurant uses gmail.
-    const fullName = uniqueName("email");
-    await page.goto(hubUrl("pt"));
-    await fillCommonFields(page, fullName);
-    await page.getByRole("radio").nth(1).check();
-    await page.locator("#lead-contact").fill("dono@gmail.com");
-    await page.locator("#lead-consent").check();
-    await page.getByRole("button", { name: at(messagesFor("pt"), "Segments.cta.action") }).click();
-
-    await expect(page.getByText(at(messagesFor("pt"), "Partners.form.successTitle"))).toBeVisible();
-    // Scoped to the block: Next's own route announcer is a `role="alert"` too,
-    // and it is not this form's.
-    await expect(page.locator(`${FORM} [role="alert"]`)).toHaveCount(0);
-
-    const [row] = await storedLeads(request, fullName);
-    expect(row.email).toBe("dono@gmail.com");
-    expect(row.phone_e164).toBeNull();
-  });
-
+test.describe("BR-USUARIO-029 — the route stores the lead on the channel it was given", () => {
   test("BR-USUARIO-028 item 1: the row carries no field the policy does not declare", async ({
-    page,
     request,
   }) => {
     // Criterion 27. The policy says the IP is read for the approximate city
     // and not stored, and says nothing about a user agent — so neither may
-    // appear anywhere in the row.
+    // appear anywhere in the row, even when the request carries both.
     const fullName = uniqueName("payload");
-    await page.goto(hubUrl("en"));
-    await fillCommonFields(page, fullName);
-    await page.locator("#lead-contact").fill("+1 555 000 0000");
-    await page.locator("#lead-consent").check();
-    await page.getByRole("button", { name: at(messagesFor("en"), "Segments.cta.action") }).click();
-    await expect(page.getByText(at(messagesFor("en"), "Partners.form.successTitle"))).toBeVisible();
+    const response = await request.post("/api/leads", {
+      headers: {
+        "user-agent": "Mozilla/5.0 HeadlessChrome/140.0",
+        "x-forwarded-for": "203.0.113.7",
+      },
+      data: {
+        lead_type: "B2B_PARTNER",
+        full_name: fullName,
+        company: "Pousada E2E",
+        business_type: "lodging",
+        phone_e164: "+15550000000",
+        locale: "en",
+      },
+    });
+    expect(response.status()).toBe(201);
 
     const [row] = await storedLeads(request, fullName);
     const serialized = JSON.stringify(row).toLowerCase();
@@ -322,229 +262,6 @@ test.describe("BR-USUARIO-029 — the lead is stored on the channel the prospect
     const [row] = await storedLeads(request, fullName);
     expect(row, "no row reached campaign.inbound_leads").toBeTruthy();
     expect(row.business_type).toBe("motorhome");
-  });
-});
-
-/* -------------------------------------------------------------------------- */
-/* Half 3 — what the form does before it sends anything                       */
-/* -------------------------------------------------------------------------- */
-
-test.describe("spec §3 — validation, consent and focus", () => {
-  test("BR-USUARIO-029: an unticked consent box blocks the send, and nothing is stored", async ({
-    page,
-    request,
-  }) => {
-    // LGPD art. 8 and Planet49 (CJEU, C-673/17): the box is never pre-ticked,
-    // and consent is what authorizes the contact the whole page is asking for.
-    const fullName = uniqueName("consent");
-    const messages = messagesFor("pt");
-    await page.goto(hubUrl("pt"));
-
-    await expect(page.locator("#lead-consent")).not.toBeChecked();
-
-    await fillCommonFields(page, fullName);
-    await page.locator("#lead-contact").fill("+55 22 99999-8888");
-
-    const submit = page.getByRole("button", { name: at(messages, "Segments.cta.action") });
-    // Criterion 13: the button is never disabled — the click is what validates.
-    await expect(submit).toBeEnabled();
-    await submit.click();
-
-    await expect(page.locator(`${FORM} [role="alert"]`)).toContainText(
-      at(messages, "Partners.form.errorSummary")
-    );
-    await expect(page.getByText(at(messages, "Partners.form.errorConsent"))).toBeVisible();
-    await expect(page.locator("#lead-consent")).toHaveAttribute("aria-invalid", "true");
-    await expect(page.locator("#lead-consent")).toBeFocused();
-
-    expect(await storedLeads(request, fullName)).toEqual([]);
-  });
-
-  test("DS-COPY-002: an empty send names every field and puts focus on the first", async ({
-    page,
-  }) => {
-    const messages = messagesFor("pt");
-    await page.goto(hubUrl("pt"));
-    await page.getByRole("button", { name: at(messages, "Segments.cta.action") }).click();
-
-    for (const key of ["errorName", "errorBusiness", "errorBusinessType", "errorWhatsapp"]) {
-      await expect(page.getByText(at(messages, `Partners.form.${key}`))).toBeVisible();
-    }
-    await expect(page.locator("#lead-name")).toBeFocused();
-    await expect(page.locator("#lead-name")).toHaveAttribute("aria-invalid", "true");
-    // The message is reachable from the field, in text — colour is never the
-    // only channel (DS-A11Y-003, SC 1.4.1).
-    const describedBy = await page.locator("#lead-name").getAttribute("aria-describedby");
-    expect(describedBy).toBeTruthy();
-    await expect(page.locator(`#${describedBy}`)).toBeVisible();
-  });
-
-  for (const locale of LOCALES) {
-    test(`SC 2.4.4: the consent link announces the new tab as a separate word in ${locale}`, async ({
-      page,
-    }) => {
-      // #304, second half. The separator between the policy title and the
-      // `sr-only` warning used to sit between them as a sibling: underlined,
-      // and pushing the sentence's full stop off the last glyph. It moved into
-      // the hidden span instead of being deleted, and the two reads below are
-      // the two halves of that — the underline stops at the title, the DOM
-      // still carries the space.
-      //
-      // The accessible name is deliberately **not** the assertion that proves
-      // this. Chromium joins adjacent inline children with a space of its own,
-      // so `toHaveAccessibleName` stays green with the separator deleted —
-      // measured, not assumed. accname 1.2 step 2F.ii.c only says "append the
-      // result to the accumulated text", and its note of 18 January 2024 says
-      // the ARIA WG is still considering whether to join with spaces. An
-      // engine that follows the letter of the step reads
-      // "Privacy Policyopens in a new tab", so the space belongs in the DOM.
-      const messages = messagesFor(locale);
-      const title = at(messages, "Partners.form.consent").match(
-        /<policy>([^<]+)<\/policy>/
-      )![1];
-      const newTab = at(messages, "Partners.form.consentLinkNewTab");
-
-      await page.goto(hubUrl(locale));
-      const link = page.locator(`${FORM} a[href*="privacy-policy"]`);
-
-      // What every engine reads, before any of them normalizes it.
-      expect(await link.textContent()).toBe(`${title} ${newTab}`);
-
-      // The visible half: what the underline covers is the title and nothing
-      // else. `textContent` above includes the hidden span, so this read is
-      // over the element's own text nodes.
-      const underlined = await link.evaluate((element) =>
-        Array.from(element.childNodes)
-          .filter((node) => node.nodeType === Node.TEXT_NODE)
-          .map((node) => node.textContent)
-          .join("")
-      );
-      expect(underlined).toBe(title);
-
-      // And what this engine announces, which is the requirement itself.
-      await expect(link).toHaveAccessibleName(`${title} ${newTab}`);
-    });
-  }
-
-  test("spec §3.7: the contrast of the error text and of the field border is the measured one", async ({
-    page,
-  }) => {
-    await page.goto(hubUrl("pt"));
-    await page.getByRole("button", { name: at(messagesFor("pt"), "Segments.cta.action") }).click();
-
-    const describedBy = await page.locator("#lead-name").getAttribute("aria-describedby");
-    // SC 1.4.3 asks 4.5:1 of the message; `text-red-500`, which ContactRouter
-    // uses, measures 3.76:1 and is the reason this is asserted.
-    expect(await measuredTextContrast(page, `#${describedBy}`)).toBeGreaterThanOrEqual(4.5);
-
-    // SC 1.4.11 asks 3:1 of the border, and here the border is the only thing
-    // that identifies the control: `bg-slate-50` inside a white card is 1.03:1.
-    const borders = await page
-      .locator("#lead-business, #lead-business-type")
-      .evaluateAll((nodes) => nodes.map((node) => getComputedStyle(node).borderTopColor));
-    for (const border of borders) {
-      const ratio = await page.evaluate((color) => {
-        const canvas = document.createElement("canvas");
-        canvas.width = canvas.height = 1;
-        const ctx = canvas.getContext("2d")!;
-        const paint = (value: string) => {
-          ctx.clearRect(0, 0, 1, 1);
-          ctx.fillStyle = "#ffffff";
-          ctx.fillRect(0, 0, 1, 1);
-          ctx.fillStyle = value;
-          ctx.fillRect(0, 0, 1, 1);
-          return [...ctx.getImageData(0, 0, 1, 1).data].slice(0, 3);
-        };
-        const luminance = ([r, g, b]: number[]) => {
-          const channel = (value: number) => {
-            const c = value / 255;
-            return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
-          };
-          return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b);
-        };
-        const [a, b] = [luminance(paint(color)), luminance(paint("#ffffff"))].sort((x, y) => y - x);
-        return (a + 0.05) / (b + 0.05);
-      }, border);
-      expect(ratio, `border ${border}`).toBeGreaterThanOrEqual(3);
-    }
-  });
-
-  test("spec §3.4: switching channel keeps what was typed in the other one", async ({ page }) => {
-    await page.goto(hubUrl("pt"));
-    const contact = page.locator("#lead-contact");
-    const [whatsappRadio, emailRadio] = [
-      page.getByRole("radio").nth(0),
-      page.getByRole("radio").nth(1),
-    ];
-
-    await contact.fill("+55 22 99999-8888");
-    await emailRadio.check();
-    await expect(page.locator("#lead-contact")).toHaveValue("");
-    await page.locator("#lead-contact").fill("dono@gmail.com");
-    await whatsappRadio.check();
-    await expect(page.locator("#lead-contact")).toHaveValue("+55 22 99999-8888");
-    // SC 1.3.5: the field declares its purpose, and it is one or the other.
-    await expect(page.locator("#lead-contact")).toHaveAttribute("autocomplete", "tel");
-    await emailRadio.check();
-    await expect(page.locator("#lead-contact")).toHaveValue("dono@gmail.com");
-    await expect(page.locator("#lead-contact")).toHaveAttribute("autocomplete", "email");
-  });
-
-  test("spec §6.3: clicking a card jumps to the form with the type already chosen", async ({
-    page,
-  }) => {
-    await page.goto(hubUrl("pt"));
-    await page.locator('[data-business-type="restaurants"]').click();
-    await expect(page.locator("#lead-business-type")).toHaveValue("restaurants");
-  });
-
-  test("spec §3.9: every control is at least 16 px and 48 px tall", async ({ page }) => {
-    // Criterion 20, measured and not read off the Tailwind class: below 16 px
-    // Safari on iOS zooms on focus and throws the page out of alignment.
-    await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto(hubUrl("it"));
-
-    const controls = await page
-      .locator("#lead-name, #lead-business, #lead-business-type, #lead-contact")
-      .evaluateAll((nodes) =>
-        nodes.map((node) => ({
-          id: node.id,
-          fontSize: parseFloat(getComputedStyle(node).fontSize),
-          height: node.getBoundingClientRect().height,
-        }))
-      );
-
-    expect(controls).toHaveLength(4);
-    for (const control of controls) {
-      expect(control.fontSize, `${control.id} font-size`).toBeGreaterThanOrEqual(16);
-      expect(control.height, `${control.id} height`).toBeGreaterThanOrEqual(48);
-    }
-  });
-});
-
-/* -------------------------------------------------------------------------- */
-/* Half 4 — the form the server serves, and the policy that goes with it      */
-/* -------------------------------------------------------------------------- */
-
-test.describe("#191 — the form with no JavaScript", () => {
-  test.use({ javaScriptEnabled: false });
-
-  test("the five labels are in the served HTML and the way out is the email", async ({ page }) => {
-    // Criterion 18: the form exists, is legible and focusable, and says how to
-    // reach us when it cannot send.
-    await page.goto(hubUrl("pt"));
-    const messages = messagesFor("pt");
-
-    for (const key of ["name", "business", "businessType", "whatsappLabel", "allRequired"]) {
-      await expect(
-        page.getByText(at(messages, `Partners.form.${key}`), { exact: true }).first()
-      ).toBeVisible();
-    }
-    await expect(page.locator("#lead-consent")).not.toBeChecked();
-    // `<noscript>` is not visible text to Playwright's innerText, so it is read
-    // as markup — the one place in this suite where that is the honest read.
-    const noscript = await page.locator("noscript").allTextContents();
-    expect(noscript.join("\n")).toContain(at(messages, "Contact.Sidebar.pressValue"));
   });
 });
 
@@ -684,16 +401,6 @@ test.describe("BR-USUARIO-028 item 1 — the field and the policy ship together"
           "Either name the collection in the clause, or affirm what is kept about " +
           "the address before denying the rest — never the bare denial.",
       ).toEqual([]);
-    });
-
-    test(`BR-USUARIO-029: no Partners.* string promises a deadline in ${locale}`, () => {
-      // Criterion 24 and §7 of the spec: no response deadline, and no
-      // accessibility conformance claim without a subject.
-      const form = (messagesFor(locale)["Partners"] as Messages)["form"] as Messages;
-      const consent = (messagesFor(locale)["Partners"] as Messages)["cta"] as Messages;
-      for (const [key, value] of [...Object.entries(form), ...Object.entries(consent)]) {
-        expect(String(value), key).not.toMatch(/WCAG|24 horas|48 horas|24h|48h/i);
-      }
     });
   }
 });

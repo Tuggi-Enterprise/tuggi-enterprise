@@ -38,12 +38,10 @@ const SURFACE = {
  * reader sees "Mandarim", not "中文"). Text pills, not flag emoji — Windows
  * doesn't render regional-indicator flags. Reusable across pages.
  *
- * **Why it has a surface at all**, since the two callers ask for different
- * ones: `CoverageDensityMap` renders *two* sections — the dark map and the
- * white list that is its served alternative — so on the `/partners` hub this
- * block follows a white section, and two white neighbours read as one block
- * (spec §2 of `docs/design/spec-lp-parcerias-2026-08.md`, criterion 10).
- * `/drive` keeps the default and does not change.
+ * **Why it has a surface at all**: after a white section, two white neighbours
+ * read as one block (spec §2 of `docs/design/spec-lp-parcerias-2026-08.md`,
+ * criterion 10). The partnership page that asked for `dark` left in #990;
+ * `/drive` keeps the default.
  */
 export function LanguagesStrip({ surface = "light" }: { surface?: Surface }) {
   const t = useTranslations("Languages");
