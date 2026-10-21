@@ -35,13 +35,13 @@ import { attributionGateOf } from "@/lib/consent";
  *
  * service_role, deliberately — not the publishable key `/api/leads` uses.
  *
- * `drive.click_fingerprints` does accept an anonymous insert today
- * (`WITH CHECK (true)`), so the swap would appear to work. It would also mean
- * this row could be written without passing through the handler below, and the
- * handler is the whole point: it is what counts the caller against a budget,
- * what normalises the fields the match compares, and what refuses the second
- * partner of the same visitor. Narrowing this key is a separate card with a
- * `WITH CHECK` of its own to write first.
+ * `drive.click_fingerprints` grants nothing to `anon` or `authenticated`
+ * (INSERT is `service_role` only, RLS on with zero policies, baseline
+ * 20261006120000), so this handler is the ONLY way a row is born. That is
+ * load-bearing beyond this file: the consent gate below is the gate of the
+ * whole capture, and the `attribution-ip` Edge Function relies on it, because
+ * it can only complete a row that already exists (contract §4a, #988). A
+ * second writer of this table would have to carry the same gate.
  *
  * Built at module scope: a missing variable fails the build, not the request.
  */
@@ -126,8 +126,9 @@ export async function POST(req: Request) {
     // and IPv6 is no longer kept: the operator chose on 2026-09-03 to store the
     // less identifying family only, and an IPv4 under CGNAT points at a crowd
     // where a /64 prefix identifies a household. The one address that enters the
-    // database now comes from `POST /api/attribution/ip`, reached over a
-    // DNS-only host that can only answer A.
+    // database now comes from the `attribution-ip` Edge Function of the app
+    // (contract §4a, #988), which reaches Supabase over IPv4 and can only
+    // complete a row this handler wrote, so this gate is also its gate.
     //
     // `clientAddressOf` stays the single owner of the reading, shared with the
     // limiter — and `unknown` is a perfectly good counter key, so there is no

@@ -101,14 +101,15 @@ export default defineConfig({
         // Unset, this would degrade to reading `x-forwarded-for` — safe, and
         // the suite would then be unable to prove the honoured half.
         TUGGI_EDGE_SHARED_SECRET: E2E_EDGE_SHARED_SECRET,
-        // The IPv4-only origin of the click complement (contract §4). Unset,
-        // `attributionIpEndpoint()` answers null and the browser never fires —
-        // which is the correct production behaviour and would leave the hook
-        // untested. Pointed at the app itself: what the suite has to prove is
-        // that the hook fires and that the route decides correctly, and the
-        // family of a local address is decided by the header the test sends,
-        // not by DNS. Build-time value: `NEXT_PUBLIC_*` is inlined by `next
-        // build`, which runs inside this very `webServer` command.
+        // The origin of the click complement, the `attribution-ip` Edge
+        // Function in production (contract §4a). Unset,
+        // `attributionIpEndpoint()` answers null and the browser never fires,
+        // which would leave the hook untested. Pointed at the app itself, so
+        // the call is same-origin and `attribution-ip-complement.spec.ts`
+        // intercepts it with `page.route`: what this suite proves is what the
+        // browser sends; what the function decides is proven by its own suite
+        // in tuggi-drive-v2. Build-time value: `NEXT_PUBLIC_*` is inlined by
+        // `next build`, which runs inside this very `webServer` command.
         NEXT_PUBLIC_ATTRIBUTION_IP_ORIGIN: `http://127.0.0.1:${APP_PORT}`,
         TUGGI_DIST_DIR: DIST_DIR,
       },

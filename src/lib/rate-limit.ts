@@ -142,9 +142,10 @@ function cameThroughOurEdge(headers: Headers, edgeSharedSecret: string): boolean
  * `::ffff:` prefix, without a zone (`%eth0`) and without brackets**.
  *
  * IT USED TO DO ONLY THE FIRST OF THE THREE, and the other two were not
- * theoretical. Measured 2026-09-03, forcing IPv6 against `ip4.tuggi.app`
- * answers `::ffff:64.29.17.65` — the mapped form really is on the path, and
- * anything reading the family off the raw string would call that IPv6. Brackets
+ * theoretical. Measured 2026-09-03, forcing IPv6 against the old A-only alias
+ * of the site answered `::ffff:64.29.17.65`: the mapped form really is on the
+ * path, and anything reading the family off the raw string would call that
+ * IPv6. Brackets
  * are the literal form (`[2804:14c::1]`) a proxy in front may forward, and a
  * zone is what a link-local address carries; either one survives into a
  * `varchar` column that the install match compares by string equality, so the
@@ -162,20 +163,6 @@ function normalizeClientAddress(raw: string): string {
   const zone = value.indexOf("%");
   if (zone >= 0) value = value.slice(0, zone);
   return value.trim().replace(/^::ffff:/i, "");
-}
-
-/**
- * Whether a normalised address is IPv4 — which is the only family the click
- * row keeps as of 2026-09-03 (contract §3, card #682).
- *
- * Strict dotted quad, and deliberately so: the value decides whether personal
- * data is written at all, and "looks a bit like an address" is not a decision.
- * Feed it `normalizeClientAddress`'s output — an IPv4-mapped `::ffff:1.2.3.4`
- * is IPv4 and answers true only once the prefix is off, which is exactly why
- * the two live side by side here.
- */
-export function isIpv4Address(value: string): boolean {
-  return /^(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}$/.test(value);
 }
 
 /**

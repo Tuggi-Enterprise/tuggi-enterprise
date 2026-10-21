@@ -117,21 +117,23 @@ const serverClickId = (): string | null => null;
 let ipComplementSent = false;
 
 /**
- * Completes this browser's click row with its IPv4 — BR-B2B-002, contract §4.
+ * Completes this browser's click row with its IPv4 — BR-B2B-002, contract §4a.
+ * The call goes to the `attribution-ip` Edge Function on the app's Supabase
+ * (#988), which reads the address from its own edge.
  *
  * FIRE AND FORGET, AND THAT IS THE REQUIREMENT AND NOT A SHORTCUT. There is
  * already a race between the capture and the tourist tapping the store CTA
  * (`CLIPBOARD_WRITE_GRACE_MS` is what it cost), and this request may not join
  * it: nothing awaits it, nothing branches on it, and the empty `catch` is
  * deliberate. `keepalive` lets it outlive the navigation to the store
- * (fetch.spec.whatwg.org, §request); `credentials: 'omit'` because the route
- * decides from the edge header and a cookie would only be a cookie sent to
- * another host for nothing.
+ * (fetch.spec.whatwg.org, §request); `credentials: 'omit'` because the
+ * function decides from the edge header and a cookie would only be a cookie
+ * sent to another host for nothing.
  *
  * NOT CONFIGURED IS "DO NOT CALL", NEVER AN ERROR. `attributionIpEndpoint()`
- * answers null until `ip4.tuggi.app` exists as a DNS-only alias of this
- * deployment; a tourist must never meet a failure for a hostname that is not
- * his problem, and the deterministic path does not depend on any of this.
+ * answers null without `NEXT_PUBLIC_ATTRIBUTION_IP_ORIGIN`; a tourist must
+ * never meet a failure for a host that is not his problem, and the
+ * deterministic path does not depend on any of this.
  */
 function sendIpComplement(clickId: string): void {
   const endpoint = attributionIpEndpoint();
@@ -163,8 +165,10 @@ function sendIpComplement(clickId: string): void {
  * THE CONSENT GATE COMES FOR FREE ON THE ECHO SIDE — BR-USUARIO-033, item 6:
  * `useAttributionClickId` answers null until the server's verdict says yes, so
  * there is no second door to keep shut here. The captured id is the return of a
- * capture the server already allowed. And the route gates again on its own,
- * because a gate decided on the client is a gate the client edits (item 2).
+ * capture the server already allowed. And the function cannot write without
+ * that capture: its UPDATE needs the row, and the row is only born behind
+ * `attributionGateOf` in `POST /api/attribution`, decided on the server
+ * (item 2: a gate decided on the client is a gate the client edits).
  */
 export function useAttributionIpComplement(capturedClickId?: string | null): void {
   const storedClickId = useAttributionClickId();

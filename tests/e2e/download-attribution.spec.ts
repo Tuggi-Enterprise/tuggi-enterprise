@@ -33,8 +33,9 @@ import { visitorHeaders } from "./visitor-headers";
  *     the partner — `referrer=tuggi_click_<uuid>` (contract §1 and §2);
  *  2. the row stores NO address at all since 2026-09-03 — this route only ever
  *     observes IPv6 and IPv6 is no longer kept, so the one address that reaches
- *     the database comes from `/api/attribution/ip` over an IPv4-only host
- *     (contract §3 and §4, card #682, and `attribution-ip-complement.spec.ts`);
+ *     the database comes from the `attribution-ip` Edge Function of the app,
+ *     over IPv4 (contract §3 and §4a, cards #682 and #988, and
+ *     `attribution-ip-complement.spec.ts`);
  *  3. `language` and `timezone` are normalised on the way in, or the two ends
  *     write the same fact in two shapes and nothing ever matches (§3);
  *  4. the FIRST touch is the one that counts and it is never overwritten —
@@ -291,7 +292,7 @@ test.describe("/api/attribution", () => {
     // anything, and the operator chose on 2026-09-03 to keep only the LESS
     // identifying family: a mobile IPv4 under CGNAT points at a crowd, a /64 of
     // IPv6 points at a household. The one address the database gets now comes
-    // from `/api/attribution/ip`, over a host that can only answer A.
+    // from the `attribution-ip` Edge Function, over a host that only answers A.
     //
     // The header is honoured all the same — it is still the rate limiter's key,
     // and that counter is the only barrier in front of this `service_role`

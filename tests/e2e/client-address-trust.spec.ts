@@ -3,15 +3,15 @@ import {
   clientAddressOf,
   EDGE_PROOF_HEADER,
   EDGE_SECRET_VAR,
-  isIpv4Address,
   requestCameThroughOurEdge,
 } from "../../src/lib/rate-limit";
 
 /**
- * Who the caller is, decided from headers — the value that becomes the stored
- * `ip_address_v4` of a click (BR-B2B-002, contract §3 and §4) and the key of
- * the counter that is the only barrier in front of three anonymous
- * `service_role` writes.
+ * Who the caller is, decided from headers (BR-B2B-002, contract §3 and §4):
+ * the key of the counter that is the only barrier in front of the anonymous
+ * `service_role` writes of this site. The stored `ip_address_v4` of a click is
+ * no longer read here; the `attribution-ip` Edge Function reads its own edge
+ * (contract §4a, #988).
  *
  * WHAT BROKE, AND WHY IT LOOKED RIGHT. `CF-Connecting-IP` is the visitor's
  * address on the Cloudflare path and reading it first is the documented fix for
@@ -168,10 +168,10 @@ test.describe("cf-connecting-ip is honoured only against proof of our edge", () 
     // `clientAddressOf` did only the first of the three until 2026-09-03 —
     // the code and the contract each said something the other did not.
     //
-    // It is not theoretical. Measured 2026-09-03, forcing IPv6 against
-    // `ip4.tuggi.app` answers `::ffff:64.29.17.65`: the mapped form really is
-    // on the path, and the family check of `/api/attribution/ip` would read
-    // that raw string as IPv6 and store nothing at all.
+    // It is not theoretical. Measured 2026-09-03, forcing IPv6 against the old
+    // A-only alias of the site answered `::ffff:64.29.17.65`: the mapped form
+    // really is on the path, and a family check would read that raw string as
+    // IPv6.
     expect(clientAddressOf(new Headers({ "x-forwarded-for": "::ffff:64.29.17.65" }))).toBe(
       "64.29.17.65"
     );
@@ -200,28 +200,5 @@ test.describe("cf-connecting-ip is honoured only against proof of our edge", () 
     expect(
       clientAddressOf(new Headers({ "x-forwarded-for": "[]", "x-real-ip": VERCEL_IP }))
     ).toBe(VERCEL_IP);
-  });
-
-  test("BR-B2B-002: only a strict dotted quad counts as IPv4 — contract §3", () => {
-    // What decides whether personal data is written at all in
-    // `/api/attribution/ip`: the operator chose to keep the IPv4 family only,
-    // and "looks a bit like an address" is not a decision. A value that is not
-    // IPv4 leaves the row untouched and the route answers the same 204.
-    expect(isIpv4Address("64.29.17.65")).toBe(true);
-    expect(isIpv4Address("0.0.0.0")).toBe(true);
-    expect(isIpv4Address("255.255.255.255")).toBe(true);
-
-    expect(isIpv4Address("256.1.1.1")).toBe(false);
-    expect(isIpv4Address("1.2.3")).toBe(false);
-    expect(isIpv4Address("1.2.3.4.5")).toBe(false);
-    expect(isIpv4Address("unknown")).toBe(false);
-    expect(isIpv4Address("2804:14c:632f::1")).toBe(false);
-
-    // The mapped form is IPv4 and answers true only once the prefix is off,
-    // which is precisely why the normalisation above has to run first.
-    expect(isIpv4Address("::ffff:64.29.17.65")).toBe(false);
-    expect(isIpv4Address(clientAddressOf(new Headers({ "x-forwarded-for": "::ffff:64.29.17.65" })))).toBe(
-      true
-    );
   });
 });
