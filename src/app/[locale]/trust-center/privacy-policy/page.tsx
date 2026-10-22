@@ -118,9 +118,22 @@ export default async function PrivacyPolicyPage({ params }: { params: Promise<{ 
               the base is the holder's own consent (item 7.d.ii), and the cut
               at 14 sits above the child of Art. 14, §1.
 
-              The other six fields of the collection are still undeclared here
-              — pre-existing debt, not this card. */}
+              Of the other six fields of the collection only spoken languages
+              is declared here (`s1Item15` below); the other five are
+              pre-existing debt, not this card. */}
           <li>{t.rich("s1Item9", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
+          {/* `s1Item15` is the spoken languages of the same collection — card
+              #1002, BR-USUARIO-043 item 4 (third purpose, 2026-10-22): the
+              language the person uses in the app or declared in the profile
+              is counted, per language, in the partner's cycle report
+              (BR-B2B-059 item 7). The item names the two purposes it serves
+              (the audience picture of item 4, and that count), and what the
+              owner never sees: the person, the country, the nationality. It
+              does not close the count with "and no other", because campaign
+              segmentation (item 4, second purpose) is declared elsewhere
+              (`s1Item14`) and is not this field's story. No "tourists"
+              (BR-B2B-059 item 9). */}
+          <li>{t.rich("s1Item15", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
           {/* `s1Item14` is the email to the tourist, card #959, BR-COMUNICACAO-020:
               it sits before `s1Item10` so "the three items below" there stays true. */}
           <li>{t.rich("s1Item14", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
