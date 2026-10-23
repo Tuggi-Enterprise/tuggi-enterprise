@@ -16,6 +16,7 @@ import {
   type Segment,
 } from "../../src/lib/segments";
 import { NAV_ITEMS, VISIBLE_NAV_ITEMS, isExternalHref, type NavItem } from "../../src/lib/nav";
+import { PARTNER_PORTAL_URL } from "../../src/lib/partner-portal";
 
 /**
  * DS-COPY-006 — "the slug is text shown to the user: translated, unaccented,
@@ -78,8 +79,17 @@ function menuHref(locale: string, item: NavItem): string {
 /**
  * Routes whose page left for another product answer 301 there, not 404 — that
  * is asserted in tests/e2e/partners-portal.spec.ts, so they are out of here.
+ * The whole subtree left with them (operator, 2026-10-21, #990), so a reserved
+ * segment under `/parcerias/` answers 301 too.
  */
 const LEFT_THE_SITE: string[] = EXTERNAL_ROUTES.map(({ from }) => from);
+const LEFT_PREFIXES: string[] = EXTERNAL_ROUTES.flatMap(({ from }) =>
+  LOCALES.map((locale) => `/${locale}${localizedPathname(locale, from)}/`)
+);
+
+function underLeftSubtree(publicUrl: string): boolean {
+  return LEFT_PREFIXES.some((prefix) => publicUrl.startsWith(prefix));
+}
 
 const DECLARED_WITHOUT_PAGE: { route: string; urlFor: (locale: SiteLocale) => string }[] = [
   ...STATIC_ROUTES.filter((route) => !hasPage(route) && !LEFT_THE_SITE.includes(route)).map(
@@ -88,7 +98,11 @@ const DECLARED_WITHOUT_PAGE: { route: string; urlFor: (locale: SiteLocale) => st
       urlFor: (locale: SiteLocale) => url(locale, route),
     })
   ),
-  ...SEGMENTS.filter((segment) => !segment.published).map((segment) => ({
+  ...SEGMENTS.filter(
+    (segment) =>
+      !segment.published &&
+      !LOCALES.some((locale) => underLeftSubtree(`/${locale}/${segment.slugs[locale]}`))
+  ).map((segment) => ({
     route: segmentPathname(segment.key),
     urlFor: (locale: SiteLocale) => `/${locale}/${segment.slugs[locale]}`,
   })),
@@ -167,11 +181,15 @@ test.describe("route map", () => {
   });
 
   test("a declared route with no page answers 404, and does not redirect", async ({ request }) => {
-    // The reserved segments are the case today: the words are decided, the
-    // pages are not planned. A redirect here would hide the fact that the page
-    // does not exist — and would turn a typo into a silent success for whoever
-    // is testing.
-    expect(DECLARED_WITHOUT_PAGE.length).toBeGreaterThan(0);
+    // A redirect here would hide the fact that the page does not exist — and
+    // would turn a typo into a silent success for whoever is testing.
+    // Skipped, visibly, rather than passing over nothing: the reserved segments
+    // were the only case, and they sit under `/parcerias/`, which left for the
+    // Locais portal with its whole subtree (#990).
+    test.skip(
+      DECLARED_WITHOUT_PAGE.length === 0,
+      "no declared route is without a page today; the reserved segments left with /partners (#990)"
+    );
     for (const { route, urlFor } of DECLARED_WITHOUT_PAGE) {
       for (const locale of LOCALES) {
         const target = urlFor(locale);
@@ -261,12 +279,16 @@ test.describe("segment registry", () => {
     expect(restaurants!.published, "restaurants is reserved, not published").toBe(false);
     expect(Object.keys(pathnames)).not.toContain("/partners/restaurants");
 
-    // No URL exists, in any locale — and no redirect to the hub either.
+    // No page exists, in any locale. The hub it would live under left for the
+    // Locais portal with its whole subtree (#990), so the URL answers 301 there.
     for (const locale of LOCALES) {
-      const response = await request.get(`/${locale}/${restaurants!.slugs[locale]}`, {
-        maxRedirects: 0,
-      });
-      expect(response.status(), `/${locale}/${restaurants!.slugs[locale]}`).toBe(404);
+      const target = `/${locale}/${restaurants!.slugs[locale]}`;
+      expect(underLeftSubtree(target), target).toBe(true);
+      const response = await request.get(target, { maxRedirects: 0 });
+      expect(response.status(), target).toBe(301);
+      expect(new URL(response.headers()["location"]).href, target).toBe(
+        new URL(PARTNER_PORTAL_URL).href
+      );
     }
   });
 
