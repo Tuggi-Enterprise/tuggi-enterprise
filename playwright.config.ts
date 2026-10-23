@@ -12,7 +12,7 @@ export const MOCK_SUPABASE_PORT = 4010;
 export const E2E_PUBLISHABLE_KEY = "e2e-publishable-key";
 export const E2E_SERVICE_ROLE_KEY = "e2e-service-role-key";
 /**
- * The HMAC secret of the proposal's per-address counter. Exported for the same
+ * The HMAC secret of the per-address counter (`src/lib/rate-limit.ts`). Exported for the same
  * reason as the two keys: the spec that drives the rate limit needs to know the
  * hash is stable, and a value invented in two places is a counter that never
  * recognises a repeat caller.
@@ -89,8 +89,8 @@ export default defineConfig({
         SUPABASE_PUBLISHABLE_KEY: E2E_PUBLISHABLE_KEY,
         SUPABASE_SERVICE_ROLE_KEY: E2E_SERVICE_ROLE_KEY,
         NEXT_PUBLIC_BASE_URL: `http://127.0.0.1:${APP_PORT}`,
-        // The partnership proposal refuses every submission when this is unset —
-        // fail closed, on purpose (src/lib/partner-proposal/proposal-service.ts).
+        // The attribution capture refuses every write when this is unset —
+        // fail closed, on purpose (src/lib/rate-limit.ts).
         // A fixed value here so the hash of one address is stable across the run
         // and the double can count repeats the way the RPC does.
         PARTNER_FORM_HASH_SECRET: E2E_PARTNER_FORM_HASH_SECRET,

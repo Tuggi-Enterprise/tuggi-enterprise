@@ -151,19 +151,7 @@ function looseFigures(text: string): string[] {
  * What may go here is only what the ruler at the top already excepts by class and cannot
  * recognise by pattern. It is NOT the place for a figure the copy should not have published.
  */
-const FIGURE_WAIVERS: { key: string; why: string }[] = [
-  {
-    key: "PartnerProposal.fields.tax_id.help",
-    why:
-      'The year a Brazilian statute changed, not the year the Tuggi started operating. ' +
-      '"Desde 2026 o CNPJ pode ter letras" describes Instrução Normativa RFB nº 2.229/2024, ' +
-      "in force from 31/07/2026 — the same class the ruler already excepts as a version or " +
-      'standard number ("WCAG 2.1 AA"). BR-COMUNICACAO-002 item 6 is about OUR operating ' +
-      "date, and this sentence is about the Receita Federal's calendar. The copy is the " +
-      "`design`'s, and it is the sentence that stops a merchant with a letter in his CNPJ " +
-      "from believing the field is broken.",
-  },
-];
+const FIGURE_WAIVERS: { key: string; why: string }[] = [];
 
 /* ---------------------------------------------------------------------------
  * Reading the repository

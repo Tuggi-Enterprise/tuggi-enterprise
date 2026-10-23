@@ -1003,17 +1003,6 @@ const CLAIM_FAMILIES: ClaimFamily[] = [
           "An absolute with a rule behind it is what this family says it does not ban.",
       },
       {
-        keys: ["PartnerProposal.actions.restart", "PartnerProposal.step3.exampleGood"],
-        why:
-          "Form copy on the partnership proposal (#396), and neither is a claim about " +
-          'the product. "Recomeçar do zero" is the label of the button that clears the ' +
-          'draft — "from scratch", not a quantity — and the "nunca" is inside the sample ' +
-          "story the merchant is shown as an example of a good answer: it is a sentence " +
-          'about somebody\'s pizza oven ("a gente nunca trocou o tijolo"), attributed to ' +
-          "the fictional owner writing it, not something the Tuggi says about itself. " +
-          "The rest of the namespace is scanned like everything else.",
-      },
-      {
         keys: [],
         articles: [
           {

@@ -2,7 +2,6 @@ import { test, expect, type Locator } from "@playwright/test";
 import { LOCALES } from "../../src/i18n/locales";
 import { EXTERNAL_ROUTES, localizedPathname } from "../../src/i18n/pathnames";
 import { PARTNER_PORTAL_URL } from "../../src/lib/partner-portal";
-import { PROPOSAL_LOCALE, PROPOSAL_ROUTE } from "../../src/lib/partner-proposal/link";
 
 /**
  * #990 — Partners is the Locais portal.
@@ -11,10 +10,11 @@ import { PROPOSAL_LOCALE, PROPOSAL_ROUTE } from "../../src/lib/partner-proposal/
  * which an establishment registers and pays, and the site's partnership page was a detour in
  * front of it. So the page left: its four URLs answer 301 to the portal, the menu item opens
  * the portal in a new tab, and the sitemap stops asking Google to index it. The whole subtree
- * leaves with it, the proposal subroute (`/partners/proposal`) included.
+ * leaves with it, the proposal included: its page, form and API left the code in #990 and #966,
+ * and its URL is still in e-mails already sent to establishments.
  *
- * Every URL here is derived from the route map, never typed, so a renamed slug moves the test
- * with it (CLAUDE.md §6).
+ * Every hub URL here is derived from the route map, never typed, so a renamed slug moves the
+ * test with it (CLAUDE.md §6). The proposal leaves are the one exception, written below.
  */
 
 const PORTAL = PARTNER_PORTAL_URL;
@@ -52,15 +52,30 @@ test.describe("BR-B2B-043 / #990 — the partnership page answers 301 to the Loc
     });
   }
 
-  test("#990: the proposal subroute leaves for the portal too", async ({ request }) => {
-    const proposal = `/${PROPOSAL_LOCALE}${localizedPathname(PROPOSAL_LOCALE, PROPOSAL_ROUTE)}`;
-    expect(proposal.startsWith(`/${PROPOSAL_LOCALE}${localizedPathname(PROPOSAL_LOCALE, HUB)}/`))
-      .toBe(true);
+  // The proposal has no route of its own any more, so its old leaves are written here: they are
+  // the URLs that were published (the page served `pt` and sent the other three there), and they
+  // are what has to keep landing on the portal.
+  const OLD_PROPOSAL_LEAF = { pt: "proposta", en: "proposal", es: "propuesta", it: "proposta" };
 
-    const response = await request.get(proposal, { maxRedirects: 0 });
-    expect(response.status(), proposal).toBe(301);
-    // Next writes the root of a `/:path*` destination with its trailing slash.
-    expect(new URL(response.headers()["location"]).href, proposal).toBe(new URL(PORTAL).href);
+  for (const locale of LOCALES) {
+    const proposal = `/${locale}${localizedPathname(locale, HUB)}/${OLD_PROPOSAL_LEAF[locale]}`;
+    test(`#990 #966: the old proposal URL ${proposal} answers 301 to the portal`, async ({
+      request,
+    }) => {
+      const response = await request.get(proposal, { maxRedirects: 0 });
+      expect(response.status(), proposal).toBe(301);
+      // Next writes the root of a `/:path*` destination with its trailing slash.
+      expect(new URL(response.headers()["location"]).href, proposal).toBe(new URL(PORTAL).href);
+    });
+  }
+
+  test("BR-B2B-050 #966: the proposal API is gone", async ({ request }) => {
+    // The form offered printed material to the partner, and BR-B2B-050 says the Tuggi sends no
+    // physical material in any plan. The routes that stored it must not answer.
+    for (const route of ["/api/partner-proposal", "/api/partner-proposal/funnel"]) {
+      const response = await request.post(route, { data: {}, maxRedirects: 0 });
+      expect(response.status(), route).toBe(404);
+    }
   });
 
   test("#990: the sitemap lists none of the four hub URLs", async ({ request }) => {

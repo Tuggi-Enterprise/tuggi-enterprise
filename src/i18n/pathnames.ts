@@ -73,8 +73,8 @@ const sharedSlugPathnames = Object.fromEntries(
 
 /** Routes whose slug is translated. Words from spec §8.3. */
 const TRANSLATED_ROUTES = {
-  // No page since #990: the four slugs stay because the proposal is composed from them and
-  // because the old URLs answer 301 to the Locais portal (`EXTERNAL_ROUTES`).
+  // No page since #990: the four slugs stay because the old URLs answer 301 to the Locais
+  // portal (`EXTERNAL_ROUTES`).
   "/partners": {
     pt: "/parcerias",
     en: "/partners",
@@ -111,47 +111,11 @@ const TRANSLATED_ROUTES = {
 } as const satisfies Record<string, Record<SiteLocale, string>>;
 
 /**
- * The partnership proposal (#396) — the leaf only.
- *
- * It lives under the hub, so the four words above it are NOT retyped here: the
- * entry is composed from `TRANSLATED_ROUTES["/partners"]`, and renaming the hub
- * moves the proposal with it. `it` reuses `proposta` because that is the word
- * the Italian privacy policy already publishes, and `es` reuses `propuesta` for
- * the same reason.
- *
- * The static file `partners/proposal/page.tsx` wins over the dynamic
- * `partners/[segment]/page.tsx` in the App Router, so the route keeps resolving
- * after a segment is published — and none of the six segment slugs is one of
- * these words.
- *
- * Declared in four locales because this map is typed
- * `Record<SiteLocale, string>` and does not take half a route. The PAGE answers
- * in `pt` and redirects the other three, which is a different question — see
- * `src/lib/partner-proposal/link.ts`.
- */
-const PROPOSAL_LEAF = {
-  pt: "proposta",
-  en: "proposal",
-  es: "propuesta",
-  it: "proposta",
-} as const satisfies Record<SiteLocale, string>;
-
-const proposalPathnames = {
-  "/partners/proposal": Object.fromEntries(
-    LOCALES.map((locale) => [
-      locale,
-      `${TRANSLATED_ROUTES["/partners"][locale]}/${PROPOSAL_LEAF[locale]}`,
-    ])
-  ) as Record<SiteLocale, string>,
-};
-
-/**
  * The editorial article (spec §1.2) — one dynamic key, composed.
  *
  * The word of the section is NOT retyped here: the entry is built from
- * `TRANSLATED_ROUTES["/updates"]`, exactly as `proposalPathnames` above builds
- * the proposal from `/partners`. Renaming the section moves every article with
- * it, and nobody writes `novidades` twice.
+ * `TRANSLATED_ROUTES["/updates"]`. Renaming the section moves every article
+ * with it, and nobody writes `novidades` twice.
  *
  * The `[slug]` is the *public* leaf, and next-intl passes it through
  * untranslated: `/pt/novidades/passes-por-hora` rewrites to the internal
@@ -195,7 +159,6 @@ export function buildSegmentPathnames(
 export const pathnames = {
   ...sharedSlugPathnames,
   ...TRANSLATED_ROUTES,
-  ...proposalPathnames,
   ...updateArticlePathnames,
   ...buildSegmentPathnames(SEGMENTS),
 } satisfies Record<string, PathnameEntry>;
@@ -277,10 +240,11 @@ export const MOVED_ROUTES = [
  * Routes whose page left the site for another product, answered with a permanent redirect to it.
  *
  * `/partners` is the Locais portal since #990: the portal is where an establishment registers
- * and pays (BR-B2B-043), and the site's own partnership page was a detour before it. Only the
- * exact path moves; `/partners/proposal` keeps its page. next.config.ts turns this into
- * `redirects()` for the four public slugs and their un-prefixed forms, and
- * tests/e2e/partners-portal.spec.ts asserts the 301s.
+ * and pays (BR-B2B-043), and the site's own partnership page was a detour before it. The whole
+ * subtree moves with it: the proposal (`/pt/parcerias/proposta`) left the site in #990 and
+ * #966. next.config.ts turns this into `redirects()` for the four public slugs, their
+ * un-prefixed forms and everything under them, and tests/e2e/partners-portal.spec.ts asserts
+ * the 301s.
  */
 export const EXTERNAL_ROUTES = [
   { from: "/partners", to: PARTNER_PORTAL_URL },

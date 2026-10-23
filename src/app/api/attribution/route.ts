@@ -174,8 +174,7 @@ export async function POST(req: Request) {
     if (!limit.allowed) return tooManyRequests("too_many_captures", limit.retryAfterSeconds);
 
     // The body is read AFTER the write is counted, so a flood of malformed
-    // bodies is counted like any other attempt — same order as the other public
-    // door of this site (`/api/partner-proposal`).
+    // bodies is counted like any other attempt.
     const data = await req.json();
     const partnerId = typeof data?.partner_id === "string" ? data.partner_id.trim() : "";
 

@@ -1,17 +1,15 @@
 /**
  * The one barrier in front of the site's anonymous `service_role` writes.
  *
- * Two public doors write to the database with a key that ignores RLS: the
- * partnership proposal (`/api/partner-proposal`) and the attribution capture
- * (`/api/attribution`). They had one counter between them and it lived inside
- * the proposal feature, so the second door was built without one. The
- * mechanism moved here and the proposal re-exports it — same function, same
- * secret, one owner.
+ * The attribution capture (`/api/attribution`) writes to the database with a
+ * key that ignores RLS, from an anonymous caller. The counter was born inside
+ * the partnership proposal, the site's first such door, and moved here when
+ * the second one arrived. The proposal left the site with #990 and #966; the
+ * mechanism stayed, with one owner.
  *
  * WHAT IS SHARED IS THE MECHANISM, NOT THE BUDGET. Every caller names a
- * `bucket`, and the bucket goes into the hash: a tourist scanning a QR cannot
- * spend the proposal budget of the restaurant owner sitting at the same Wi-Fi,
- * and neither can lock the other out.
+ * `bucket`, and the bucket goes into the hash, so two budgets of one address
+ * cannot spend each other.
  *
  * THE COUNT IS THE DATABASE'S. An in-process `Map` on a serverless host
  * (Vercel functions, Worker isolates) is a brake on a double-click and never a
@@ -49,7 +47,7 @@ export interface RateLimitDecision {
    * counting down.
    *
    * They used to be indistinguishable to the caller, and #400 is what that cost: a deploy
-   * without `PARTNER_FORM_HASH_SECRET` refuses **100% of proposals** while telling every
+   * without `PARTNER_FORM_HASH_SECRET` refused **100% of proposals** while telling every
    * restaurant owner to try again in a few minutes. On Vercel that is one environment out of
    * three — a variable created only in Production leaves every Preview in exactly that state,
    * and the only evidence is a `console.error` nobody is watching.
@@ -271,8 +269,8 @@ export function requestCameThroughOurEdge(
  * laptop time, and IPv6 assignments in practice are not much better. The
  * secret takes that offline attack away.
  *
- * The default empty bucket reproduces the pre-existing digest exactly, so the
- * rows already counted for the proposal door keep their key.
+ * The empty bucket kept the digest of the partnership proposal, the first door, byte for byte.
+ * The proposal left the site with #990 and #966, and every caller today names a bucket.
  */
 export function hashClientAddress(clientAddress: string, bucket = ""): string | null {
   const secret = (process.env[HASH_SECRET_VAR] ?? "").trim();

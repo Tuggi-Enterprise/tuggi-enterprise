@@ -21,7 +21,7 @@ import {
  * ordinary client header. `POST /api/attribution` with a chosen
  * `CF-Connecting-IP` filed a capture under a victim's address, and — since the
  * rate-limit bucket is keyed on the same value — bought a fresh 30/h budget per
- * request, on a route that also sends e-mail through `/api/partner-proposal`.
+ * request.
  *
  * So the header is honoured only against proof of our own edge, and the four
  * cases below are the whole decision. `x-forwarded-for` is the floor because

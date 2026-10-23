@@ -4,7 +4,7 @@ import { getSupabaseClient } from "@/lib/supabase-server";
 import { buildAlternates } from "@/lib/seo";
 import { redirect } from "@/i18n/routing";
 import { LOCALES, type SiteLocale } from "@/i18n/locales";
-import { CARD, NOTE_BOX, ALERT_BOX } from "@/components/partner-proposal/styles";
+import { CARD, NOTE_BOX, ALERT_BOX } from "@/components/forms/styles";
 import { SubmitButton } from "./SubmitButton";
 
 export const dynamic = "force-dynamic";
@@ -94,8 +94,8 @@ export default async function UnsubscribePage({
   const lang = emailLanguage(locale, langParam);
   const t = await getTranslations({ locale: lang, namespace: "Unsubscribe" });
   const tContact = await getTranslations({ locale: lang, namespace: "Contact" });
-  // One support address for the whole site, read where the proposal page reads
-  // it. A second copy here would be a second thing to update (§6 SSOT).
+  // One support address for the whole site, read from the key that owns it. A
+  // second copy here would be a second thing to update (§6 SSOT).
   const support = tContact("Sidebar.pressValue");
 
   const secret = process.env.NEWSLETTER_SECRET || "";

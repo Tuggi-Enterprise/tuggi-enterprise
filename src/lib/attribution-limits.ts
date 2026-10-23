@@ -20,8 +20,7 @@
  *
  * The mechanism is still the one owner, `@/lib/rate-limit`; what is separated
  * here is the budget, which is exactly the split that module's `bucket`
- * argument exists for. Neither of these can spend the proposal door's budget
- * either (`registerSubmissionAttempt`, bucket `""`).
+ * argument exists for.
  */
 
 import { registerAttempt, type RateLimitDecision } from "@/lib/rate-limit";
@@ -41,7 +40,7 @@ export const CAPTURE_WINDOW_SECONDS = 60 * 60;
  */
 export const CAPTURE_LIMIT_PER_WINDOW = 30;
 
-/** Its own bucket, so a tourist's scan cannot lock a partner out of the proposal form. */
+/** Its own bucket, so a tourist's scan cannot spend another budget of the same address. */
 export const CAPTURE_BUCKET = "attribution";
 
 /**

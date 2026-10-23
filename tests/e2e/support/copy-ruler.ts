@@ -3,9 +3,9 @@
  *
  * They were written inside `partner-offer-ladder.spec.ts` for the six FAQ answers of #306, and
  * they moved here on 2026-08-19 when the scope grew past that block: #319 widened them to
- * `Partners.*` and `Segments.*`, and the pass on the partnership proposal widened them again to
- * `PartnerProposal.*`. Three spec files counting asides three times is the second implementation
- * of one decision, which is the defect the rule itself is about.
+ * `Partners.*` and `Segments.*`, and the pass on the partnership proposal widened them again
+ * (the proposal left with #990). Three spec files counting asides three times is the second
+ * implementation of one decision, which is the defect the rule itself is about.
  *
  * WHAT THE TWO NUMBERS DEFEND IS ONE THING: text nobody punctuated reads as written by a
  * machine, and the reader distrusts the promise before disagreeing with it. The dash is not the

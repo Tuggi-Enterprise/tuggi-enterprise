@@ -8,7 +8,6 @@ import Image from "next/image";
 import { ChevronDown, Menu, X, Smartphone } from "lucide-react";
 import { VISIBLE_NAV_ITEMS, isExternalHref, type NavItem } from "@/lib/nav";
 import type { SiteLocale } from "@/i18n/locales";
-import { localesServedOn } from "@/i18n/served-locales";
 
 /**
  * The stops a focus trap has to cycle through. Deliberately narrow: everything
@@ -96,11 +95,6 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
     { code: "it", label: "IT" },
   ];
 
-  // Only the languages this route can be read in — `localesServedOn` owns which those are, and
-  // the header does not spell out a second copy of that decision (#403). Offering a destination
-  // that redirects back to where you already are is a no-op control with a flash of URL.
-  const served = localesServedOn(pathname);
-  const locales = LOCALE_LABELS.filter((one) => served.includes(one.code));
 
   // Close menus on route change
   useEffect(() => {
@@ -275,7 +269,7 @@ export function GlobalHeader({ currentLocale }: { currentLocale: string }) {
                 className={`absolute right-0 mt-3 w-36 bg-white border border-gray-100 rounded-2xl shadow-2xl transition-all duration-200 z-50 overflow-hidden ${isLocaleOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible translate-y-1'}`}
               >
                 <div className="p-1">
-                  {locales.map((loc) => (
+                  {LOCALE_LABELS.map((loc) => (
                     <Link
                       key={loc.code}
                       // @ts-expect-error -- next-intl validates that `params`

@@ -194,37 +194,6 @@ function checkViolation(row) {
 const apiKeyByRoute = new Map();
 
 /**
- * Rows the app inserted into core.partner_form_submissions, readable back over
- * `GET /__proposals`. What matters about a proposal is the row that got
- * *stored*, and above all which COLUMNS it carries and what is inside
- * `answers.tax_id` — the value the deduplication key is computed FROM. The only
- * way to see either from outside is to read the payload back.
- */
-const proposals = [];
-
-/**
- * The double refuses any column outside this list — 42703, "unknown column".
- * Production refuses `tax_id_normalized` too, with a different code (428C9,
- * "cannot insert into a generated column"): the column is `GENERATED ALWAYS ...
- * STORED`, measured on the live database on 2026-08-17. Same verdict, different
- * SQLSTATE, and the fixture is not trying to reproduce the code — it is here so
- * that a route which starts naming the deduplication key fails a test instead of
- * finding out in production.
- */
-const SUBMISSION_ALLOWED_COLUMNS = new Set(["answers", "status", "submitted_at", "updated_at"]);
-
-/**
- * Rows the app inserted into `partner.proposal_funnel_events`, readable back
- * over `GET /__funnel`. What matters about a funnel row is what it does NOT
- * carry: no session, no address, nothing anybody typed. The only way to assert
- * that from outside is to read the payload back and look at its keys.
- */
-const funnelEvents = [];
-
-/** The whole shape of that table. A fifth key here is a test going red. */
-const FUNNEL_ALLOWED_COLUMNS = new Set(["event", "step"]);
-
-/**
  * `core.record_partner_form_attempt`, as a counter of timestamps per client
  * hash. It is the barrier the public route stands behind, so the double
  * implements the count instead of always answering `allowed: true`: a mock that
@@ -521,81 +490,9 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  if (url.pathname === "/rest/v1/proposal_funnel_events" && req.method === "POST") {
-    readBody(req).then((raw) => {
-      let rows = [];
-      try {
-        const parsed = JSON.parse(raw);
-        rows = Array.isArray(parsed) ? parsed : [parsed];
-      } catch {
-        sendJson(res, 400, { code: "PGRST102", message: "malformed body" });
-        return;
-      }
-      for (const row of rows) {
-        const unknown = Object.keys(row).find((key) => !FUNNEL_ALLOWED_COLUMNS.has(key));
-        if (unknown) {
-          sendJson(res, 400, {
-            code: "42703",
-            message: `mock-supabase-server refuses column "${unknown}" on proposal_funnel_events`,
-          });
-          return;
-        }
-      }
-      funnelEvents.push(...rows);
-      sendJson(res, 201, {});
-    });
-    return;
-  }
-
-  if (url.pathname === "/rest/v1/partner_form_submissions" && req.method === "POST") {
-    readBody(req).then((raw) => {
-      let rows = [];
-      try {
-        const parsed = JSON.parse(raw);
-        rows = Array.isArray(parsed) ? parsed : [parsed];
-      } catch {
-        sendJson(res, 400, { code: "PGRST102", message: "malformed body" });
-        return;
-      }
-      for (const row of rows) {
-        const unknown = Object.keys(row).find((key) => !SUBMISSION_ALLOWED_COLUMNS.has(key));
-        if (unknown) {
-          sendJson(res, 400, {
-            code: "42703",
-            message: `mock-supabase-server refuses column "${unknown}" on partner_form_submissions`,
-          });
-          return;
-        }
-      }
-      proposals.push(...rows);
-      // `.select("id").single()` asks for the object, not an array.
-      sendJson(res, 201, { id: `44444444-4444-4444-8444-${String(proposals.length).padStart(12, "0")}` });
-    });
-    return;
-  }
-
   // Drain the request body so clients that stream a POST payload (the rpc
   // call below) don't hang waiting on us to read it.
   req.resume();
-
-  if (url.pathname === "/__funnel" && req.method === "GET") {
-    sendJson(res, 200, funnelEvents);
-    return;
-  }
-
-  if (url.pathname === "/__proposals" && req.method === "GET") {
-    // `trade_name` and not `tax_id`: Playwright reuses a running webServer between local runs,
-    // so these rows survive the suite. A probe that is unique per run is the only filter that
-    // does not make the second run of the day fail on the first run's data — and a CNPJ cannot
-    // be unique per run, because it has to be a valid one.
-    const tradeName = url.searchParams.get("trade_name");
-    sendJson(res, 200, {
-      rows: tradeName
-        ? proposals.filter((row) => row?.answers?.trade_name === tradeName)
-        : proposals,
-    });
-    return;
-  }
 
   if (url.pathname === "/__unsubscribes" && req.method === "GET") {
     sendJson(res, 200, { rows: emailUnsubscribes });

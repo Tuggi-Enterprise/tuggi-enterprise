@@ -1,7 +1,7 @@
 "use client";
 
 import { useFormStatus } from "react-dom";
-import { BUTTON_PRIMARY } from "@/components/partner-proposal/styles";
+import { BUTTON_PRIMARY } from "@/components/forms/styles";
 
 /**
  * The one act on the unsubscribe page, in its pending state.
@@ -12,7 +12,7 @@ import { BUTTON_PRIMARY } from "@/components/partner-proposal/styles";
  *
  * It goes BUSY, never disabled. A disabled button leaves the tab order, and a
  * screen reader loses its place at the moment the person most needs to be told
- * something is happening — the same choice `PartnerProposalForm` makes.
+ * something is happening.
  */
 export function SubmitButton({ label }: { label: string }) {
   const { pending } = useFormStatus();
