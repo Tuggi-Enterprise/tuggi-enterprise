@@ -195,7 +195,7 @@
     },
     "Intelligence": {
       "title": "Inteligência de Turismo Baseada em Dados",
-      "desc": "Os governos geralmente são cegos ao fluxo turístico. O TUGGI fornece telemetria anonimizada: saiba exatamente quais rotas são feitas, em quais horários e em quais idiomas, permitindo campanhas de marketing internacional hiper-direcionadas."
+      "desc": "Os governos geralmente são cegos ao fluxo turístico. O TUGGI entrega relatórios com os totais desse fluxo: quantos visitantes passam pela cidade, em quais horários e em quais idiomas, para orientar campanhas de marketing internacional."
     }
   },
   "Fleets": {
@@ -525,7 +525,7 @@
       "s1Desc": "Quando você executa uma solicitação de exclusão:",
       "s1Item1": "Seu perfil de conta e credenciais de login são permanentemente removidos do nosso provedor de Autenticação.",
       "s1Item2": "Todos os identificadores de dispositivo vinculados às suas sessões anteriores são apagados do nosso banco de dados de telemetria.",
-      "s1Item3": "Quaisquer dados de fluxo anonimizados gerados anteriormente permanecem no agregado, mas jamais poderão ser reassociados à sua identidade.",
+      "s1Item3": "O seu histórico de posição e o trajeto das suas viagens ficam guardados junto da conta e são apagados com ela.",
       "Form": {
         "placeholder": "seu@email.com",
         "submit": "Solicitar Exclusão de Dados",

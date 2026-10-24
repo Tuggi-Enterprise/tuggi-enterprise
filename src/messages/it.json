@@ -195,7 +195,7 @@
     },
     "Intelligence": {
       "title": "Intelligenza Turistica Basata sui Dati",
-      "desc": "I governi sono di solito ciechi rispetto al flusso turistico. TUGGI fornisce telemetria anonimizzata: scopri esattamente quali percorsi vengono seguiti, a che ora e in quali lingue, abilitando campagne di marketing internazionale iper-mirate."
+      "desc": "I governi sono di solito ciechi rispetto al flusso turistico. TUGGI fornisce report con i totali di quel flusso: quanti visitatori passano per la città, in quali orari e in quali lingue, per orientare campagne di marketing internazionale."
     }
   },
   "Fleets": {
@@ -525,7 +525,7 @@
       "s1Desc": "Quando esegui una richiesta di cancellazione:",
       "s1Item1": "Il profilo del tuo account e le credenziali di accesso vengono rimossi in modo permanente dal nostro provider di autenticazione.",
       "s1Item2": "Tutti gli identificatori dei dispositivi collegati alle tue sessioni precedenti vengono cancellati dal nostro database di telemetria.",
-      "s1Item3": "Eventuali dati di flusso anonimizzati generati in precedenza rimangono nell'aggregato, ma non potranno mai essere ri-associati alla tua identità.",
+      "s1Item3": "La cronologia della tua posizione e il percorso dei tuoi viaggi restano salvati insieme all'account e vengono cancellati con esso.",
       "Form": {
         "placeholder": "tua@email.com",
         "submit": "Richiedi la Cancellazione dei Dati",

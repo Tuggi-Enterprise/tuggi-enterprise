@@ -195,7 +195,7 @@
     },
     "Intelligence": {
       "title": "Data-Driven Tourism Intelligence",
-      "desc": "Governments are usually blind to tourist flow. TUGGI delivers anonymized telemetry: know exactly which routes are taken, at what times, and in which languages, enabling hyper-targeted international marketing campaigns."
+      "desc": "Governments are usually blind to tourist flow. TUGGI delivers reports with the totals of that flow: how many visitors pass through the city, at what times and in which languages, to guide international marketing campaigns."
     }
   },
   "Fleets": {
@@ -525,7 +525,7 @@
       "s1Desc": "When you execute a deletion request:",
       "s1Item1": "Your account profile and login credentials are permanently removed from our Auth provider.",
       "s1Item2": "All device identifiers linked to your previous sessions are scrubbed from our telemetry database.",
-      "s1Item3": "Any anonymized flow data previously generated remains in the aggregate, but can never be re-associated with your identity.",
+      "s1Item3": "Your position history and the path of your trips are kept with your account and deleted along with it.",
       "Form": {
         "placeholder": "your@email.com",
         "submit": "Request Data Deletion",
