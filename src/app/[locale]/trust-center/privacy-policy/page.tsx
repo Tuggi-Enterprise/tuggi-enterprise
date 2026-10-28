@@ -154,6 +154,10 @@ export default async function PrivacyPolicyPage({ params }: { params: Promise<{ 
         <ul>
           <li>{t.rich("s2Item1", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
           <li>{t.rich("s2Item2", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
+          {/* BR-USUARIO-049 item 1.h (#1049): the last recorded position picks what
+              the suggestion notifications bring. Declared before the cron that
+              starts the use enters the database (item 1: same release). */}
+          <li>{t.rich("s2Item3", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
         </ul>
       </section>
 
