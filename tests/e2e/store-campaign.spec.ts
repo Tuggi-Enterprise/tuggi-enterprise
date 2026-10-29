@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
 import {
   APP_STORE_PROVIDER_TOKEN,
   APP_STORE_URL,
@@ -185,5 +185,81 @@ test.describe("/d/ in the browser", () => {
     expect(forwarded.get("utm_medium")).toBe("social");
     expect(forwarded.get("utm_campaign")).toBe("bio");
     expect(forwarded.has("k")).toBe(false);
+  });
+});
+
+/**
+ * #1060, field test of 2026-10-29: the store button of /d/<slug> sent no
+ * click_store to GA4, while every other store button of the site did.
+ *
+ * gtag.js holds an event in a batch for about five seconds and empties the
+ * batch early only when the page is hidden. Every store button of the site
+ * opens the store in a new tab, so the page stays alive and the batch goes out.
+ * The partner CTA was the one that took the page itself to the store, and on a
+ * phone that hands the link to the store app with the batch still waiting.
+ *
+ * These run the real gtag.js (the GA4 id is fixed in the layout) with analytics
+ * consent given, and read the hit gtag sends to /g/collect. The hit is
+ * answered here and never reaches Google, so the property stays clean.
+ */
+test.describe("#1060: the partner page's store buttons reach GA4 as click_store", () => {
+  const IPHONE_UA =
+    "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1";
+  const ANDROID_UA =
+    "Mozilla/5.0 (Linux; Android 14; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Mobile Safari/537.36";
+
+  /** Every `en=` gtag sends to /g/collect from now on, URL and batched body alike. */
+  async function collectedEvents(page: Page): Promise<string[]> {
+    const names: string[] = [];
+    const context = page.context();
+    await context.addInitScript(() => localStorage.setItem("tuggi_cookie_consent", "true"));
+    await context.route(/apps\.apple\.com|play\.google\.com/, (route) =>
+      route.fulfill({ status: 200, contentType: "text/html", body: "<html>store stub</html>" })
+    );
+    await context.route(/google-analytics\.com\/g\/collect/, (route) => {
+      const request = route.request();
+      const payload = `${request.url()}\n${request.postData() ?? ""}`;
+      for (const match of payload.matchAll(/(?:^|[?&\n])en=([^&\s]+)/g)) names.push(match[1]);
+      return route.fulfill({ status: 204 });
+    });
+    return names;
+  }
+
+  async function openWithGtag(page: Page, path: string): Promise<void> {
+    await page.goto(path);
+    await page.waitForFunction(() => typeof (window as unknown as { gtag?: unknown }).gtag === "function");
+  }
+
+  for (const [label, userAgent] of [
+    ["iPhone", IPHONE_UA],
+    ["Android", ANDROID_UA],
+  ] as const) {
+    test.describe(label, () => {
+      test.use({ userAgent, viewport: { width: 390, height: 844 } });
+
+      test(`the floating CTA sends click_store before the visitor is at the store (${label})`, async ({ page }) => {
+        test.setTimeout(45_000);
+        const events = await collectedEvents(page);
+        await openWithGtag(page, "/d/e2e-sem-logo?lang=en");
+
+        await page.getByRole("button", { name: /discover more in the app/i }).click();
+
+        await expect
+          .poll(() => events.includes("click_store"), { timeout: 15_000, message: "click_store in /g/collect" })
+          .toBe(true);
+      });
+    });
+  }
+
+  test("the campaign badge sends click_store too", async ({ page }) => {
+    test.setTimeout(45_000);
+    const events = await collectedEvents(page);
+    await openWithGtag(page, "/d/e2e-com-logo?lang=en");
+
+    await page.locator('section a[href^="https://apps.apple.com/"]').first().click();
+
+    await expect
+      .poll(() => events.includes("click_store"), { timeout: 15_000, message: "click_store in /g/collect" })
+      .toBe(true);
   });
 });

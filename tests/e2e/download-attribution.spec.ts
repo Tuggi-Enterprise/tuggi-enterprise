@@ -91,10 +91,10 @@ const uniqueAddress = () =>
 
 /**
  * Follows the store link the CTA opens without leaving the harness: the CTA
- * assigns window.location, so the store URL is only observable as a navigation.
+ * opens the store in a new tab (#1060), so the store URL is that tab's.
  */
 async function storeUrlFromCta(page: Page): Promise<string> {
-  await page.route("**/play.google.com/**", (route) =>
+  await page.context().route("**/play.google.com/**", (route) =>
     route.fulfill({
       status: 200,
       contentType: "text/html",
@@ -102,9 +102,11 @@ async function storeUrlFromCta(page: Page): Promise<string> {
     })
   );
 
+  const storeTab = page.waitForEvent("popup");
   await page.getByRole("button", { name: /discover more in the app/i }).click();
-  await page.waitForURL(/play\.google\.com/);
-  return page.url();
+  const tab = await storeTab;
+  await tab.waitForURL(/play\.google\.com/);
+  return tab.url();
 }
 
 /** The first touch this browser is carrying, as the site itself would read it. */

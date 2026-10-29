@@ -486,18 +486,38 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
   // the store click so a partner's page can still be told apart in GA4.
   const partnerEventParams = partnerId ? { partner_id: partnerId } : undefined;
 
-  const handleRedirect = async () => {
+  /**
+   * Opens the store in a new tab, like every other store button of the site
+   * (#1060). This page has to stay alive after the tap: gtag.js holds
+   * `click_store` in a batch for a few seconds and empties it early when the
+   * page is hidden. Sending this page itself to the store handed the link to
+   * the store app with the batch still waiting, and the event never reached
+   * GA4. `event_callback` does not help: it fires before the batch leaves.
+   *
+   * The pasteboard write is started first, inside the gesture, and not
+   * awaited: with this page alive it settles on its own, which is the badge
+   * case `writeClickTokenToClipboard` already describes. Only a blocked tab
+   * falls back to this tab, so the visitor reaches the store either way.
+   */
+  const handleRedirect = () => {
     setIsRedirecting(true);
     trackStoreClick(platform === "ios" ? "app_store" : "play_store", "partner_cta", partnerEventParams);
 
     // iOS has no install-referrer equivalent — attribution there rides on the
     // clipboard, written inside this gesture and nowhere else.
-    if (platform === "ios") await writeClipboardToken();
+    if (platform === "ios") void writeClipboardToken();
 
     const targetUrl =
       platform === "ios" ? appStoreUrl : buildPlayStoreUrl(clickId);
 
-    window.location.href = targetUrl;
+    const storeTab = window.open(targetUrl, "_blank");
+    if (storeTab) {
+      storeTab.opener = null;
+      // The visitor may come back to this tab: the button is ready again.
+      window.setTimeout(() => setIsRedirecting(false), 1500);
+    } else {
+      window.location.href = targetUrl;
+    }
   };
 
   const t = useTranslations("Download");

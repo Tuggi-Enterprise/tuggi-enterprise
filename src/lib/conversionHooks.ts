@@ -218,11 +218,11 @@ export function useAttributionIpComplement(capturedClickId?: string | null): voi
 /**
  * How long a CTA may wait for the pasteboard before it gives up and navigates.
  *
- * A badge with `target="_blank"` needs none of it — this page stays alive and
- * the write settles on its own. It exists for the CTA that assigns
- * `window.location`: there the document is going away, and a clipboard
- * permission prompt that never gets answered would strand the visitor on a
- * spinner instead of taking him to the store.
+ * A store button that opens a new tab needs none of it — this page stays alive
+ * and the write settles on its own, which is every store button of the site
+ * since #1060. It exists for a caller that awaits the write before sending
+ * this document away: a clipboard permission prompt that never gets answered
+ * would strand the visitor on a spinner instead of taking him to the store.
  */
 export const CLIPBOARD_WRITE_GRACE_MS = 300;
 
