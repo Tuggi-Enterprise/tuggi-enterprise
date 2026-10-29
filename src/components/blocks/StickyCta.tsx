@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { sendGAEvent } from "@next/third-parties/google";
-import { APP_STORE_URL, buildPlayStoreUrl } from "@/lib/app-meta";
+import { buildPlayStoreUrl } from "@/lib/app-meta";
 import {
   useAttributionClickId,
   useAttributionClipboardWrite,
   usePlatform,
+  useStoreCampaign,
 } from "@/lib/conversionHooks";
 
 interface StickyCtaProps {
@@ -33,6 +33,7 @@ export function StickyCta({ text, cta, afterId, untilId, placement }: StickyCtaP
   const platform = usePlatform();
   const clickId = useAttributionClickId();
   const writeClipboardToken = useAttributionClipboardWrite();
+  const { appStoreUrl, trackStoreClick } = useStoreCampaign();
   const [pastHero, setPastHero] = useState(false);
   const [finalInView, setFinalInView] = useState(false);
 
@@ -59,7 +60,7 @@ export function StickyCta({ text, cta, afterId, untilId, placement }: StickyCtaP
   // pasteboard inside the tap (contract §5). It used to rely on the partner
   // page having written it, which credited nobody for a visitor who scanned a
   // QR and left from any other page of the site.
-  const href = platform === "android" ? buildPlayStoreUrl(clickId) : APP_STORE_URL;
+  const href = platform === "android" ? buildPlayStoreUrl(clickId) : appStoreUrl;
 
   return (
     <div
@@ -77,8 +78,8 @@ export function StickyCta({ text, cta, afterId, untilId, placement }: StickyCtaP
           rel="noopener noreferrer"
           tabIndex={visible ? undefined : -1}
           onClick={() => {
-            if (href === APP_STORE_URL) void writeClipboardToken();
-            sendGAEvent({ event: "click_store", placement, store });
+            if (store === "app_store") void writeClipboardToken();
+            trackStoreClick(store, placement);
           }}
           className="shrink-0 rounded-xl bg-tuggi-primary text-tuggi-dark font-bold px-5 py-2.5 text-sm transition-transform active:scale-95 motion-reduce:active:scale-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
         >

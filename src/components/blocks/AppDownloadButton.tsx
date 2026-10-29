@@ -1,11 +1,12 @@
 "use client";
 
 import { type ReactNode } from "react";
-import { APP_STORE_URL, buildPlayStoreUrl } from "@/lib/app-meta";
+import { buildPlayStoreUrl } from "@/lib/app-meta";
 import {
   useAttributionClickId,
   useAttributionClipboardWrite,
   usePlatform,
+  useStoreCampaign,
 } from "@/lib/conversionHooks";
 
 /**
@@ -47,10 +48,11 @@ export function AppDownloadButton({
   // inside the tap below (BR-B2B-002, contract §5).
   const clickId = useAttributionClickId();
   const writeClipboardToken = useAttributionClipboardWrite();
+  const { appStoreUrl, trackStoreClick } = useStoreCampaign();
 
   const href =
     platform === "ios"
-      ? APP_STORE_URL
+      ? appStoreUrl
       : platform === "android"
         ? buildPlayStoreUrl(clickId)
         : TUGGI_LANDING;
@@ -61,17 +63,20 @@ export function AppDownloadButton({
     // Started before the analytics call, and never awaited: this handler is the
     // user gesture WebKit requires, and the badge opens a new tab, so the write
     // settles with this document still alive.
-    if (href === APP_STORE_URL) void writeClipboardToken();
+    if (platform === "ios") void writeClipboardToken();
+    // A store leg is a store click of the site, counted as `click_store` like
+    // every other badge (#1060). The desktop leg goes to the Tuggi landing,
+    // which counts the store tap there; only this leg keeps the tour event.
+    if (isStore) {
+      const extra = eventLabel ? { label: eventLabel } : undefined;
+      trackStoreClick(platform === "ios" ? "app_store" : "play_store", "tour_download", extra);
+      return;
+    }
     try {
-      const target = !isStore
-        ? "tuggi_landing"
-        : href === APP_STORE_URL
-          ? "app_store"
-          : "play_store";
       (window as unknown as { gtag?: (...a: unknown[]) => void }).gtag?.(
         "event",
         "tour_download_cta_click",
-        { target, label: eventLabel }
+        { target: "tuggi_landing", label: eventLabel }
       );
     } catch {
       /* analytics is best-effort */

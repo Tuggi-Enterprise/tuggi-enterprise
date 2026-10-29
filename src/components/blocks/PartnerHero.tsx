@@ -5,14 +5,11 @@ import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight, AtSign, Check, Copy, Gift, Globe, Loader2, Pause, Play } from "lucide-react";
-import {
-  APP_STORE_URL,
-  buildPlayStoreUrl,
-  isAttributablePartnerId,
-} from "@/lib/app-meta";
+import { buildPlayStoreUrl, isAttributablePartnerId } from "@/lib/app-meta";
 import {
   useAttributionClickId,
   useAttributionIpComplement,
+  useStoreCampaign,
   writeClickTokenToClipboard,
 } from "@/lib/conversionHooks";
 import { COOKIE_BANNER_HEIGHT_VAR } from "@/components/global/CookieBanner";
@@ -152,6 +149,7 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
    * the visitor to the bare store URL, which is the honest link.
    */
   const storedClickId = useAttributionClickId();
+  const { appStoreUrl, trackStoreClick } = useStoreCampaign();
   const [capturedClickId, setCapturedClickId] = useState<string | null>(null);
   const clickId = storedClickId ?? capturedClickId;
   /**
@@ -484,16 +482,20 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
    */
   const writeClipboardToken = (): Promise<void> => writeClickTokenToClipboard(clickId);
 
+  // The partner id the page events of this component already carry, kept on
+  // the store click so a partner's page can still be told apart in GA4.
+  const partnerEventParams = partnerId ? { partner_id: partnerId } : undefined;
+
   const handleRedirect = async () => {
     setIsRedirecting(true);
-    trackEvent("download_page_cta_click", { target_store: platform === "ios" ? "app_store" : "play_store" });
+    trackStoreClick(platform === "ios" ? "app_store" : "play_store", "partner_cta", partnerEventParams);
 
     // iOS has no install-referrer equivalent — attribution there rides on the
     // clipboard, written inside this gesture and nowhere else.
     if (platform === "ios") await writeClipboardToken();
 
     const targetUrl =
-      platform === "ios" ? APP_STORE_URL : buildPlayStoreUrl(clickId);
+      platform === "ios" ? appStoreUrl : buildPlayStoreUrl(clickId);
 
     window.location.href = targetUrl;
   };
@@ -678,10 +680,11 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
           sealUrl={partnerData!.logoUrl!}
           partnerName={partnerData!.name ?? ""}
           clickId={clickId}
+          appStoreUrl={appStoreUrl}
           audioSlot={audioCard}
           descriptionSlot={descriptionBlock}
           onStoreClick={(store) => {
-            trackEvent("download_page_store_badge_click", { target_store: store });
+            trackStoreClick(store, "partner_badge", partnerEventParams);
             // The App Store badge is the iOS way out of this page, so it writes
             // the same clipboard token the floating CTA does — inside the tap.
             if (store === "app_store") void writeClipboardToken();

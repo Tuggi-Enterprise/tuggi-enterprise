@@ -2,12 +2,12 @@
 
 import { useTranslations } from "next-intl";
 import { DriveHeroAnimator } from "./DriveHeroAnimator";
-import { sendGAEvent } from "@next/third-parties/google";
 import Image from "next/image";
-import { APP_STORE_URL, buildPlayStoreUrl } from "@/lib/app-meta";
+import { buildPlayStoreUrl } from "@/lib/app-meta";
 import {
   useAttributionClickId,
   useAttributionClipboardWrite,
+  useStoreCampaign,
 } from "@/lib/conversionHooks";
 
 export function DriveHero() {
@@ -19,6 +19,7 @@ export function DriveHero() {
   // it the pasteboard write iOS depends on (contract §5).
   const clickId = useAttributionClickId();
   const writeClipboardToken = useAttributionClipboardWrite();
+  const { appStoreUrl, trackStoreClick } = useStoreCampaign();
 
   return (
     <section className="bg-tuggi-bg pt-32 pb-24 overflow-hidden relative">
@@ -36,12 +37,12 @@ export function DriveHero() {
             
             <div className="flex flex-row gap-4 items-center">
               <a 
-                href={APP_STORE_URL}
+                href={appStoreUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => {
                   void writeClipboardToken();
-                  sendGAEvent({ event: 'click_download', value: 'app_store' });
+                  trackStoreClick("app_store", "drive_hero");
                 }}
                 className="hover:opacity-80 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text rounded-xl shrink-0"
               >
@@ -58,7 +59,7 @@ export function DriveHero() {
                 href={buildPlayStoreUrl(clickId)}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() => sendGAEvent({ event: 'click_download', value: 'google_play' })}
+                onClick={() => trackStoreClick("play_store", "drive_hero")}
                 className="hover:opacity-80 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text rounded-xl shrink-0"
               >
                 <Image 

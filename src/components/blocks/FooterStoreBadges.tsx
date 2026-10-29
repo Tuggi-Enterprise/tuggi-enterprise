@@ -1,11 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { sendGAEvent } from "@next/third-parties/google";
-import { APP_STORE_URL, buildPlayStoreUrl } from "@/lib/app-meta";
+import { buildPlayStoreUrl } from "@/lib/app-meta";
 import {
   useAttributionClickId,
   useAttributionClipboardWrite,
+  useStoreCampaign,
 } from "@/lib/conversionHooks";
 
 /**
@@ -20,16 +20,17 @@ import {
 export function FooterStoreBadges() {
   const clickId = useAttributionClickId();
   const writeClipboardToken = useAttributionClipboardWrite();
+  const { appStoreUrl, trackStoreClick } = useStoreCampaign();
 
   return (
     <div className="flex flex-col gap-3 mt-6">
       <a
-        href={APP_STORE_URL}
+        href={appStoreUrl}
         target="_blank"
         rel="noopener noreferrer"
         onClick={() => {
           void writeClipboardToken();
-          sendGAEvent({ event: "click_store", placement: "footer", store: "app_store" });
+          trackStoreClick("app_store", "footer");
         }}
         className="hover:opacity-80 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text rounded-lg w-max"
       >
@@ -45,7 +46,7 @@ export function FooterStoreBadges() {
         href={buildPlayStoreUrl(clickId)}
         target="_blank"
         rel="noopener noreferrer"
-        onClick={() => sendGAEvent({ event: "click_store", placement: "footer", store: "play_store" })}
+        onClick={() => trackStoreClick("play_store", "footer")}
         className="hover:opacity-80 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text rounded-lg w-max"
       >
         <Image

@@ -106,10 +106,12 @@ export default async function PartnerSlugPage({
   searchParams,
 }: {
   params: Promise<{ locale: string; slug: string }>;
-  searchParams: Promise<{ lang?: string; k?: string | string[] }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { locale, slug } = await params;
-  const { lang, k } = await searchParams;
+  const query = await searchParams;
+  const { k } = query;
+  const lang = typeof query.lang === "string" ? query.lang : undefined;
   setRequestLocale(locale);
 
   // A kit QR carries `?k={piece}` (#815): count it before the render, without
@@ -123,10 +125,17 @@ export default async function PartnerSlugPage({
 
   // The printed slug is not the client's own (the client inherited another one,
   // or the URL differs in case): it keeps resolving, as a permanent redirect —
-  // BR-B2B-037 item 4. `k` is dropped, it was counted above.
+  // BR-B2B-037 item 4. `k` is dropped, it was counted above. Everything else
+  // travels: `lang`, and the `utm_*` of the visit, which the store links and
+  // the store click of the target page read (#1060).
   if (resolved?.kind === "redirect") {
-    const query = typeof lang === "string" ? `?lang=${encodeURIComponent(lang)}` : "";
-    permanentRedirect(`/d/${encodeURIComponent(resolved.slug)}${query}`);
+    const forwarded = new URLSearchParams();
+    for (const [key, value] of Object.entries(query)) {
+      if (key === "k" || value === undefined) continue;
+      for (const item of Array.isArray(value) ? value : [value]) forwarded.append(key, item);
+    }
+    const search = forwarded.toString();
+    permanentRedirect(`/d/${encodeURIComponent(resolved.slug)}${search ? `?${search}` : ""}`);
   }
 
   /**

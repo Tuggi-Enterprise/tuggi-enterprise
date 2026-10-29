@@ -23,6 +23,48 @@ export const APP_STORE_ID = "6744379818";
 export const APP_STORE_URL = `https://apps.apple.com/app/tuggi-drive/id${APP_STORE_ID}`;
 export const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.tuggidrive.app";
 
+/**
+ * Provider token of the Tuggi account in App Store Connect. With `ct` it makes
+ * a campaign link: App Analytics credits the page views and the installs of
+ * that link to the campaign (#1060). The one place this number is written.
+ */
+export const APP_STORE_PROVIDER_TOKEN = "127712004";
+
+/** App Store Connect cuts the campaign token at 40 characters. */
+const CAMPAIGN_TOKEN_MAX_LENGTH = 40;
+
+/**
+ * The visit's `utm_campaign` as an App Store `ct`: lower case, accents folded,
+ * blanks become `-`, anything outside `[a-z0-9-_]` is dropped, at most 40
+ * characters. Null when no letter or digit is left, so the caller keeps the
+ * bare link.
+ */
+export function campaignToken(campaign: string | null | undefined): string | null {
+  if (!campaign) return null;
+  const token = campaign
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9_-]/g, "")
+    .slice(0, CAMPAIGN_TOKEN_MAX_LENGTH);
+  // Separators alone name no campaign.
+  return /[a-z0-9]/.test(token) ? token : null;
+}
+
+/**
+ * The App Store link of a store CTA. With a campaign it carries `pt`, `ct` and
+ * `mt=8` (the App Store media type); without one it is APP_STORE_URL, exactly.
+ * The iOS side of the partner attribution rides on the pasteboard and is not
+ * touched here (BR-B2B-002, contract §5).
+ */
+export function buildAppStoreUrl(campaign?: string | null): string {
+  const ct = campaignToken(campaign);
+  if (!ct) return APP_STORE_URL;
+  return `${APP_STORE_URL}?pt=${APP_STORE_PROVIDER_TOKEN}&ct=${ct}&mt=8`;
+}
+
 // ── Download attribution ────────────────────────────────────────────────────
 //
 // Everything below decides how a download is credited to a partner. It lives in

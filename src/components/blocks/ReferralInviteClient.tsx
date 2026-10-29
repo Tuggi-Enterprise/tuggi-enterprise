@@ -5,7 +5,8 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { sendGAEvent } from "@next/third-parties/google";
 import { Check, Copy } from "lucide-react";
-import { APP_STORE_URL, PLAY_STORE_URL } from "@/lib/app-meta";
+import { PLAY_STORE_URL } from "@/lib/app-meta";
+import { useStoreCampaign } from "@/lib/conversionHooks";
 
 /**
  * The two interactive pieces of the invite page (`/c/<code>`, card #840).
@@ -91,9 +92,9 @@ export function ReferralCopyCode({ code }: { code: string }) {
  * Play reads campaign parameters from the `referrer` it hands to the install
  * (Play Console acquisition), so the tag rides there. The app's
  * InstallReferrerService only acts on `tuggi_click_<uuid>`, which this value
- * never carries, so no partner is credited from here. The App Store has no
- * free-form channel — a campaign token needs a provider token we do not hold
- * — so its link stays bare and the tap is counted by `click_store`.
+ * never carries, so no partner is credited from here. The App Store link
+ * carries the visit's own campaign, when it has one (`useStoreCampaign`), and
+ * the tap is counted by `click_store`.
  */
 const PLAY_STORE_URL_STAMPS = `${PLAY_STORE_URL}&referrer=${encodeURIComponent(
   "utm_source=tuggi_site&utm_medium=referral&utm_campaign=stamps"
@@ -104,13 +105,14 @@ const BADGE_LINK =
 
 export function ReferralStoreBadges() {
   const t = useTranslations("Home.Hero");
+  const { appStoreUrl, trackStoreClick } = useStoreCampaign();
   const track = (store: "app_store" | "play_store") =>
-    sendGAEvent({ event: "click_store", placement: "referral_invite", store, campaign: "stamps" });
+    trackStoreClick(store, "referral_invite", { campaign: "stamps" });
 
   return (
     <div className="flex flex-row flex-wrap gap-3 items-center justify-center">
       <a
-        href={APP_STORE_URL}
+        href={appStoreUrl}
         target="_blank"
         rel="noopener noreferrer"
         onClick={() => track("app_store")}

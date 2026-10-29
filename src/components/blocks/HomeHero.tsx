@@ -3,11 +3,11 @@
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { sendGAEvent } from "@next/third-parties/google";
-import { APP_STORE_URL, buildPlayStoreUrl } from "@/lib/app-meta";
+import { buildPlayStoreUrl } from "@/lib/app-meta";
 import {
   useAttributionClickId,
   useAttributionClipboardWrite,
+  useStoreCampaign,
 } from "@/lib/conversionHooks";
 import { PhoneFrame } from "./PhoneFrame";
 import { PRODUCT_FACTS } from "@/lib/product-facts";
@@ -53,6 +53,7 @@ export function HomeHero() {
   // first touch both are the bare store URL and nothing is written.
   const clickId = useAttributionClickId();
   const writeClipboardToken = useAttributionClipboardWrite();
+  const { appStoreUrl, trackStoreClick } = useStoreCampaign();
 
   return (
     <section className="bg-tuggi-bg pt-28 pb-20 lg:pt-32 lg:pb-28 overflow-hidden">
@@ -69,12 +70,12 @@ export function HomeHero() {
 
             <div className="flex flex-row flex-wrap gap-4 items-center justify-center lg:justify-start">
               <a
-                href={APP_STORE_URL}
+                href={appStoreUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => {
                   void writeClipboardToken();
-                  sendGAEvent({ event: "click_store_badge", value: "app_store" });
+                  trackStoreClick("app_store", "home_hero");
                 }}
                 className={BADGE_LINK}
               >
@@ -91,7 +92,7 @@ export function HomeHero() {
                 href={buildPlayStoreUrl(clickId)}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() => sendGAEvent({ event: "click_store_badge", value: "play_store" })}
+                onClick={() => trackStoreClick("play_store", "home_hero")}
                 className={BADGE_LINK}
               >
                 <Image

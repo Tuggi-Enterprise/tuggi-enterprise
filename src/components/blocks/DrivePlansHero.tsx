@@ -2,11 +2,11 @@
 
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { sendGAEvent } from "@next/third-parties/google";
-import { APP_STORE_URL, buildPlayStoreUrl } from "@/lib/app-meta";
+import { buildPlayStoreUrl } from "@/lib/app-meta";
 import {
   useAttributionClickId,
   useAttributionClipboardWrite,
+  useStoreCampaign,
 } from "@/lib/conversionHooks";
 
 const BADGE_LINK =
@@ -26,6 +26,7 @@ export function DrivePlansHero() {
   // iOS has no install-referrer equivalent (BR-B2B-002, contract §5).
   const clickId = useAttributionClickId();
   const writeClipboardToken = useAttributionClipboardWrite();
+  const { appStoreUrl, trackStoreClick } = useStoreCampaign();
 
   return (
     <section id="drive-hero" className="bg-tuggi-bg pt-28 pb-16 lg:pt-32 lg:pb-20">
@@ -39,12 +40,12 @@ export function DrivePlansHero() {
 
         <div className="flex flex-row flex-wrap gap-4 items-center justify-center">
           <a
-            href={APP_STORE_URL}
+            href={appStoreUrl}
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => {
               void writeClipboardToken();
-              sendGAEvent({ event: "click_store", placement: "hero", store: "app_store" });
+              trackStoreClick("app_store", "hero");
             }}
             className={BADGE_LINK}
           >
@@ -60,7 +61,7 @@ export function DrivePlansHero() {
             href={buildPlayStoreUrl(clickId)}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => sendGAEvent({ event: "click_store", placement: "hero", store: "play_store" })}
+            onClick={() => trackStoreClick("play_store", "hero")}
             className={BADGE_LINK}
           >
             <Image

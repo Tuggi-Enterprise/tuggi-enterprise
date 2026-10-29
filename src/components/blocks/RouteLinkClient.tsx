@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { sendGAEvent } from "@next/third-parties/google";
 import { Check, Copy } from "lucide-react";
-import { APP_STORE_URL } from "@/lib/app-meta";
+import { useStoreCampaign } from "@/lib/conversionHooks";
 
 /**
  * The two interactive pieces of the route page (`/r/<slug>`, card #946,
@@ -117,14 +117,10 @@ export function RouteStoreBadge({
   const t = useTranslations("RouteLink");
   const tHero = useTranslations("Home.Hero");
   const [copiedLink, setCopiedLink] = useState(false);
+  const { appStoreUrl, trackStoreClick } = useStoreCampaign();
 
   const onTap = (store: "app_store" | "play_store") => {
-    sendGAEvent({
-      event: "click_store",
-      placement: "route_link",
-      store,
-      ...(slug ? { route_slug: slug } : {}),
-    });
+    trackStoreClick(store, "route_link", slug ? { route_slug: slug } : undefined);
     if (!link) return;
     const clipboard = typeof navigator !== "undefined" ? navigator.clipboard : undefined;
     if (!clipboard?.writeText) return;
@@ -138,7 +134,7 @@ export function RouteStoreBadge({
 
   const appStore = (
     <a
-      href={APP_STORE_URL}
+      href={appStoreUrl}
       target="_blank"
       rel="noopener noreferrer"
       onClick={() => onTap("app_store")}
@@ -195,7 +191,7 @@ export function RouteStoreBadge({
       ) : platform === "android" ? (
         <>
           {playStore}
-          {otherLink(APP_STORE_URL, t("otherIphone"), "app_store")}
+          {otherLink(appStoreUrl, t("otherIphone"), "app_store")}
         </>
       ) : (
         <div className="flex flex-row flex-wrap gap-3 items-center justify-center">

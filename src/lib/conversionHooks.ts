@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
+import { buildAppStoreUrl } from "@/lib/app-meta";
+import { sendStoreClick, visitUtmOf, type StoreId } from "@/lib/store-click";
 import { resolvePricing, type BaseMarketPricing } from "@/lib/pricing";
 import { attributionIpEndpoint, clickToken, readStoredAttribution } from "@/lib/attribution";
 import { useAttributionAllowed } from "@/components/global/AttributionGateProvider";
@@ -105,6 +107,38 @@ export function useAttributionClickId(): string | null {
 
 const clientClickId = (): string | null => readStoredAttribution()?.click_id ?? null;
 const serverClickId = (): string | null => null;
+
+const clientSearch = (): string => window.location.search;
+const serverSearch = (): string => "";
+
+/**
+ * The store link and the store click of this visit's campaign (#1060).
+ *
+ * `appStoreUrl` carries the App Store campaign (`pt`, `ct`, `mt`) when the
+ * visit arrived with `utm_campaign`, and `trackStoreClick` sends the single
+ * `click_store` event with the visit's UTM tags. Every store CTA of the site
+ * takes both from here, so the campaign rule lives in one place.
+ *
+ * Read from the address bar on the client, never on the server, for the same
+ * reason as `useAttributionClickId`: the pages that carry a store CTA are
+ * cached by the CDN. The server snapshot is the bare link, and the campaign
+ * lands on hydration. The Play link is not built here: its referrer is the
+ * partner attribution token and stays as `buildPlayStoreUrl` makes it.
+ */
+export function useStoreCampaign(): {
+  appStoreUrl: string;
+  trackStoreClick: (store: StoreId, placement: string, extra?: Record<string, string>) => void;
+} {
+  const search = useSyncExternalStore(noopSubscribe, clientSearch, serverSearch);
+  return useMemo(() => {
+    const utm = visitUtmOf(search);
+    return {
+      appStoreUrl: buildAppStoreUrl(utm.utm_campaign),
+      trackStoreClick: (store: StoreId, placement: string, extra?: Record<string, string>) =>
+        sendStoreClick({ store, placement, utm, extra }),
+    };
+  }, [search]);
+}
 
 /**
  * Once per page LOAD, not once per mount — a module flag and not a ref.

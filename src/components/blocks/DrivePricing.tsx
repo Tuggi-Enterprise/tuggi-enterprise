@@ -5,12 +5,13 @@ import { useLocale, useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { Check, CheckCircle2, Store } from "lucide-react";
 import { sendGAEvent } from "@next/third-parties/google";
-import { APP_STORE_URL, buildPlayStoreUrl } from "@/lib/app-meta";
+import { buildPlayStoreUrl } from "@/lib/app-meta";
 import {
   useAttributionClickId,
   useAttributionClipboardWrite,
   useGeoPricing,
   usePlatform,
+  useStoreCampaign,
   type Platform,
 } from "@/lib/conversionHooks";
 import { formatPrice, type PassKey } from "@/lib/pricing";
@@ -39,7 +40,7 @@ const PRIMARY_FILLED =
 const SECONDARY_LIGHT =
   "block w-full text-center bg-slate-50 text-slate-700 font-semibold py-3 rounded-xl border border-slate-200 hover:bg-slate-100 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-300";
 
-/** The GA dimension of `click_pass_cta`, and the catalogue of BR-MONETIZACAO-048.
+/** The `pass` parameter of the pricing `click_store`, and the catalogue of BR-MONETIZACAO-048.
  *  It reads `10h`/`25h`/`45h` and no longer `7d`/`30d`: the product is another
  *  one, and a funnel that kept the old names would compare hours against days.
  *  `PassKey` is the same three strings in `lib/pricing.ts` — the funnel and the
@@ -68,12 +69,13 @@ function PassCta({
   // nobody for a visitor who left from the pricing page.
   const clickId = useAttributionClickId();
   const writeClipboardToken = useAttributionClipboardWrite();
+  const { appStoreUrl, trackStoreClick } = useStoreCampaign();
   const playHref = buildPlayStoreUrl(clickId);
   const primaryStore = platform === "android" ? "play_store" : "app_store";
-  const primaryHref = platform === "android" ? playHref : APP_STORE_URL;
+  const primaryHref = platform === "android" ? playHref : appStoreUrl;
   const fire = (store: "app_store" | "play_store") => {
     if (store === "app_store") void writeClipboardToken();
-    sendGAEvent({ event: "click_pass_cta", pass, store });
+    trackStoreClick(store, "pricing", { pass });
   };
 
   return (

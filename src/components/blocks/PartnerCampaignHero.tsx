@@ -3,7 +3,7 @@
 import type { ReactNode } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { APP_STORE_URL, buildPlayStoreUrl } from "@/lib/app-meta";
+import { buildPlayStoreUrl } from "@/lib/app-meta";
 import { COOKIE_BANNER_HEIGHT_VAR } from "@/components/global/CookieBanner";
 
 interface PartnerCampaignHeroProps {
@@ -20,6 +20,8 @@ interface PartnerCampaignHeroProps {
   audioSlot?: ReactNode;
   /** The partner's own welcome text, rendered by PartnerHero with its collapse control. */
   descriptionSlot?: ReactNode;
+  /** The App Store link of this visit, campaign included (`useStoreCampaign`). */
+  appStoreUrl: string;
   onStoreClick: (store: "app_store" | "play_store") => void;
 }
 
@@ -78,6 +80,7 @@ export function PartnerCampaignHero({
   clickId,
   audioSlot,
   descriptionSlot,
+  appStoreUrl,
   onStoreClick,
 }: PartnerCampaignHeroProps) {
   const t = useTranslations("Download.Campaign");
@@ -227,7 +230,7 @@ export function PartnerCampaignHero({
 
             <div className="mt-3 flex flex-wrap items-center gap-2">
               <a
-                href={APP_STORE_URL}
+                href={appStoreUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => onStoreClick("app_store")}

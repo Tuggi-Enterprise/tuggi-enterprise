@@ -2,12 +2,12 @@
 
 import { useTranslations } from "next-intl";
 import { Compass } from "lucide-react";
-import { sendGAEvent } from "@next/third-parties/google";
 import Image from "next/image";
-import { APP_STORE_URL, buildPlayStoreUrl } from "@/lib/app-meta";
+import { buildPlayStoreUrl } from "@/lib/app-meta";
 import {
   useAttributionClickId,
   useAttributionClipboardWrite,
+  useStoreCampaign,
 } from "@/lib/conversionHooks";
 
 export function DriveConversion() {
@@ -17,12 +17,11 @@ export function DriveConversion() {
   // iOS has no install-referrer equivalent (BR-B2B-002, contract §5).
   const clickId = useAttributionClickId();
   const writeClipboardToken = useAttributionClipboardWrite();
+  const { appStoreUrl, trackStoreClick } = useStoreCampaign();
 
   const onStore = (store: "app_store" | "play_store") => {
     if (store === "app_store") void writeClipboardToken();
-    // Preserve the legacy event; add the new placement-tagged one.
-    sendGAEvent({ event: "click_download", value: store === "play_store" ? "google_play" : "app_store" });
-    sendGAEvent({ event: "click_store", placement: "final", store });
+    trackStoreClick(store, "final");
   };
 
   return (
@@ -50,7 +49,7 @@ export function DriveConversion() {
         <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12">
           <div className="flex flex-row items-center gap-4 sm:gap-8">
             <a
-              href={APP_STORE_URL}
+              href={appStoreUrl}
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => onStore("app_store")}
