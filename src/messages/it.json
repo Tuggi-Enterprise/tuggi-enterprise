@@ -426,7 +426,7 @@
     },
     "Terms": {
       "title": "Termini di Utilizzo",
-      "lastUpdated": "Settembre 2026",
+      "lastUpdated": "Novembre 2026",
       "intro": "Benvenuto su TUGGI. Creando un account, accedendo tramite piattaforme partner o utilizzando la nostra app, accetti espressamente i termini descritti di seguito.",
       "s1Title": "1. Idoneità e Creazione dell'Account",
       "s1Item1": "<strong>Età Minima:</strong> TUGGI è un'applicazione culturale ed educativa. L'età minima per creare un account e usare il servizio come ascoltatore è di 13 anni.",
@@ -459,7 +459,12 @@
       "s8Item4": "<strong>Reclami sul Prodotto e Proprietà Intellettuale:</strong> TUGGI, e non Apple o Google, è responsabile della gestione di eventuali reclami relativi all'Applicazione (es. responsabilità per il prodotto, conformità legale) e dell'indagine, difesa, transazione e risoluzione di qualsiasi reclamo di terzi per violazione della proprietà intellettuale.",
       "s8Item5": "<strong>Conformità Legale:</strong> Dichiari e garantisci che (i) non ti trovi in un paese soggetto a un embargo del Governo degli Stati Uniti o designato come paese “che sostiene il terrorismo”; e (ii) non sei incluso in alcun elenco del Governo degli Stati Uniti di parti vietate o soggette a restrizioni.",
       "s8Item6": "<strong>Beneficiario Terzo:</strong> Riconosci e accetti che Apple e Google, e le loro controllate, sono beneficiari terzi dei presenti Termini e hanno il diritto di farli valere nei tuoi confronti.",
-      "s9Title": "9. Informazioni di Contatto dello Sviluppatore",
+      "licenseTitle": "9. Itinerari e Foto che Invii",
+      "licenseItem1": "<strong>Licenza a TUGGI:</strong> Quando invii un itinerario, concedi a TUGGI una licenza non esclusiva, gratuita e valida in tutto il mondo per ospitare, mostrare, riprodurre, tradurre, narrare con voce sintetica e correggere il testo e le foto che hai inviato. La licenza vale per l'itinerario e per il punto di interesse (POI) che il nostro team di curatela crea a partire da uno dei tuoi appunti. La correzione si limita a ortografia, grammatica e informazioni errate.",
+      "licenseItem2": "<strong>Il contenuto resta tuo:</strong> Resti titolare del testo e delle foto e puoi concederli in licenza a chi vuoi.",
+      "licenseItem3": "<strong>Se l'itinerario viene ritirato:</strong> Se uno dei tuoi appunti è diventato un POI, la licenza su quel POI continua a valere anche dopo il ritiro dell'itinerario, l'eliminazione del Diario di bordo o la cancellazione del tuo account.",
+      "licenseItem4": "<strong>Cosa dichiari:</strong> Inviando, dichiari di avere i diritti sul testo e sulle foto e di avere l'autorizzazione di ogni persona riconoscibile nelle foto.",
+      "s9Title": "10. Informazioni di Contatto dello Sviluppatore",
       "s9Text": "TUGGI Technologies Ltda. San Paolo, SP, Brasile. Email: suporte@tuggi.app"
     },
     "Privacy": {

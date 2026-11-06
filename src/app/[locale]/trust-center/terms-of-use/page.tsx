@@ -100,6 +100,17 @@ export default async function TermsOfUsePage({ params }: { params: Promise<{ loc
         </ul>
       </section>
 
+      {/* BR-ROTA-009 item 5: license over itinerary text and photos (#1104). */}
+      <section>
+        <h2>{t("licenseTitle")}</h2>
+        <ul>
+          <li>{t.rich("licenseItem1", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
+          <li>{t.rich("licenseItem2", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
+          <li>{t.rich("licenseItem3", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
+          <li>{t.rich("licenseItem4", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
+        </ul>
+      </section>
+
       <section>
         <h2>{t("s9Title")}</h2>
         <p>{t("s9Text")}</p>

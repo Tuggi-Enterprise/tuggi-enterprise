@@ -426,7 +426,7 @@
     },
     "Terms": {
       "title": "Termos de Uso",
-      "lastUpdated": "Setembro 2026",
+      "lastUpdated": "Novembro 2026",
       "intro": "Bem-vindo ao TUGGI. Ao criar uma conta, fazer login via plataformas parceiras ou utilizar nosso aplicativo, você concorda expressamente com os termos descritos abaixo.",
       "s1Title": "1. Elegibilidade e Criação de Conta",
       "s1Item1": "<strong>Idade Mínima:</strong> O TUGGI é um aplicativo cultural e educativo. A idade mínima para criar uma conta e utilizar o serviço como ouvinte é de 13 anos.",
@@ -459,7 +459,12 @@
       "s8Item4": "<strong>Reivindicações de Produto e Propriedade Intelectual:</strong> A TUGGI, não a Apple ou o Google, é responsável por lidar com quaisquer reivindicações relacionadas ao Aplicativo (ex: responsabilidade pelo produto, conformidade legal) e pela investigação, defesa, liquidação e quitação de quaisquer reivindicações de violação de propriedade intelectual de terceiros.",
       "s8Item5": "<strong>Conformidade Legal:</strong> Você declara e garante que (i) não está localizado em um país sujeito a embargo do governo dos EUA ou designado como país apoiador de terroristas; e (ii) não consta em nenhuma lista de partes proibidas ou restritas do governo dos EUA.",
       "s8Item6": "<strong>Beneficiário Terceiro:</strong> Você reconhece e concorda que a Apple e o Google, e suas subsidiárias, são beneficiários terceiros destes Termos e têm o direito de fazer cumprir estes Termos contra você.",
-      "s9Title": "9. Informações de Contato do Desenvolvedor",
+      "licenseTitle": "9. Roteiros e Fotos que Você Envia",
+      "licenseItem1": "<strong>Licença ao TUGGI:</strong> Ao enviar um roteiro, você concede ao TUGGI uma licença não exclusiva, gratuita e mundial para hospedar, exibir, reproduzir, traduzir, narrar em voz sintética e corrigir o texto e as fotos que enviou. A licença vale para o roteiro e para o ponto de interesse (POI) que a nossa curadoria criar a partir de uma anotação sua. A correção se limita a ortografia, gramática e informação errada.",
+      "licenseItem2": "<strong>O conteúdo continua seu:</strong> Você continua dono do texto e das fotos e pode licenciá-los a quem quiser.",
+      "licenseItem3": "<strong>Se o roteiro sair do ar:</strong> Se uma anotação sua deu origem a um POI, a licença sobre esse POI continua valendo mesmo que o roteiro saia do ar, o Diário de bordo seja apagado ou a conta seja excluída.",
+      "licenseItem4": "<strong>O que você declara:</strong> Ao enviar, você declara que tem direito sobre o texto e as fotos e que tem autorização de cada pessoa que aparece de forma reconhecível nas fotos.",
+      "s9Title": "10. Informações de Contato do Desenvolvedor",
       "s9Text": "TUGGI Technologies Ltda. São Paulo, SP, Brasil. E-mail: suporte@tuggi.app"
     },
     "Privacy": {

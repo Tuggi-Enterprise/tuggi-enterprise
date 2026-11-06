@@ -426,7 +426,7 @@
     },
     "Terms": {
       "title": "Terms of Use",
-      "lastUpdated": "September 2026",
+      "lastUpdated": "November 2026",
       "intro": "Welcome to TUGGI. By creating an account, logging in via partner platforms, or using our app, you expressly agree to the terms described below.",
       "s1Title": "1. Eligibility and Account Creation",
       "s1Item1": "<strong>Minimum Age:</strong> TUGGI is a cultural and educational application. The minimum age to create an account and use the service as a listener is 13 years old.",
@@ -459,7 +459,12 @@
       "s8Item4": "<strong>Product Claims and Intellectual Property:</strong> TUGGI, not Apple or Google, is responsible for addressing any claims relating to the Application (e.g., product liability, legal compliance) and for the investigation, defense, settlement, and discharge of any third-party intellectual property infringement claims.",
       "s8Item5": "<strong>Legal Compliance:</strong> You represent and warrant that (i) you are not located in a country subject to a U.S. Government embargo or designated as a “terrorist supporting” country; and (ii) you are not listed on any U.S. Government list of prohibited or restricted parties.",
       "s8Item6": "<strong>Third Party Beneficiary:</strong> You acknowledge and agree that Apple and Google, and their subsidiaries, are third-party beneficiaries of these Terms, and have the right to enforce these Terms against you.",
-      "s9Title": "9. Developer Contact Information",
+      "licenseTitle": "9. Itineraries and Photos You Submit",
+      "licenseItem1": "<strong>License to TUGGI:</strong> When you submit an itinerary, you grant TUGGI a non-exclusive, royalty-free, worldwide license to host, display, reproduce, translate, narrate with a synthetic voice, and correct the text and photos you submitted. The license covers the itinerary and any point of interest (POI) our curation team creates from one of your entries. Corrections are limited to spelling, grammar, and factual errors.",
+      "licenseItem2": "<strong>Your content stays yours:</strong> You remain the owner of your text and photos and may license them to anyone you choose.",
+      "licenseItem3": "<strong>If the itinerary is taken down:</strong> If one of your entries became a POI, the license for that POI continues even if the itinerary is taken down, the Logbook is deleted, or your account is deleted.",
+      "licenseItem4": "<strong>What you declare:</strong> By submitting, you declare that you hold the rights to the text and photos and that you have permission from every person who can be recognized in the photos.",
+      "s9Title": "10. Developer Contact Information",
       "s9Text": "TUGGI Technologies Ltda. São Paulo, SP, Brazil. Email: suporte@tuggi.app"
     },
     "Privacy": {
