@@ -174,6 +174,10 @@ export default async function PrivacyPolicyPage({ params }: { params: Promise<{ 
           <li>{t.rich("s3Item3", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
           <li>{t.rich("s3Item4", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
           <li>{t.rich("s3Item5", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
+          {/* `s3Item6` is the app's remarketing partners, card #1131,
+              BR-USUARIO-053 item 1 (closed list: Google Ads via GA4, Meta SDK)
+              and BR-USUARIO-041 items 3 and 4. A new partner lands here first. */}
+          <li>{t.rich("s3Item6", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
         </ul>
       </section>
 
