@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { Pause, Play } from "lucide-react";
 import { useWelcomeAudio } from "@/components/blocks/useWelcomeAudio";
@@ -24,6 +24,12 @@ interface PartnerAboutProps {
   description: string;
   website?: string | null;
   social?: string | null;
+  /**
+   * The networks of BR-B2B-061 item 6, drawn on the server (`PartnerSocialLinks`).
+   * When there is one, the free-text `social` of the CMS gives way to it: the
+   * same Instagram twice on one line would be the same fact twice.
+   */
+  socialLinks?: ReactNode;
 }
 
 /**
@@ -33,12 +39,13 @@ interface PartnerAboutProps {
  * The whole description is in the server HTML, collapsed only by CSS, so the
  * text the Google indexes is the partner's whole text.
  */
-export function PartnerAbout({ partnerId, description, website, social }: PartnerAboutProps) {
+export function PartnerAbout({ partnerId, description, website, social, socialLinks }: PartnerAboutProps) {
   const t = useTranslations("Download");
   const track = usePartnerEvents(partnerId);
   const [expanded, setExpanded] = useState(false);
   const isLong = description.length > DESCRIPTION_COLLAPSE_AT;
-  const socialLink = social ? socialHref(social) : null;
+  const legacySocial = socialLinks ? null : social;
+  const socialLink = legacySocial ? socialHref(legacySocial) : null;
 
   // The page view of a partner's page, as the download layout counted it.
   useEffect(() => {
@@ -74,8 +81,8 @@ export function PartnerAbout({ partnerId, description, website, social }: Partne
         )}
       </div>
 
-      {(website || social) && (
-        <div data-testid="partner-contacts" className="mt-4 flex flex-wrap gap-x-6 gap-y-2">
+      {(website || legacySocial || socialLinks) && (
+        <div data-testid="partner-contacts" className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2">
           {website && (
             <a
               href={normalizeUrl(website)}
@@ -87,7 +94,7 @@ export function PartnerAbout({ partnerId, description, website, social }: Partne
               {t("partnerVisitSite")} <span aria-hidden="true">↗</span>
             </a>
           )}
-          {social &&
+          {legacySocial &&
             (socialLink ? (
               <a
                 href={socialLink}
@@ -96,11 +103,12 @@ export function PartnerAbout({ partnerId, description, website, social }: Partne
                 onClick={() => track("partner_contact_click", { kind: "social" })}
                 className={linkClass}
               >
-                {formatSocial(social)} <span aria-hidden="true">↗</span>
+                {formatSocial(legacySocial)} <span aria-hidden="true">↗</span>
               </a>
             ) : (
-              <span className="text-base font-bold text-tuggi-dark">{formatSocial(social)}</span>
+              <span className="text-base font-bold text-tuggi-dark">{formatSocial(legacySocial)}</span>
             ))}
+          {socialLinks}
         </div>
       )}
     </>

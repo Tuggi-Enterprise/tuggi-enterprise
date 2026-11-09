@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
 import { cache } from "react";
+import { partnerSocialOf, type PartnerSocial } from "@/lib/partner-links";
 import { clientAddressOf, registerAttempt } from "@/lib/rate-limit";
 import { getSupabaseClient } from "@/lib/supabase-server";
 
@@ -68,6 +69,8 @@ export interface CreatorPage {
   /** Distinct listeners, all time. Null below the floor the database keeps (BR-B2B-067). */
   listenersTotal: number | null;
   featuredRoute: FeaturedRoute | null;
+  /** The account's networks (BR-B2B-061 item 6); `{}` without any. */
+  social: PartnerSocial;
 }
 
 export interface ClientPage {
@@ -79,6 +82,8 @@ export interface ClientPage {
   verified: boolean;
   /** False when the contract ended (BR-B2B-067 item 6): the page stays, the capture does not. */
   attributes: boolean;
+  /** The networks of the guide or of the client's place (BR-B2B-061 item 6); `{}` without any. */
+  social: PartnerSocial;
 }
 
 export type PublicPage =
@@ -184,8 +189,8 @@ function listOf<T>(value: unknown, pick: (row: Json) => T | null): T[] {
 /**
  * The answer of the resolver as the page reads it. A missing new field is
  * the same as `null` (DS-COMPONENTE-110: a block without content does not
- * appear), so this page works before and after the migration that adds
- * `listeners_total` and `featured_route`. An answer it cannot read throws:
+ * appear), so this page works before and after the migrations that add
+ * `listeners_total`, `featured_route` and `social`. An answer it cannot read throws:
  * an unknown shape taken for `not_found` would answer 404 for a real page.
  */
 export function parsePublicPage(data: unknown): PublicPage {
@@ -212,6 +217,7 @@ export function parsePublicPage(data: unknown): PublicPage {
         name,
         verified: data.verified === true,
         attributes: data.attributes === true,
+        social: partnerSocialOf(data.social),
       };
     }
 
@@ -238,6 +244,7 @@ export function parsePublicPage(data: unknown): PublicPage {
         }),
         listenersTotal: count(data.listeners_total),
         featuredRoute: featuredRouteOf(data.featured_route),
+        social: partnerSocialOf(data.social),
       };
     }
   }

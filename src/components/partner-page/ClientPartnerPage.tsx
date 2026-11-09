@@ -3,12 +3,14 @@ import { headers } from "next/headers";
 import { getTranslations } from "next-intl/server";
 import { PartnerHeroWrapper } from "@/components/blocks/PartnerHeroWrapper";
 import { AppPreview, AppPreviewQr } from "@/components/blocks/AppPreview";
+import { PartnerSocialLinks } from "@/components/partner-page/PartnerSocialLinks";
 import { PartnerStoreCta } from "@/components/partner-page/PartnerStoreCta";
 import { PARTNER_DOWNLOAD_ID, PartnerIdentity, PartnerPageFrame } from "@/components/partner-page/PartnerPageFrame";
 import { PartnerAbout, WelcomeAudioCard } from "@/components/partner-page/ClientPartnerParts";
 import { SITE_URL } from "@/lib/app-meta";
 import { storePlatformOf } from "@/lib/store-platform";
 import type { CouponPreview, PartnerData } from "@/lib/partner";
+import type { PartnerSocial } from "@/lib/partner-links";
 
 interface ClientPartnerPageProps {
   locale: string;
@@ -22,6 +24,8 @@ interface ClientPartnerPageProps {
   attributes: boolean;
   /** The resolver vouches for this partner: the seal by the name (DS-COMPONENTE-108). */
   verified: boolean;
+  /** The networks the resolver sent (BR-B2B-061 item 6); `{}` when it sent none or was not asked. */
+  social: PartnerSocial;
 }
 
 /**
@@ -44,6 +48,7 @@ export async function ClientPartnerPage({
   path,
   attributes,
   verified,
+  social,
 }: ClientPartnerPageProps) {
   const partnerId = attributes ? partner.id : undefined;
   // What the visitor will see in the app (DS-COMPONENTE-117, #1135), from the
@@ -108,6 +113,9 @@ export async function ClientPartnerPage({
         description={partner.description || t("partnerLead")}
         website={partner.website}
         social={partner.social}
+        socialLinks={
+          Object.keys(social).length > 0 ? <PartnerSocialLinks locale={locale} social={social} /> : undefined
+        }
       />
       <div className="mt-8">
         <PartnerStoreCta

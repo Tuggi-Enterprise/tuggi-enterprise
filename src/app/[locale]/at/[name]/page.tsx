@@ -118,6 +118,7 @@ export default async function PublicPartnerPage({ params, searchParams }: { para
       path={`/@${page.name}`}
       attributes={page.attributes}
       verified={page.verified}
+      social={page.social}
     />
   );
 }

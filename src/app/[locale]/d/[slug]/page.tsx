@@ -199,6 +199,7 @@ export default async function PartnerSlugPage({
       path={client ? `/@${client.name}` : `/d/${slug}`}
       attributes={client ? client.attributes : true}
       verified={client?.verified ?? false}
+      social={client?.social ?? {}}
     />
   );
 }

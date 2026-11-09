@@ -94,6 +94,22 @@ const CLIENTS_BY_SLUG = {
     social_handle: null,
     avatar_url: null,
   },
+  // A hotel whose networks come from the resolver (BR-B2B-061 item 6): its
+  // free-text `social_handle` must give way to them on the page.
+  "e2e-hotel-redes": {
+    id: "66666666-6666-4666-8666-666666666666",
+    slug: "e2e-hotel-redes",
+    status: "approved",
+    updated_at: "2026-11-09T00:00:00Z",
+    name: "Hotel das Redes",
+    company_name: null,
+    welcome_poi_id: null,
+    metadata: null,
+    client_type: "hotel",
+    website: "https://hotelredes.example",
+    social_handle: "@hotelredes",
+    avatar_url: null,
+  },
   // A client whose contract ended (BR-B2B-067 item 6): the page stays, the
   // capture does not. Not `approved`, so the build-time lists leave it out.
   "e2e-encerrado": {
@@ -413,6 +429,8 @@ const PUBLIC_PAGE_FIXTURES = {
       { id: "8b000000-0000-4000-8000-000000000002", name: "Casa do Colono, Linha Bonita" },
     ],
     listeners_total: 1284,
+    // BR-B2B-061 item 6: two of the four, the order the database does not keep.
+    social: { youtube: "anaserra", instagram: "ana.serra" },
     featured_route: {
       id: SNAPSHOT_ROUTE.id,
       slug: "centro-de-gramado-a-pe",
@@ -465,6 +483,8 @@ const PUBLIC_PAGE_FIXTURES = {
     discovered_pois: [],
     listeners_total: null,
     featured_route: null,
+    // A link where a name goes and a network outside the list: only TikTok is drawn.
+    social: { instagram: "https://www.instagram.com/carla", tiktok: "carla.dias", twitter: "carla" },
   },
   "e2e-sem-logo": {
     state: "page",
@@ -473,6 +493,22 @@ const PUBLIC_PAGE_FIXTURES = {
     name: "e2e-sem-logo",
     verified: true,
     attributes: true,
+  },
+  // A hotel with all four networks, in reverse, plus one outside the list.
+  "e2e-hotel-redes": {
+    state: "page",
+    kind: "client",
+    client_id: "66666666-6666-4666-8666-666666666666",
+    name: "e2e-hotel-redes",
+    verified: true,
+    attributes: true,
+    social: {
+      linkedin: "hotelredes",
+      facebook: "100012345678",
+      youtube: "hotelredes",
+      tiktok: "hotel.redes",
+      instagram: "hotelredes",
+    },
   },
   "e2e-encerrado": {
     state: "page",

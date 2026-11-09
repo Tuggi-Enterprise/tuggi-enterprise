@@ -4,6 +4,7 @@ import { Link } from "@/i18n/routing";
 import { RouteMap } from "@/components/blocks/RouteMap";
 import { RouteStopAudio } from "@/components/blocks/RouteStopAudio";
 import { PageReport } from "@/components/partner-page/PageReport";
+import { PartnerSocialLinks } from "@/components/partner-page/PartnerSocialLinks";
 import { PartnerStoreCta } from "@/components/partner-page/PartnerStoreCta";
 import { PARTNER_DOWNLOAD_ID, PartnerIdentity, PartnerPageFrame } from "@/components/partner-page/PartnerPageFrame";
 import { creatorPhotoSrc, pickLang, type CreatorPage, type FeaturedRoute, type PublicRoute } from "@/lib/public-page";
@@ -103,6 +104,9 @@ export async function CreatorPageView({ page, locale, dbLang }: CreatorPageViewP
           {page.bio}
         </p>
       )}
+
+      {/* BR-B2B-061 item 6.d: between the bio and the numbers; without a bio, under the name. */}
+      <PartnerSocialLinks locale={locale} social={page.social} className="mt-4" />
 
       {stats.length > 0 && (
         <dl className="mt-6 flex flex-wrap gap-x-8 gap-y-4">

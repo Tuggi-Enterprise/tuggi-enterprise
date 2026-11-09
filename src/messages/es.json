@@ -1039,6 +1039,11 @@
     "reportSend": "Enviar",
     "reportReceived": "Recibido. El equipo de Tuggi lo va a revisar.",
     "reportFailed": "No pudimos enviarlo. Inténtalo de nuevo.",
-    "reportClose": "Cerrar"
+    "reportClose": "Cerrar",
+    "socialList": "Redes sociales",
+    "socialInstagram": "Perfil en Instagram (se abre en una pestaña nueva)",
+    "socialTiktok": "Perfil en TikTok (se abre en una pestaña nueva)",
+    "socialYoutube": "Canal en YouTube (se abre en una pestaña nueva)",
+    "socialFacebook": "Perfil en Facebook (se abre en una pestaña nueva)"
   }
 }
