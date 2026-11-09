@@ -929,7 +929,7 @@
   "Referral": {
     "metaTitle": "{nickname} te invitó a Tuggi",
     "invitedBy": "{nickname} te invitó",
-    "lead": "Copia este código de invitación y recibe {referralFriendHours} horas gratis en Tuggi.",
+    "lead": "Tuggi cuenta la historia de los lugares por donde pasas.",
     "copy": "Copiar",
     "copied": "Copiado",
     "pasteWithin": "Pégalo en la app dentro de los {referralRedeemWindowDays} días posteriores a crear tu cuenta.",
@@ -939,7 +939,7 @@
     "metaDescInactive": "Tuggi es una guía que cuenta la historia de los lugares por donde pasas.",
     "howTitle": "Cómo funciona Tuggi",
     "step1": "Crea tu cuenta y abre el Pasaporte.",
-    "step2": "Pega el código de invitación: tus {referralFriendHours} horas ya están ahí.",
+    "step2": "Pega el código de invitación y únete a la caravana de quien te invitó.",
     "step3": "Empieza a conducir. La guía narra los lugares por donde pasas.",
     "mapAlt": "El mapa de Tuggi con una ruta y los lugares a lo largo de ella"
   },
