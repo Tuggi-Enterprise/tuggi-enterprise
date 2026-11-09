@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
-import { buildAppStoreUrl } from "@/lib/app-meta";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { buildAppStoreUrl, isAttributablePartnerId } from "@/lib/app-meta";
 import { sendStoreClick, visitUtmOf, type StoreId } from "@/lib/store-click";
 import { resolvePricing, type BaseMarketPricing } from "@/lib/pricing";
 import { attributionIpEndpoint, clickToken, readStoredAttribution } from "@/lib/attribution";
@@ -286,4 +286,126 @@ export async function writeClickTokenToClipboard(
 export function useAttributionClipboardWrite(): () => Promise<void> {
   const clickId = useAttributionClickId();
   return () => writeClickTokenToClipboard(clickId);
+}
+
+/**
+ * Records the click and returns its id, or null when it could not be
+ * recorded.
+ *
+ * `keepalive` and a retry, because the failure mode is not theoretical: the
+ * tourist opens the page on roaming data and taps the CTA within seconds,
+ * and a request still in flight when the document goes away is cancelled by
+ * the browser. `keepalive` is what lets it outlive the navigation
+ * (fetch.spec.whatwg.org, §request), and the single retry covers the flaky
+ * first request of a cell handover. A lost POST is a lost commission, and
+ * the old code ignored `response.ok` entirely.
+ *
+ * 429 is not retried: the answer is "you already wrote enough", and trying
+ * again is what the limit exists to stop.
+ *
+ * The IP is not read here — /api/attribution takes it from the edge header,
+ * which is not forgeable by a caller and does not hand every visitor's
+ * address to a third party before they consent to anything.
+ */
+const captureFirstTouch = async (pId: string): Promise<string | null> => {
+  const body = JSON.stringify({
+    partner_id: pId,
+    user_agent: navigator.userAgent,
+    // Sent raw; the route normalises to the primary subtag, so that this
+    // side and the app write the same value for the same language.
+    language: navigator.language,
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+  });
+
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const response = await fetch("/api/attribution", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body,
+        keepalive: true,
+      });
+
+      if (response.status === 429) return null;
+      if (!response.ok) {
+        if (attempt === 0) continue;
+        console.warn("Attribution capture refused", response.status);
+        return null;
+      }
+
+      const payload = (await response.json()) as { click_id?: unknown };
+      return typeof payload?.click_id === "string" ? payload.click_id : null;
+    } catch (err) {
+      if (attempt === 0) continue;
+      console.warn("Attribution capture failed", err);
+    }
+  }
+  return null;
+}
+
+/**
+ * The partner's first touch on this page load, and the click id that credits
+ * it — BR-B2B-002. The single owner of the capture: `/d/{slug}` (PartnerHero)
+ * and `/@nome` (the creator page) both call it, so there is one capture rule
+ * and one place that can open a row (BR-B2B-037 item 2, BR-B2B-067 item 3).
+ *
+ * Returns this browser's stored click id or, on a first visit, the one the
+ * capture just returned. Null when there is no partner to credit: the store
+ * links built from it are then the bare ones, which is the honest link.
+ *
+ * Mount it ONCE per page. The guard is a ref, so two components calling it
+ * would each send a capture.
+ */
+export function usePartnerFirstTouch(partnerId: string | undefined): string | null {
+  const storedClickId = useAttributionClickId();
+  const [capturedClickId, setCapturedClickId] = useState<string | null>(null);
+  /**
+   * One capture per page load, not one per mount. The effect below used to
+   * gate on a piece of state, which a remount resets: every re-render that
+   * remounted this tree opened another row for the same visitor.
+   */
+  const captureStartedRef = useRef(false);
+  /**
+   * And the click, once it exists, gets its IPv4 — BR-B2B-002, contract §4.
+   *
+   * The captured id is passed because this is the ONE place that has it before
+   * the cookie is readable: the visitor scanning the QR right now is exactly
+   * the one whose commission is at stake, and the global mount in the layout
+   * only ever sees the echo. Fire-and-forget, once per page load, and it never
+   * touches the path to the store.
+   */
+  useAttributionIpComplement(capturedClickId);
+
+  /**
+   * FIRST TOUCH, AND ONLY THE FIRST — BR-B2B-002.
+   *
+   * A browser that already carries `tuggi_attr` keeps the partner it arrived
+   * with: the second QR does not overwrite it, does not open a second row, and
+   * the store link this page builds still names the first partner. Without
+   * this the site implemented last touch, which is the opposite of the rule.
+   */
+  useEffect(() => {
+    if (storedClickId) return;
+    // AND IT DOES NOT WAIT FOR THE CONSENT VERDICT — BR-USUARIO-033. Since
+    // that verdict gates the READ of `tuggi_attr` (`useAttributionClickId`),
+    // `storedClickId` is null for one same-origin round trip on every load,
+    // and a visitor who already holds a first touch therefore sends one POST
+    // he used to skip. The route answers it from his own cookie without
+    // writing a row. Holding the capture until the verdict instead was tried
+    // and reverted: it put that round trip in FRONT of the capture of a
+    // first-touch visitor, which is the tourist who just scanned the QR and
+    // the one whose commission is actually at stake. The gate loses nothing by
+    // this — the server refuses the POST on its own (`attributionGateOf`, and
+    // it runs before anything else), so a refused visit still gets no row, no
+    // cookie and no click id.
+    // The internal Tuggi client refers nobody, and a malformed id can never
+    // match an install: neither is worth a row.
+    if (!isAttributablePartnerId(partnerId)) return;
+    if (captureStartedRef.current) return;
+    captureStartedRef.current = true;
+
+    captureFirstTouch(partnerId).then(setCapturedClickId);
+  }, [partnerId, storedClickId]);
+
+  return storedClickId ?? capturedClickId;
 }
