@@ -69,7 +69,7 @@ export async function PartnerPageFrame({ locale, kind, path, hero, aside, childr
                 {step}
               </span>
               <h2 className="mt-4 text-lg font-bold">{t(`step${step}Title`)}</h2>
-              <p className="mt-2 text-sm leading-relaxed text-slate-300">{t(`step${step}Text`)}</p>
+              <p className="mt-2 text-sm leading-relaxed text-slate-300">{t(step === 1 && kind === "creator" ? "step1TextCreator" : `step${step}Text`)}</p>
             </div>
           ))}
           {/* No QR on a phone: nobody points the camera at their own screen. */}
