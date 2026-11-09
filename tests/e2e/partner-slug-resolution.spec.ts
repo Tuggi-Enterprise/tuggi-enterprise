@@ -51,3 +51,20 @@ test("#815: a piece outside a|d|p|s|q is never sent to the counter", async ({ pa
   await expect.poll(() => scansOf("e2e-em-breve")).toContainEqual({ slug: "e2e-em-breve", piece: "s" });
   expect((await scansOf("e2e-em-breve")).map((s) => s.piece)).not.toContain("zz");
 });
+
+// #1147: the kit QR is printed with `/@nome` (BR-B2B-037 item 1), and the piece counter of the
+// portal keeps counting on that door (BR-B2B-050 item 4).
+test("BR-B2B-037 item 1, BR-B2B-050 item 4: the kit QR on /@ counts its piece and renders the page", async ({ request }) => {
+  const res = await request.get("/@e2e-sem-logo?k=a", { maxRedirects: 0 });
+  expect(res.status()).toBe(200);
+  await expect.poll(() => scansOf("e2e-sem-logo")).toContainEqual({ slug: "e2e-sem-logo", piece: "a" });
+});
+
+test("BR-B2B-037 item 4: a place's printed slug on /@ counts under that slug and redirects without k", async ({ request }) => {
+  const res = await request.get("/@e2e-local-impresso?k=d&lang=en", { maxRedirects: 0 });
+  expect(res.status()).toBe(308);
+  const location = res.headers()["location"] ?? "";
+  expect(location).toMatch(/\/@e2e-sem-logo\?lang=en$/);
+  expect(location).not.toContain("k=");
+  await expect.poll(() => scansOf("e2e-local-impresso")).toContainEqual({ slug: "e2e-local-impresso", piece: "d" });
+});

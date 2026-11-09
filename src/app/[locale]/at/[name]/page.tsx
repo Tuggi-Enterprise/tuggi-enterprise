@@ -5,6 +5,7 @@ import { notFound, permanentRedirect } from "next/navigation";
 import { PartnerHeroWrapper } from "@/components/blocks/PartnerHeroWrapper";
 import { ClientPartnerPage } from "@/components/partner-page/ClientPartnerPage";
 import { CreatorPageView } from "@/components/partner-page/CreatorPageView";
+import { kitPieceOf, recordActivationScan } from "@/lib/activation-scan";
 import { lookupPartnerSlug } from "@/lib/partner";
 import { clientPageMetadata, creatorPageMetadata, notFoundPageMetadata } from "@/lib/partner-page-metadata";
 import { recordPageVisit, resolvePublicPage } from "@/lib/public-page";
@@ -23,6 +24,10 @@ import { requestWelcomeLang } from "@/lib/request-welcome-lang";
  * Rendered on every request and never stored (#987 for `/d/`): each opening
  * counts (`recordPageVisit`), and a photo removed or a flag turned off leaves
  * the page on the next read.
+ *
+ * The kit QR is printed with this address since #1147, so `?k={piece}` counts
+ * here exactly as on `/d/` (BR-B2B-050 item 4): under the name the QR carries,
+ * before the render and before a redirect, which drops `k`.
  */
 export const dynamic = "force-dynamic";
 
@@ -46,11 +51,14 @@ export async function generateMetadata({ params, searchParams }: { params: Param
   return notFoundPageMetadata(locale);
 }
 
-/** The query of the visit, carried through a redirect: `lang` and the `utm_*` the store links read (#1060). */
+/**
+ * The query of the visit, carried through a redirect: `lang` and the `utm_*`
+ * the store links read (#1060). Not `k`: the scan was counted before the hop.
+ */
 function forwardedQuery(query: Record<string, string | string[] | undefined>): string {
   const forwarded = new URLSearchParams();
   for (const [key, value] of Object.entries(query)) {
-    if (value === undefined) continue;
+    if (key === "k" || value === undefined) continue;
     for (const item of Array.isArray(value) ? value : [value]) forwarded.append(key, item);
   }
   const search = forwarded.toString();
@@ -62,7 +70,15 @@ export default async function PublicPartnerPage({ params, searchParams }: { para
   const query = await searchParams;
   setRequestLocale(locale);
 
-  const page = await resolvePublicPage(name);
+  const requestHeaders = new Headers(await headers());
+  // A kit QR (#815, #1147): counted with the printed name, awaited with the
+  // resolver so a redirect or a 404 never cuts it, and never delaying the page.
+  // The function itself refuses a name that is not a reserved slug.
+  const piece = kitPieceOf(query.k);
+  const [page] = await Promise.all([
+    resolvePublicPage(name),
+    piece ? recordActivationScan(name, piece, requestHeaders) : null,
+  ]);
 
   // Every name without a page: the one 404, nothing credited (BR-B2B-067 item 5).
   if (page.state === "not_found") notFound();
@@ -74,7 +90,6 @@ export default async function PublicPartnerPage({ params, searchParams }: { para
     permanentRedirect(`/@${encodeURIComponent(page.to)}${forwardedQuery(query)}`);
   }
 
-  const requestHeaders = new Headers(await headers());
   const dbLang = await requestWelcomeLang(locale, langOf(query));
   const visit = recordPageVisit(page.clientId, "at_name", requestHeaders);
 

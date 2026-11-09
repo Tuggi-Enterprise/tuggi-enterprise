@@ -485,6 +485,8 @@ const PUBLIC_PAGE_FIXTURES = {
   // Another spelling, and the @ before a change: one permanent hop each.
   "E2E.Criadora": { state: "redirect", to: "e2e.criadora", reason: "spelling", permanent: true },
   "e2e-antiga": { state: "redirect", to: "e2e.criadora", reason: "previous_name", permanent: true },
+  // A place's printed slug that is not its client's: the kit QR goes here (#1147).
+  "e2e-local-impresso": { state: "redirect", to: "e2e-sem-logo", reason: "place_slug", permanent: true },
 };
 
 /** Every `partner.record_page_visit` call, in order: `{ client_id, via }`. */
