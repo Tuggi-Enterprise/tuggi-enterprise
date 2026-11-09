@@ -139,6 +139,15 @@ export default async function PrivacyPolicyPage({ params }: { params: Promise<{ 
               (`s1Item14`) and is not this field's story. No "tourists"
               (BR-B2B-059 item 9). */}
           <li>{t.rich("s1Item15", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
+          {/* `s1Item17` is the eighth field of the same collection, card #1165,
+              BR-USUARIO-043 item 10.a and item 12: the "Do you live in X?"
+              question, what Yes and No store, the start place and class of each
+              trip, the purpose, and that the name comes from the OS geocoder,
+              which receives the coordinate (Apple CLGeocoder and Android
+              Geocoder both hit the network). The recipient is also named in
+              `s3Item2`, and the legal basis of the use in `s2Item2`
+              (BR-USUARIO-049 items 1.i, 5 and 6). */}
+          <li>{t.rich("s1Item17", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
           {/* `s1Item14` is the email to the tourist, card #959, BR-COMUNICACAO-020:
               it sits before `s1Item10` so "the three items below" there stays true. */}
           <li>{t.rich("s1Item14", { strong: (chunks) => <strong>{chunks}</strong> })}</li>

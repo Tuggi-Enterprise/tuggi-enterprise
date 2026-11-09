@@ -30,6 +30,7 @@ const REPO_ROOT = path.resolve(__dirname, "../..");
  */
 const LOCATION_KEYS = [
   "s1Item2",
+  "s1Item17",
   "s2Title",
   "s2Item1",
   "s2Item2",
@@ -104,6 +105,25 @@ test.describe("BR-USUARIO-049 — the policy tells the truth about location in e
       // Item 4.1: the send record is kept with the account, like the rest of the item.
       expect(privacy.s4Item2, `${locale}: s4Item2 does not describe the send record`).toMatch(
         /sugest|suggest|sugerenc|suggerim/i,
+      );
+    });
+
+    test(`BR-USUARIO-049 items 1.i, 5 and 6, BR-USUARIO-043 item 10.a: ${locale}.json declares the residence question`, () => {
+      const privacy = privacyOf(locale);
+
+      // 043 item 10.a: the name comes from the OS location service, which receives
+      // the coordinate. "From the phone itself" read as on-device, and it is not.
+      expect(privacy.s1Item17, `${locale}: s1Item17 does not say the coordinate leaves the phone`).toMatch(
+        /coordenada|coordinates|coordenadas|coordinate/i,
+      );
+      expect(privacy.s1Item17, `${locale}: s1Item17 says the name comes from the phone itself`).not.toMatch(
+        /próprio celular|phone itself|propio teléfono|telefono stesso/i,
+      );
+      // 049 item 5: the closed list of recipients names Apple.
+      expect(privacy.s3Item2, `${locale}: s3Item2 does not name Apple`).toContain("Apple");
+      // 049 item 6: the use sits under legitimate interest, so s2Item2 counts four.
+      expect(privacy.s2Item2, `${locale}: s2Item2 does not count four uses`).toMatch(
+        /quatro|four|cuatro|quattro/i,
       );
     });
 
