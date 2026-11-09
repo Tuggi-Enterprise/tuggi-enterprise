@@ -927,21 +927,31 @@
     }
   },
   "Referral": {
-    "metaTitle": "{nickname} te invitó a Tuggi",
-    "invitedBy": "{nickname} te invitó",
+    "metaTitle": "Únete a la caravana de @{nickname} en Tuggi",
+    "invitedBy": "Únete a la caravana de @{nickname}",
     "lead": "Tuggi cuenta la historia de los lugares por donde pasas.",
     "copy": "Copiar",
     "copied": "Copiado",
     "pasteWithin": "Pégalo en la app dentro de los {referralRedeemWindowDays} días posteriores a crear tu cuenta.",
     "getAppAfterCode": "Después, descarga la app",
     "getApp": "Descargar la app",
-    "inactiveTitle": "Esta invitación ya no está activa",
+    "inactiveTitle": "No encontramos esta invitación",
     "metaDescInactive": "Tuggi es una guía que cuenta la historia de los lugares por donde pasas.",
-    "howTitle": "Cómo funciona Tuggi",
-    "step1": "Crea tu cuenta y abre el Pasaporte.",
-    "step2": "Pega el código de invitación y únete a la caravana de quien te invitó.",
-    "step3": "Empieza a conducir. La guía narra los lugares por donde pasas.",
     "mapAlt": "El mapa de Tuggi con una ruta y los lugares a lo largo de ella"
+  },
+  "AppPreview": {
+    "title": "Lo que verás en la app",
+    "ios_label": "En iPhone",
+    "ios_step": "En la pantalla “¿Alguien te recomendó Tuggi?”, toca Pegar.",
+    "android_label": "En Android",
+    "android_step": "La app se abre ya rellenada. Confirma con un toque.",
+    "result_friend": "Estás en la caravana de @{nickname}",
+    "result_partner": "Llegaste por @{partner}",
+    "qr_caption": "Apunta la cámara del móvil aquí para bajar Tuggi.",
+    "screen_title": "¿Alguien te recomendó Tuggi?",
+    "screen_body": "Pega la invitación que recibiste y únete a la caravana de quien te la mandó.",
+    "screen_paste": "Pegar",
+    "screen_confirm": "Confirmar"
   },
   "RouteLink": {
     "eyebrow": "Itinerario en Tuggi",

@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, type ReactNode } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight, AtSign, Check, Copy, Gift, Globe, Loader2, Pause, Play } from "lucide-react";
@@ -35,6 +35,12 @@ interface PartnerHeroProps {
   } | null;
   /** When present, render the gift-card style redeem block. */
   coupon?: CouponPreview;
+  /**
+   * What the visitor will see in the app (DS-COMPONENTE-117, #1135), rendered
+   * on the server from the user agent and placed right after the audio block.
+   * Null when the page has no resolved partner.
+   */
+  previewSlot?: ReactNode;
 }
 
 /** Ensure an external URL has a protocol so the <a href> resolves correctly. */
@@ -141,7 +147,7 @@ const captureFirstTouch = async (pId: string): Promise<string | null> => {
   return null;
 }
 
-export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps) {
+export function PartnerHero({ partnerId, partnerData, coupon, previewSlot }: PartnerHeroProps) {
   /**
    * The id of the click row that credits this visit — the token that travels
    * through the store (BR-B2B-002, contract §1). Null until the capture
@@ -703,6 +709,7 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
           appStoreUrl={appStoreUrl}
           audioSlot={audioCard}
           descriptionSlot={descriptionBlock}
+          previewSlot={previewSlot}
           onStoreClick={(store) => {
             trackStoreClick(store, "partner_badge", partnerEventParams);
             // The App Store badge is the iOS way out of this page, so it writes
@@ -887,6 +894,10 @@ export function PartnerHero({ partnerId, partnerData, coupon }: PartnerHeroProps
 
             {/* Audio Player */}
             {audioCard}
+
+            {/* What the visitor will see in the app. Not on the coupon variant:
+                that page has a single job, redeem. */}
+            {previewSlot && !coupon && <div className="w-full max-w-sm mx-auto mt-8">{previewSlot}</div>}
 
             {/* Coupon redemption block — only renders when /d/<slug> resolves
                 to an active coupon code. The owner attribution lives in the

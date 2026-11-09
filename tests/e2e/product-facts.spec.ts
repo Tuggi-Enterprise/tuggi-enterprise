@@ -465,8 +465,10 @@ const PUBLISHED_ON: Record<string, string[]> = {
   ],
   "/download": ["Download.metaDesc"],
   // The invite page of the referral programme (#840), on the valid code of the
-  // mock fixture: the inactive variant states no figure at all.
-  "/c/7K3MQ2": ["Referral.lead", "Referral.pasteWithin", "Referral.step2"],
+  // mock fixture: the inactive variant states no figure at all. The one figure
+  // is the redeem window; the friend is promised no hours (BR-MONETIZACAO-085,
+  // ceiling 1).
+  "/c/7K3MQ2": ["Referral.pasteWithin"],
   "/trust-center/accessibility": [
     "Legal.Accessibility.s1Item1",
     "Legal.Accessibility.s2Item3",

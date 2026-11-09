@@ -9,6 +9,9 @@ import { resolveWelcomeLang } from "@/lib/ptDialect";
 import { countryOf } from "@/lib/territory";
 import { buildTwitterCard, defaultRobots } from "@/lib/seo";
 import { PRODUCT_FACTS } from "@/lib/product-facts";
+import { SITE_URL } from "@/lib/app-meta";
+import { storePlatformOf } from "@/lib/store-platform";
+import { AppPreview, AppPreviewQr } from "@/components/blocks/AppPreview";
 
 const OG_IMAGE = "/images/og-image-tuggi.jpg";
 
@@ -184,12 +187,30 @@ export default async function PartnerSlugPage({
 
   const { partner, coupon } = resolved;
 
+  // What the visitor will see in the app (DS-COMPONENTE-117, #1135), from the
+  // user agent of this request. Only with a partner to arrive through: the
+  // dead, `soon` and `retired` slugs above get none, and neither does Tuggi's
+  // own slug. It names the partner and nothing else (BR-B2B-067 item 3). On a
+  // computer the QR of this page comes first.
+  const platform = storePlatformOf((await headers()).get("user-agent"));
+  const previewSlot = partner.isTuggi ? null : (
+    <>
+      {platform === "other" && (
+        <div className="mb-6">
+          <AppPreviewQr url={`${SITE_URL}/d/${slug}`} />
+        </div>
+      )}
+      <AppPreview platform={platform} invite={{ kind: "partner", partner: slug }} />
+    </>
+  );
+
   return (
     <main>
       <PartnerHeroWrapper
         partnerData={partner}
         partnerId={partner.id}
         coupon={coupon}
+        previewSlot={previewSlot}
       />
     </main>
   );

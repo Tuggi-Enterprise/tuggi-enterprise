@@ -69,65 +69,14 @@ function sourceFiles(): { file: string; relative: string; text: string }[] {
   }));
 }
 
-/**
- * Every quoted run in a file: `"…"`, `'…'` and `` `…` ``.
- *
- * Tailwind class lists are always string literals, including the branches of a
- * `${cond ? "a" : "b"}` inside a template — so scanning literals catches both
- * `className="…"` and the conditional class strings, without having to parse
- * JSX. It also means a comment can describe the forbidden pairing without
- * failing the test, which matters: the explanation of a defect has to be able
- * to name it.
- */
-function stringLiterals(text: string): string[] {
-  return text.match(/"[^"\n]*"|'[^'\n]*'|`[^`]*`/g) ?? [];
-}
-
-/**
- * A Tailwind utility, allowing any variant prefix (`focus:`, `group-hover:`,
- * `sm:`…) and refusing any suffix. `bg-tuggi-primary-text` and
- * `bg-tuggi-primary/20` are different utilities and must not match:
- *
- *   - `-text` is the darkened pair, the thing DS-COR-004 tells you to reach
- *     for, so matching it would fail the fix;
- *   - `/20` is a 20 %-alpha wash, not a filled brand surface. It is used on
- *     dark sections (TriggerSimulator) where white on top is legible, and the
- *     rule is about the *filled* surface. Widening the pattern to catch alpha
- *     variants would force a worse contrast, not a better one.
- */
-function utility(name: string): RegExp {
-  return new RegExp(String.raw`(?:^|[\s'"\`])(?:[a-z-]+:)*${name}(?![\w\-/])`);
-}
-
-const BG_PRIMARY = utility("bg-tuggi-primary");
-const BG_SECONDARY = utility("bg-tuggi-secondary");
-const TEXT_WHITE = utility("text-white");
-
-test.describe("DS-COR-004 — filled brand surface carries dark ink", () => {
-  test("no className pairs a filled brand surface with white ink (SC 1.4.3, SC 1.4.11)", () => {
-    // Brand cyan with white on top measures 2.70:1 and brand orange 2.79:1 —
-    // both under the 4.5:1 SC 1.4.3 asks of normal text and under the 3:1 floor
-    // SC 1.4.11 asks of a non-text component. The same surfaces with
-    // --color-tuggi-dark measure 6.92:1 and 6.71:1. There is no third option
-    // that keeps the brand: closing the orange against white costs #C25100,
-    // which is a second orange on the same page.
-    const offenders: string[] = [];
-
-    for (const { relative, text } of sourceFiles()) {
-      for (const literal of stringLiterals(text)) {
-        const filledSurface = BG_PRIMARY.test(literal) || BG_SECONDARY.test(literal);
-        if (filledSurface && TEXT_WHITE.test(literal)) {
-          offenders.push(`${relative}: ${literal.trim().slice(0, 160)}`);
-        }
-      }
-    }
-
-    expect(
-      offenders,
-      "Filled brand surface with white ink. Swap the ink for text-tuggi-dark " +
-        "(DS-COR-004) — the surface never darkens, the ink does.",
-    ).toEqual([]);
-  });
+test.describe("DS-COR-004 — brand surface tokens", () => {
+  // The dark-ink check that opened this block ("no className pairs a filled
+  // brand surface with white ink") enforced the part of DS-COR-004 revoked on
+  // 2026-10-05 (#836): DS-COR-002 now puts white ink on brand cyan and orange,
+  // by the operator's decision on identity, knowing it measures 2.70 and
+  // 2.79:1. It went with #1135, the first card to apply DS-COR-002 here. The
+  // dark ink that remains on the site is DS-COR-002 divergence, fixed on the
+  // path of each card.
 
   test("the secondary hover value exists only in globals.css (DS-COR-001)", () => {
     // The hover of a filled brand surface is a named token, not a hex in a

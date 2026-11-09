@@ -927,21 +927,31 @@
     }
   },
   "Referral": {
-    "metaTitle": "{nickname} invited you to Tuggi",
-    "invitedBy": "{nickname} invited you",
+    "metaTitle": "Join @{nickname}'s caravan on Tuggi",
+    "invitedBy": "Join @{nickname}'s caravan",
     "lead": "Tuggi tells the stories of the places you drive by.",
     "copy": "Copy",
     "copied": "Copied",
     "pasteWithin": "Paste it in the app within {referralRedeemWindowDays} days of creating your account.",
     "getAppAfterCode": "Then get the app",
     "getApp": "Get the app",
-    "inactiveTitle": "This invite isn't active anymore",
+    "inactiveTitle": "We couldn't find this invite",
     "metaDescInactive": "Tuggi is a guide that tells the stories of the places you drive by.",
-    "howTitle": "How Tuggi works",
-    "step1": "Create your account and open the Passport.",
-    "step2": "Paste the invite code and join the caravan of the person who invited you.",
-    "step3": "Start driving. The guide narrates what you pass by.",
     "mapAlt": "The Tuggi map with a route and the places along it"
+  },
+  "AppPreview": {
+    "title": "What you'll see in the app",
+    "ios_label": "On iPhone",
+    "ios_step": "On the “Did someone invite you to Tuggi?” screen, tap Paste.",
+    "android_label": "On Android",
+    "android_step": "The app opens already filled in. Confirm with one tap.",
+    "result_friend": "You're in @{nickname}'s caravan",
+    "result_partner": "You came through @{partner}",
+    "qr_caption": "Point your phone's camera here to get Tuggi.",
+    "screen_title": "Did someone invite you to Tuggi?",
+    "screen_body": "Paste the invite you got and join that person's caravan.",
+    "screen_paste": "Paste",
+    "screen_confirm": "Confirm"
   },
   "RouteLink": {
     "eyebrow": "Itinerary on Tuggi",

@@ -98,5 +98,7 @@ export const config = {
   // This lets next-intl redirect un-prefixed URLs (e.g. /drive → /en/drive)
   // instead of 404'ing them — recovering old indexed links. /download and
   // /d/<slug> still hit the partner handling above first.
-  matcher: ["/((?!api|_next|_vercel|.*\\..*).*)"],
+  // `/c/:path*` on its own: an @ may carry a dot (`/c/@joao.silva`,
+  // BR-USUARIO-050 item 1.b), which the first pattern reads as a file.
+  matcher: ["/((?!api|_next|_vercel|.*\\..*).*)", "/c/:path*"],
 };

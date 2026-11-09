@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { sendGAEvent } from "@next/third-parties/google";
 import { Check, Copy } from "lucide-react";
 import { useStoreCampaign } from "@/lib/conversionHooks";
+import type { StorePlatform } from "@/lib/store-platform";
 
 /**
  * The two interactive pieces of the route page (`/r/<slug>`, card #946,
@@ -80,8 +81,6 @@ export function RouteCopyCode({ code }: { code: string }) {
     </div>
   );
 }
-
-export type StorePlatform = "ios" | "android" | "other";
 
 const BADGE_LINK =
   "inline-flex min-h-12 items-center hover:opacity-80 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text rounded-lg";

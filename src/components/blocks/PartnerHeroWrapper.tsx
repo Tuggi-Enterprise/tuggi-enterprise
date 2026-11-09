@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import { Suspense, type ReactNode } from "react";
 import { PartnerHero } from "./PartnerHero";
 
 import { useTranslations } from "next-intl";
@@ -14,9 +14,11 @@ interface WrapperProps {
   partnerId?: string;
   /** When present, the page is rendering a coupon redemption variant. */
   coupon?: CouponPreview | null;
+  /** The server-rendered app preview (DS-COMPONENTE-117); see PartnerHero. */
+  previewSlot?: ReactNode;
 }
 
-function PartnerHeroContent({ partnerData, partnerId, coupon }: WrapperProps) {
+function PartnerHeroContent({ partnerData, partnerId, coupon, previewSlot }: WrapperProps) {
   const searchParams = useSearchParams();
   // Prefer the explicitly resolved id (e.g. from /d/<slug>); fall back to the query string.
   const resolvedId =
@@ -31,11 +33,12 @@ function PartnerHeroContent({ partnerData, partnerId, coupon }: WrapperProps) {
       partnerId={resolvedId}
       partnerData={partnerData}
       coupon={coupon ?? undefined}
+      previewSlot={previewSlot}
     />
   );
 }
 
-export function PartnerHeroWrapper({ partnerData, partnerId, coupon }: WrapperProps) {
+export function PartnerHeroWrapper({ partnerData, partnerId, coupon, previewSlot }: WrapperProps) {
   const t = useTranslations("Download");
   return (
     // data-lp-chrome="off" is the server-rendered half of the rule in
@@ -45,7 +48,7 @@ export function PartnerHeroWrapper({ partnerData, partnerId, coupon }: WrapperPr
     // would otherwise scroll through the entire corporate footer.
     <div data-lp-chrome="off">
       <Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center text-white">{t("loading")}</div>}>
-        <PartnerHeroContent partnerData={partnerData} partnerId={partnerId} coupon={coupon} />
+        <PartnerHeroContent partnerData={partnerData} partnerId={partnerId} coupon={coupon} previewSlot={previewSlot} />
       </Suspense>
     </div>
   );

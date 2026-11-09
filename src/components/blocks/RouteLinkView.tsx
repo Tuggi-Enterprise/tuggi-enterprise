@@ -2,21 +2,14 @@ import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { routeAppSchemeUrl, routeLinkOf, routePlayStoreUrl, type RouteLink } from "@/lib/route-link";
 import { PLAY_STORE_URL } from "@/lib/app-meta";
-import { RouteCopyCode, RouteOpenAppButton, RouteStoreBadge, type StorePlatform } from "@/components/blocks/RouteLinkClient";
+import { RouteCopyCode, RouteOpenAppButton, RouteStoreBadge } from "@/components/blocks/RouteLinkClient";
+import { storePlatformOf } from "@/lib/store-platform";
 
 /**
  * The body of the route page (`/r/<slug>`, card #946, spec §1.1 and §1.2),
  * shared with `/route/<uuid>` when that one cannot be resolved. Server
  * component: the page arrives ready, there is no skeleton (spec §1.2).
  */
-
-/** Spec §0.2: one badge per platform, read from the user agent on the server. */
-export function storePlatformOf(userAgent: string | null): StorePlatform {
-  const ua = userAgent ?? "";
-  if (/iPhone|iPad|iPod/i.test(ua)) return "ios";
-  if (/Android/i.test(ua)) return "android";
-  return "other";
-}
 
 const H1 = "text-3xl sm:text-4xl font-extrabold text-tuggi-dark tracking-tight leading-tight";
 

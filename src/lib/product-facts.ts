@@ -260,14 +260,6 @@ export const AUDIO_GUIDES_FLOOR = 16_000;
 export const A11Y_SITE_AUDIT_DATE = "2026-08-06";
 
 /**
- * The ceiling of free hours a friend gets from an invite code — the referral
- * programme, **BR-MONETIZACAO-085** item 4. "Up to": a friend who
- * already activated the welcome hours gets the difference, computed by the
- * database. The invite page (`/c/<code>`) states the ceiling and nothing else.
- */
-export const REFERRAL_FRIEND_HOURS = 5;
-
-/**
  * How old an account may be and still accept an invite code, in days since
  * sign-up — **BR-MONETIZACAO-085** item 3. The redeem function enforces it; the invite page
  * only tells the friend about it.
@@ -374,6 +366,5 @@ export const PRODUCT_FACTS = {
   coverageCountries: COVERAGE_COUNTRIES,
   audioGuidesFloor: AUDIO_GUIDES_FLOOR,
   a11ySiteAuditDate: A11Y_SITE_AUDIT_DATE,
-  referralFriendHours: REFERRAL_FRIEND_HOURS,
   referralRedeemWindowDays: REFERRAL_REDEEM_WINDOW_DAYS,
 } as const;

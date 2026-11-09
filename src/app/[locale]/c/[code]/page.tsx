@@ -1,24 +1,33 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { headers } from "next/headers";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { getReferralInvite } from "@/lib/referral";
+import { getReferralInvite, invitePath, invitePlayStoreUrl } from "@/lib/referral";
 import { PRODUCT_FACTS } from "@/lib/product-facts";
 import { buildTwitterCard } from "@/lib/seo";
 import { SITE_URL } from "@/lib/app-meta";
+import { storePlatformOf } from "@/lib/store-platform";
 import { ReferralCopyCode, ReferralStoreBadges } from "@/components/blocks/ReferralInviteClient";
+import { AppPreview, AppPreviewQr } from "@/components/blocks/AppPreview";
 
 /**
- * The invite page — `tuggi.app/c/<code>`, card #840, handoff screen 3a.
+ * The invite page — `tuggi.app/c/@nome` and `tuggi.app/c/<code>`, cards #840
+ * and #1135, BR-MONETIZACAO-085 item 2.
  *
- * A friend shared a link; this page shows who invited (nickname only,
- * BR-USUARIO-042), the code with a Copy button, and the stores. The link
- * itself is not an attribution: the code pasted in the app is (#836 item 1).
+ * A friend shared a link; this page shows who invited (the @ only,
+ * BR-USUARIO-042), the @ or the code with a Copy button, the stores and the
+ * preview of what happens in the app (DS-COMPONENTE-117). The link itself is
+ * not an attribution: the invite pasted in the app is (#836 item 1).
  *
- * Rendered per request and never cached: whether a code is valid is the
- * database's answer at the time of the visit, and a statically cached page
- * would freeze it. Two states only — valid, or the same page without the code
- * block ("isn't active anymore"); there is no "exhausted" state for the friend
- * (#836, update of 2026-10-04).
+ * The only thing it may say to the friend is "join @fulano's caravan"
+ * (BR-MONETIZACAO-085, ceiling 1): no hours, no gain, of anybody.
+ *
+ * Rendered per request and never cached: whether an invite is valid is the
+ * database's answer at the time of the visit, and the preview depends on the
+ * user agent of the request. Two states only — valid, or the same page without
+ * the invite and the preview; an unknown @, an @ without an owner and an
+ * invalid code all get that one (item 2.b). There is no "exhausted" state for
+ * the friend (#836, update of 2026-10-04).
  *
  * Like `/d/<slug>`, the URL carries no locale: `middleware.ts` rewrites
  * `/c/<code>` to `/<locale>/c/<code>` from the visitor's language, because
@@ -41,11 +50,11 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     invite.status === "valid"
       ? t("metaTitle", { nickname: invite.nickname })
       : t("inactiveTitle");
-  const description =
-    invite.status === "valid" ? t("lead", PRODUCT_FACTS) : t("metaDescInactive");
-  // Only a code the database vouched for is echoed back; a dead segment is
-  // whatever someone typed, and it does not belong in the card's tags.
-  const url = invite.status === "valid" ? `${SITE_URL}/c/${invite.code}` : undefined;
+  const description = invite.status === "valid" ? t("lead") : t("metaDescInactive");
+  // Only an invite the database vouched for is echoed back, and in its
+  // canonical form; a dead segment is whatever someone typed, and it does not
+  // belong in the card's tags.
+  const url = invite.status === "valid" ? `${SITE_URL}${invitePath(invite)}` : undefined;
 
   return {
     // Bare: the root layout's title template appends the brand.
@@ -69,8 +78,20 @@ export default async function ReferralInvitePage({ params }: { params: Params })
   const { locale, code } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("Referral");
-  const invite = await getReferralInvite(code);
+  const [invite, requestHeaders] = await Promise.all([getReferralInvite(code), headers()]);
   const isValid = invite.status === "valid";
+  const shared = isValid ? invite.shared : undefined;
+  // Decides what the page shows, never what goes to the pasteboard.
+  const platform = storePlatformOf(requestHeaders.get("user-agent"));
+  const onComputer = platform === "other";
+
+  const badges = (
+    <ReferralStoreBadges
+      shared={shared}
+      playStoreUrl={invitePlayStoreUrl(shared)}
+      compact={isValid && onComputer}
+    />
+  );
 
   return (
     <div className="px-5 pt-10 pb-16">
@@ -83,14 +104,12 @@ export default async function ReferralInvitePage({ params }: { params: Params })
           >
             <h1
               id="referral-title"
-              className="text-3xl sm:text-4xl font-extrabold text-tuggi-dark tracking-tight leading-tight"
+              className="text-3xl sm:text-4xl font-extrabold text-tuggi-dark tracking-tight leading-tight break-words"
             >
               {t("invitedBy", { nickname: invite.nickname })}
             </h1>
-            <p className="text-lg text-tuggi-slate leading-relaxed">
-              {t("lead", PRODUCT_FACTS)}
-            </p>
-            <ReferralCopyCode code={invite.code} />
+            <p className="text-lg text-tuggi-slate leading-relaxed">{t("lead")}</p>
+            <ReferralCopyCode shared={invite.shared} via={invite.via} />
             <p className="text-sm text-tuggi-slate leading-relaxed">
               {t("pasteWithin", PRODUCT_FACTS)}
             </p>
@@ -112,36 +131,27 @@ export default async function ReferralInvitePage({ params }: { params: Params })
 
         <section
           data-testid="referral-stores"
-          aria-labelledby="referral-stores"
-          className="w-full mt-10 flex flex-col items-center gap-4">
-          <h2 id="referral-stores" className="text-base font-bold text-tuggi-dark">
+          aria-labelledby="referral-stores-title"
+          className="w-full mt-10 flex flex-col items-center gap-4"
+        >
+          <h2 id="referral-stores-title" className="text-base font-bold text-tuggi-dark">
             {isValid ? t("getAppAfterCode") : t("getApp")}
           </h2>
-          <ReferralStoreBadges />
+          {/* On a computer the QR takes the badges' place and they go under it,
+              smaller (DS-COMPONENTE-117): the phone is where the app goes. */}
+          {isValid && onComputer && <AppPreviewQr url={`${SITE_URL}${invitePath(invite)}`} />}
+          {badges}
         </section>
 
-        {/* The steps promise the hours of a code, so they only render with one. */}
+        {/* The preview replaces the old "how it works" steps, which promised
+            the friend hours (ceiling 1). No invite, no preview. */}
         {isValid && (
-          <section aria-labelledby="referral-how" className="w-full mt-12 text-left">
-            <h2 id="referral-how" className="text-xl font-extrabold text-tuggi-dark mb-4">
-              {t("howTitle")}
-            </h2>
-            <ol className="flex flex-col gap-3">
-              {(["step1", "step2", "step3"] as const).map((key, index) => (
-                <li key={key} className="flex gap-3 items-start">
-                  <span
-                    aria-hidden
-                    className="shrink-0 w-7 h-7 rounded-full bg-tuggi-secondary text-tuggi-dark font-extrabold text-sm flex items-center justify-center"
-                  >
-                    {index + 1}
-                  </span>
-                  <span className="text-tuggi-slate leading-relaxed pt-0.5">
-                    {t(key, PRODUCT_FACTS)}
-                  </span>
-                </li>
-              ))}
-            </ol>
-          </section>
+          <div className="w-full mt-12">
+            <AppPreview
+              platform={platform}
+              invite={{ kind: "friend", nickname: invite.nickname, shared: invite.shared }}
+            />
+          </div>
         )}
 
         <div className="w-full mt-10 rounded-3xl overflow-hidden border border-tuggi-border aspect-[4/3] relative">

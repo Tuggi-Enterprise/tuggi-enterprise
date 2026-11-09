@@ -263,6 +263,16 @@ const COUPON_FIXTURES = {
 const REFERRAL_FIXTURES = {
   "7K3MQ2": "PioneerMystic510",
 };
+/**
+ * Names of /c/@nome (card #1135), by comparison key (BR-USUARIO-050 item 5:
+ * case and separators do not count) → the inviter's CURRENT nickname. The
+ * second entry is an old @ still held by its account (item 8.b).
+ */
+const REFERRAL_NAME_FIXTURES = {
+  pioneermystic510: "PioneerMystic510",
+  oldpioneer: "PioneerMystic510",
+};
+const referralNameKey = (name) => name.toLowerCase().replace(/[._-]/g, "");
 /** Every `p_code` the invite page asked about, in order. */
 const referralLookups = [];
 
@@ -657,7 +667,10 @@ const server = http.createServer((req, res) => {
         // Malformed body: an unknown code.
       }
       referralLookups.push(code);
-      const nickname = REFERRAL_FIXTURES[code];
+      // Contract indicacao.md §7.5: a leading @ is a name.
+      const nickname = code.startsWith("@")
+        ? REFERRAL_NAME_FIXTURES[referralNameKey(code.slice(1))]
+        : REFERRAL_FIXTURES[code];
       sendJson(res, 200, nickname ? { status: "valid", nickname } : { status: "invalid", nickname: null });
     });
     return;

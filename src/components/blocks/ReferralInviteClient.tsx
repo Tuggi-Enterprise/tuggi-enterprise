@@ -5,33 +5,47 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { sendGAEvent } from "@next/third-parties/google";
 import { Check, Copy } from "lucide-react";
-import { PLAY_STORE_URL } from "@/lib/app-meta";
 import { useStoreCampaign } from "@/lib/conversionHooks";
 
 /**
- * The two interactive pieces of the invite page (`/c/<code>`, card #840).
+ * The two interactive pieces of the invite page (`/c/<code>` and `/c/@nome`,
+ * cards #840 and #1135).
  *
  * NEITHER TOUCHES THE PARTNER ATTRIBUTION PIPELINE. No `/api/attribution`, no
  * `useAttributionClipboardWrite`, no `buildPlayStoreUrl(clickId)`: the App
  * Store leg of that pipeline writes `tuggi_click_<uuid>` to the pasteboard,
- * and on this page the pasteboard holds the invite code the friend just
- * copied (#840 item 5). The two programmes are independent (#836 item 11).
+ * and on this page the pasteboard holds the invite (#840 item 5). The two
+ * programmes are independent (#836 item 11).
+ *
+ * What reaches the pasteboard is the invite as the page shows it, the code or
+ * the @, and only inside a tap: Copy, or the App Store badge
+ * (BR-MONETIZACAO-085 item 2.e.ii). The app reads it back with the system
+ * paste button of the step "Alguém te indicou o Tuggi?", which is a tap too.
  */
 
 /** How long the "Copied" confirmation stays up. */
 const COPIED_FEEDBACK_MS = 2000;
 
 /**
- * Copy button — the only way the code reaches the clipboard. #836 item 1: no
- * automatic write, no fingerprint; the copy happens on the tap and nowhere else.
- *
- * `writeText` is called synchronously inside the click handler: WebKit rejects
- * a clipboard write that is not inside a user gesture. When the API is missing
- * or refuses (old WebView, insecure context), the code is selected instead, so
- * the system "Copy" callout is one long-press away and the visitor never sees
- * a dead button.
+ * Writes the invite to the pasteboard. CALL IT FROM INSIDE THE CLICK HANDLER:
+ * WebKit rejects a clipboard write that is not inside a user gesture, so the
+ * write is started synchronously, with no `await` before it.
  */
-export function ReferralCopyCode({ code }: { code: string }) {
+function writeInvite(shared: string): Promise<void> {
+  const clipboard = typeof navigator !== "undefined" ? navigator.clipboard : undefined;
+  if (!clipboard?.writeText) return Promise.reject(new Error("no clipboard"));
+  return clipboard.writeText(shared);
+}
+
+/**
+ * Copy button — #836 item 1: no automatic write, no fingerprint; the copy
+ * happens on a tap and nowhere else.
+ *
+ * When the API is missing or refuses (old WebView, insecure context), the
+ * invite is selected instead, so the system "Copy" callout is one long-press
+ * away and the visitor never sees a dead button.
+ */
+export function ReferralCopyCode({ shared, via }: { shared: string; via: "code" | "name" }) {
   const t = useTranslations("Referral");
   const codeRef = useRef<HTMLSpanElement>(null);
   const [copied, setCopied] = useState(false);
@@ -45,20 +59,22 @@ export function ReferralCopyCode({ code }: { code: string }) {
   };
 
   const handleCopy = () => {
-    const clipboard = typeof navigator !== "undefined" ? navigator.clipboard : undefined;
-    if (!clipboard?.writeText) {
-      selectCode();
-      return;
-    }
-    clipboard.writeText(code).then(
+    writeInvite(shared).then(
       () => {
         setCopied(true);
-        sendGAEvent({ event: "referral_code_copied", campaign: "stamps" });
+        sendGAEvent({ event: "referral_code_copied", campaign: "stamps", via });
         window.setTimeout(() => setCopied(false), COPIED_FEEDBACK_MS);
       },
       () => selectCode()
     );
   };
+
+  // A code is six spaced capitals; an @ runs up to 30 characters and has to
+  // fit a 350 px column at 390 px, so it gets a smaller face and may wrap.
+  const textClass =
+    via === "code"
+      ? "text-3xl tracking-[0.18em]"
+      : "text-xl sm:text-2xl tracking-normal break-all text-left";
 
   return (
     <div className="flex flex-col items-center gap-2 w-full">
@@ -66,14 +82,14 @@ export function ReferralCopyCode({ code }: { code: string }) {
         <span
           ref={codeRef}
           data-testid="referral-code"
-          className="select-all font-extrabold text-3xl tracking-[0.18em] text-tuggi-dark"
+          className={`select-all font-extrabold text-tuggi-dark ${textClass}`}
         >
-          {code}
+          {shared}
         </span>
         <button
           type="button"
           onClick={handleCopy}
-          className="flex items-center gap-2 py-3 px-4 bg-tuggi-secondary text-tuggi-dark font-extrabold text-sm rounded-xl hover:brightness-105 active:scale-95 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-dark"
+          className="shrink-0 flex items-center gap-2 py-3 px-4 bg-tuggi-secondary text-white font-extrabold text-sm rounded-xl hover:brightness-105 active:scale-95 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-dark"
         >
           {copied ? <Check size={16} aria-hidden /> : <Copy size={16} aria-hidden />}
           {copied ? t("copied") : t("copy")}
@@ -86,28 +102,36 @@ export function ReferralCopyCode({ code }: { code: string }) {
   );
 }
 
-/**
- * Store badges of the invite page, tagged `stamps` for measurement (#840).
- *
- * Play reads campaign parameters from the `referrer` it hands to the install
- * (Play Console acquisition), so the tag rides there. The app's
- * InstallReferrerService only acts on `tuggi_click_<uuid>`, which this value
- * never carries, so no partner is credited from here. The App Store link
- * carries the visit's own campaign, when it has one (`useStoreCampaign`), and
- * the tap is counted by `click_store`.
- */
-const PLAY_STORE_URL_STAMPS = `${PLAY_STORE_URL}&referrer=${encodeURIComponent(
-  "utm_source=tuggi_site&utm_medium=referral&utm_campaign=stamps"
-)}`;
-
 const BADGE_LINK =
   "hover:opacity-80 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text rounded-lg";
 
-export function ReferralStoreBadges() {
+/**
+ * Store badges of the invite page, tagged `stamps` for measurement (#840).
+ *
+ * Play: the link is built on the server (`invitePlayStoreUrl`) and carries the
+ * invite in `referrer` (BR-MONETIZACAO-085 item 2.e.i). App Store: the tap
+ * copies the invite, inside the gesture (item 2.e.ii); it follows the
+ * destination of the badge, never the user agent. The App Store link carries
+ * the visit's own campaign, when it has one (`useStoreCampaign`), and the tap
+ * is counted by `click_store`.
+ *
+ * `compact` is the desktop layout, where the QR is the main way to the phone
+ * and the badges are the secondary one (DS-COMPONENTE-117).
+ */
+export function ReferralStoreBadges({
+  shared,
+  playStoreUrl,
+  compact = false,
+}: {
+  shared?: string;
+  playStoreUrl: string;
+  compact?: boolean;
+}) {
   const t = useTranslations("Home.Hero");
   const { appStoreUrl, trackStoreClick } = useStoreCampaign();
   const track = (store: "app_store" | "play_store") =>
     trackStoreClick(store, "referral_invite", { campaign: "stamps" });
+  const badgeClass = compact ? "h-9 w-auto" : "h-11 w-auto";
 
   return (
     <div className="flex flex-row flex-wrap gap-3 items-center justify-center">
@@ -115,7 +139,12 @@ export function ReferralStoreBadges() {
         href={appStoreUrl}
         target="_blank"
         rel="noopener noreferrer"
-        onClick={() => track("app_store")}
+        onClick={() => {
+          track("app_store");
+          // A refusal here is not the visitor's problem: the store opens
+          // either way, and the field in the app still takes a typed @.
+          if (shared) writeInvite(shared).catch(() => {});
+        }}
         className={BADGE_LINK}
       >
         <Image
@@ -123,11 +152,11 @@ export function ReferralStoreBadges() {
           alt={t("appStoreAlt")}
           width={140}
           height={42}
-          className="h-11 w-auto"
+          className={badgeClass}
         />
       </a>
       <a
-        href={PLAY_STORE_URL_STAMPS}
+        href={playStoreUrl}
         target="_blank"
         rel="noopener noreferrer"
         onClick={() => track("play_store")}
@@ -138,7 +167,7 @@ export function ReferralStoreBadges() {
           alt={t("playStoreAlt")}
           width={140}
           height={42}
-          className="h-11 w-auto"
+          className={badgeClass}
         />
       </a>
     </div>

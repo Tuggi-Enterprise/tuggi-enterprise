@@ -1,4 +1,4 @@
-import { test, expect, type Locator, type Page } from "@playwright/test";
+import { test, expect, devices, type Locator, type Page } from "@playwright/test";
 import { APP_STORE_URL, PLAY_STORE_URL } from "../../src/lib/app-meta";
 
 /**
@@ -100,7 +100,9 @@ test.describe("partner brand lockup — no avatar_url (the common case)", () => 
     await page.goto(NO_LOGO_PATH);
     await waitForLockup(page);
 
-    await expect(page.locator("ol")).toHaveCount(0);
+    // The app preview (DS-COMPONENTE-117, #1135) has its own two steps on both
+    // layouts; the campaign's numbered list is what must stay away.
+    await expect(page.locator("ol:not([data-app-preview-steps])")).toHaveCount(0);
     // `:visible` because the site's global footer stays in the DOM on this
     // route — `.no-layout` only hides it — and it carries its own store links.
     await expect(page.locator('a[href*="apps.apple.com"]:visible')).toHaveCount(0);
@@ -261,7 +263,8 @@ test.describe("campaign layout — with avatar_url", () => {
     await page.goto(WITH_LOGO_PATH);
     await waitForLockup(page);
 
-    const steps = page.locator("ol > li");
+    // The campaign's own list, not the app preview's (DS-COMPONENTE-117).
+    const steps = page.locator("ol:not([data-app-preview-steps]) > li");
     await expect(steps).toHaveCount(3);
     await expect(steps.nth(0)).toContainText("Open it and forget it");
     await expect(steps.nth(1)).toContainText("The audio starts on its own");
@@ -314,8 +317,17 @@ test.describe("campaign layout — with avatar_url", () => {
       .toBe(true);
   });
 
-  test("the whole page fits the mobile height budget", async ({ page }) => {
-    await page.setViewportSize(PHONE);
+  test("the whole page fits the mobile height budget", async ({ browser, baseURL }) => {
+    // A phone's user agent and not only its width: the app preview
+    // (DS-COMPONENTE-117) is chosen from the user agent on the server, and a
+    // desktop one gets the QR and both frames, which no phone at the table sees.
+    const context = await browser.newContext({
+      baseURL,
+      viewport: PHONE,
+      userAgent: devices["iPhone 13"].userAgent,
+      locale: "en-US",
+    });
+    const page = await context.newPage();
     await page.goto(WITH_LOGO_PATH);
     await waitForLockup(page);
     // The trailing spacer grows with the consent banner, so measure with the
@@ -323,6 +335,7 @@ test.describe("campaign layout — with avatar_url", () => {
     await expect(page.getByText(/we use cookies/i)).toBeVisible();
 
     const height = await page.evaluate(() => document.body.scrollHeight);
+    await context.close();
     expect(height, `document height at ${PHONE.width}px`).toBeLessThanOrEqual(MAX_PAGE_HEIGHT);
   });
 

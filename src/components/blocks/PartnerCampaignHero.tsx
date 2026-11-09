@@ -20,6 +20,8 @@ interface PartnerCampaignHeroProps {
   audioSlot?: ReactNode;
   /** The partner's own welcome text, rendered by PartnerHero with its collapse control. */
   descriptionSlot?: ReactNode;
+  /** What the visitor will see in the app (DS-COMPONENTE-117), rendered on the server by the page. */
+  previewSlot?: ReactNode;
   /** The App Store link of this visit, campaign included (`useStoreCampaign`). */
   appStoreUrl: string;
   onStoreClick: (store: "app_store" | "play_store") => void;
@@ -80,6 +82,7 @@ export function PartnerCampaignHero({
   clickId,
   audioSlot,
   descriptionSlot,
+  previewSlot,
   appStoreUrl,
   onStoreClick,
 }: PartnerCampaignHeroProps) {
@@ -169,6 +172,12 @@ export function PartnerCampaignHero({
         {audioSlot && (
           <div data-block="player" className="mt-3">
             {audioSlot}
+          </div>
+        )}
+
+        {previewSlot && (
+          <div data-block="app-preview" className="mt-8">
+            {previewSlot}
           </div>
         )}
       </section>
