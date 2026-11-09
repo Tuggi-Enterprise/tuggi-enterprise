@@ -1,4 +1,6 @@
+import { createHash } from "node:crypto";
 import { cache } from "react";
+import { clientAddressOf, registerAttempt } from "@/lib/rate-limit";
 import { getSupabaseClient } from "@/lib/supabase-server";
 
 /**
@@ -271,25 +273,53 @@ export function pickLang(map: DbLangMap, dbLang: string): { lang: string; value:
   return first ? { lang: first, value: map[first] } : null;
 }
 
-/** How long a signed photo URL lives. The page is rendered per request, so an hour is plenty. */
-const PHOTO_URL_SECONDS = 60 * 60;
+/**
+ * WHERE THE CREATOR'S PHOTO IS READ FROM: a path of this site, and never a
+ * storage address (BR-B2B-067 item 2.b). The key of the moderated copy
+ * (`<user id>/<file>.jpg` in the private `profile-photos` bucket) carries the
+ * account id, which is also the purchase system's id of that person; a signed
+ * URL carries the key twice, in the path and in its token, and a page a robot
+ * indexed cannot take it back. The page names the photo by the public @ and
+ * the route below serves the bytes.
+ *
+ * `v` changes when the photo does, so a new photo is fetched at once instead
+ * of waiting for the browser's copy to expire. It is a digest of the key and
+ * says nothing about it: the file part is random.
+ */
+export function creatorPhotoSrc(page: CreatorPage): string | null {
+  if (!page.photoKey) return null;
+  const version = createHash("sha256").update(page.photoKey, "utf8").digest("base64url").slice(0, 12);
+  return `/@${encodeURIComponent(page.name)}/photo?v=${version}`;
+}
+
+/** The image types the moderated copy can be. Anything else is not served. */
+const PHOTO_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
+
+export interface CreatorPhoto {
+  bytes: ArrayBuffer;
+  contentType: string;
+}
 
 /**
- * The creator's photo: only the moderated copy the Tuggi keeps, in the
- * private `profile-photos` bucket, signed here (BR-B2B-067 item 2.b,
- * BR-USUARIO-052 item 2.e). Never the Google address. A failure is a page
- * without the photo, which is the avatar with the initial.
+ * The bytes of the creator's moderated photo, read with service_role on this
+ * server (BR-B2B-067 item 2.b, BR-USUARIO-052 item 2.e). Null when there is
+ * none to serve; the log never names the key, which carries the account id.
  */
-export async function signProfilePhoto(photoKey: string | null): Promise<string | null> {
-  if (!photoKey) return null;
+export async function fetchCreatorPhoto(page: CreatorPage): Promise<CreatorPhoto | null> {
+  if (!page.photoKey) return null;
   const { data, error } = await getSupabaseClient("serviceRole")
     .storage.from("profile-photos")
-    .createSignedUrl(photoKey, PHOTO_URL_SECONDS);
-  if (error || !data?.signedUrl) {
-    console.error("profile-photos: could not sign the creator photo", error?.message ?? "no url");
+    .download(page.photoKey);
+  if (error || !data) {
+    console.error("profile-photos: could not read the creator photo", error?.message ?? "no data");
     return null;
   }
-  return data.signedUrl;
+  const contentType = data.type.split(";")[0].trim().toLowerCase();
+  if (!PHOTO_TYPES.has(contentType)) {
+    console.error("profile-photos: the creator photo is not an image type the page serves", contentType || "none");
+    return null;
+  }
+  return { bytes: await data.arrayBuffer(), contentType };
 }
 
 /**
@@ -307,19 +337,40 @@ export function isDeclaredRobot(userAgent: string | null | undefined): boolean {
 
 export type PageVisitVia = "at_name" | "d_slug";
 
+export const PAGE_VISIT_BUCKET = "page-visit";
+export const PAGE_VISIT_WINDOW_SECONDS = 60 * 60;
+/**
+ * Openings of one page counted per address per hour (BR-B2B-068 item 2.e).
+ * The same ceiling as a kit scan: a hotel Wi-Fi full of guests opening the
+ * hotel's page stays under it, a script reloading a page to inflate it does
+ * not. Above it the page opens as always and the opening is not counted.
+ */
+export const PAGE_VISIT_LIMIT_PER_WINDOW = 30;
+
 /**
  * Counts one opening of the page, for "visitaram o perfil" (BR-B2B-067 item 7,
- * BR-B2B-068 item 2.e): every render, never a robot. Nothing about the person
- * is sent (contract: no person, IP or user agent). A failure costs one count
- * and never the page.
+ * BR-B2B-068 item 2.e): every render, never a robot, and at most
+ * `PAGE_VISIT_LIMIT_PER_WINDOW` per address and page in the window. The bucket
+ * names the page, so browsing many pages spends nobody's budget. Nothing
+ * about the person is sent (contract: no person, IP or user agent; the
+ * counter keeps only a keyed digest of the address). A failure costs one
+ * count and never the page.
  */
 export async function recordPageVisit(
   clientId: string,
   via: PageVisitVia,
-  userAgent: string | null
+  requestHeaders: Headers
 ): Promise<void> {
-  if (isDeclaredRobot(userAgent)) return;
+  if (isDeclaredRobot(requestHeaders.get("user-agent"))) return;
   try {
+    const decision = await registerAttempt({
+      bucket: `${PAGE_VISIT_BUCKET}:${clientId}`,
+      clientAddress: clientAddressOf(requestHeaders),
+      windowSeconds: PAGE_VISIT_WINDOW_SECONDS,
+      maxAttempts: PAGE_VISIT_LIMIT_PER_WINDOW,
+    });
+    if (!decision.allowed) return;
+
     const { error } = await getSupabaseClient("serviceRole")
       .schema("partner")
       .rpc("record_page_visit", { p_client_id: clientId, p_via: via });

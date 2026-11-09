@@ -5,7 +5,7 @@ import { RouteMap } from "@/components/blocks/RouteMap";
 import { RouteStopAudio } from "@/components/blocks/RouteStopAudio";
 import { PartnerStoreCta } from "@/components/partner-page/PartnerStoreCta";
 import { PARTNER_DOWNLOAD_ID, PartnerIdentity, PartnerPageFrame } from "@/components/partner-page/PartnerPageFrame";
-import { pickLang, type CreatorPage, type FeaturedRoute, type PublicRoute } from "@/lib/public-page";
+import { creatorPhotoSrc, pickLang, type CreatorPage, type FeaturedRoute, type PublicRoute } from "@/lib/public-page";
 import { AUDIO_LANG_LABELS, getAllRoutes, type RouteSnapshot } from "@/lib/routes";
 import { formatDistance, formatDuration } from "@/lib/tourFormat";
 
@@ -20,8 +20,6 @@ interface CreatorPageViewProps {
   locale: string;
   /** Database language of the request (`pt-br`, `en-us`…), for the featured route and its stop. */
   dbLang: string;
-  /** The moderated photo, signed for this request; null draws the initial. */
-  photoUrl: string | null;
 }
 
 /** "EN", "PT-BR"… for a database language; the label set of the route player. */
@@ -44,12 +42,14 @@ function audioLabel(lang: string): string {
  * a discount (item 3). The one figure is the aggregated social proof, which
  * the database sends only from its floor up.
  */
-export async function CreatorPageView({ page, locale, dbLang, photoUrl }: CreatorPageViewProps) {
+export async function CreatorPageView({ page, locale, dbLang }: CreatorPageViewProps) {
   const t = await getTranslations({ locale, namespace: "PartnerPage" });
   const number = new Intl.NumberFormat(locale);
   const name = page.displayName;
   const initial = (Array.from(name.trim())[0] ?? "@").toLocaleUpperCase(locale);
   const hasRoutes = page.routes.length > 0;
+  // The moderated photo by the public @, never a storage address; null draws the initial.
+  const photoUrl = creatorPhotoSrc(page);
 
   const stats = [
     hasRoutes && { value: page.routes.length, label: t("statRoutes", { count: page.routes.length }), id: "routes" },
@@ -70,8 +70,8 @@ export async function CreatorPageView({ page, locale, dbLang, photoUrl }: Creato
       <PartnerIdentity
         media={
           photoUrl ? (
-            // A signed URL of a private bucket: next/image would fetch and keep
-            // it on our side, and its allowlist only knows public objects.
+            // A route of this site that reads a private bucket per request:
+            // next/image would keep its own copy past the removal of the photo.
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={photoUrl}

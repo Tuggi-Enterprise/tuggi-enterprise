@@ -1,5 +1,6 @@
 import { test, expect, type APIRequestContext, type Page } from "@playwright/test";
 import { MOCK_SUPABASE_PORT } from "../../playwright.config";
+import { PAGE_VISIT_LIMIT_PER_WINDOW } from "../../src/lib/public-page";
 import { visitorHeaders } from "./visitor-headers";
 
 /**
@@ -26,6 +27,8 @@ const CREATOR_ID = "7a7a7a7a-7a7a-4a7a-8a7a-7a7a7a7a7a7a";
 const EMPTY_CREATOR_ID = "7b7b7b7b-7b7b-4b7b-8b7b-7b7b7b7b7b7b";
 const CLIENT_ID = "11111111-1111-4111-8111-111111111111";
 const ENDED_CLIENT_ID = "55555555-5555-4555-8555-555555555555";
+/** The account id inside the photo key of the double (PHOTO_OWNER_UID in mock-supabase-server.mjs). */
+const PHOTO_OWNER_UID = "5f0d3e2a-9b1c-4c7e-a6d2-114100c0ffee";
 
 /** A person's browser. Playwright's headless one says "HeadlessChrome", which the page counts as a robot. */
 const PERSON_UA =
@@ -33,10 +36,13 @@ const PERSON_UA =
 const GOOGLEBOT_UA = "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)";
 
 // Brazil: the page speaks pt and the attribution gate lets the capture through.
-// The address gives the capture a rate-limit bucket of its own.
+// The address gives the capture and the visit count rate-limit buckets of
+// their own, new on every run: the double keeps its counters while it runs,
+// and a local rerun reuses it.
+const SPEC_ADDRESS = `2001:db8:1141:1::${Math.floor(Math.random() * 0xffff).toString(16)}`;
 test.use({
   userAgent: PERSON_UA,
-  extraHTTPHeaders: visitorHeaders({ country: "BR", address: "198.51.100.141" }),
+  extraHTTPHeaders: visitorHeaders({ country: "BR", address: SPEC_ADDRESS }),
 });
 
 async function visitsOf(clientId: string): Promise<{ client_id: string; via: string }[]> {
@@ -110,10 +116,51 @@ test.describe("BR-B2B-067 item 2.b: the creator's page", () => {
     expect(body).not.toContain("creator-bio");
   });
 
-  test("BR-B2B-067 item 2.b: the photo is the moderated copy, signed by the server in profile-photos", async ({ request }) => {
-    const body = mainOf((await html(request, "/@e2e-criador-foto")).body);
-    expect(body).toMatch(/<img[^>]+src="[^"]*\/storage\/v1\/object\/sign\/profile-photos\/7c7c7c7c\/moderated\.jpg\?token=e2e-signed"/);
-    expect(body).not.toContain("googleusercontent");
+  test("BR-B2B-067 item 2.b: the photo is named by the public @ and nothing of the storage reaches the visitor", async ({ request }) => {
+    for (const path of ["/@e2e-criador-foto", "/d/e2e-criador-foto"]) {
+      const { status, body: doc } = await html(request, path);
+      expect(status).toBe(200);
+      expect(mainOf(doc)).toMatch(/<img[^>]+src="\/@e2e-criador-foto\/photo\?v=[\w-]+"/);
+      // The whole document: the HTML, the metadata and the payload serialized after it.
+      for (const leak of ["profile-photos", "/sign/", "token=", PHOTO_OWNER_UID, "googleusercontent"]) {
+        expect(doc, `${path} carries ${leak}`).not.toContain(leak);
+      }
+    }
+  });
+
+  test("BR-B2B-067 item 2.b: the RSC payload of the page does not carry the photo key either", async ({ request }) => {
+    const res = await request.get("/@e2e-criador-foto", { headers: { "user-agent": PERSON_UA, RSC: "1" } });
+    expect(res.status()).toBe(200);
+    expect(res.headers()["content-type"]).toContain("text/x-component");
+    const payload = await res.text();
+    expect(payload).toContain("Carla Dias");
+    for (const leak of ["profile-photos", "/sign/", "token=", PHOTO_OWNER_UID]) {
+      expect(payload, `the payload carries ${leak}`).not.toContain(leak);
+    }
+  });
+
+  test("BR-B2B-067 item 2.b: the photo route serves the moderated bytes, cached for minutes only", async ({ request }) => {
+    const { body: doc } = await html(request, "/@e2e-criador-foto");
+    const src = /<img[^>]+src="(\/@e2e-criador-foto\/photo\?v=[\w-]+)"[^>]+data-testid="creator-photo"/.exec(mainOf(doc))![1];
+    const res = await request.get(src);
+    expect(res.status()).toBe(200);
+    expect(res.headers()["content-type"]).toBe("image/jpeg");
+    expect(res.headers()["cache-control"]).toBe("public, max-age=300");
+    expect(res.headers()["x-content-type-options"]).toBe("nosniff");
+    const bytes = await res.body();
+    expect([bytes[0], bytes[1]]).toEqual([0xff, 0xd8]);
+    expect(res.headers()["location"]).toBeUndefined();
+  });
+
+  test("BR-B2B-067 item 5: the photo route answers one 404 for every name without a photo", async ({ request }) => {
+    const answers: string[] = [];
+    // No page, a regular user, a creator without a photo, a client, another spelling.
+    for (const name of ["nao.existe", "e2e-usuario-comum", "e2e-criador-vazio", "e2e-sem-logo", "E2E.Criadora"]) {
+      const res = await request.get(`/@${name}/photo`, { maxRedirects: 0 });
+      expect(res.status(), name).toBe(404);
+      answers.push(JSON.stringify([res.headers()["content-type"], res.headers()["cache-control"], await res.text()]));
+    }
+    expect(new Set(answers).size).toBe(1);
   });
 });
 
@@ -218,6 +265,27 @@ test.describe("BR-B2B-067 item 7: each opening counts, and never a robot's", () 
     await html(request, "/@e2e-sem-logo");
     await html(request, "/d/e2e-sem-logo");
     expect((await visitsOf(CLIENT_ID)).slice(before).map((r) => r.via)).toEqual(["at_name", "d_slug"]);
+  });
+
+  test("BR-B2B-068 item 2.e: above the ceiling an address stops counting, and the page still opens", async ({ playwright }) => {
+    // An address of its own per run: the double keeps its counter while it runs.
+    const address = `2001:db8:1141::${Math.floor(Math.random() * 0xffff).toString(16)}`;
+    const own = await playwright.request.newContext({
+      baseURL: test.info().project.use.baseURL,
+      extraHTTPHeaders: { ...visitorHeaders({ country: "BR", address }), "user-agent": PERSON_UA },
+    });
+    const before = (await visitsOf(EMPTY_CREATOR_ID)).length;
+    for (let i = 0; i < PAGE_VISIT_LIMIT_PER_WINDOW + 3; i += 1) {
+      const res = await own.get("/@e2e-criador-vazio");
+      expect(res.status()).toBe(200);
+    }
+    expect((await visitsOf(EMPTY_CREATOR_ID)).length - before).toBe(PAGE_VISIT_LIMIT_PER_WINDOW);
+
+    // The ceiling is per page: the same address still counts on another one.
+    const clientBefore = (await visitsOf(CLIENT_ID)).length;
+    expect((await own.get("/@e2e-sem-logo")).status()).toBe(200);
+    expect((await visitsOf(CLIENT_ID)).length - clientBefore).toBe(1);
+    await own.dispose();
   });
 
   test("a declared robot reads the page and is not counted", async ({ request }) => {

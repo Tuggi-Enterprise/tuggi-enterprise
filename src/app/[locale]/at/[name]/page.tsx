@@ -7,7 +7,7 @@ import { ClientPartnerPage } from "@/components/partner-page/ClientPartnerPage";
 import { CreatorPageView } from "@/components/partner-page/CreatorPageView";
 import { lookupPartnerSlug } from "@/lib/partner";
 import { clientPageMetadata, creatorPageMetadata, notFoundPageMetadata } from "@/lib/partner-page-metadata";
-import { recordPageVisit, resolvePublicPage, signProfilePhoto } from "@/lib/public-page";
+import { recordPageVisit, resolvePublicPage } from "@/lib/public-page";
 import { requestWelcomeLang } from "@/lib/request-welcome-lang";
 
 /**
@@ -74,13 +74,13 @@ export default async function PublicPartnerPage({ params, searchParams }: { para
     permanentRedirect(`/@${encodeURIComponent(page.to)}${forwardedQuery(query)}`);
   }
 
-  const userAgent = (await headers()).get("user-agent");
+  const requestHeaders = new Headers(await headers());
   const dbLang = await requestWelcomeLang(locale, langOf(query));
-  const visit = recordPageVisit(page.clientId, "at_name", userAgent);
+  const visit = recordPageVisit(page.clientId, "at_name", requestHeaders);
 
   if (page.kind === "creator") {
-    const [photoUrl] = await Promise.all([signProfilePhoto(page.photoKey), visit]);
-    return <CreatorPageView page={page} locale={locale} dbLang={dbLang} photoUrl={photoUrl} />;
+    await visit;
+    return <CreatorPageView page={page} locale={locale} dbLang={dbLang} />;
   }
 
   // A place or a client: the blocks come from the read `/d/{slug}` makes.

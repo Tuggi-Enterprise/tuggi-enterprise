@@ -11,7 +11,6 @@ import { clientPageMetadata, creatorPageMetadata } from "@/lib/partner-page-meta
 import {
   recordPageVisit,
   resolvePublicPage,
-  signProfilePhoto,
   type ClientPage,
   type PublicPage,
 } from "@/lib/public-page";
@@ -108,7 +107,7 @@ export default async function PartnerSlugPage({
 
   const dbLang = await requestWelcomeLang(locale, lang);
   const [resolved, page] = await Promise.all([lookupPartnerSlug(slug, dbLang), publicPageOf(slug), scan]);
-  const userAgent = (await headers()).get("user-agent");
+  const requestHeaders = new Headers(await headers());
 
   // The printed slug is not the client's own (the client inherited another one,
   // or the URL differs in case): it keeps resolving, as a permanent redirect —
@@ -128,11 +127,8 @@ export default async function PartnerSlugPage({
   // One resolver, two doors (BR-B2B-037 item 2): a creator's name after `/d/`
   // shows the creator's page, counted as a `/d/` opening.
   if (!isCoupon(resolved) && page?.state === "page" && page.kind === "creator") {
-    const [photoUrl] = await Promise.all([
-      signProfilePhoto(page.photoKey),
-      recordPageVisit(page.clientId, "d_slug", userAgent),
-    ]);
-    return <CreatorPageView page={page} locale={locale} dbLang={dbLang} photoUrl={photoUrl} />;
+    await recordPageVisit(page.clientId, "d_slug", requestHeaders);
+    return <CreatorPageView page={page} locale={locale} dbLang={dbLang} />;
   }
 
   // An old @ or another spelling the resolver knows and `/d/` does not: the
@@ -192,7 +188,7 @@ export default async function PartnerSlugPage({
   // client whose contract ended stops attributing) and counts the opening
   // (item 7). A slug it does not know, and a coupon, keep today's behaviour.
   const client = clientPageOf(page, resolved);
-  if (client) await recordPageVisit(client.clientId, "d_slug", userAgent);
+  if (client) await recordPageVisit(client.clientId, "d_slug", requestHeaders);
 
   return (
     <ClientPartnerPage

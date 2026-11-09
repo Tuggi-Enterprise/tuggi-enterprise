@@ -368,6 +368,17 @@ const RESOLVER_FIXTURES = {
 const CREATOR_ID = "7a7a7a7a-7a7a-4a7a-8a7a-7a7a7a7a7a7a";
 const EMPTY_CREATOR_ID = "7b7b7b7b-7b7b-4b7b-8b7b-7b7b7b7b7b7b";
 const PHOTO_CREATOR_ID = "7c7c7c7c-7c7c-4c7c-8c7c-7c7c7c7c7c7c";
+/**
+ * The photo key has the production shape, `<account id>/<file>.jpg`, so a spec
+ * can prove the account id never reaches the page (BR-B2B-067 item 2.b).
+ */
+const PHOTO_OWNER_UID = "5f0d3e2a-9b1c-4c7e-a6d2-114100c0ffee";
+const PHOTO_KEY = `${PHOTO_OWNER_UID}/0b8e4f6a-2d3c-4e5f-9a1b-7c6d5e4f3a2b.jpg`;
+/** A one-pixel JPEG: the moderated copy the storage double holds under PHOTO_KEY. */
+const PHOTO_JPEG = Buffer.from(
+  "/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA=",
+  "base64"
+);
 
 /**
  * A route of the site's own snapshot, read at start so a refresh of the
@@ -447,7 +458,7 @@ const PUBLIC_PAGE_FIXTURES = {
     client_id: PHOTO_CREATOR_ID,
     name: "e2e-criador-foto",
     display_name: "Carla Dias",
-    photo_key: "7c7c7c7c/moderated.jpg",
+    photo_key: PHOTO_KEY,
     verified: true,
     bio: null,
     routes: [],
@@ -892,11 +903,15 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // `createSignedUrl` of supabase-js: POST /object/sign/<bucket>/<key>, and the
-  // answer is the path it appends to the storage URL.
-  if (url.pathname.startsWith("/storage/v1/object/sign/") && req.method === "POST") {
-    const objectPath = url.pathname.slice("/storage/v1".length);
-    sendJson(res, 200, { signedURL: `${objectPath}?token=e2e-signed` });
+  // `download` of supabase-js with service_role: GET /object/<bucket>/<key>.
+  if (url.pathname.startsWith("/storage/v1/object/profile-photos/") && req.method === "GET") {
+    const key = decodeURIComponent(url.pathname.slice("/storage/v1/object/profile-photos/".length));
+    if (key === PHOTO_KEY) {
+      res.writeHead(200, { "content-type": "image/jpeg", "content-length": PHOTO_JPEG.length });
+      res.end(PHOTO_JPEG);
+    } else {
+      sendJson(res, 400, { statusCode: "404", error: "not_found", message: "Object not found" });
+    }
     return;
   }
 
