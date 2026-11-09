@@ -3,6 +3,7 @@ import { MapPin } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import { RouteMap } from "@/components/blocks/RouteMap";
 import { RouteStopAudio } from "@/components/blocks/RouteStopAudio";
+import { PageReport } from "@/components/partner-page/PageReport";
 import { PartnerStoreCta } from "@/components/partner-page/PartnerStoreCta";
 import { PARTNER_DOWNLOAD_ID, PartnerIdentity, PartnerPageFrame } from "@/components/partner-page/PartnerPageFrame";
 import { creatorPhotoSrc, pickLang, type CreatorPage, type FeaturedRoute, type PublicRoute } from "@/lib/public-page";
@@ -132,6 +133,25 @@ export async function CreatorPageView({ page, locale, dbLang }: CreatorPageViewP
       kind="creator"
       path={`/@${page.name}`}
       hero={hero}
+      footerAction={
+        // BR-USUARIO-051 item 5: by the name the page showed; the bio is offered only when there is one.
+        <PageReport
+          action={`/@${encodeURIComponent(page.name)}/report`}
+          labels={{
+            trigger: t("report"),
+            title: t("reportTitle"),
+            options: {
+              display_name: t("reportOptionName"),
+              nickname: t("reportOptionNickname"),
+              ...(page.bio ? { bio: t("reportOptionBio") } : {}),
+            },
+            send: t("reportSend"),
+            received: t("reportReceived"),
+            failed: t("reportFailed"),
+            close: t("reportClose"),
+          }}
+        />
+      }
       aside={
         page.featuredRoute && (
           <FeaturedRouteCard route={page.featuredRoute} locale={locale} dbLang={dbLang} label={t("featuredRoute")} />

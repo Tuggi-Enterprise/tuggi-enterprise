@@ -1030,6 +1030,15 @@
     "partnerLead": "Get Tuggi and listen to the story of places nearby, on foot or by car.",
     "ctaPartner": "Listen in the app",
     "storyTitle": "The story",
-    "stopLabel": "Stop {number}"
+    "stopLabel": "Stop {number}",
+    "report": "Report this profile",
+    "reportTitle": "What is wrong with this profile?",
+    "reportOptionName": "The name",
+    "reportOptionNickname": "The @",
+    "reportOptionBio": "The bio",
+    "reportSend": "Send",
+    "reportReceived": "Received. The Tuggi team will take a look.",
+    "reportFailed": "We couldn't send it. Please try again.",
+    "reportClose": "Close"
   }
 }

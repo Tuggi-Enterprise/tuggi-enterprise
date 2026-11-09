@@ -1030,6 +1030,15 @@
     "partnerLead": "Baixe o Tuggi e ouça a história dos lugares por perto, a pé ou de carro.",
     "ctaPartner": "Ouvir no app",
     "storyTitle": "A história",
-    "stopLabel": "Parada {number}"
+    "stopLabel": "Parada {number}",
+    "report": "Denunciar este perfil",
+    "reportTitle": "O que está errado neste perfil?",
+    "reportOptionName": "O nome",
+    "reportOptionNickname": "O @",
+    "reportOptionBio": "A bio",
+    "reportSend": "Enviar",
+    "reportReceived": "Recebido. A equipe do Tuggi vai olhar.",
+    "reportFailed": "Não conseguimos enviar. Tente de novo.",
+    "reportClose": "Fechar"
   }
 }

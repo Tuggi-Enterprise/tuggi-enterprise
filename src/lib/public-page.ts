@@ -379,3 +379,76 @@ export async function recordPageVisit(
     console.error("partner.record_page_visit failed:", err);
   }
 }
+
+/**
+ * What a visitor can report on a creator's page (BR-USUARIO-051 item 5): the
+ * three fields the database knows, `nickname` being the @. The function
+ * refuses anything else with 22023.
+ */
+export const PAGE_REPORT_FIELDS = ["display_name", "nickname", "bio"] as const;
+export type PageReportField = (typeof PAGE_REPORT_FIELDS)[number];
+
+export const isPageReportField = (value: unknown): value is PageReportField =>
+  typeof value === "string" && (PAGE_REPORT_FIELDS as readonly string[]).includes(value);
+
+export const PAGE_REPORT_BUCKET = "page-report";
+export const PAGE_REPORT_WINDOW_SECONDS = 60 * 60;
+/**
+ * Reports of one page sent per address per hour. A repeated report adds to
+ * the count of the open one (contract `identidade-publica.md`, "Denúncia"),
+ * so the ceiling is what keeps one address from pushing a page up the queue
+ * of the CMS. Ten is more than a hotel Wi-Fi of guests reporting the same
+ * page in one hour; a script reposting the form meets it at once.
+ */
+export const PAGE_REPORT_LIMIT_PER_WINDOW = 10;
+
+/**
+ * What the visitor is told. `received` for every answer about the name
+ * (reported, no page, an empty field, the ceiling), so the form never says
+ * whether a name has an account (BR-B2B-067 item 5); `failed` only when
+ * nothing could be recorded and trying again can work.
+ */
+export type PageReportOutcome = "received" | "failed";
+
+/**
+ * Sends a report of the page named in the URL to the CMS queue
+ * (`partner.report_public_page_as`, BR-USUARIO-051 item 5). The report
+ * changes nothing on the page; a curator decides. Nothing about the person
+ * is sent, and the report id and count stay on this server. The name is the
+ * one the page showed: the function does not follow a redirect.
+ */
+export async function reportPublicPage(
+  rawName: string,
+  field: PageReportField,
+  requestHeaders: Headers
+): Promise<PageReportOutcome> {
+  const name = publicNameOf(rawName);
+  if (!name) return "received";
+  try {
+    const decision = await registerAttempt({
+      bucket: `${PAGE_REPORT_BUCKET}:${name.toLowerCase()}`,
+      clientAddress: clientAddressOf(requestHeaders),
+      windowSeconds: PAGE_REPORT_WINDOW_SECONDS,
+      maxAttempts: PAGE_REPORT_LIMIT_PER_WINDOW,
+    });
+    // The ceiling answers like a report taken. A counter that could not
+    // count is the server failing, and waiting works.
+    if (!decision.allowed) return decision.reason === "limit" ? "received" : "failed";
+
+    const { data, error } = await getSupabaseClient("serviceRole")
+      .schema("partner")
+      .rpc("report_public_page_as", { p_name: name, p_field: field });
+    if (error) {
+      // 22023: a field the page has not got, an empty bio. Same answer as a name without a page.
+      if (error.code === "22023") return "received";
+      console.error("partner.report_public_page_as:", error.code || error.message);
+      return "failed";
+    }
+    if (isObject(data) && (data.state === "reported" || data.state === "not_found")) return "received";
+    console.error("partner.report_public_page_as: unknown answer");
+    return "failed";
+  } catch (err) {
+    console.error("partner.report_public_page_as failed:", err instanceof Error ? err.message : "unknown");
+    return "failed";
+  }
+}

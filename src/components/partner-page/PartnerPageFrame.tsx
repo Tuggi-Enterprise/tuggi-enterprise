@@ -23,6 +23,8 @@ interface PartnerPageFrameProps {
   aside?: ReactNode;
   /** The blocks between the first fold and "how it works". */
   children?: ReactNode;
+  /** First link of the footer, before Terms and Privacy: "report this profile" on a creator's page. */
+  footerAction?: ReactNode;
 }
 
 /**
@@ -33,8 +35,9 @@ interface PartnerPageFrameProps {
  *
  * Server-rendered: everything that decides is in the HTML (spec §7.2).
  */
-export async function PartnerPageFrame({ locale, kind, path, hero, aside, children }: PartnerPageFrameProps) {
+export async function PartnerPageFrame({ locale, kind, path, hero, aside, children, footerAction }: PartnerPageFrameProps) {
   const t = await getTranslations({ locale, namespace: "PartnerPage" });
+  const tFooter = await getTranslations({ locale, namespace: "Footer" });
 
   return (
     <main data-lp-chrome="off" data-partner-page={kind} className="bg-white text-tuggi-dark">
@@ -79,8 +82,26 @@ export async function PartnerPageFrame({ locale, kind, path, hero, aside, childr
         </div>
       </section>
 
+      {/* Not a <footer>: the global stylesheet hides every footer on a page with data-lp-chrome="off". */}
       <div className="mx-auto max-w-6xl px-5 py-6 pb-28 md:pb-6 text-xs text-tuggi-slate">
-        <p data-testid="partner-page-address">{`tuggi.app${path}`}</p>
+        <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
+          <p data-testid="partner-page-address">{`tuggi.app${path}`}</p>
+          <div data-testid="partner-page-footer-links" className="flex flex-wrap items-center gap-x-2 gap-y-1">
+            {footerAction && (
+              <>
+                {footerAction}
+                <span aria-hidden="true">·</span>
+              </>
+            )}
+            <Link href="/trust-center/terms-of-use" className="underline-offset-4 hover:underline hover:text-tuggi-dark">
+              {tFooter("terms")}
+            </Link>
+            <span aria-hidden="true">·</span>
+            <Link href="/trust-center/privacy-policy" className="underline-offset-4 hover:underline hover:text-tuggi-dark">
+              {tFooter("privacy")}
+            </Link>
+          </div>
+        </div>
         <p className="mt-2">{t("storeLegal")}</p>
       </div>
 

@@ -1030,6 +1030,15 @@
     "partnerLead": "Scarica Tuggi e ascolta la storia dei luoghi vicini, a piedi o in auto.",
     "ctaPartner": "Ascolta nell'app",
     "storyTitle": "La storia",
-    "stopLabel": "Tappa {number}"
+    "stopLabel": "Tappa {number}",
+    "report": "Segnala questo profilo",
+    "reportTitle": "Cosa c'è di sbagliato in questo profilo?",
+    "reportOptionName": "Il nome",
+    "reportOptionNickname": "La @",
+    "reportOptionBio": "La bio",
+    "reportSend": "Invia",
+    "reportReceived": "Ricevuto. Il team di Tuggi darà un'occhiata.",
+    "reportFailed": "Non siamo riusciti a inviarla. Riprova.",
+    "reportClose": "Chiudi"
   }
 }

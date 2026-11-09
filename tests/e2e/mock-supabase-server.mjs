@@ -487,7 +487,32 @@ const PUBLIC_PAGE_FIXTURES = {
   "e2e-antiga": { state: "redirect", to: "e2e.criadora", reason: "previous_name", permanent: true },
   // A place's printed slug that is not its client's: the kit QR goes here (#1147).
   "e2e-local-impresso": { state: "redirect", to: "e2e-sem-logo", reason: "place_slug", permanent: true },
+  // A creator whose report the database fails to take: REPORT_FAILS below.
+  "e2e-criador-instavel": {
+    state: "page",
+    kind: "creator",
+    client_id: "7d7d7d7d-7d7d-4d7d-8d7d-7d7d7d7d7d7d",
+    name: "e2e-criador-instavel",
+    display_name: "Davi Rocha",
+    photo_key: null,
+    verified: false,
+    bio: null,
+    routes: [],
+    discovered_pois: [],
+  },
 };
+
+/**
+ * `partner.report_public_page_as` (#1141, contract identidade-publica.md,
+ * "Denúncia"): only a creator's page, by its recorded name, is reported; every
+ * other name is `{"state":"not_found"}` and a redirect is not followed. A field
+ * outside the list, or the bio of a page without one, is 22023. Every call is
+ * kept, readable at `GET /__page-reports?name=`.
+ */
+const REPORT_FIELDS = new Set(["display_name", "nickname", "bio"]);
+const REPORT_FAILS = new Set(["e2e-criador-instavel"]);
+const pageReports = [];
+const reportCounts = new Map();
 
 /** Every `partner.record_page_visit` call, in order: `{ client_id, via }`. */
 const pageVisits = [];
@@ -888,6 +913,49 @@ const server = http.createServer((req, res) => {
           : null;
       sendJson(res, 200, PUBLIC_PAGE_FIXTURES[key] ?? approved ?? { state: "not_found" });
     });
+    return;
+  }
+
+  if (url.pathname === "/rest/v1/rpc/report_public_page_as" && req.method === "POST") {
+    readBody(req).then((raw) => {
+      let body = {};
+      try {
+        body = JSON.parse(raw || "{}");
+      } catch {
+        // Malformed body: recorded as-is so the spec sees it.
+      }
+      const name = String(body.p_name ?? "").replace(/^@/, "");
+      const field = String(body.p_field ?? "");
+      pageReports.push({ name, field });
+      if (REPORT_FAILS.has(name)) {
+        sendJson(res, 503, { code: "57P01", message: "terminating connection due to administrator command" });
+        return;
+      }
+      if (!REPORT_FIELDS.has(field)) {
+        sendJson(res, 400, { code: "22023", message: "unknown field" });
+        return;
+      }
+      const fixture = PUBLIC_PAGE_FIXTURES[name];
+      if (fixture?.state !== "page" || fixture.kind !== "creator") {
+        sendJson(res, 200, { state: "not_found" });
+        return;
+      }
+      // The @ is the page's name in the resolver's answer.
+      if (!fixture[field === "nickname" ? "name" : field]) {
+        sendJson(res, 400, { code: "22023", message: "empty field" });
+        return;
+      }
+      const key = `${name}:${field}`;
+      const reportsCount = (reportCounts.get(key) ?? 0) + 1;
+      reportCounts.set(key, reportsCount);
+      sendJson(res, 200, { state: "reported", report_id: 9000 + pageReports.length, reports_count: reportsCount });
+    });
+    return;
+  }
+
+  if (url.pathname === "/__page-reports" && req.method === "GET") {
+    const name = url.searchParams.get("name");
+    sendJson(res, 200, { rows: name ? pageReports.filter((r) => r.name === name) : pageReports });
     return;
   }
 
