@@ -70,7 +70,8 @@
     "updates": "Aggiornamenti",
     "audioTours": "Audioguide",
     "rights": "Tutti i diritti riservati.",
-    "cookiePreferences": "Preferenze cookie"
+    "cookiePreferences": "Preferenze cookie",
+    "licenses": "Licenze di terze parti"
   },
   "Home": {
     "FAQ": {
@@ -422,7 +423,8 @@
       "privacy": "Informativa sulla Privacy",
       "deletion": "Cancellazione dei Dati",
       "security": "SLA di Sicurezza",
-      "accessibility": "Accessibilità e Inclusione"
+      "accessibility": "Accessibilità e Inclusione",
+      "licenses": "Licenze di terze parti"
     },
     "Terms": {
       "title": "Termini di Utilizzo",
@@ -574,6 +576,17 @@
       "s3Item2": "<strong>Impegno:</strong> Analizziamo ogni segnalazione con priorità tecnica per garantire che TUGGI continui a essere il copilota culturale per tutti, senza eccezioni.",
       "contactIntro": "Per segnalare una barriera, scrivi a:",
       "contactEmail": "suporte@tuggi.app"
+    },
+    "Licenses": {
+      "title": "Licenze di terze parti",
+      "subtitle": "Crediti delle opere che usiamo",
+      "intro": "Tuggi usa opere di terze parti pubblicate con licenza aperta. Eccole, con i crediti che le loro licenze chiedono.",
+      "ldnoobwTitle": "List of Dirty, Naughty, Obscene, and Otherwise Bad Words",
+      "ldnoobwAuthor": "Autore: Shutterstock, Inc., come dichiara il repository dell'opera.",
+      "ldnoobwUse": "Usiamo questa lista nel filtro che rifiuta nomi e @ offensivi nell'app.",
+      "ldnoobwChanges": "La lista è stata modificata: abbiamo normalizzato i termini e aggiunto una nostra lista.",
+      "repositoryLink": "Repository dell'opera",
+      "licenseLink": "Licenza Creative Commons Attribuzione 4.0 (CC BY 4.0)"
     }
   },
   "CookieBanner": {
@@ -639,7 +652,9 @@
     "securityDescription": "I nostri impegni sulla sicurezza",
     "accessibilityTitle": "Accessibilità e Inclusione",
     "accessibilityDescription": "Politiche di accessibilità",
-    "homeOgImageAlt": "TUGGI: audioguida di viaggio autoguidata"
+    "homeOgImageAlt": "TUGGI: audioguida di viaggio autoguidata",
+    "licensesTitle": "Licenze di terze parti",
+    "licensesDescription": "Le opere di terze parti che Tuggi usa e le loro licenze."
   },
   "SEO_CITY_OS": {
     "title": "Audioguide Multilingue per Destinazioni Intelligenti",

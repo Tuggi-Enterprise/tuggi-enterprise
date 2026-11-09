@@ -70,7 +70,8 @@
     "updates": "Updates",
     "audioTours": "Audio Tours",
     "rights": "All rights reserved.",
-    "cookiePreferences": "Cookie preferences"
+    "cookiePreferences": "Cookie preferences",
+    "licenses": "Third-party licenses"
   },
   "Home": {
     "FAQ": {
@@ -422,7 +423,8 @@
       "privacy": "Privacy Policy",
       "deletion": "Data Deletion",
       "security": "Security SLA",
-      "accessibility": "Accessibility & Inclusion"
+      "accessibility": "Accessibility & Inclusion",
+      "licenses": "Third-party licenses"
     },
     "Terms": {
       "title": "Terms of Use",
@@ -574,6 +576,17 @@
       "s3Item2": "<strong>Commitment:</strong> We analyze each report with technical priority to ensure that TUGGI continues to be the cultural co-pilot for everyone, without exception.",
       "contactIntro": "To report a barrier, write to:",
       "contactEmail": "suporte@tuggi.app"
+    },
+    "Licenses": {
+      "title": "Third-party licenses",
+      "subtitle": "Credits for the works we use",
+      "intro": "Tuggi uses third-party works published under open licenses. Here they are, with the credits their licenses ask for.",
+      "ldnoobwTitle": "List of Dirty, Naughty, Obscene, and Otherwise Bad Words",
+      "ldnoobwAuthor": "By Shutterstock, Inc., as the work's repository states.",
+      "ldnoobwUse": "We use this list in the filter that refuses offensive names and @ handles in the app.",
+      "ldnoobwChanges": "The list was modified: we normalized the terms and added a list of our own.",
+      "repositoryLink": "Repository of the work",
+      "licenseLink": "Creative Commons Attribution 4.0 license (CC BY 4.0)"
     }
   },
   "CookieBanner": {
@@ -639,7 +652,9 @@
     "securityDescription": "Our security commitments",
     "accessibilityTitle": "Accessibility & Inclusion",
     "accessibilityDescription": "Accessibility policies",
-    "homeOgImageAlt": "TUGGI: self-guided audio travel guide"
+    "homeOgImageAlt": "TUGGI: self-guided audio travel guide",
+    "licensesTitle": "Third-party licenses",
+    "licensesDescription": "The third-party works Tuggi uses and their licenses."
   },
   "SEO_CITY_OS": {
     "title": "Multilingual Audio Guides for Smart Destinations",

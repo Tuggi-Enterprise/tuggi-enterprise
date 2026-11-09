@@ -67,6 +67,7 @@ const SHARED_SLUG_ROUTES = [
   "/trust-center/accessibility",
   "/trust-center/data-deletion",
   "/trust-center/security-sla",
+  "/trust-center/third-party-licenses",
 ] as const;
 
 const sharedSlugPathnames = Object.fromEntries(

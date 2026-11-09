@@ -61,6 +61,7 @@ export default async function TrustCenterLayout({
           <Link href="/trust-center/data-deletion" className="text-tuggi-dark hover:text-tuggi-primary-text block py-2 font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text rounded-sm">{t("deletion")}</Link>
           <Link href="/trust-center/security-sla" className="text-tuggi-dark hover:text-tuggi-primary-text block py-2 font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text rounded-sm">{t("security")}</Link>
           <Link href="/trust-center/accessibility" className="text-tuggi-dark hover:text-tuggi-primary-text block py-2 font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text rounded-sm">{t("accessibility")}</Link>
+          <Link href="/trust-center/third-party-licenses" className="text-tuggi-dark hover:text-tuggi-primary-text block py-2 font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-primary-text rounded-sm">{t("licenses")}</Link>
         </nav>
       </aside>
       <section className="flex-1 bg-white p-8 md:p-12 rounded-md shadow-sm border border-gray-200 text-tuggi-dark">
