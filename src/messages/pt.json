@@ -71,7 +71,7 @@
     "audioTours": "Roteiros de Áudio",
     "rights": "Todos os direitos reservados.",
     "cookiePreferences": "Preferências de cookies",
-    "licenses": "Licenças de terceiros"
+    "licenses": "Créditos de terceiros"
   },
   "Home": {
     "FAQ": {
@@ -424,7 +424,7 @@
       "deletion": "Exclusão de Dados",
       "security": "SLA de Segurança",
       "accessibility": "Acessibilidade e Inclusão",
-      "licenses": "Licenças de terceiros"
+      "licenses": "Créditos de terceiros"
     },
     "Terms": {
       "title": "Termos de Uso",
@@ -475,7 +475,7 @@
       "intro": "A TUGGI Technologies valoriza a sua privacidade. Esta política descreve como coletamos, usamos, protegemos e tratamos os seus dados, em estrita conformidade com a Lei Geral de Proteção de Dados (LGPD - Brasil) e o Regulamento Geral sobre a Proteção de Dados (GDPR - União Europeia).",
       "s1Title": "1. Dados que Coletamos",
       "s1Intro": "Para que o TUGGI funcione como seu copiloto cultural, coletamos as informações abaixo. A lista não para no aplicativo. Ela inclui também os dados de quem procura a Tuggi para fazer uma parceria, mesmo sem nunca ter tido conta.",
-      "s1Item1": "<strong>Dados de Conta e Autenticação:</strong> Ao criar uma conta via e-mail ou provedores parceiros (Google, Apple, Facebook), recebemos dados básicos de perfil (Nome, E-mail e ID de usuário gerado pela nossa infraestrutura segura do Supabase).",
+      "s1Item1": "<strong>Dados de Conta e Autenticação:</strong> Ao criar uma conta via e-mail ou pela sua conta Google ou Apple, recebemos dados básicos de perfil (Nome, E-mail e ID de usuário gerado pela nossa infraestrutura segura do Supabase).",
       "s1Item2": "<strong>Dados de Localização:</strong> Com a sua permissão, o aplicativo lê a posição do seu aparelho e a envia para os nossos servidores a cada 30 segundos, com o aplicativo na tela ou em segundo plano, com o guia ligado ou desligado, no iPhone e no Android, tanto para quem tem conta quanto para quem usa como convidado. O envio para quando você encerra o aplicativo e volta quando você o abre de novo. A permissão que pedimos é a de localização durante o uso do aplicativo. Enquanto o GPS não responde, estimamos a sua cidade pelo endereço de IP da conexão, por meio do serviço ipapi.co. Cada posição fica guardada junto da sua conta, com data e hora, e a seção 2 diz para que ela serve.",
       "s1Item3": "<strong>Dados de Uso e Telemetria:</strong> Coletamos informações sobre interações no aplicativo, como quais áudios foram reproduzidos, idiomas selecionados e métricas de estabilidade do sistema.",
       "s1Item4": "<strong>Dados de Contato Comercial:</strong> Quando você deixa um contato no formulário da página de parcerias deste site, guardamos o que você escreveu ali. São o seu nome, o nome do seu negócio, o tipo de negócio e o canal que você escolheu, WhatsApp ou e-mail. Guardamos também o idioma em que a página estava. A cidade aproximada vem da sua conexão, e junto com o seu contato guardamos essa cidade, não o endereço de IP. Usamos esses dados para uma finalidade só, que é falar com você sobre a parceria, por ligação telefônica ou por mensagem. São no máximo 4 tentativas de contato, dentro de 14 dias corridos a partir do envio. O ciclo termina no que vier primeiro, e depois dele não usamos mais o seu contato para isso. Para retomar, basta enviar o formulário de novo. Nunca usamos esse contato para newsletter, lista de transmissão ou campanha de marketing. Você pode pedir a remoção quando quiser, e a seção 5 diz como.",
@@ -497,10 +497,10 @@
       "s2Item3": "<strong>Sugestões por notificação:</strong> se as notificações do Tuggi estiverem ligadas, usamos a sua última posição registrada para escolher o que as notificações de sugestão trazem: um evento, um lugar ou uma rota perto de você, ou a cidade onde você está. Isso vale também para quem usa o aplicativo como convidado. A base legal é a execução do serviço que você pediu ao ligar as notificações (LGPD, art. 7º, V; GDPR, art. 6(1)(b)). Desligar as notificações no aplicativo ou no sistema encerra esse uso na hora.",
       "s3Title": "3. Compartilhamento de Dados",
       "s3Item1": "<strong>Não vendemos seus dados.</strong> A TUGGI não comercializa Dados Pessoais Identificáveis (PII) com corretores de dados (data brokers) ou redes de anúncios.",
-      "s3Item2": "Além dos casos descritos nesta política, compartilhamos dados só com os fornecedores que fazem o serviço funcionar. O Supabase guarda o banco de dados e a autenticação, inclusive o seu histórico de posição, e o Google Cloud roda o motor de voz que narra os áudios; os dois tratam os dados em nosso nome, sob acordos de confidencialidade. O Firebase Cloud Messaging, do Google, entrega as notificações e recebe o texto de cada uma, que pode trazer o nome da sua cidade e de um evento, lugar ou rota perto de você, mas nunca a sua coordenada. O ipapi.co recebe o endereço de IP da sua conexão e nos devolve a cidade estimada, enquanto o GPS não responde. As fotos das anotações do Diário de bordo vão ao Google Cloud Vision, que aponta à nossa curadoria a imagem imprópria sem gravar a foto nem usá-la para treinar modelos, e o texto das anotações e do roteiro vai ao Gemini, do Google, que o traduz e filtra.",
+      "s3Item2": "Além dos casos descritos nesta política, compartilhamos dados só com os fornecedores que fazem o serviço funcionar. O Supabase guarda o banco de dados e a autenticação, inclusive o seu histórico de posição, e o Google Cloud roda o motor de voz que narra os áudios; os dois tratam os dados em nosso nome, sob acordos de confidencialidade. O Firebase Cloud Messaging, do Google, entrega as notificações e recebe o texto de cada uma, que pode trazer o nome da sua cidade e de um evento, lugar ou rota perto de você, mas nunca a sua coordenada. O ipapi.co recebe o endereço de IP da sua conexão e nos devolve a cidade estimada, enquanto o GPS não responde. As fotos das anotações do Diário de bordo vão ao Google Cloud Vision, que aponta à nossa curadoria a imagem imprópria sem gravar a foto nem usá-la para treinar modelos, e o texto das anotações e do roteiro vai ao Gemini, do Google, que o traduz e filtra. O nome que aparece no seu perfil, o nome de usuário (@) e a bio vão à moderação automática da OpenAI, só para conferir se o texto é ofensivo. Vai apenas o texto de cada campo, sem o identificador da sua conta nem outro dado seu.",
       "s3Item3": "<strong>O Identificador da Visita ao Parceiro:</strong> No Android, esse identificador viaja dentro do link da Google Play, então o Google o recebe quando você vai instalar o aplicativo pela loja. Ele é um código do nosso lado, e não leva o seu nome nem o seu e-mail. No iPhone esse caminho não existe. Lá copiamos o mesmo identificador para a área de transferência do seu aparelho, no instante em que você toca no botão, para o aplicativo ler quando abrir pela primeira vez.",
       "s3Item4": "<strong>As Ferramentas de Medição:</strong> Quando você aceita os cookies, o Google (Google Analytics), a Microsoft (Microsoft Clarity) e a Apollo recebem os dados descritos na seção 1, cada um só dos endereços em que roda.",
-      "s3Item5": "<strong>O Envio dos E-mails:</strong> Quem entrega os e-mails que enviamos é o Resend, um serviço contratado para isso, que atua como operador em nosso nome. Ele recebe o seu endereço de e-mail e o conteúdo de cada mensagem.",
+      "s3Item5": "<strong>O Envio dos E-mails:</strong> Quem entrega os e-mails que enviamos é o Resend, que atua como operador em nosso nome. Ele recebe o seu endereço de e-mail e o conteúdo de cada mensagem.",
       "s3Item6": "<strong>Os Anúncios do Tuggi Fora do Aplicativo:</strong> Se você der permissão no aplicativo, dois parceiros recebem dados para mostrar anúncios do Tuggi fora dele (remarketing). O Google Analytics do aplicativo envia sinais de anúncio ao Google Ads, e o SDK da Meta, embarcado no aplicativo, envia à Meta os eventos de uso e o identificador de anúncio do seu aparelho, para anúncios do Tuggi no Instagram e no Facebook. Sem a permissão, nada disso vai para publicidade, e dentro do aplicativo não há anúncio. Para mudar de ideia, use Preferências do App no aplicativo; no iPhone, a mudança é feita nos Ajustes do sistema.",
       "s4Title": "4. Segurança e Retenção",
       "s4Item1": "Empregamos criptografia de ponta a ponta em trânsito e em repouso. O acesso aos bancos de dados corporativos e do painel City OS é protegido por Controle de Acesso Baseado em Funções (RBAC), assegurando o isolamento dos dados.",
@@ -578,15 +578,15 @@
       "contactEmail": "suporte@tuggi.app"
     },
     "Licenses": {
-      "title": "Licenças de terceiros",
-      "subtitle": "Créditos das obras que usamos",
-      "intro": "O Tuggi usa obras de terceiros publicadas sob licença aberta. Aqui estão elas, com os créditos que as licenças pedem.",
+      "title": "Créditos de terceiros",
+      "subtitle": "Obras de outros autores que usamos",
+      "intro": "O Tuggi usa obras que os autores liberaram para uso livre, desde que recebam o crédito. Aqui está o crédito de cada uma.",
       "ldnoobwTitle": "List of Dirty, Naughty, Obscene, and Otherwise Bad Words",
-      "ldnoobwAuthor": "Autoria: Shutterstock, Inc., como declara o repositório da obra.",
-      "ldnoobwUse": "Usamos esta lista no filtro que recusa nomes e @ ofensivos no app.",
-      "ldnoobwChanges": "A lista foi modificada: normalizamos os termos e juntamos a eles uma lista nossa.",
+      "ldnoobwAuthor": "© 2012-2020 Shutterstock, Inc.",
+      "ldnoobwUse": "Usamos esta lista no filtro que recusa nomes, nomes de usuário e bios ofensivos no app.",
+      "ldnoobwChanges": "A lista foi modificada: padronizamos a escrita dos termos e somamos a ela uma lista nossa.",
       "repositoryLink": "Repositório da obra",
-      "licenseLink": "Licença Creative Commons Atribuição 4.0 (CC BY 4.0)"
+      "licenseLink": "Creative Commons Atribuição 4.0 Internacional (CC BY 4.0)"
     }
   },
   "CookieBanner": {
@@ -653,8 +653,8 @@
     "accessibilityTitle": "Acessibilidade e Inclusão",
     "accessibilityDescription": "Políticas de acessibilidade",
     "homeOgImageAlt": "TUGGI: guia de viagem em áudio autoguiado",
-    "licensesTitle": "Licenças de terceiros",
-    "licensesDescription": "As obras de terceiros que o Tuggi usa e as licenças delas."
+    "licensesTitle": "Créditos de terceiros",
+    "licensesDescription": "O crédito das obras de outros autores que o Tuggi usa."
   },
   "SEO_CITY_OS": {
     "title": "Áudio-guias Multilíngues para Destinos Inteligentes",
@@ -1002,7 +1002,7 @@
     "verifiedA11y": "Verificado pelo Tuggi",
     "statRoutes": "{count, plural, one {roteiro} other {roteiros}}",
     "statDiscovered": "{count, plural, one {lugar descoberto} other {lugares descobertos}}",
-    "statListeners": "{count, plural, one {pessoa ouviu} other {pessoas ouviram}}",
+    "statListeners": "{count, plural, one {ouvinte} other {ouvintes}}",
     "ctaCreator": "Ouvir estes roteiros no app",
     "seeRoutes": "Ver os roteiros",
     "featuredRoute": "Roteiro em destaque",
@@ -1013,11 +1013,12 @@
     "discoveredSub": "Lugares que entraram no Tuggi por este perfil, com a história contada no app.",
     "discoveredBy": "Descoberto por {name}",
     "step1Title": "Baixe o Tuggi",
-    "step1Text": "Grátis no iPhone e no Android. Depois, volte aqui e toque em um roteiro para abrir direto no app.",
+    "step1Text": "Grátis no iPhone e no Android.",
+    "step1TextCreator": "Grátis no iPhone e no Android. Depois, volte aqui e toque em um roteiro para abrir direto no app.",
     "step2Title": "Escolha o que ouvir",
     "step2Text": "Um roteiro ou os lugares perto de você. O Tuggi roda junto com o Google Maps e o Waze, sem trocar o seu mapa.",
     "step3Title": "Ande e ouça",
-    "step3Text": "Cada parada tem a sua história, contada enquanto você anda ou dirige.",
+    "step3Text": "Cada lugar tem a sua história, contada enquanto você anda ou dirige.",
     "download": "Baixar o Tuggi",
     "stickySub": "Grátis no iPhone e no Android",
     "storeLegal": "Apple e o logotipo da Apple são marcas da Apple Inc. Google Play e o logotipo do Google Play são marcas da Google LLC.",
@@ -1026,7 +1027,7 @@
     "notFoundCta": "Baixar o Tuggi",
     "notFoundHome": "Ir para o início",
     "badgePartner": "Parceiro do Tuggi",
-    "partnerLead": "Baixe o Tuggi e ouça as histórias deste lugar e da região, a pé ou de carro.",
+    "partnerLead": "Baixe o Tuggi e ouça a história dos lugares por perto, a pé ou de carro.",
     "ctaPartner": "Ouvir no app",
     "storyTitle": "A história",
     "stopLabel": "Parada {number}"

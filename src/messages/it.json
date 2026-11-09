@@ -71,7 +71,7 @@
     "audioTours": "Audioguide",
     "rights": "Tutti i diritti riservati.",
     "cookiePreferences": "Preferenze cookie",
-    "licenses": "Licenze di terze parti"
+    "licenses": "Crediti di terze parti"
   },
   "Home": {
     "FAQ": {
@@ -424,7 +424,7 @@
       "deletion": "Cancellazione dei Dati",
       "security": "SLA di Sicurezza",
       "accessibility": "Accessibilità e Inclusione",
-      "licenses": "Licenze di terze parti"
+      "licenses": "Crediti di terze parti"
     },
     "Terms": {
       "title": "Termini di Utilizzo",
@@ -475,7 +475,7 @@
       "intro": "TUGGI Technologies tiene alla tua privacy. La presente informativa descrive come raccogliamo, usiamo, proteggiamo e gestiamo i tuoi dati, nel pieno rispetto della Legge Generale sulla Protezione dei Dati (LGPD - Brasile) e del Regolamento Generale sulla Protezione dei Dati (GDPR - Unione Europea).",
       "s1Title": "1. Dati che Raccogliamo",
       "s1Intro": "Affinché TUGGI funzioni come il tuo copilota culturale, raccogliamo le informazioni qui sotto. L'elenco non si ferma all'app. Comprende anche i dati di chi contatta Tuggi per una partnership, anche senza aver mai avuto un account.",
-      "s1Item1": "<strong>Dati di Account e Autenticazione:</strong> Quando crei un account tramite email o provider partner (Google, Apple, Facebook), riceviamo dati di profilo di base (Nome, Email e ID utente generato dalla nostra infrastruttura sicura Supabase).",
+      "s1Item1": "<strong>Dati di Account e Autenticazione:</strong> Quando crei un account tramite email o il tuo account Google o Apple, riceviamo dati di profilo di base (Nome, Email e ID utente generato dalla nostra infrastruttura sicura Supabase).",
       "s1Item2": "<strong>Dati di Posizione:</strong> Con il tuo permesso, l'app legge la posizione del tuo dispositivo e la invia ai nostri server ogni 30 secondi, con l'app sullo schermo o in background, con la guida accesa o spenta, su iPhone e Android, sia che tu abbia un account sia che la usi come ospite. L'invio si ferma quando chiudi l'app e riprende quando la riapri. Il permesso che chiediamo è quello di posizione durante l'uso dell'app. Finché il GPS non risponde, stimiamo la tua città dall'indirizzo IP della connessione, tramite il servizio ipapi.co. Ogni posizione resta salvata insieme al tuo account, con data e ora, e la sezione 2 dice a che cosa serve.",
       "s1Item3": "<strong>Dati di Utilizzo e Telemetria:</strong> Raccogliamo informazioni sulle interazioni con l'applicazione, come quali audio sono stati riprodotti, le lingue selezionate e le metriche di stabilità del sistema.",
       "s1Item4": "<strong>Dati di Contatto Commerciale:</strong> Quando lasci un contatto nel modulo della pagina partnership di questo sito, conserviamo quello che hai scritto lì. Sono il tuo nome, il nome della tua attività, il tipo di attività e il canale che hai scelto, numero WhatsApp o email. Conserviamo anche la lingua in cui era la pagina. La città approssimativa arriva dalla tua connessione, e insieme al tuo contatto conserviamo quella città, non l'indirizzo IP. Usiamo questi dati per una sola finalità, che è parlare con te della partnership, con una telefonata o con un messaggio. Sono al massimo 4 tentativi di contatto, entro 14 giorni dall'invio. Il ciclo si chiude con quello che arriva prima, e dopo non usiamo più il tuo contatto per questo. Per riprendere, basta inviare di nuovo il modulo. Non usiamo mai questo contatto per newsletter, liste broadcast o campagne di marketing. Puoi chiederci di rimuoverlo quando vuoi, e la sezione 5 spiega come.",
@@ -483,7 +483,7 @@
       "s1Item6": "<strong>La Storia del Luogo:</strong> In quello stesso modulo facciamo fino a quattro domande sulla storia del luogo, e le risposte sono testo libero. Non sono materiale interno e non sono riservate. Sono la materia prima del testo che l'app può raccontare a chi viaggia, riscritto da noi e tradotto nelle lingue dell'app. Quindi scrivi lì solo quello che accetti di vedere pubblicato, compreso il nome di qualcuno che citi.",
       "s1Item7": "<strong>Registro dell'Accettazione del Contratto:</strong> Quando qualcuno accetta il contratto di partnership sullo schermo, conserviamo il registro di quell'atto. Contiene il nome e il ruolo di chi ha accettato, l'email a cui abbiamo mandato il link, la data e l'ora del nostro server, l'indirizzo IP della connessione, l'identificazione che dichiara il browser, il codice del documento mostrato e la versione del modello. Qui l'indirizzo IP resta conservato così come è, e non trasformato in un codice, perché la finalità è un'altra. Questo registro serve a una cosa sola, cioè provare chi ha accettato il contratto, che cosa ha accettato, quando e da dove. Non alimenta nessuna metrica, non serve per il contatto, e resta conservato come prova del contratto.",
       "s1Item8": "<strong>Visita alla Pagina di un Partner:</strong> Quando arrivi alla pagina di un partner su questo sito, con un Codice QR o con un suo link, registriamo quella visita. Se ti colleghi da un paese che non sia il Brasile o gli Stati Uniti, quel registro nasce solo dopo che accetti i cookie su questo sito. Finché non accetti, non conserviamo nulla di quella visita e non scriviamo cookie sul tuo dispositivo. Conserviamo l'indirizzo IP della tua connessione, l'identificazione che dichiara il browser, la lingua del browser e il fuso orario del dispositivo. Conserviamo anche quale partner hai visitato e l'ora. Insieme a questo scriviamo un cookie di questo stesso sito, chiamato tuggi_attr, che dura 30 giorni e conserva l'identificativo del partner, l'identificativo di quella visita e la data. Questo registro serve a una sola finalità, cioè sapere quale partner ti ha portato all'app, perché è così che paghiamo quel partner. Non alimenta pubblicità e non serve per il contatto. L'indirizzo IP e l'identificazione del browser escono da quel registro dopo 48 ore, e il registro intero viene cancellato dopo 30 giorni, con una routine che gira ogni giorno. Quando quel registro esiste e tocchi un pulsante che porta allo store, l'identificativo di quella visita viaggia dentro il link, e la sezione 3 racconta che cosa succede con lui.",
-      "s1Item9": "<strong>Data di Nascita:</strong> Nel profilo dell'app puoi indicare la tua data di nascita. Rispondere è facoltativo, e lasciare il campo vuoto non blocca nulla: l'unica cosa che questa data apre è l'ingresso in classifica. Serve a due finalità, e a nessun'altra. La prima è verificare l'età minima di ingresso in classifica, che è di 14 anni. La seconda è ricavare la tua fascia d'età, che entra nel quadro di pubblico con cui decidiamo quali contenuti produrre in seguito: quel quadro legge la fascia, mai la data. Se dalla data risultano meno di 14 anni, il profilo resta fuori dalla classifica e non cambia nient'altro: l'account, gli audio e gli acquisti restano identici. La tua data di nascita non è mostrata ad altri utenti, e non modifica prezzi, offerte né ciò che puoi acquistare.",
+      "s1Item9": "<strong>Data di Nascita:</strong> Nel profilo dell'app puoi indicare la tua data di nascita. Rispondere è facoltativo, e lasciare il campo vuoto non blocca nulla: l'unica cosa che questa data apre è l'ingresso in classifica. Serve a due finalità, e a nessun'altra. La prima è verificare l'età minima di ingresso in classifica, che è di 14 anni. La seconda è ricavare la tua fascia d'età, che entra nel quadro di pubblico con cui decidiamo quali contenuti produrre in seguito: quel quadro legge la fascia, mai la data. Se dalla data risultano meno di 14 anni, il profilo resta fuori dalla classifica e non cambia nient'altro: l'account, gli audio e ciò che hai comprato restano identici. La tua data di nascita non è mostrata ad altri utenti, e non modifica prezzi, offerte né ciò che puoi comprare.",
       "s1Item15": "<strong>Lingue Parlate:</strong> Nel profilo dell'app puoi indicare le lingue che parli. Rispondere è facoltativo, e lasciare il campo vuoto non blocca nulla. La lingua che usi nell'app, o quelle che hai indicato nel profilo, servono a due finalità. La prima è il quadro di pubblico con cui decidiamo quali contenuti produrre in seguito, e in quali lingue. La seconda è il report che mostriamo al titolare di un locale partner: lì compare quante persone parlano ciascuna lingua, solo in totali, e il titolare del locale non vede chi sei né da dove vieni.",
       "s1Item16": "<strong>Richiesta per Diventare Partner dall'App:</strong> Nel profilo dell'app puoi chiedere di diventare partner di Tuggi come creator, influencer o autista. Nella richiesta indichi il tipo di partner, il tuo nome completo, il tuo CPF o il CNPJ della tua azienda (i codici fiscali brasiliani), il tuo WhatsApp, un'email di contatto, dove pubblichi e la città o la regione in cui lavori. Con il CNPJ indichi anche la ragione sociale e il CPF di chi rappresenta l'azienda, che è chi accetta i termini. Dopo l'invio accetti i termini della partnership in una pagina del Portal Locais, e conserviamo il registro di quell'accettazione, con la versione e il codice dei termini mostrati, la data e l'ora del nostro server, l'indirizzo IP della connessione e l'identificazione che dichiara il browser. Usiamo questi dati per due cose: decidere la richiesta e, se viene approvata, rispettare i termini, il che include identificare il partner e pagare la commissione. La base giuridica è l'esecuzione del contratto che hai chiesto di stipulare con noi (LGPD, art. 7, V). Il tuo CPF e il tuo CNPJ non compaiono in nessuna pagina o schermata pubblica. La richiesta non approvata resta conservata finché esiste il tuo account e viene cancellata quando l'account viene eliminato. Se la richiesta viene approvata, la tua scheda di partner resta conservata finché i termini sono in vigore, anche se elimini l'account. Il registro dell'accettazione resta conservato come prova dei termini finché sono in vigore e, dopo, per il tempo necessario a esercitare diritti in un procedimento giudiziario, amministrativo o arbitrale (LGPD, artt. 7, VI, e 16).",
       "s1Item14": "<strong>Le Email che Inviamo:</strong> Usiamo l'email del tuo account per due tipi di messaggio. Il primo sono avvisi sul tuo account, quando un amico usa il tuo codice e guadagni ore, e quando le ore che hai guadagnato stanno per scadere. Questi avvisi partono solo quando non stai usando l'app, e la loro base giuridica è il nostro legittimo interesse ad avvisarti su ciò che è tuo. Il secondo sono novità e promemoria di Tuggi, compresa l'email della classifica, e arrivano solo a chi li ha autorizzati, spuntando la casella alla registrazione o accettando nell'app. La loro base giuridica è il tuo consenso, e la casella della registrazione parte non spuntata. Puoi smettere di ricevere entrambi i tipi, e la sezione 5 spiega come.",
@@ -497,10 +497,10 @@
       "s2Item3": "<strong>Suggerimenti tramite notifica:</strong> se le notifiche di Tuggi sono attive, usiamo la tua ultima posizione registrata per scegliere che cosa portano le notifiche di suggerimento: un evento, un luogo o un itinerario vicino a te, oppure la città in cui ti trovi. Vale anche per chi usa l'app come ospite. La base giuridica è l'esecuzione del servizio che hai richiesto attivando le notifiche (LGPD, art. 7, V; GDPR, art. 6(1)(b)). Disattivare le notifiche nell'app o nel sistema interrompe subito questo uso.",
       "s3Title": "3. Condivisione dei Dati",
       "s3Item1": "<strong>Non vendiamo i tuoi dati.</strong> TUGGI non commercia Informazioni di Identificazione Personale (PII) con data broker o reti pubblicitarie.",
-      "s3Item2": "Oltre ai casi descritti in questa informativa, condividiamo i dati solo con i fornitori che fanno funzionare il servizio. Supabase ospita il database e l'autenticazione, compresa la cronologia delle tue posizioni, e Google Cloud esegue il motore vocale che narra gli audio; entrambi trattano i dati per nostro conto, sotto accordi di riservatezza. Firebase Cloud Messaging, di Google, consegna le notifiche e riceve il testo di ciascuna, che può contenere il nome della tua città e di un evento, luogo o itinerario vicino a te, ma mai le tue coordinate. ipapi.co riceve l'indirizzo IP della tua connessione e ci restituisce la città stimata, finché il GPS non risponde. Le foto delle tue note di viaggio vanno a Google Cloud Vision, che segnala alla nostra curatela l'immagine inappropriata senza salvare la foto né usarla per addestrare modelli, e il testo delle note e dell'itinerario va a Gemini, di Google, che lo traduce e lo filtra.",
+      "s3Item2": "Oltre ai casi descritti in questa informativa, condividiamo i dati solo con i fornitori che fanno funzionare il servizio. Supabase ospita il database e l'autenticazione, compresa la cronologia delle tue posizioni, e Google Cloud esegue il motore vocale che narra gli audio; entrambi trattano i dati per nostro conto, sotto accordi di riservatezza. Firebase Cloud Messaging, di Google, consegna le notifiche e riceve il testo di ciascuna, che può contenere il nome della tua città e di un evento, luogo o itinerario vicino a te, ma mai le tue coordinate. ipapi.co riceve l'indirizzo IP della tua connessione e ci restituisce la città stimata, finché il GPS non risponde. Le foto delle tue note di viaggio vanno a Google Cloud Vision, che segnala alla nostra curatela l'immagine inappropriata senza salvare la foto né usarla per addestrare modelli, e il testo delle note e dell'itinerario va a Gemini, di Google, che lo traduce e lo filtra. Il nome che appare nel tuo profilo, il tuo nome utente (@) e la tua bio vanno alla moderazione automatica di OpenAI, solo per verificare se il testo è offensivo. Viene inviato solo il testo di ciascun campo, senza l'identificativo del tuo account né altri tuoi dati.",
       "s3Item3": "<strong>L'Identificativo della Visita al Partner:</strong> Su Android, quell'identificativo viaggia dentro il link di Google Play, quindi Google lo riceve quando vai a installare l'app dallo store. È un codice dalla nostra parte, e non porta il tuo nome né la tua email. Su iPhone quella strada non esiste. Lì copiamo lo stesso identificativo negli appunti del tuo dispositivo, nell'istante in cui tocchi il pulsante, perché l'app lo legga quando apre la prima volta.",
       "s3Item4": "<strong>Gli Strumenti di Misurazione:</strong> Quando accetti i cookie, Google (Google Analytics), Microsoft (Microsoft Clarity) e Apollo ricevono i dati descritti nella sezione 1, ciascuno solo dagli indirizzi in cui è attivo.",
-      "s3Item5": "<strong>L'Invio delle Email:</strong> Le email che inviamo vengono consegnate da Resend, un servizio incaricato di questo, che agisce come responsabile del trattamento per nostro conto. Riceve il tuo indirizzo email e il contenuto di ogni messaggio.",
+      "s3Item5": "<strong>L'Invio delle Email:</strong> Le email che inviamo vengono consegnate da Resend, che agisce come responsabile del trattamento per nostro conto. Riceve il tuo indirizzo email e il contenuto di ogni messaggio.",
       "s3Item6": "<strong>Gli Annunci di Tuggi Fuori dall'App:</strong> Se dai il permesso nell'app, due partner ricevono dati per mostrare annunci di Tuggi fuori dall'app (remarketing). Google Analytics dell'app invia segnali pubblicitari a Google Ads, e l'SDK di Meta, integrato nell'app, invia a Meta gli eventi di utilizzo e l'identificativo pubblicitario del tuo dispositivo, per annunci di Tuggi su Instagram e Facebook. Senza il permesso, niente di tutto questo va alla pubblicità, e nell'app non ci sono annunci. Per cambiare idea, usa Preferenze App nell'app; su iPhone, la modifica si fa nelle Impostazioni di sistema.",
       "s4Title": "4. Sicurezza e Conservazione",
       "s4Item1": "Impieghiamo la crittografia end-to-end in transito e a riposo. L'accesso ai database aziendali e al dashboard City OS è protetto da Controllo degli Accessi Basato sui Ruoli (RBAC), garantendo l'isolamento dei dati.",
@@ -578,15 +578,15 @@
       "contactEmail": "suporte@tuggi.app"
     },
     "Licenses": {
-      "title": "Licenze di terze parti",
-      "subtitle": "Crediti delle opere che usiamo",
-      "intro": "Tuggi usa opere di terze parti pubblicate con licenza aperta. Eccole, con i crediti che le loro licenze chiedono.",
+      "title": "Crediti di terze parti",
+      "subtitle": "Opere di altri autori che usiamo",
+      "intro": "Tuggi usa opere che i loro autori hanno reso libere da usare, a patto di ricevere il credito. Ecco il credito di ciascuna.",
       "ldnoobwTitle": "List of Dirty, Naughty, Obscene, and Otherwise Bad Words",
-      "ldnoobwAuthor": "Autore: Shutterstock, Inc., come dichiara il repository dell'opera.",
-      "ldnoobwUse": "Usiamo questa lista nel filtro che rifiuta nomi e @ offensivi nell'app.",
-      "ldnoobwChanges": "La lista è stata modificata: abbiamo normalizzato i termini e aggiunto una nostra lista.",
+      "ldnoobwAuthor": "© 2012-2020 Shutterstock, Inc.",
+      "ldnoobwUse": "Usiamo questa lista nel filtro che rifiuta nomi, nomi utente e bio offensivi nell'app.",
+      "ldnoobwChanges": "La lista è stata modificata: abbiamo uniformato la scrittura dei termini e aggiunto una nostra lista.",
       "repositoryLink": "Repository dell'opera",
-      "licenseLink": "Licenza Creative Commons Attribuzione 4.0 (CC BY 4.0)"
+      "licenseLink": "Creative Commons Attribuzione 4.0 Internazionale (CC BY 4.0)"
     }
   },
   "CookieBanner": {
@@ -653,8 +653,8 @@
     "accessibilityTitle": "Accessibilità e Inclusione",
     "accessibilityDescription": "Politiche di accessibilità",
     "homeOgImageAlt": "TUGGI: audioguida di viaggio autoguidata",
-    "licensesTitle": "Licenze di terze parti",
-    "licensesDescription": "Le opere di terze parti che Tuggi usa e le loro licenze."
+    "licensesTitle": "Crediti di terze parti",
+    "licensesDescription": "Il credito delle opere di altri autori che Tuggi usa."
   },
   "SEO_CITY_OS": {
     "title": "Audioguide Multilingue per Destinazioni Intelligenti",
@@ -1002,7 +1002,7 @@
     "verifiedA11y": "Verificato da Tuggi",
     "statRoutes": "{count, plural, one {itinerario} other {itinerari}}",
     "statDiscovered": "{count, plural, one {luogo scoperto} other {luoghi scoperti}}",
-    "statListeners": "{count, plural, one {persona ha ascoltato} other {persone hanno ascoltato}}",
+    "statListeners": "{count, plural, one {ascoltatore} other {ascoltatori}}",
     "ctaCreator": "Ascolta questi itinerari nell'app",
     "seeRoutes": "Vedi gli itinerari",
     "featuredRoute": "Itinerario in evidenza",
@@ -1013,11 +1013,12 @@
     "discoveredSub": "Luoghi arrivati su Tuggi grazie a questo profilo, con la storia raccontata nell'app.",
     "discoveredBy": "Scoperto da {name}",
     "step1Title": "Scarica Tuggi",
-    "step1Text": "Gratis su iPhone e Android. Poi torna qui e tocca un itinerario per aprirlo direttamente nell'app.",
+    "step1Text": "Gratis su iPhone e Android.",
+    "step1TextCreator": "Gratis su iPhone e Android. Poi torna qui e tocca un itinerario per aprirlo direttamente nell'app.",
     "step2Title": "Scegli cosa ascoltare",
     "step2Text": "Un itinerario o i luoghi vicino a te. Tuggi funziona insieme a Google Maps e Waze, senza cambiare la tua mappa.",
     "step3Title": "Vai e ascolta",
-    "step3Text": "Ogni tappa ha la sua storia, raccontata mentre cammini o guidi.",
+    "step3Text": "Ogni luogo ha la sua storia, raccontata mentre cammini o guidi.",
     "download": "Scarica Tuggi",
     "stickySub": "Gratis su iPhone e Android",
     "storeLegal": "Apple e il logo Apple sono marchi di Apple Inc. Google Play e il logo Google Play sono marchi di Google LLC.",
@@ -1026,7 +1027,7 @@
     "notFoundCta": "Scarica Tuggi",
     "notFoundHome": "Vai alla home",
     "badgePartner": "Partner di Tuggi",
-    "partnerLead": "Scarica Tuggi e ascolta le storie di questo posto e della zona, a piedi o in auto.",
+    "partnerLead": "Scarica Tuggi e ascolta la storia dei luoghi vicini, a piedi o in auto.",
     "ctaPartner": "Ascolta nell'app",
     "storyTitle": "La storia",
     "stopLabel": "Tappa {number}"
