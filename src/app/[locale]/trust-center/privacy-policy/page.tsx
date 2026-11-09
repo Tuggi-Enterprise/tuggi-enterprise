@@ -74,6 +74,11 @@ export default async function PrivacyPolicyPage({ params }: { params: Promise<{ 
           <li>{t.rich("s1Item5", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
           <li>{t.rich("s1Item6", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
           <li>{t.rich("s1Item7", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
+          {/* `s1Item16` is the in-app request of the partner without a venue,
+              card #1140: BR-USUARIO-052 item 4 (closed field list, purposes in
+              4.f) and BR-B2B-066 items 5 and 9 (acceptance on the Portal Locais,
+              the document never public, the approved record outliving the account). */}
+          <li>{t.rich("s1Item16", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
           {/* `s1Item8` is the partner attribution capture — card #443, and the
               surface is the partner page (`PartnerHero`, `/download` and
               `/d/[slug]`), not a form. What it declares is measured, not
