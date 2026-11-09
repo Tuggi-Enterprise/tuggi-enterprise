@@ -28,8 +28,9 @@ import {
  * Each entry includes <xhtml:link rel="alternate" hreflang="..."> for all
  * 4 locales + x-default, so Google can map translations from any entry.
  *
- * Exception: partner pages (/d/<slug>) are intentionally locale-agnostic
- * (resolved via a middleware rewrite), so they get a single clean URL.
+ * Exception: partner pages (/@<name>, and the printed /d/<slug>) are
+ * intentionally locale-agnostic (resolved via a middleware rewrite), so they
+ * get a single clean URL: the canonical `/@` one (BR-B2B-037 item 1).
  */
 
 /**
@@ -195,9 +196,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // build.
   for (const partner of await listApprovedPartners()) {
     entries.push({
-      // Clean, locale-agnostic URL (matches the page's self-canonical) —
-      // NOT buildUrl(), which would prefix it with a locale.
-      url: `https://www.tuggi.app/d/${partner.slug}`,
+      // Clean, locale-agnostic URL: the canonical `/@` address both doors of
+      // the page declare (BR-B2B-037 item 1) — NOT buildUrl(), which would
+      // prefix it with a locale.
+      url: `https://www.tuggi.app/@${partner.slug}`,
       lastModified: partner.updatedAt ? new Date(partner.updatedAt) : new Date(),
       changeFrequency: "monthly",
       priority: 0.6,

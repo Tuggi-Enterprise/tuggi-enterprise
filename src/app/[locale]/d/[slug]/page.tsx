@@ -1,38 +1,49 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { cookies, headers } from "next/headers";
+import { headers } from "next/headers";
 import { permanentRedirect } from "next/navigation";
 import { PartnerHeroWrapper } from "@/components/blocks/PartnerHeroWrapper";
-import { lookupPartnerSlug } from "@/lib/partner";
+import { ClientPartnerPage } from "@/components/partner-page/ClientPartnerPage";
+import { CreatorPageView } from "@/components/partner-page/CreatorPageView";
+import { lookupPartnerSlug, type PartnerSlugResult } from "@/lib/partner";
 import { kitPieceOf, recordActivationScan } from "@/lib/activation-scan";
-import { resolveWelcomeLang } from "@/lib/ptDialect";
-import { countryOf } from "@/lib/territory";
-import { buildTwitterCard, defaultRobots } from "@/lib/seo";
-import { PRODUCT_FACTS } from "@/lib/product-facts";
-import { SITE_URL } from "@/lib/app-meta";
-import { storePlatformOf } from "@/lib/store-platform";
-import { AppPreview, AppPreviewQr } from "@/components/blocks/AppPreview";
-
-const OG_IMAGE = "/images/og-image-tuggi.jpg";
-
-function clamp(text: string, max = 200): string {
-  const clean = text.replace(/\s+/g, " ").trim();
-  return clean.length > max ? `${clean.slice(0, max - 1).trimEnd()}…` : clean;
-}
+import { clientPageMetadata, creatorPageMetadata } from "@/lib/partner-page-metadata";
+import {
+  recordPageVisit,
+  resolvePublicPage,
+  signProfilePhoto,
+  type ClientPage,
+  type PublicPage,
+} from "@/lib/public-page";
+import { requestWelcomeLang } from "@/lib/request-welcome-lang";
 
 /**
- * Resolves the welcome AUDIO/TEXT dialect from the request (geo, ?lang, cookie),
- * decoupled from the unified "pt" UI locale — so a visitor in Portugal hears
- * pt-pt and in Brazil pt-br even though the UI is a single "pt".
+ * What the one resolver of the partner page says about this slug (BR-B2B-037
+ * item 2), or null when it could not answer: then this page does what it did
+ * before the resolver existed, from `lookupPartnerSlug` alone. A printed QR
+ * keeps working through a database hiccup.
  */
-async function resolveDbLang(locale: string, langParam?: string | null): Promise<string> {
-  const [h, c] = await Promise.all([headers(), cookies()]);
-  return resolveWelcomeLang(locale, {
-    langParam,
-    country: countryOf(h),
-    acceptLanguage: h.get("accept-language"),
-    cookie: c.get("NEXT_LOCALE")?.value,
-  });
+async function publicPageOf(slug: string): Promise<PublicPage | null> {
+  try {
+    return await resolvePublicPage(slug);
+  } catch (err) {
+    console.error("Error resolving the partner page of a /d/ slug:", err);
+    return null;
+  }
+}
+
+const isCoupon = (resolved: PartnerSlugResult | null): boolean =>
+  resolved?.kind === "partner" && !!resolved.coupon;
+
+/**
+ * The resolver's client page for the partner `/d/` resolved, when both name
+ * the same client. Null for a coupon (its own door, BR-MONETIZACAO-015) and
+ * for a slug the resolver does not know: those keep today's behaviour.
+ */
+function clientPageOf(page: PublicPage | null, resolved: PartnerSlugResult | null): ClientPage | null {
+  if (resolved?.kind !== "partner" || resolved.coupon) return null;
+  if (page?.state !== "page" || page.kind !== "client") return null;
+  return page.clientId === resolved.partner.id ? page : null;
 }
 
 export async function generateMetadata({
@@ -44,9 +55,13 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale, slug } = await params;
   const { lang } = await searchParams;
-  const t = await getTranslations({ locale, namespace: "Download" });
-  const dbLang = await resolveDbLang(locale, lang);
-  const resolved = await lookupPartnerSlug(slug, dbLang);
+  const dbLang = await requestWelcomeLang(locale, lang);
+  const [resolved, page] = await Promise.all([lookupPartnerSlug(slug, dbLang), publicPageOf(slug)]);
+
+  // The same page as `/@nome`, canonical there (DS-COMPONENTE-110).
+  if (!isCoupon(resolved) && page?.state === "page" && page.kind === "creator") {
+    return creatorPageMetadata(locale, page);
+  }
 
   // Unknown slug → the page still serves the plain download LP (see below),
   // and that LP is the same on every dead slug: keep it out of the index.
@@ -56,53 +71,21 @@ export async function generateMetadata({
     return { robots: { index: false, follow: false } };
   }
 
-  const { partner } = resolved;
-
-  // The root layout title template already appends " | TUGGI", so use the bare name.
-  const title = partner.name && !partner.isTuggi ? partner.name : t("metaTitle");
-  const description = partner.description
-    ? clamp(partner.description)
-    : t("metaDesc", PRODUCT_FACTS);
-
-  // The partner page lives at one clean, locale-agnostic URL (no /en, /pt …) —
-  // the middleware resolves the language per request, so the canonical is self-referential.
-  const canonical = `/d/${slug}`;
-
-  // A partner with a seal gets the generated card (./opengraph-image.tsx), which
-  // draws the seal next to the name — the link travels on WhatsApp and Instagram
-  // to promote the event, and the generic photo says nothing about who invites.
-  // The URL is written out because config-based metadata wins over the
-  // opengraph-image file convention: setting `images` here suppresses the
-  // generated one, so pointing at it is the only way it ships.
-  const ogImage = partner.logoUrl
-    ? `/d/${encodeURIComponent(slug)}/opengraph-image`
-    : OG_IMAGE;
-
-  return {
-    title,
-    description,
-    alternates: { canonical },
-    robots: defaultRobots,
-    openGraph: {
-      title,
-      description,
-      url: `https://www.tuggi.app/d/${slug}`,
-      siteName: "TUGGI",
-      type: "website",
-      images: [{ url: ogImage, width: 1200, height: 630, alt: partner.name ?? "TUGGI" }],
-    },
-    twitter: buildTwitterCard({ title, description, image: ogImage }),
-  };
+  const client = clientPageOf(page, resolved);
+  return clientPageMetadata(locale, resolved.partner, slug, client ? `/@${client.name}` : `/d/${slug}`);
 }
 
 /**
  * THIS PAGE IS RENDERED ON EVERY REQUEST, AND MUST STAY SO (#987). It reads
  * the visitor's country and cookies for the welcome language, `?lang` and
- * `?k`, and counts the kit scan of each visit. A stored copy would freeze the
- * language of its first visitor and stop counting scans. What is kept is the
- * partner read underneath (`lookupPartnerSlug`), for at most 5 minutes per
- * slug and language: that is how long an edit or a deactivation in the CMS
- * takes to show here.
+ * `?k`, counts the kit scan and the page opening of each visit. A stored copy
+ * would freeze the language of its first visitor and stop counting. What is
+ * kept is the partner read underneath (`lookupPartnerSlug`), for at most 5
+ * minutes per slug and language: that is how long an edit or a deactivation in
+ * the CMS takes to show here.
+ *
+ * It is the printed door of the partner page: the same page as `/@nome`, from
+ * the same resolver and the same components (BR-B2B-037 item 2).
  */
 export default async function PartnerSlugPage({
   params,
@@ -123,8 +106,9 @@ export default async function PartnerSlugPage({
   const piece = kitPieceOf(k);
   const scan = piece ? recordActivationScan(slug, piece, new Headers(await headers())) : null;
 
-  const dbLang = await resolveDbLang(locale, lang);
-  const [resolved] = await Promise.all([lookupPartnerSlug(slug, dbLang), scan]);
+  const dbLang = await requestWelcomeLang(locale, lang);
+  const [resolved, page] = await Promise.all([lookupPartnerSlug(slug, dbLang), publicPageOf(slug), scan]);
+  const userAgent = (await headers()).get("user-agent");
 
   // The printed slug is not the client's own (the client inherited another one,
   // or the URL differs in case): it keeps resolving, as a permanent redirect —
@@ -141,6 +125,22 @@ export default async function PartnerSlugPage({
     permanentRedirect(`/d/${encodeURIComponent(resolved.slug)}${search ? `?${search}` : ""}`);
   }
 
+  // One resolver, two doors (BR-B2B-037 item 2): a creator's name after `/d/`
+  // shows the creator's page, counted as a `/d/` opening.
+  if (!isCoupon(resolved) && page?.state === "page" && page.kind === "creator") {
+    const [photoUrl] = await Promise.all([
+      signProfilePhoto(page.photoKey),
+      recordPageVisit(page.clientId, "d_slug", userAgent),
+    ]);
+    return <CreatorPageView page={page} locale={locale} dbLang={dbLang} photoUrl={photoUrl} />;
+  }
+
+  // An old @ or another spelling the resolver knows and `/d/` does not: the
+  // canonical page, where the same partner is credited (BR-B2B-067 item 4).
+  if (!resolved && page?.state === "redirect") {
+    permanentRedirect(`/@${encodeURIComponent(page.to)}`);
+  }
+
   /**
    * A SLUG THAT NO LONGER RESOLVES STILL GETS THE APP — BR-B2B-001.
    *
@@ -155,7 +155,8 @@ export default async function PartnerSlugPage({
    * no partner: no partner name, no capture, no referrer — nothing is credited
    * to a partner we could not resolve. `generateMetadata` keeps it out of the
    * index, which is what stops `/d/<anything>` from becoming an unbounded
-   * surface of thin pages.
+   * surface of thin pages. The 404 of BR-B2B-067 item 5 is the `/@` door's;
+   * the printed one keeps this (item 6 leaves `/d/` as it is).
    */
   // `retired` (a rejected place) gets exactly this page too: neutral, it does
   // not name the place (#815, direction of 2026-10-04, item 4).
@@ -187,31 +188,19 @@ export default async function PartnerSlugPage({
 
   const { partner, coupon } = resolved;
 
-  // What the visitor will see in the app (DS-COMPONENTE-117, #1135), from the
-  // user agent of this request. Only with a partner to arrive through: the
-  // dead, `soon` and `retired` slugs above get none, and neither does Tuggi's
-  // own slug. It names the partner and nothing else (BR-B2B-067 item 3). On a
-  // computer the QR of this page comes first.
-  const platform = storePlatformOf((await headers()).get("user-agent"));
-  const previewSlot = partner.isTuggi ? null : (
-    <>
-      {platform === "other" && (
-        <div className="mb-6">
-          <AppPreviewQr url={`${SITE_URL}/d/${slug}`} />
-        </div>
-      )}
-      <AppPreview platform={platform} invite={{ kind: "partner", partner: slug }} />
-    </>
-  );
+  // The resolver's answer decides the capture (BR-B2B-067 items 3 and 6: a
+  // client whose contract ended stops attributing) and counts the opening
+  // (item 7). A slug it does not know, and a coupon, keep today's behaviour.
+  const client = clientPageOf(page, resolved);
+  if (client) await recordPageVisit(client.clientId, "d_slug", userAgent);
 
   return (
-    <main>
-      <PartnerHeroWrapper
-        partnerData={partner}
-        partnerId={partner.id}
-        coupon={coupon}
-        previewSlot={previewSlot}
-      />
-    </main>
+    <ClientPartnerPage
+      partner={partner}
+      coupon={coupon}
+      slug={slug}
+      qrPath={client ? `/@${client.name}` : `/d/${slug}`}
+      attributes={client ? client.attributes : true}
+    />
   );
 }

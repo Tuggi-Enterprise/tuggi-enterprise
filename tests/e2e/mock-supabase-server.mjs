@@ -93,6 +93,22 @@ const CLIENTS_BY_SLUG = {
     social_handle: null,
     avatar_url: null,
   },
+  // A client whose contract ended (BR-B2B-067 item 6): the page stays, the
+  // capture does not. Not `approved`, so the build-time lists leave it out.
+  "e2e-encerrado": {
+    id: "55555555-5555-4555-8555-555555555555",
+    slug: "e2e-encerrado",
+    status: "inactive",
+    updated_at: "2026-08-04T00:00:00Z",
+    name: "Pousada Encerrada",
+    company_name: null,
+    welcome_poi_id: null,
+    metadata: null,
+    client_type: "hotel",
+    website: null,
+    social_handle: null,
+    avatar_url: null,
+  },
   // Approved is a filter, not a formality: this row exists so the build-time
   // enumeration below can be caught listing a partner that has no public page
   // yet. Its /d/<slug> still resolves — `resolvePartner` matches on the slug
@@ -330,6 +346,114 @@ const RESOLVER_FIXTURES = {
   "e2e-desconhecido": [],
 };
 /** Every `partner.record_activation_scan` call that reached the database, in order. */
+/**
+ * `partner.resolve_public_page` (#1141, contract identidade-publica.md, "Site"):
+ * one answer per name. Every other name is `{"state":"not_found"}`, the one
+ * answer the function gives for an @ that does not exist, a regular user, a
+ * deleted account, a removed name and a creator whose flag is off.
+ */
+const CREATOR_ID = "7a7a7a7a-7a7a-4a7a-8a7a-7a7a7a7a7a7a";
+const EMPTY_CREATOR_ID = "7b7b7b7b-7b7b-4b7b-8b7b-7b7b7b7b7b7b";
+const PHOTO_CREATOR_ID = "7c7c7c7c-7c7c-4c7c-8c7c-7c7c7c7c7c7c";
+const PUBLIC_PAGE_FIXTURES = {
+  // Everything the page can draw, with the two fields of the second migration.
+  // The dot is on purpose: an @ admits one (BR-USUARIO-050 item 1.b).
+  "e2e.criadora": {
+    state: "page",
+    kind: "creator",
+    client_id: CREATOR_ID,
+    name: "e2e.criadora",
+    display_name: "Ana Serra",
+    photo_key: null,
+    verified: true,
+    bio: "Guia credenciada na Serra Gaúcha há 12 anos. Roteiros a pé pelo centro de Gramado e de carro até os cânions, contados por quem mora aqui.",
+    routes: [
+      { id: "8a000000-0000-4000-8000-000000000001", slug: "centro-de-gramado-a-pe", name: "Centro de Gramado a pé" },
+      { id: "8a000000-0000-4000-8000-000000000002", slug: "rota-dos-canions", name: "Rota dos Cânions" },
+      { id: "8a000000-0000-4000-8000-000000000003", slug: "lago-negro-ao-entardecer", name: "Lago Negro ao entardecer" },
+    ],
+    discovered_pois: [
+      { id: "8b000000-0000-4000-8000-000000000001", name: "Mirante do Vale do Quilombo" },
+      { id: "8b000000-0000-4000-8000-000000000002", name: "Casa do Colono, Linha Bonita" },
+    ],
+    listeners_total: 1284,
+    featured_route: {
+      id: "8a000000-0000-4000-8000-000000000001",
+      slug: "centro-de-gramado-a-pe",
+      names: { "pt-br": "Centro de Gramado a pé", "en-us": "Downtown Gramado on foot" },
+      distance_km: 2.4,
+      stops_count: 9,
+      duration_min: 70,
+      path: {
+        type: "LineString",
+        coordinates: [
+          [-50.8768, -29.3789], [-50.8752, -29.3771], [-50.8735, -29.3760],
+          [-50.8719, -29.3752], [-50.8701, -29.3755], [-50.8688, -29.3742], [-50.8676, -29.3728],
+        ],
+      },
+      preview: {
+        poi_id: "8b000000-0000-4000-8000-000000000003",
+        names: { "pt-br": "Escadaria da Rua Torta", "en-us": "Rua Torta stairway" },
+        audio: {
+          "pt-br": `http://${HOST}:${APP_PORT}/audio/call_pt-br-male.mp3`,
+          "en-us": `http://${HOST}:${APP_PORT}/audio/call_en-us-male.mp3`,
+        },
+      },
+    },
+  },
+  // The answer before the second migration: no `listeners_total`, no
+  // `featured_route`, and nothing published yet.
+  "e2e-criador-vazio": {
+    state: "page",
+    kind: "creator",
+    client_id: EMPTY_CREATOR_ID,
+    name: "e2e-criador-vazio",
+    display_name: "Bruno Lima",
+    photo_key: null,
+    verified: true,
+    bio: null,
+    routes: [],
+    discovered_pois: [],
+  },
+  // A photo: only the moderated copy, by its key in the private bucket.
+  "e2e-criador-foto": {
+    state: "page",
+    kind: "creator",
+    client_id: PHOTO_CREATOR_ID,
+    name: "e2e-criador-foto",
+    display_name: "Carla Dias",
+    photo_key: "7c7c7c7c/moderated.jpg",
+    verified: true,
+    bio: null,
+    routes: [],
+    discovered_pois: [],
+    listeners_total: null,
+    featured_route: null,
+  },
+  "e2e-sem-logo": {
+    state: "page",
+    kind: "client",
+    client_id: "11111111-1111-4111-8111-111111111111",
+    name: "e2e-sem-logo",
+    verified: true,
+    attributes: true,
+  },
+  "e2e-encerrado": {
+    state: "page",
+    kind: "client",
+    client_id: "55555555-5555-4555-8555-555555555555",
+    name: "e2e-encerrado",
+    verified: true,
+    attributes: false,
+  },
+  // Another spelling, and the @ before a change: one permanent hop each.
+  "E2E.Criadora": { state: "redirect", to: "e2e.criadora", reason: "spelling", permanent: true },
+  "e2e-antiga": { state: "redirect", to: "e2e.criadora", reason: "previous_name", permanent: true },
+};
+
+/** Every `partner.record_page_visit` call, in order: `{ client_id, via }`. */
+const pageVisits = [];
+
 const activationScans = [];
 
 /**
@@ -705,6 +829,55 @@ const server = http.createServer((req, res) => {
       const row = ROUTE_BY_ID[id];
       sendJson(res, 200, row ? [row] : []);
     });
+    return;
+  }
+
+  if (url.pathname === "/rest/v1/rpc/resolve_public_page" && req.method === "POST") {
+    readBody(req).then((raw) => {
+      let name = "";
+      try {
+        name = String(JSON.parse(raw || "{}").p_name ?? "");
+      } catch {
+        // Malformed body: an unknown name.
+      }
+      const key = name.replace(/^@/, "");
+      // An approved client without a fixture of its own has its page, as in
+      // production: the sitemap lists its `/@` address.
+      const client = CLIENTS_BY_SLUG[key];
+      const approved =
+        client?.status === "approved"
+          ? { state: "page", kind: "client", client_id: client.id, name: key, verified: true, attributes: true }
+          : null;
+      sendJson(res, 200, PUBLIC_PAGE_FIXTURES[key] ?? approved ?? { state: "not_found" });
+    });
+    return;
+  }
+
+  if (url.pathname === "/rest/v1/rpc/record_page_visit" && req.method === "POST") {
+    readBody(req).then((raw) => {
+      let body = {};
+      try {
+        body = JSON.parse(raw || "{}");
+      } catch {
+        // Malformed body: recorded as-is so the spec sees it.
+      }
+      pageVisits.push({ client_id: body.p_client_id, via: body.p_via });
+      sendJson(res, 200, true);
+    });
+    return;
+  }
+
+  // `createSignedUrl` of supabase-js: POST /object/sign/<bucket>/<key>, and the
+  // answer is the path it appends to the storage URL.
+  if (url.pathname.startsWith("/storage/v1/object/sign/") && req.method === "POST") {
+    const objectPath = url.pathname.slice("/storage/v1".length);
+    sendJson(res, 200, { signedURL: `${objectPath}?token=e2e-signed` });
+    return;
+  }
+
+  if (url.pathname === "/__page-visits" && req.method === "GET") {
+    const clientId = url.searchParams.get("client_id");
+    sendJson(res, 200, { rows: clientId ? pageVisits.filter((v) => v.client_id === clientId) : pageVisits });
     return;
   }
 

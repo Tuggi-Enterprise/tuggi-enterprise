@@ -180,6 +180,7 @@ const WAIVED: Waiver[] = [
   { file: "components/blocks/DrivePricing.tsx", texts: ["Google Play"], reason: BRAND },
   { file: "components/blocks/PartnerCampaignHero.tsx", texts: ["Tuggi"], reason: BRAND },
   { file: "components/blocks/PartnerHero.tsx", texts: ["TUGGI", "Tuggi"], reason: BRAND },
+  { file: "components/partner-page/CreatorPageView.tsx", texts: ["Tuggi"], reason: BRAND },
   { file: "components/global/GlobalHeader.tsx", texts: ["TUGGI Logo"], reason: BRAND },
   {
     file: "components/global/FatFooter.tsx",
