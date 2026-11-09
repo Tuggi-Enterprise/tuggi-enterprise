@@ -228,3 +228,98 @@ test.describe("BR-B2B-067 item 7: each opening counts, and never a robot's", () 
     expect((await visitsOf(EMPTY_CREATOR_ID)).length).toBe(before);
   });
 });
+
+const HOTEL_ID = "22222222-2222-4222-8222-222222222222";
+
+test.describe("DS-COMPONENTE-110, mockup w02: a hotel or a restaurant in the frame of the one page", () => {
+  test("logo, name, seal, description, contacts, welcome audio and the store action are in the server HTML", async ({ request }) => {
+    const { status, body } = await html(request, "/@e2e-com-logo");
+    expect(status).toBe(200);
+    const main = mainOf(body);
+    expect(main).toContain('data-partner-page="client"');
+    expect(main).toContain('data-testid="partner-logo"');
+    expect(main).toContain('data-testid="partner-page-chip"');
+    expect(main).toContain("Delícias do Vale do Café");
+    expect(main).toContain('data-testid="partner-page-verified"');
+    // The whole description, collapsed by CSS only: what the Google reads is the partner's whole text.
+    expect(main).toContain("became the cuisine you are about to taste.");
+    expect(main).toContain('data-testid="partner-contacts"');
+    expect(main).toContain("https://delicias.example");
+    expect(main).toContain('data-testid="partner-welcome-audio"');
+    expect(main).toContain('data-testid="partner-page-cta"');
+    expect(main).toContain("tuggi.app/@e2e-com-logo");
+  });
+
+  test("a block without content does not appear: no logo draws the initial, no audio and no contacts leave no card", async ({ request }) => {
+    const main = mainOf((await html(request, "/@e2e-sem-logo")).body);
+    expect(main).toContain('data-testid="partner-initial"');
+    expect(main).not.toContain('data-testid="partner-logo"');
+    expect(main).not.toContain('data-testid="partner-welcome-audio"');
+    expect(main).not.toContain('data-testid="partner-contacts"');
+    expect(main).toContain('data-testid="partner-page-cta"');
+  });
+
+  test("BR-B2B-002: the hotel's page captures the first touch for the hotel, from its store action", async ({ page }) => {
+    const posts = capturesOn(page);
+    await page.goto("/@e2e-com-logo");
+    await expect.poll(() => posts.length).toBe(1);
+    expect(JSON.parse(posts[0]).partner_id).toBe(HOTEL_ID);
+  });
+
+  test("the description opens with its control, and the welcome audio card has its final size before the audio loads", async ({ page }) => {
+    await page.goto("/@e2e-com-logo");
+    const description = page.getByTestId("partner-description");
+    const collapsed = (await description.boundingBox())!.height;
+    await page.getByRole("button", { name: /^(more|mais)$/i }).click();
+    await expect.poll(async () => (await description.boundingBox())!.height).toBeGreaterThan(collapsed);
+    await expect(page.getByTestId("partner-welcome-audio").locator("button")).toBeVisible();
+  });
+
+  test("criterion 16: at 390 px the sticky bar waits for the action to leave the screen, and there is no QR", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/@e2e-com-logo");
+    await expect(page.getByTestId("app-preview-qr")).toBeHidden();
+    const sticky = page.locator("div[aria-hidden]", { has: page.locator("a[href]") }).filter({
+      hasText: /Grátis no iPhone e no Android|Free on iPhone and Android/,
+    });
+    await expect(sticky).toHaveAttribute("aria-hidden", "true");
+    await page.evaluate(() => {
+      const cta = document.getElementById("partner-cta")!;
+      window.scrollTo(0, cta.getBoundingClientRect().bottom + window.scrollY + 10);
+    });
+    await expect(sticky).toHaveAttribute("aria-hidden", "false");
+  });
+
+  test("DS-COMPONENTE-110 edge case: a coupon keeps today's page, with its redeem block", async ({ page }) => {
+    await page.goto("/pt/d/E2EHORAS2");
+    await expect(page.getByRole("button", { name: "Copiar código" })).toBeVisible();
+    await expect(page.getByTestId("partner-page-chip")).toHaveCount(0);
+  });
+});
+
+test.describe("DS-COMPONENTE-110, mockup w01: what the route snapshot adds to the creator's page", () => {
+  test("an itinerary in the snapshot gets its facts and description; one outside it, only its name", async ({ request }) => {
+    const main = mainOf((await html(request, "/@e2e.criadora")).body);
+    const cards = main.split('data-testid="creator-route-card"').slice(1);
+    expect(cards).toHaveLength(3);
+    // The first itinerary of the fixture is a route of the site's snapshot (mock-supabase-server.mjs).
+    expect(cards[0]).toContain('data-testid="creator-route-facts"');
+    expect(cards[0]).toMatch(/\d+ paradas/);
+    expect(cards[0]).toContain('data-testid="creator-route-description"');
+    for (const card of cards.slice(1)) {
+      expect(card).not.toContain("creator-route-facts");
+      expect(card).not.toContain("creator-route-description");
+    }
+  });
+
+  test("the preview stop carries its number in the itinerary, read from the snapshot's order", async ({ request }) => {
+    const main = mainOf((await html(request, "/@e2e.criadora")).body);
+    expect(main).toMatch(/data-testid="featured-route-preview"[\s\S]*?Parada 3 · Escadaria da Rua Torta/);
+  });
+
+  test("copy §7: the page says the discovered places sentence and credits each one", async ({ request }) => {
+    const main = mainOf((await html(request, "/@e2e.criadora")).body);
+    expect(main).toContain("Lugares que entraram no Tuggi por este perfil, com a história contada no app.");
+    expect(main).toContain("Descoberto por Ana Serra");
+  });
+});

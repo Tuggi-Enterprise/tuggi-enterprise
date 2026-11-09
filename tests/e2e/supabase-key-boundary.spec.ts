@@ -176,9 +176,7 @@ test.describe("each consumer connects with the key it is entitled to", () => {
     await page.goto("/d/e2e-sem-logo");
     // The page only reaches this state with the partner row in hand: without
     // it, `/d/<slug>` is a 404.
-    await expect(
-      page.getByRole("button", { name: /discover more in the app/i })
-    ).toBeVisible();
+    await expect(page.getByTestId("partner-page-cta")).toBeVisible();
 
     const { byRoute } = await observedKeys(request);
     expect(byRoute["GET /rest/v1/clients"]).toBe(E2E_SERVICE_ROLE_KEY);

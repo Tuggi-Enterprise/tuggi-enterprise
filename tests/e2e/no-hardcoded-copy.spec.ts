@@ -178,9 +178,8 @@ const WAIVED: Waiver[] = [
   { file: "app/[locale]/purpose/page.tsx", texts: ["TUGGI Manifesto"], reason: BRAND },
   { file: "components/blocks/CityOSHero.tsx", texts: ["Tuggi - CITY OS"], reason: BRAND },
   { file: "components/blocks/DrivePricing.tsx", texts: ["Google Play"], reason: BRAND },
-  { file: "components/blocks/PartnerCampaignHero.tsx", texts: ["Tuggi"], reason: BRAND },
   { file: "components/blocks/PartnerHero.tsx", texts: ["TUGGI", "Tuggi"], reason: BRAND },
-  { file: "components/partner-page/CreatorPageView.tsx", texts: ["Tuggi"], reason: BRAND },
+  { file: "components/partner-page/PartnerPageFrame.tsx", texts: ["Tuggi"], reason: BRAND },
   { file: "components/global/GlobalHeader.tsx", texts: ["TUGGI Logo"], reason: BRAND },
   {
     file: "components/global/FatFooter.tsx",
@@ -197,7 +196,7 @@ const WAIVED: Waiver[] = [
   },
 
   // ── Store badges ─────────────────────────────────────────────────────────
-  ...["DriveConversion", "DriveHero", "FooterStoreBadges", "PartnerCampaignHero"].map((block) => ({
+  ...["DriveConversion", "DriveHero", "FooterStoreBadges"].map((block) => ({
     file: `components/blocks/${block}.tsx`,
     texts: ["Download on the App Store", "Get it on Google Play"],
     reason: STORE_BADGE,
@@ -387,9 +386,11 @@ test.describe("the four message files stay in step", () => {
 
 test.describe("what the server actually serves, in each locale", () => {
   /**
-   * The partner fixture of tests/e2e/mock-supabase-server.mjs — /d/e2e-sem-logo
-   * resolves to a plain partner with this company_name, and /d/[slug] is one of
+   * The partner-owned coupon of tests/e2e/mock-supabase-server.mjs — /d/E2EPARCEIRO
+   * resolves to a coupon of the partner with this name, and /d/[slug] is one of
    * the two routes that never translate their path (src/i18n/pathnames.ts).
+   * A coupon keeps the download layout and its referral line (DS-COMPONENTE-110,
+   * edge case); a partner's own page is the frame of the one page now.
    */
   const PARTNER_NAME = "Delícias do Vale do Café";
 
@@ -419,7 +420,7 @@ test.describe("what the server actually serves, in each locale", () => {
       page,
     }) => {
       const message = messageAt(messagesFor(locale), "Download.Campaign.referredBy");
-      await page.goto(`/${locale}/d/e2e-sem-logo`);
+      await page.goto(`/${locale}/d/E2EPARCEIRO`);
 
       const referral = page.locator("h1");
       await expect(referral).toContainText(rendered(message, PARTNER_NAME));

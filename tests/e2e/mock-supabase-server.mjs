@@ -18,6 +18,7 @@
 //   MOCK_SUPABASE_PORT=4010 node tests/e2e/mock-supabase-server.mjs
 import http from "node:http";
 import { randomUUID } from "node:crypto";
+import { readFileSync } from "node:fs";
 
 const PORT = Number(process.env.MOCK_SUPABASE_PORT || 4010);
 // The welcome audio is served by the app under test itself (public/audio), so
@@ -72,8 +73,8 @@ const CLIENTS_BY_SLUG = {
     welcome_poi_id: "33333333-3333-4333-8333-333333333333",
     metadata: null,
     client_type: "restaurant",
-    website: null,
-    social_handle: null,
+    website: "https://delicias.example",
+    social_handle: "@deliciasdovale",
     avatar_url: `https://${HOST}:${PORT}/storage/v1/object/public/partners/e2e-logo.png`,
   },
   // The two names disagree on purpose: `name` is the trade name on the sign,
@@ -273,6 +274,18 @@ const COUPON_FIXTURES = {
   E2EHORAS2: { grant_kind: "minutes", minutes: 120, days: null, owner_client_id: null },
   E2EHORA1: { grant_kind: "minutes", minutes: 60, days: null, owner_client_id: null },
   E2EDIAS7: { grant_kind: "until", minutes: null, days: 7, owner_client_id: null },
+  // Owned by a partner: the coupon keeps the download layout, with the
+  // partner's referral line above it (DS-COMPONENTE-110, edge case).
+  E2EPARCEIRO: {
+    grant_kind: "minutes",
+    minutes: 60,
+    days: null,
+    owner_client_id: "22222222-2222-4222-8222-222222222222",
+    owner_slug: "e2e-com-logo",
+    owner_name: "Delícias do Vale do Café",
+    owner_poi_id: null,
+    owner_avatar_url: null,
+  },
 };
 
 /** Invite codes of /c/<code> (card #840): code → inviter's nickname. */
@@ -355,6 +368,18 @@ const RESOLVER_FIXTURES = {
 const CREATOR_ID = "7a7a7a7a-7a7a-4a7a-8a7a-7a7a7a7a7a7a";
 const EMPTY_CREATOR_ID = "7b7b7b7b-7b7b-4b7b-8b7b-7b7b7b7b7b7b";
 const PHOTO_CREATOR_ID = "7c7c7c7c-7c7c-4c7c-8c7c-7c7c7c7c7c7c";
+
+/**
+ * A route of the site's own snapshot, read at start so a refresh of the
+ * snapshot never leaves the creator fixture pointing at a route that left it:
+ * the first itinerary of the creator, and her featured one, are this route, so
+ * the page has distance, stops, duration, description and the order of the
+ * preview stop to show. The other two are not in the snapshot, on purpose.
+ */
+const SNAPSHOT_ROUTE = JSON.parse(
+  readFileSync(new URL("../../src/data/routes-snapshot.json", import.meta.url), "utf8")
+).routes.find((r) => r.stops.length >= 3 && r.i18n.pt?.description && r.stops[2].attractionId);
+
 const PUBLIC_PAGE_FIXTURES = {
   // Everything the page can draw, with the two fields of the second migration.
   // The dot is on purpose: an @ admits one (BR-USUARIO-050 item 1.b).
@@ -368,7 +393,7 @@ const PUBLIC_PAGE_FIXTURES = {
     verified: true,
     bio: "Guia credenciada na Serra Gaúcha há 12 anos. Roteiros a pé pelo centro de Gramado e de carro até os cânions, contados por quem mora aqui.",
     routes: [
-      { id: "8a000000-0000-4000-8000-000000000001", slug: "centro-de-gramado-a-pe", name: "Centro de Gramado a pé" },
+      { id: SNAPSHOT_ROUTE.id, slug: "centro-de-gramado-a-pe", name: "Centro de Gramado a pé" },
       { id: "8a000000-0000-4000-8000-000000000002", slug: "rota-dos-canions", name: "Rota dos Cânions" },
       { id: "8a000000-0000-4000-8000-000000000003", slug: "lago-negro-ao-entardecer", name: "Lago Negro ao entardecer" },
     ],
@@ -378,7 +403,7 @@ const PUBLIC_PAGE_FIXTURES = {
     ],
     listeners_total: 1284,
     featured_route: {
-      id: "8a000000-0000-4000-8000-000000000001",
+      id: SNAPSHOT_ROUTE.id,
       slug: "centro-de-gramado-a-pe",
       names: { "pt-br": "Centro de Gramado a pé", "en-us": "Downtown Gramado on foot" },
       distance_km: 2.4,
@@ -392,7 +417,7 @@ const PUBLIC_PAGE_FIXTURES = {
         ],
       },
       preview: {
-        poi_id: "8b000000-0000-4000-8000-000000000003",
+        poi_id: SNAPSHOT_ROUTE.stops[2].attractionId,
         names: { "pt-br": "Escadaria da Rua Torta", "en-us": "Rua Torta stairway" },
         audio: {
           "pt-br": `http://${HOST}:${APP_PORT}/audio/call_pt-br-male.mp3`,

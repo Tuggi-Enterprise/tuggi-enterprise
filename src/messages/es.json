@@ -1009,6 +1009,11 @@
     "notFoundTitle": "No encontramos @{handle}",
     "notFoundBody": "Revisa que el nombre esté bien escrito. Mientras tanto, Tuggi cuenta la historia de los lugares por donde pasas.",
     "notFoundCta": "Descargar Tuggi",
-    "notFoundHome": "Ir al inicio"
+    "notFoundHome": "Ir al inicio",
+    "badgePartner": "Socio de Tuggi",
+    "partnerLead": "Descarga Tuggi y escucha las historias de este lugar y de la región, a pie o en coche.",
+    "ctaPartner": "Escuchar en la app",
+    "storyTitle": "La historia",
+    "stopLabel": "Parada {number}"
   }
 }

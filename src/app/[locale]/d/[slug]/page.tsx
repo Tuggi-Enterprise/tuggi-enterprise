@@ -196,11 +196,13 @@ export default async function PartnerSlugPage({
 
   return (
     <ClientPartnerPage
+      locale={locale}
       partner={partner}
       coupon={coupon}
       slug={slug}
-      qrPath={client ? `/@${client.name}` : `/d/${slug}`}
+      path={client ? `/@${client.name}` : `/d/${slug}`}
       attributes={client ? client.attributes : true}
+      verified={client?.verified ?? false}
     />
   );
 }

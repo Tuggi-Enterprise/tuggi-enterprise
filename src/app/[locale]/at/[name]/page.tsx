@@ -96,11 +96,13 @@ export default async function PublicPartnerPage({ params, searchParams }: { para
   }
   return (
     <ClientPartnerPage
+      locale={locale}
       partner={resolved.partner}
       coupon={resolved.coupon}
       slug={page.name}
-      qrPath={`/@${page.name}`}
+      path={`/@${page.name}`}
       attributes={page.attributes}
+      verified={page.verified}
     />
   );
 }

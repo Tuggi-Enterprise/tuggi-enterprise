@@ -125,7 +125,7 @@ test.describe("click_store event", () => {
 });
 
 test.describe("/d/ in the browser", () => {
-  test("the campaign badge links to the App Store with the visit's campaign, and its tap sends click_store", async ({ page }) => {
+  test("the App Store badge links to the App Store with the visit's campaign, and its tap sends click_store", async ({ page }) => {
     await page.addInitScript(() => {
       const w = window as unknown as { __storeEvents: unknown[][]; gtag: (...a: unknown[]) => void };
       w.__storeEvents = [];
@@ -155,7 +155,7 @@ test.describe("/d/ in the browser", () => {
       "click_store",
       expect.objectContaining({
         store: "app_store",
-        placement: "partner_badge",
+        placement: "partner_page",
         utm_source: "instagram",
         utm_medium: "social",
         utm_campaign: "Bio",
@@ -237,12 +237,12 @@ test.describe("#1060: the partner page's store buttons reach GA4 as click_store"
     test.describe(label, () => {
       test.use({ userAgent, viewport: { width: 390, height: 844 } });
 
-      test(`the floating CTA sends click_store before the visitor is at the store (${label})`, async ({ page }) => {
+      test(`the full action sends click_store before the visitor is at the store (${label})`, async ({ page }) => {
         test.setTimeout(45_000);
         const events = await collectedEvents(page);
         await openWithGtag(page, "/d/e2e-sem-logo?lang=en");
 
-        await page.getByRole("button", { name: /discover more in the app/i }).click();
+        await page.getByTestId("partner-page-cta").click();
 
         await expect
           .poll(() => events.includes("click_store"), { timeout: 15_000, message: "click_store in /g/collect" })
@@ -251,7 +251,7 @@ test.describe("#1060: the partner page's store buttons reach GA4 as click_store"
     });
   }
 
-  test("the campaign badge sends click_store too", async ({ page }) => {
+  test("the App Store badge sends click_store too", async ({ page }) => {
     test.setTimeout(45_000);
     const events = await collectedEvents(page);
     await openWithGtag(page, "/d/e2e-com-logo?lang=en");

@@ -287,28 +287,26 @@ test.describe("every App Store CTA writes the token, inside the tap", () => {
     await stubTheStores(page);
     const clickId = await captureFirstTouch(page);
 
-    // The campaign layout's App Store badge, and the floating CTA, which opens
-    // the store in a new tab since #1060: the two the contract already named.
+    // The partner page's App Store badge, and its full action, which on an
+    // iPhone opens the App Store in a new tab (#1060): its two App Store exits.
     await page.goto(CAMPAIGN_PATH);
     // Waits for the CONSENT VERDICT, not for the cookie — BR-USUARIO-033. The
     // cookie is already on the device (`captureFirstTouch` planted it), so
     // polling it proves nothing: since the gate landed, the read of that cookie
     // waits on one same-origin GET, and a tap fired before the answer arrives
     // finds no click id and writes nothing. That resting state is deliberate
-    // (fail closed), so the wait belongs in the test. The band's Play href is
+    // (fail closed), so the wait belongs in the test. The Play badge's href is
     // the same verdict made observable, on the same page and out of the same
     // value.
-    // `:visible`: while React streams the page, a hidden copy of the band can
-    // sit in the DOM next to the one on screen.
-    const bandPlayHref = page.locator('[data-block="band"] a[href*="play.google.com"]:visible');
+    const playHref = page.getByTestId("partner-page-play-store");
     await expect
-      .poll(async () => (await bandPlayHref.getAttribute("href")) ?? "")
+      .poll(async () => (await playHref.getAttribute("href")) ?? "")
       .toContain(`tuggi_click_${clickId}`);
-    // Scoped to the printed piece's download band: this page also carries the
-    // site footer, which the partner layout keeps in the DOM and out of sight.
-    await page.locator(`[data-block="band"] a[href="${APP_STORE_URL}"]:visible`).click();
+    const badgeTab = page.waitForEvent("popup");
+    await page.getByTestId("partner-page-app-store").click();
+    await (await badgeTab).waitForURL(/apps\.apple\.com/);
     const storeTab = page.waitForEvent("popup");
-    await page.getByRole("button", { name: /discover more in the app/i }).click();
+    await page.getByTestId("partner-page-cta").click();
     await (await storeTab).waitForURL(/apps\.apple\.com/);
 
     expect(writes.length).toBe(2);
@@ -404,7 +402,7 @@ test.describe("in a territory that requires consent", () => {
     // the new exits by the same mechanism it reached the old one: there is no
     // click id to write anywhere (item 6, no second door).
     const storeTab = page.waitForEvent("popup");
-    await page.getByRole("button", { name: /discover more in the app/i }).click();
+    await page.getByTestId("partner-page-cta").click();
     await (await storeTab).waitForURL(/apps\.apple\.com/);
     expect(writes).toEqual([]);
 

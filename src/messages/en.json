@@ -1009,6 +1009,11 @@
     "notFoundTitle": "We couldn't find @{handle}",
     "notFoundBody": "Check that the name is spelled right. Meanwhile, Tuggi tells the story of the places you pass.",
     "notFoundCta": "Get Tuggi",
-    "notFoundHome": "Go to the home page"
+    "notFoundHome": "Go to the home page",
+    "badgePartner": "Tuggi partner",
+    "partnerLead": "Get Tuggi and listen to the stories of this place and the region, on foot or by car.",
+    "ctaPartner": "Listen in the app",
+    "storyTitle": "The story",
+    "stopLabel": "Stop {number}"
   }
 }

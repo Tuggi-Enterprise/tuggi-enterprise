@@ -1,18 +1,21 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useEffect, useState, useRef, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight, AtSign, Check, Copy, Gift, Globe, Loader2, Pause, Play } from "lucide-react";
 import { buildPlayStoreUrl } from "@/lib/app-meta";
 import {
   usePartnerFirstTouch,
+  usePlatform,
   useStoreCampaign,
   writeClickTokenToClipboard,
 } from "@/lib/conversionHooks";
 import { COOKIE_BANNER_HEIGHT_VAR } from "@/components/global/CookieBanner";
-import { PartnerCampaignHero } from "./PartnerCampaignHero";
+import { useWelcomeAudio } from "./useWelcomeAudio";
+import { formatSocial, normalizeUrl, socialHref } from "@/lib/partner-links";
+import { sendPartnerPageEvent } from "@/lib/partner-page-events";
 
 // Type-only: erased at build, so the client bundle never pulls the server module.
 import type { CouponPreview } from "@/lib/partner";
@@ -40,25 +43,6 @@ interface PartnerHeroProps {
    * Null when the page has no resolved partner.
    */
   previewSlot?: ReactNode;
-}
-
-/** Ensure an external URL has a protocol so the <a href> resolves correctly. */
-function normalizeUrl(url: string): string {
-  return /^https?:\/\//i.test(url) ? url : `https://${url}`;
-}
-
-/** A social value may be a full URL or a bare @handle. Returns a link target or null. */
-function socialHref(social: string): string | null {
-  if (/^https?:\/\//i.test(social)) return social;
-  if (social.includes(".")) return `https://${social}`;
-  return null; // bare @handle — platform unknown, show as text only
-}
-
-function formatSocial(social: string): string {
-  if (/^https?:\/\//i.test(social)) {
-    return social.replace(/^https?:\/\//i, "").replace(/\/$/, "");
-  }
-  return social.startsWith("@") ? social : `@${social}`;
 }
 
 // Sound wave bars component
@@ -100,225 +84,33 @@ export function PartnerHero({ partnerId, partnerData, coupon, previewSlot }: Par
   const clickId = usePartnerFirstTouch(partnerId);
   const { appStoreUrl, trackStoreClick } = useStoreCampaign();
   const [isRedirecting, setIsRedirecting] = useState(false);
-  const [platform, setPlatform] = useState<"ios" | "android" | "other">("other");
+  const platform = usePlatform();
 
-  // Audio player state
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const callAudioRef = useRef<HTMLAudioElement | null>(null);
-  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
-  const [audioProgress, setAudioProgress] = useState(0);
-  const [audioReady, setAudioReady] = useState(false);
-  const [autoplayBlocked, setAutoplayBlocked] = useState(false);
+  // GA4 event of this page, with the partner and the platform it was seen on.
+  const trackEvent = (eventName: string, details?: Record<string, unknown>) => {
+    sendPartnerPageEvent(eventName, { partner_id: partnerId, platform, ...details });
+  };
 
   const isTuggi = partnerData?.isTuggi;
-  const MAIN_AUDIO_MAX_DURATION = isTuggi ? 9999 : 12;
-
-  // Initialize audio element
-  useEffect(() => {
-    if (!partnerData?.audioUrl) return;
-
-    const audio = new Audio(partnerData.audioUrl);
-    audio.volume = 1;
-    audioRef.current = audio;
-
-    // The "call" audio matches the welcome dialect resolved server-side
-    // (audioLang, e.g. "pt-pt"/"pt-br"/"en-us") — decoupled from the unified
-    // "pt" UI locale, so a visitor in Portugal hears the pt-pt call.
-    const KNOWN_CALLS = ['en-us', 'es-es', 'pt-br', 'pt-pt', 'it-it', 'de-de', 'fr-fr'];
-    const audioLang = (partnerData?.audioLang || '').toLowerCase();
-    const calFilePath = KNOWN_CALLS.includes(audioLang)
-      ? `call_${audioLang}-male.mp3`
-      : 'call_en-us-male.mp3';
-
-    const callAudio = new Audio(`/audio/${calFilePath}`);
-    callAudio.volume = 1;
-    callAudioRef.current = callAudio;
-
-    let currentTrack = "main";
-
-    const tryPlay = () => {
-      audio.play().then(() => {
-        setIsAudioPlaying(true);
-        setAutoplayBlocked(false);
-      }).catch(() => {
-        setAutoplayBlocked(true);
-      });
-    };
-
-    const playOnInteraction = () => {
-      const trackToPlay = currentTrack === "main" ? audio : callAudio;
-      if (!trackToPlay.paused) {
-        document.removeEventListener("click", playOnInteraction, true);
-        document.removeEventListener("touchstart", playOnInteraction, true);
-        return;
-      }
-      
-      const playPromise = trackToPlay.play();
-      if (playPromise !== undefined) {
-        playPromise.then(() => {
-          setIsAudioPlaying(true);
-          setAutoplayBlocked(false);
-          setAudioReady(true);
-
-          // Prime the secondary track synchronously so iOS unlocks it
-          if (currentTrack === "main") {
-            callAudio.play().then(() => {
-              callAudio.pause();
-              callAudio.currentTime = 0;
-            }).catch(() => {});
-          }
-
-          // Dispara tag de auto-play engatado
-          trackEvent("download_page_audio_auto_played");
-
-          // Only remove listeners after successful playback
-          document.removeEventListener("click", playOnInteraction, true);
-          document.removeEventListener("touchstart", playOnInteraction, true);
-        }).catch((e) => {
-          console.warn("Autoplay still blocked on this interaction:", e);
-        });
-      }
-    };
-
-    document.addEventListener("click", playOnInteraction, { capture: true });
-    document.addEventListener("touchstart", playOnInteraction, { capture: true });
-
-    audio.addEventListener("canplaythrough", () => {
-      setAudioReady(true);
-      if (currentTrack === "main") tryPlay();
-    });
-
-    audio.addEventListener("ended", () => {
-      if (isTuggi) {
-        setIsAudioPlaying(false);
-        setAudioProgress(100);
-        currentTrack = "ended";
-      }
-    });
-
-    audio.addEventListener("timeupdate", () => {
-      // 1. Progress Bar Update (only if main track is active)
-      if (currentTrack === "main") {
-        const totalDur = isTuggi ? (audio.duration || 0) : 18;
-        const progress = totalDur > 0 ? (audio.currentTime / totalDur) * 100 : 0;
-        setAudioProgress(Math.min(progress, 100));
-      }
-
-      // 2. Smooth Fade-out logic (Starts 2.5s before the end of main track)
-      const fadeStart = MAIN_AUDIO_MAX_DURATION - 2.5;
-      if (audio.currentTime >= fadeStart && audio.currentTime <= MAIN_AUDIO_MAX_DURATION) {
-        const remaining = MAIN_AUDIO_MAX_DURATION - audio.currentTime;
-        audio.volume = Math.max(0, remaining / 2.5); // Fades from 1.0 to 0.0
-      }
-
-      // 3. Crossfade Trigger (Starts callAudio 1s before main completely stops)
-      const crossfadeStart = MAIN_AUDIO_MAX_DURATION - 1;
-      if (audio.currentTime >= crossfadeStart && currentTrack === "main") {
-        currentTrack = "call"; // switch progress context
-        callAudio.play().catch(() => {});
-      }
-
-      // 4. Final halt for main audio
-      if (audio.currentTime >= MAIN_AUDIO_MAX_DURATION) {
-        audio.pause();
-        audio.volume = 1; // reset volume in case user replays
-      }
-    });
-
-    callAudio.addEventListener("timeupdate", () => {
-      if (currentTrack !== "call") return;
-      const callDur = isNaN(callAudio.duration) ? 6 : callAudio.duration;
-      const totalDur = MAIN_AUDIO_MAX_DURATION + callDur;
-      const progress = ((MAIN_AUDIO_MAX_DURATION + callAudio.currentTime) / totalDur) * 100;
-      setAudioProgress(Math.min(progress, 100));
-    });
-
-    callAudio.addEventListener("ended", () => {
-      setIsAudioPlaying(false);
-      setAudioProgress(100);
-      currentTrack = "ended";
-    });
-
-    return () => {
-      audio.pause();
-      callAudio.pause();
-      document.removeEventListener("click", playOnInteraction, true);
-      document.removeEventListener("touchstart", playOnInteraction, true);
-    };
-  }, [partnerData?.audioUrl, partnerData?.audioLang]);
-
-  const toggleAudio = () => {
-    const audio = audioRef.current;
-    const callAudio = callAudioRef.current;
-    if (!audio || !callAudio) return;
-
-    let current = audio;
-    if (audio.currentTime >= MAIN_AUDIO_MAX_DURATION || audio.ended) {
-      current = callAudio;
-    }
-
-    if (isAudioPlaying) {
-      current.pause();
-      setIsAudioPlaying(false);
-      trackEvent("download_page_play_button_click", { action: "pause" });
-    } else {
-      if (current === callAudio && callAudio.ended) {
-        audio.currentTime = 0;
-        callAudio.currentTime = 0;
-        current = audio;
-        setAudioProgress(0);
-      }
-      current.play().then(() => {
-        setIsAudioPlaying(true);
-        setAutoplayBlocked(false);
-        trackEvent("download_page_play_button_click", { action: "play" });
-      }).catch((e) => {
-        console.warn("Audio play failed:", e);
-      });
-    }
-  };
+  // The welcome audio, its 12 s cap and the call after it: one player for
+  // this layout and the hotel's (`useWelcomeAudio`).
+  const {
+    isPlaying: isAudioPlaying,
+    progress: audioProgress,
+    ready: audioReady,
+    autoplayBlocked,
+    toggle: toggleAudio,
+  } = useWelcomeAudio(partnerData?.audioUrl, partnerData?.audioLang, isTuggi, (name, details) =>
+    trackEvent(name, details)
+  );
 
   useEffect(() => {
     document.body.classList.add('no-layout');
-
-    const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
-    if (/iPad|iPhone|iPod/.test(userAgent) && !(window as any).MSStream) {
-      setPlatform("ios");
-    } else if (/android/i.test(userAgent)) {
-      setPlatform("android");
-    }
-
     return () => {
       document.body.classList.remove('no-layout');
     };
   }, []);
 
-
-  // countdown state removed. The redirection is purely manual now to generate desire. 
-  
-  // Helper de Tagueamento (GA4 Nativo / gtag.js)
-  const trackEvent = (eventName: string, details?: any) => {
-    // 1. Console log visível para auditoria local
-    console.log(`[Tagueamento] ${eventName}`, details || "");
-    
-    // 2. Disparo oficial pro Google Analytics (gtag)
-    if (typeof window !== "undefined") {
-      const payload = {
-        partner_id: partnerId,
-        platform: platform,
-        ...details
-      };
-
-      if (typeof (window as any).gtag === "function") {
-        (window as any).gtag("event", eventName, payload);
-      } else {
-        // Fallback genérico caso a gtag ainda não tenha carregado
-        const dataLayer = (window as any).dataLayer || [];
-        dataLayer.push({ event: eventName, ...payload });
-        (window as any).dataLayer = dataLayer;
-      }
-    }
-  };
 
   // Dispara um page_view dedicado desta tela para contabilizar os IDs unicamente
   useEffect(() => {
@@ -426,39 +218,20 @@ export function PartnerHero({ partnerId, partnerData, coupon, previewSlot }: Par
   const tPlayer = useTranslations("Download.Player");
   const tA11y = useTranslations("A11y");
 
-  // A partner with a seal is running a campaign: the visitor scanned a printed
-  // piece that already carries that mark, so the page mirrors the piece instead
-  // of the generic template. Every partner without one (the large majority)
-  // keeps the layout below, unchanged. The coupon flow keeps it too — that page
-  // has a single job (redeem) and a campaign narrative around it would bury it.
-  const isCampaign = !isTuggi && !!partnerData?.logoUrl && !coupon;
-
   const [isDescExpanded, setIsDescExpanded] = useState(false);
   const descriptionText = partnerData?.description || t("heroSubtitle");
-  // The campaign layout puts this text above the player, inside the ~450px the
-  // consent banner leaves clear on a first visit (see PartnerCampaignHero): a
-  // teaser of about three lines is what fits there without pushing the player
-  // under the floating CTA. Nothing is lost — MORE opens the whole text, and
-  // the default layout, which has room below the fold, keeps the long form.
-  const maxDescLength = isCampaign ? 130 : 220;
+  const maxDescLength = 220;
   const isLongDesc = descriptionText.length > maxDescLength;
-  // Cut back to the last whole word: at the campaign's shorter cap the raw
-  // substring lands mid-word often enough to read as a rendering bug.
+  // Cut back to the last whole word: the raw substring lands mid-word often
+  // enough to read as a rendering bug.
   const collapsedDescription = descriptionText
     .substring(0, maxDescLength)
     .replace(/\s+\S*$/, "")
     .trimEnd();
 
-  /* Partner welcome text with its collapse control. Declared once and placed by
-     whichever layout renders below — the campaign variant left-aligns it in the
-     content column and tightens the leading, since there it shares the first
-     fold with the player; the default one keeps it centred under the title. */
+  /* Partner welcome text with its collapse control, centred under the title. */
   const descriptionBlock = (
-    <p
-      className={`text-tuggi-slate text-sm md:text-base ${
-        isCampaign ? "leading-snug" : "leading-relaxed mb-6 max-w-sm mx-auto"
-      }`}
-    >
+    <p className="text-tuggi-slate text-sm md:text-base leading-relaxed mb-6 max-w-sm mx-auto">
       {isDescExpanded || !isLongDesc ? descriptionText : `${collapsedDescription}...`}
       {isLongDesc && (
         <button
@@ -475,9 +248,8 @@ export function PartnerHero({ partnerId, partnerData, coupon, previewSlot }: Par
     </p>
   );
 
-  /* The 12s-capped welcome player + its crossfade into the call audio. Same
-     element in both layouts: this is the validated proof-of-product, not
-     decoration, so neither variant gets its own copy of it. */
+  /* The 12s-capped welcome player + its crossfade into the call audio
+     (`useWelcomeAudio`): the validated proof-of-product, not decoration. */
   const audioCard = partnerData?.audioUrl && audioReady && (
     <motion.div
       // Transform only, on purpose: the resting state is the no-JS state
@@ -554,8 +326,7 @@ export function PartnerHero({ partnerId, partnerData, coupon, previewSlot }: Par
      (z-[100]); instead of fighting it with z-index (which would just hide the
      consent choice), the CTA stacks on top of it, reading the banner's own
      published height. No second copy of the consent state lives here: "0px"
-     simply means "no banner showing". Identical in both layouts — the campaign
-     one ends on the page background so this fade never lands on its dark band. */
+     simply means "no banner showing". */
   const floatingCta = (
     <motion.div
       // Transform only, on purpose: the resting state is the no-JS state
@@ -593,29 +364,6 @@ export function PartnerHero({ partnerId, partnerData, coupon, previewSlot }: Par
       </p>
     </motion.div>
   );
-
-  if (isCampaign) {
-    return (
-      <section className="relative w-full overflow-hidden bg-tuggi-bg text-tuggi-dark">
-        <PartnerCampaignHero
-          sealUrl={partnerData!.logoUrl!}
-          partnerName={partnerData!.name ?? ""}
-          clickId={clickId}
-          appStoreUrl={appStoreUrl}
-          audioSlot={audioCard}
-          descriptionSlot={descriptionBlock}
-          previewSlot={previewSlot}
-          onStoreClick={(store) => {
-            trackStoreClick(store, "partner_badge", partnerEventParams);
-            // The App Store badge is the iOS way out of this page, so it writes
-            // the same clipboard token the floating CTA does — inside the tap.
-            if (store === "app_store") void writeClipboardToken();
-          }}
-        />
-        {floatingCta}
-      </section>
-    );
-  }
 
   return (
     <section className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-tuggi-bg text-tuggi-dark">

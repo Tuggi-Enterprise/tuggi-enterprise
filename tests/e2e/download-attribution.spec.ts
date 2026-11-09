@@ -103,7 +103,12 @@ async function storeUrlFromCta(page: Page): Promise<string> {
   );
 
   const storeTab = page.waitForEvent("popup");
-  await page.getByRole("button", { name: /discover more in the app/i }).click();
+  // A partner's page leaves through its Google Play badge on a computer (the
+  // full action aims at the QR there); the download layout, through its CTA.
+  await page
+    .getByTestId("partner-page-play-store")
+    .or(page.getByRole("button", { name: /discover more in the app/i }))
+    .click();
   const tab = await storeTab;
   await tab.waitForURL(/play\.google\.com/);
   return tab.url();
@@ -517,7 +522,7 @@ test.describe("every way out of the site carries the first touch", () => {
     extraHTTPHeaders: visitorHeaders({ address: "198.51.100.211", country: "BR" }),
   });
 
-  test("BR-B2B-002: the campaign badge and the floating CTA carry the captured click", async ({
+  test("BR-B2B-002: the partner page's Google Play badge carries the captured click", async ({
     page,
   }) => {
     await page.goto(CAMPAIGN_PATH);
@@ -530,7 +535,7 @@ test.describe("every way out of the site carries the first touch", () => {
     expect(value!.partner_id).toBe(CAMPAIGN_PARTNER_ID);
 
     // The badge is not decoration: it is the whole download path for anyone the
-    // platform sniff behind the floating CTA gets wrong. It shipped without any
+    // platform sniff behind the full action gets wrong. It shipped without any
     // referrer once — the bug this suite exists to pin down.
     const playLink = page.locator(`a[href*="play.google.com"]:visible`);
     await expect(playLink).toHaveCount(1);
@@ -538,7 +543,7 @@ test.describe("every way out of the site carries the first touch", () => {
       .poll(async () => playLink.getAttribute("href"))
       .toBe(buildPlayStoreUrl(value!.click_id));
 
-    // Exactly what the CTA opens, character for character: one owner.
+    // Exactly what the badge opens, character for character: one owner.
     expect(await storeUrlFromCta(page)).toBe(buildPlayStoreUrl(value!.click_id));
   });
 
