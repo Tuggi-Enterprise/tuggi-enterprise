@@ -104,6 +104,25 @@ test.describe("BR-B2B-067 item 2.b: the creator's page", () => {
     expect(body).not.toMatch(/CNPJ|CPF|comiss/i);
   });
 
+  test("BR-B2B-067 item 2.b, DS-COMPONENTE-133: the authorized name is the title and the @ the line under it", async ({ request }) => {
+    const { body: doc } = await html(request, "/@e2e.criadora");
+    const body = mainOf(doc);
+    expect(body).toMatch(/<h1[^>]*>[\s\S]*?Ana Serra[\s\S]*?<\/h1>\s*<p[^>]*>@e2e\.criadora<\/p>/);
+    expect(body).toContain("Descoberto por Ana Serra");
+    expect(doc).toMatch(/<title>Ana Serra:/);
+  });
+
+  test("BR-B2B-067 item 2.b, DS-COMPONENTE-133: without the authorization the title is the @, said once", async ({ request }) => {
+    const { status, body: doc } = await html(request, "/@e2e-criador-sem-nome");
+    expect(status).toBe(200);
+    const body = mainOf(doc);
+    expect(body).toMatch(/<h1[^>]*>[\s\S]*?@e2e-criador-sem-nome[\s\S]*?<\/h1>/);
+    // The @ only in the title: no line under it repeating it.
+    expect(body).not.toMatch(/<\/h1>\s*<p/);
+    expect(body).toMatch(/data-testid="creator-initial"[^>]*>E</);
+    expect(doc).toMatch(/<title>@e2e-criador-sem-nome:/);
+  });
+
   test("DS-COMPONENTE-110: before the second migration, with nothing published, no block is empty and no number is zero", async ({ request }) => {
     const { status, body: doc } = await html(request, "/@e2e-criador-vazio");
     expect(status).toBe(200);
@@ -150,6 +169,24 @@ test.describe("BR-B2B-067 item 2.b: the creator's page", () => {
     const bytes = await res.body();
     expect([bytes[0], bytes[1]]).toEqual([0xff, 0xd8]);
     expect(res.headers()["location"]).toBeUndefined();
+    // Nothing of the storage in the answer either: not the key, not the account id.
+    expect(JSON.stringify(res.headers())).not.toContain(PHOTO_OWNER_UID);
+  });
+
+  test("BR-B2B-064 item 4.a: the guide shown in Parceiros has its photo at the same address, without a page", async ({ request }) => {
+    // The resolver has no page for this @: the route asks partner.public_photo_key alone.
+    expect((await request.get("/@e2e-guia-listado", { maxRedirects: 0 })).status()).toBe(404);
+    const res = await request.get("/@e2e-guia-listado/photo", { maxRedirects: 0 });
+    expect(res.status()).toBe(200);
+    expect(res.headers()["content-type"]).toBe("image/jpeg");
+    expect(res.headers()["cache-control"]).toBe("public, max-age=300");
+    expect(JSON.stringify(res.headers())).not.toContain(PHOTO_OWNER_UID);
+  });
+
+  test("BR-B2B-067 item 5: a database that did not answer is a 503, never the 404 of a name without a photo", async ({ request }) => {
+    const res = await request.get("/@e2e-foto-instavel/photo", { maxRedirects: 0 });
+    expect(res.status()).toBe(503);
+    expect(res.headers()["cache-control"]).toBe("no-store");
   });
 
   test("BR-B2B-067 item 5: the photo route answers one 404 for every name without a photo", async ({ request }) => {

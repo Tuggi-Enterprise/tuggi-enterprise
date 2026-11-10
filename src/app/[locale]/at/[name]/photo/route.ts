@@ -1,16 +1,19 @@
-import { fetchCreatorPhoto, resolvePublicPage } from "@/lib/public-page";
+import { fetchPublicPhoto } from "@/lib/public-page";
 
 /**
- * `tuggi.app/@nome/photo`: the creator's moderated photo, by the public @
- * (BR-B2B-067 item 2.b). `middleware.ts` rewrites `/@nome/...` here like it
- * does the page.
+ * `tuggi.app/@nome/photo`: the moderated photo of the account, by the public
+ * @, for the two photos that are public: a creator with a page (BR-B2B-067
+ * item 2.b) and a guide shown in "Parceiros" (BR-B2B-064 item 4.a). The
+ * database decides which, `partner.public_photo_key` (`fetchPublicPhoto`).
+ * `middleware.ts` rewrites `/@nome/...` here like it does the page.
  *
  * The bytes come through this server so that nothing the visitor receives
  * names the storage: no bucket, no key, no account id, no signed URL. A
  * redirect to a signed URL would hand all of that over again.
  *
  * Every name that has no photo to show (no page, a client's page, another
- * spelling, a creator without a photo, an object that could not be read)
+ * spelling, a creator without a photo, a guide out of "Parceiros", an object
+ * that could not be read)
  * gets the one 404 below, so this door tells nothing the page's own 404 does
  * not (item 5). The photo is kept for minutes only: a removed photo leaves on
  * the next read of the page, which stops naming it, and a stored copy stays
@@ -30,16 +33,13 @@ function notFound(): Response {
 export async function GET(_request: Request, { params }: { params: Promise<{ name: string }> }): Promise<Response> {
   const { name } = await params;
 
-  let page;
+  let photo;
   try {
-    page = await resolvePublicPage(name);
+    photo = await fetchPublicPhoto(name);
   } catch (err) {
-    console.error("creator photo: the resolver did not answer", err instanceof Error ? err.message : "unknown");
+    console.error("public photo: the database did not answer", err instanceof Error ? err.message : "unknown");
     return new Response("Unavailable", { status: 503, headers: { "cache-control": "no-store" } });
   }
-  if (page.state !== "page" || page.kind !== "creator") return notFound();
-
-  const photo = await fetchCreatorPhoto(page);
   if (!photo) return notFound();
 
   return new Response(photo.bytes, {

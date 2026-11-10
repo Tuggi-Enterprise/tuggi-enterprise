@@ -7,7 +7,7 @@ import { PageReport } from "@/components/partner-page/PageReport";
 import { PartnerSocialLinks } from "@/components/partner-page/PartnerSocialLinks";
 import { PartnerStoreCta } from "@/components/partner-page/PartnerStoreCta";
 import { PARTNER_DOWNLOAD_ID, PartnerIdentity, PartnerPageFrame } from "@/components/partner-page/PartnerPageFrame";
-import { creatorPhotoSrc, pickLang, type CreatorPage, type FeaturedRoute, type PublicRoute } from "@/lib/public-page";
+import { creatorPhotoSrc, creatorTitleOf, pickLang, type CreatorPage, type FeaturedRoute, type PublicRoute } from "@/lib/public-page";
 import { AUDIO_LANG_LABELS, getAllRoutes, type RouteSnapshot } from "@/lib/routes";
 import { formatDistance, formatDuration } from "@/lib/tourFormat";
 
@@ -47,8 +47,9 @@ function audioLabel(lang: string): string {
 export async function CreatorPageView({ page, locale, dbLang }: CreatorPageViewProps) {
   const t = await getTranslations({ locale, namespace: "PartnerPage" });
   const number = new Intl.NumberFormat(locale);
-  const name = page.displayName;
-  const initial = (Array.from(name.trim())[0] ?? "@").toLocaleUpperCase(locale);
+  // BR-B2B-067 item 2.b, DS-COMPONENTE-133: the authorized name above the @, or the @ alone.
+  const name = creatorTitleOf(page);
+  const initial = (Array.from(page.publishedName ?? page.name)[0] ?? "@").toLocaleUpperCase(locale);
   const hasRoutes = page.routes.length > 0;
   // The moderated photo by the public @, never a storage address; null draws the initial.
   const photoUrl = creatorPhotoSrc(page);
@@ -96,7 +97,7 @@ export async function CreatorPageView({ page, locale, dbLang }: CreatorPageViewP
         chip={t("badgeCreator")}
         name={name}
         verifiedLabel={page.verified ? t("verifiedA11y") : undefined}
-        subline={`@${page.name}`}
+        subline={page.publishedName ? `@${page.name}` : undefined}
       />
 
       {page.bio && (

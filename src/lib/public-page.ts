@@ -60,7 +60,13 @@ export interface CreatorPage {
   kind: "creator";
   clientId: string;
   name: string;
-  displayName: string;
+  /**
+   * The name of the account shown above the @, only while the creator keeps
+   * the authorization on (BR-B2B-067 item 2.b, BR-USUARIO-050 item 2.d): the
+   * resolver sends `display_name` as `drive.published_name`, or the @ without
+   * it. Null when it is the @, so the @ is never shown twice (DS-COMPONENTE-133).
+   */
+  publishedName: string | null;
   photoKey: string | null;
   verified: boolean;
   bio: string | null;
@@ -186,6 +192,18 @@ function listOf<T>(value: unknown, pick: (row: Json) => T | null): T[] {
   });
 }
 
+/** `display_name` of the resolver when it is a name of its own, null when it is the @ (or absent). */
+function publishedNameOf(value: unknown, name: string): string | null {
+  const shown = text(value)?.trim() ?? null;
+  return shown && shown !== name ? shown : null;
+}
+
+/**
+ * The title of a creator: the authorized name, or the @ (BR-B2B-067 item 2.b).
+ * The page, its alt text and its share card all say this one.
+ */
+export const creatorTitleOf = (page: CreatorPage): string => page.publishedName ?? `@${page.name}`;
+
 /**
  * The answer of the resolver as the page reads it. A missing new field is
  * the same as `null` (DS-COMPONENTE-110: a block without content does not
@@ -227,7 +245,7 @@ export function parsePublicPage(data: unknown): PublicPage {
         kind: "creator",
         clientId,
         name,
-        displayName: text(data.display_name) ?? name,
+        publishedName: publishedNameOf(data.display_name, name),
         photoKey: text(data.photo_key),
         verified: data.verified === true,
         bio: text(data.bio),
@@ -302,28 +320,40 @@ export function creatorPhotoSrc(page: CreatorPage): string | null {
 /** The image types the moderated copy can be. Anything else is not served. */
 const PHOTO_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 
-export interface CreatorPhoto {
+export interface PublicPhoto {
   bytes: ArrayBuffer;
   contentType: string;
 }
 
 /**
- * The bytes of the creator's moderated photo, read with service_role on this
- * server (BR-B2B-067 item 2.b, BR-USUARIO-052 item 2.e). Null when there is
- * none to serve; the log never names the key, which carries the account id.
+ * The bytes behind `tuggi.app/@<name>/photo`: the moderated copy of the
+ * account (BR-USUARIO-052 item 2.e) when the photo of that exact @ is public,
+ * a creator with a page (BR-B2B-067 item 2.b) or a guide shown in "Parceiros"
+ * (BR-B2B-064 item 4.a). The database decides both cases in one place,
+ * `partner.public_photo_key` (contract `parceiro-sem-local.md` 8.7), and the
+ * key never leaves this server.
+ *
+ * Null for every name without a public photo, and for an object that could
+ * not be read: the one 404. Throws when the database did not answer, so a
+ * failure is never served as "no photo". The log never names the key, which
+ * carries the account id.
  */
-export async function fetchCreatorPhoto(page: CreatorPage): Promise<CreatorPhoto | null> {
-  if (!page.photoKey) return null;
-  const { data, error } = await getSupabaseClient("serviceRole")
-    .storage.from("profile-photos")
-    .download(page.photoKey);
-  if (error || !data) {
-    console.error("profile-photos: could not read the creator photo", error?.message ?? "no data");
+export async function fetchPublicPhoto(rawName: string): Promise<PublicPhoto | null> {
+  const name = publicNameOf(rawName);
+  if (!name) return null;
+  const client = getSupabaseClient("serviceRole");
+  const { data: key, error } = await client.schema("partner").rpc("public_photo_key", { p_name: name });
+  if (error) throw new Error(`partner.public_photo_key: ${error.code} ${error.message}`);
+  if (typeof key !== "string" || !key) return null;
+
+  const { data, error: downloadError } = await client.storage.from("profile-photos").download(key);
+  if (downloadError || !data) {
+    console.error("profile-photos: could not read the public photo", downloadError?.message ?? "no data");
     return null;
   }
   const contentType = data.type.split(";")[0].trim().toLowerCase();
   if (!PHOTO_TYPES.has(contentType)) {
-    console.error("profile-photos: the creator photo is not an image type the page serves", contentType || "none");
+    console.error("profile-photos: the public photo is not an image type the page serves", contentType || "none");
     return null;
   }
   return { bytes: await data.arrayBuffer(), contentType };

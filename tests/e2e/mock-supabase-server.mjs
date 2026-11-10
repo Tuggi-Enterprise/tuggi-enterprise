@@ -486,6 +486,19 @@ const PUBLIC_PAGE_FIXTURES = {
     // A link where a name goes and a network outside the list: only TikTok is drawn.
     social: { instagram: "https://www.instagram.com/carla", tiktok: "carla.dias", twitter: "carla" },
   },
+  // BR-B2B-067 item 2.b (#1185): no authorization, so the resolver sends the @ as `display_name`.
+  "e2e-criador-sem-nome": {
+    state: "page",
+    kind: "creator",
+    client_id: "7e7e7e7e-7e7e-4e7e-8e7e-7e7e7e7e7e7e",
+    name: "e2e-criador-sem-nome",
+    display_name: "e2e-criador-sem-nome",
+    photo_key: null,
+    verified: true,
+    bio: null,
+    routes: [],
+    discovered_pois: [],
+  },
   "e2e-sem-logo": {
     state: "page",
     kind: "client",
@@ -537,6 +550,16 @@ const PUBLIC_PAGE_FIXTURES = {
     discovered_pois: [],
   },
 };
+
+/**
+ * `partner.public_photo_key` (#1185, contract parceiro-sem-local.md 8.7): the
+ * key of the exact @ whose photo is public, a creator with a page or a guide
+ * shown in "Parceiros"; `null` for every other name. The guide has no page in
+ * the resolver on purpose: the photo route must not ask it. PUBLIC_PHOTO_FAILS
+ * answers an error, the database that did not answer.
+ */
+const PUBLIC_PHOTO_KEYS = { "e2e-criador-foto": PHOTO_KEY, "e2e-guia-listado": PHOTO_KEY };
+const PUBLIC_PHOTO_FAILS = new Set(["e2e-foto-instavel"]);
 
 /**
  * `partner.report_public_page_as` (#1141, contract identidade-publica.md,
@@ -948,6 +971,24 @@ const server = http.createServer((req, res) => {
           ? { state: "page", kind: "client", client_id: client.id, name: key, verified: true, attributes: true }
           : null;
       sendJson(res, 200, PUBLIC_PAGE_FIXTURES[key] ?? approved ?? { state: "not_found" });
+    });
+    return;
+  }
+
+  if (url.pathname === "/rest/v1/rpc/public_photo_key" && req.method === "POST") {
+    readBody(req).then((raw) => {
+      let name = "";
+      try {
+        name = String(JSON.parse(raw || "{}").p_name ?? "");
+      } catch {
+        // Malformed body: an unknown name.
+      }
+      const key = name.replace(/^@/, "");
+      if (PUBLIC_PHOTO_FAILS.has(key)) {
+        sendJson(res, 500, { code: "57014", message: "canceling statement due to statement timeout" });
+        return;
+      }
+      sendJson(res, 200, Object.hasOwn(PUBLIC_PHOTO_KEYS, key) ? PUBLIC_PHOTO_KEYS[key] : null);
     });
     return;
   }

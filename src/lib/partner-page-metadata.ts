@@ -4,7 +4,7 @@ import { buildTwitterCard, defaultRobots } from "@/lib/seo";
 import { PRODUCT_FACTS } from "@/lib/product-facts";
 import { SITE_URL } from "@/lib/app-meta";
 import type { PartnerData } from "@/lib/partner";
-import type { CreatorPage } from "@/lib/public-page";
+import { creatorTitleOf, type CreatorPage } from "@/lib/public-page";
 
 const OG_IMAGE = "/images/og-image-tuggi.jpg";
 
@@ -56,7 +56,8 @@ export async function clientPageMetadata(
 /** The metadata of a creator page: indexable, canonical at `/@nome` (DS-COMPONENTE-110). */
 export async function creatorPageMetadata(locale: string, page: CreatorPage): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: "PartnerPage" });
-  const name = page.displayName;
+  // The share card follows the page: the authorized name, or the @ (BR-B2B-067 item 2.b).
+  const name = creatorTitleOf(page);
   const title = t("metaTitleCreator", { name });
   const description = page.bio ? clamp(page.bio) : t("metaDescCreator", { name });
   const canonical = `/@${page.name}`;
