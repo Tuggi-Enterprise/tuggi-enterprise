@@ -345,9 +345,11 @@ const captureFirstTouch = async (pId: string): Promise<string | null> => {
 
 /**
  * The partner's first touch on this page load, and the click id that credits
- * it — BR-B2B-002. The single owner of the capture: `/d/{slug}` (PartnerHero)
- * and `/@nome` (the creator page) both call it, so there is one capture rule
- * and one place that can open a row (BR-B2B-037 item 2, BR-B2B-067 item 3).
+ * it — BR-B2B-002. The single owner of the capture: `/d/{slug}` (PartnerHero),
+ * `/@nome` (the creator page) and `/r/<slug>` (a creator's route, for its
+ * author, `RouteStoreBadge`) all call it, so there is one capture rule and one
+ * place that can open a row (BR-B2B-037 item 2, BR-B2B-067 item 3,
+ * BR-ROTA-005 item 8.a).
  *
  * Returns this browser's stored click id or, on a first visit, the one the
  * capture just returned. Null when there is no partner to credit: the store

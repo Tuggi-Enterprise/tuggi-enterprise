@@ -2,9 +2,8 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { headers } from "next/headers";
 import { permanentRedirect } from "next/navigation";
-import { getRouteLink, routeLinkOf } from "@/lib/route-link";
+import { getRouteLink, getRouteShareMeta, routeLinkOf } from "@/lib/route-link";
 import { APP_STORE_ID } from "@/lib/app-meta";
-import { buildTwitterCard } from "@/lib/seo";
 import { RouteLinkView } from "@/components/blocks/RouteLinkView";
 
 /**
@@ -19,10 +18,13 @@ import { RouteLinkView } from "@/components/blocks/RouteLinkView";
  * Rendered per request and never cached, like `/c/`: whether a route is
  * available is the database's answer at the time of the visit. Like `/c/` and
  * `/d/`, the URL carries no locale — `middleware.ts` rewrites it.
+ *
+ * The preview image is the segment's `opengraph-image.tsx` (BR-ROTA-005 item
+ * 8.b, #1222): Next names it in `og:image` on its own, and a file image wins
+ * over any `openGraph.images` written here, so none is written. The twitter
+ * card names no image either: Next hands it the same card.
  */
 export const dynamic = "force-dynamic";
-
-const OG_IMAGE = "/images/og-image-tuggi.jpg";
 
 type Params = Promise<{ locale: string; slug: string }>;
 
@@ -52,9 +54,8 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
       description,
       siteName: "TUGGI",
       type: "website",
-      images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "TUGGI" }],
     },
-    twitter: buildTwitterCard({ title, description, image: OG_IMAGE }),
+    twitter: { card: "summary_large_image", title, description },
     // Safari's Smart App Banner, on this page only (#946): "Open" with the app
     // installed, "Get" without it. The argument is the route's link, which the
     // app reads as it reads the Universal Link.
@@ -68,7 +69,9 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 export default async function RouteLinkPage({ params }: { params: Params }) {
   const { locale, slug } = await params;
   setRequestLocale(locale);
-  const route = await getRouteLink(slug, locale);
+  // In parallel: the share meta must not add a round trip in front of the
+  // page, and the page never waits on it to exist (contract §5a).
+  const [route, meta] = await Promise.all([getRouteLink(slug, locale), getRouteShareMeta(slug)]);
 
   // An old slug (the history) or a slug typed in another case: one canonical
   // URL, as a permanent redirect — the same rule `/d/` follows.
@@ -76,5 +79,10 @@ export default async function RouteLinkPage({ params }: { params: Params }) {
     permanentRedirect(`/r/${encodeURIComponent(route.slug)}`);
   }
 
-  return <RouteLinkView route={route} userAgent={(await headers()).get("user-agent")} />;
+  // BR-ROTA-005 item 8.a: only the author of the route this page shows. The
+  // slug check keeps a meta row that resolved elsewhere from crediting anyone.
+  const partnerId =
+    route.status === "available" && meta?.slug === route.slug ? (meta.authorPartnerId ?? undefined) : undefined;
+
+  return <RouteLinkView route={route} userAgent={(await headers()).get("user-agent")} partnerId={partnerId} />;
 }

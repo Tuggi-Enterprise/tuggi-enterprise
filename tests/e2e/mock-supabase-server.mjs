@@ -355,9 +355,80 @@ const ROUTE_FIXTURES = {
     country: null,
     partner_name: "Pousada Mar Azul",
   },
+  // Creators' routes (#1222): the share meta below names their author.
+  "roteiro-da-criadora-k3v9q2mz7c0d": {
+    ...ROUTE_ROW,
+    id: "1222a001-5b6c-4d7e-8f90-a1b2c3d4e5f6",
+    name: "Praias de Arraial",
+    slug: "roteiro-da-criadora-k3v9q2mz7c0d",
+    region: "Arraial do Cabo",
+  },
+  "roteiro-de-lisboa-m4x8w2r6t0yq": {
+    ...ROUTE_ROW,
+    id: "1222a002-5b6c-4d7e-8f90-a1b2c3d4e5f6",
+    name: "Lisboa a pé",
+    slug: "roteiro-de-lisboa-m4x8w2r6t0yq",
+    region: "Lisboa",
+    country: "Portugal",
+  },
+  "roteiro-sem-capa-p3n7v1c5x9za": {
+    ...ROUTE_ROW,
+    id: "1222a003-5b6c-4d7e-8f90-a1b2c3d4e5f6",
+    name: "Sem capa",
+    slug: "roteiro-sem-capa-p3n7v1c5x9za",
+  },
+  "capa-recusada-h2j6k0m4q8st": {
+    ...ROUTE_ROW,
+    id: "1222a004-5b6c-4d7e-8f90-a1b2c3d4e5f6",
+    name: "Capa recusada",
+    slug: "capa-recusada-h2j6k0m4q8st",
+  },
   "em-revisao": { ...ROUTE_ROW, name: null, slug: "em-revisao", availability: "pending_review" },
   "tirado-do-ar": { ...ROUTE_ROW, slug: "tirado-do-ar", availability: "removed_by_author" },
   "removido": { ...ROUTE_ROW, name: null, slug: "removido", availability: "removed_by_moderation" },
+};
+/**
+ * `core.get_route_share_meta` (#1221, contract link-da-rota.md §5a): the author's
+ * creator record and the cover of a route whose page is whole. A route in
+ * review or removed answers no row. Every slug NOT listed answers 404 PGRST202,
+ * which is production before migration 20261120130000, so every older /r/ spec
+ * goes through the page without the meta, as production does today.
+ *
+ * The cover key has the production shape, `<account id>/<diary>/<photo>.jpg`,
+ * so a spec can prove the account id never reaches the visitor.
+ */
+const ROUTE_COVER_OWNER_UID = "4b1c9d2e-7a3f-4e5d-8c6b-1222c0ffee00";
+const ROUTE_COVER_KEY = `${ROUTE_COVER_OWNER_UID}/2f4e6a8c-1b3d-4f5a-9c7e-0d2b4f6a8c1e/5a7c9e1b-3d5f-4a6c-8e0b-2d4f6a8c0e2a.jpg`;
+/** A key the storage double refuses: the object is gone or the policy says no. */
+const ROUTE_COVER_REFUSED_KEY = `${ROUTE_COVER_OWNER_UID}/2f4e6a8c-1b3d-4f5a-9c7e-0d2b4f6a8c1e/0000dead-3d5f-4a6c-8e0b-2d4f6a8c0e2a.jpg`;
+/** A real photo-sized JPEG of the site, so the card has something to draw. */
+const ROUTE_COVER_JPEG = readFileSync(new URL("../../public/images/app/trail-detail.jpg", import.meta.url));
+const shareMetaOf = (slug, author_partner_id, cover_photo_key) => [
+  { route_id: ROUTE_FIXTURES[slug]?.id ?? null, slug, author_partner_id, cover_photo_key },
+];
+const ROUTE_SHARE_META = {
+  "roteiro-da-criadora-k3v9q2mz7c0d": shareMetaOf(
+    "roteiro-da-criadora-k3v9q2mz7c0d",
+    "1222b001-6c7d-4e8f-9a01-b2c3d4e5f6a7",
+    ROUTE_COVER_KEY
+  ),
+  // Visited only from a gated territory: its partner may never get a row.
+  "roteiro-de-lisboa-m4x8w2r6t0yq": shareMetaOf(
+    "roteiro-de-lisboa-m4x8w2r6t0yq",
+    "1222b002-6c7d-4e8f-9a01-b2c3d4e5f6a7",
+    ROUTE_COVER_KEY
+  ),
+  "roteiro-sem-capa-p3n7v1c5x9za": shareMetaOf(
+    "roteiro-sem-capa-p3n7v1c5x9za",
+    "1222b003-6c7d-4e8f-9a01-b2c3d4e5f6a7",
+    null
+  ),
+  "capa-recusada-h2j6k0m4q8st": shareMetaOf("capa-recusada-h2j6k0m4q8st", null, ROUTE_COVER_REFUSED_KEY),
+  // A CMS route: a row, and nobody to credit.
+  "roteiro-do-hotel-3f9a1c": shareMetaOf("roteiro-do-hotel-3f9a1c", null, null),
+  "em-revisao": [],
+  "tirado-do-ar": [],
+  "removido": [],
 };
 /** `get_custom_route_by_id` for the legacy `/route/<uuid>` link. */
 const ROUTE_BY_ID = { [ROUTE_ROW.id]: ROUTE_ROW };
@@ -937,6 +1008,37 @@ const server = http.createServer((req, res) => {
       const row = ROUTE_FIXTURES[slug];
       sendJson(res, 200, row ? [row] : []);
     });
+    return;
+  }
+
+  if (url.pathname === "/rest/v1/rpc/get_route_share_meta" && req.method === "POST") {
+    readBody(req).then((raw) => {
+      let slug = "";
+      try {
+        slug = String(JSON.parse(raw || "{}").p_slug ?? "");
+      } catch {
+        // Malformed body: an unknown slug.
+      }
+      const rows = ROUTE_SHARE_META[slug];
+      if (!rows) {
+        sendJson(res, 404, { code: "PGRST202", message: "Could not find the function core.get_route_share_meta" });
+        return;
+      }
+      sendJson(res, 200, rows);
+    });
+    return;
+  }
+
+  // `download` of supabase-js: GET /object/<bucket>/<key>, read as `anon` with
+  // the publishable key (the Storage policy opens a public cover).
+  if (url.pathname.startsWith("/storage/v1/object/travel-diary-photos/") && req.method === "GET") {
+    const key = decodeURIComponent(url.pathname.slice("/storage/v1/object/travel-diary-photos/".length));
+    if (key === ROUTE_COVER_KEY) {
+      res.writeHead(200, { "content-type": "image/jpeg", "content-length": ROUTE_COVER_JPEG.length });
+      res.end(ROUTE_COVER_JPEG);
+    } else {
+      sendJson(res, 400, { statusCode: "404", error: "not_found", message: "Object not found" });
+    }
     return;
   }
 

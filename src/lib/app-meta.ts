@@ -125,6 +125,30 @@ export function buildPlayStoreUrl(clickId?: string | null): string {
   return `${PLAY_STORE_URL}&referrer=${encodeURIComponent(token)}`;
 }
 
+/**
+ * The Play link of the route page, `tuggi.app/r/<slug>` (contract
+ * `link-da-rota.md` §3, BR-ROTA-005 items 6 and 8.a). Play hands `referrer` to
+ * the app on its first launch, and the app reads two things from it:
+ *
+ *  - `tuggi_route=<slug>` (`slugFromInstallReferrer`, `tuggi-drive-v2`
+ *    `src/modules/customRoutes/utils/routeLink.ts`), which opens the route;
+ *  - this browser's partner click, the same `tuggi_click_<uuid>` and the same
+ *    `clickToken` as `buildPlayStoreUrl` above, whenever there is one. On a
+ *    creator's route it is the author's first touch (#1222).
+ *
+ * The token rides as a segment of its own, without `=`: the app finds it
+ * anywhere in the referrer (`InstallReferrerService` › `parseAttributionToken`)
+ * and the slug reader skips a segment that has no value. Kept here and not in
+ * `route-link.ts` because the click id only exists in the browser, and that
+ * module talks to the database.
+ */
+export function routePlayStoreUrl(slug: string, clickId?: string | null): string {
+  const token = clickToken(clickId);
+  const tags = `utm_source=tuggi_site&utm_medium=route_link&utm_campaign=route&tuggi_route=${slug}`;
+  const referrer = token ? `${tags}&${token}` : tags;
+  return `${PLAY_STORE_URL}&referrer=${encodeURIComponent(referrer)}`;
+}
+
 /** Public social profiles for schema.org `sameAs`. */
 export const SOCIAL_PROFILES: string[] = [
   "https://www.linkedin.com/company/tuggi/",

@@ -174,6 +174,7 @@ const SCENE =
 const WAIVED: Waiver[] = [
   // ── Brand marks and legal identifiers ────────────────────────────────────
   { file: "app/[locale]/d/[slug]/opengraph-image.tsx", texts: ["TUGGI"], reason: BRAND },
+  { file: "app/[locale]/r/[slug]/opengraph-image.tsx", texts: ["TUGGI"], reason: BRAND },
   { file: "app/[locale]/tours/[country]/[slug]/opengraph-image.tsx", texts: ["TUGGI"], reason: BRAND },
   { file: "app/[locale]/purpose/page.tsx", texts: ["TUGGI Manifesto"], reason: BRAND },
   { file: "components/blocks/CityOSHero.tsx", texts: ["Tuggi - CITY OS"], reason: BRAND },

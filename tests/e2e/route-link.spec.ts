@@ -1,5 +1,7 @@
 import { test, expect, devices, type APIRequestContext, type Page } from "@playwright/test";
 import { MOCK_SUPABASE_PORT, E2E_PUBLISHABLE_KEY } from "../../playwright.config";
+import { PLAY_STORE_URL, routePlayStoreUrl } from "../../src/lib/app-meta";
+import { ATTRIBUTION_COOKIE, ATTRIBUTION_IP_PATH } from "../../src/lib/attribution";
 import { visitorHeaders } from "./visitor-headers";
 
 /**
@@ -15,7 +17,9 @@ import { visitorHeaders } from "./visitor-headers";
  *    link, the Copy button copies the code.
  *
  * Data from `get_custom_route_by_slug` / `get_custom_route_by_id` in
- * mock-supabase-server.mjs (ROUTE_FIXTURES).
+ * mock-supabase-server.mjs (ROUTE_FIXTURES), and the share meta of #1222 from
+ * `get_route_share_meta` (ROUTE_SHARE_META): the author's capture and the
+ * preview with the cover, BR-ROTA-005 item 8.
  */
 
 const MOCK_BASE = `http://127.0.0.1:${MOCK_SUPABASE_PORT}`;
@@ -107,7 +111,8 @@ test.describe("route page /r/<slug> — served HTML (#946)", () => {
     expect(playLink).toBeTruthy();
     const referrer = new URL(playLink.replace(/&amp;/g, "&")).searchParams.get("referrer") ?? "";
     expect(new URLSearchParams(referrer).get("tuggi_route")).toBe("litoral-norte");
-    // No partner token: the route page does not run the partner capture.
+    // No partner token in the served HTML: the click id only exists in the
+    // browser, after the capture (#1222, the browser half below).
     expect(referrer).not.toContain("tuggi_click_");
   });
 
@@ -248,5 +253,228 @@ test.describe("route page /r/<slug> — in the browser (#946)", () => {
     await page.getByTestId("route-code-copy").click();
     await expect(page.getByRole("status").filter({ hasText: "Copiado" })).toHaveCount(1);
     expect(await page.evaluate(() => navigator.clipboard.readText())).toBe("litoral-norte");
+  });
+});
+
+/* ---------------------------------------------------------------------------
+ * #1222: the link of a creator's route credits its author, and its preview
+ * shows the route (BR-ROTA-005 item 8; contract link-da-rota.md §5a)
+ * ------------------------------------------------------------------------- */
+
+const CREATOR_ROUTE = "roteiro-da-criadora-k3v9q2mz7c0d";
+const CREATOR_PARTNER_ID = "1222b001-6c7d-4e8f-9a01-b2c3d4e5f6a7";
+/** Visited only from a gated territory in this file, so its partner never gets a row. */
+const GATED_ROUTE = "roteiro-de-lisboa-m4x8w2r6t0yq";
+const GATED_PARTNER_ID = "1222b002-6c7d-4e8f-9a01-b2c3d4e5f6a7";
+const NO_COVER_ROUTE = "roteiro-sem-capa-p3n7v1c5x9za";
+const REFUSED_COVER_ROUTE = "capa-recusada-h2j6k0m4q8st";
+/** A CMS route: the share meta answers a row with nobody to credit. */
+const CMS_ROUTE = "roteiro-do-hotel-3f9a1c";
+/** The account id inside the cover key of the double (ROUTE_COVER_OWNER_UID). */
+const COVER_OWNER_UID = "4b1c9d2e-7a3f-4e5d-8c6b-1222c0ffee00";
+const COVER_KEY = `${COVER_OWNER_UID}/2f4e6a8c-1b3d-4f5a-9c7e-0d2b4f6a8c1e/5a7c9e1b-3d5f-4a6c-8e0b-2d4f6a8c0e2a.jpg`;
+const CLICK_ID = "9c858901-8a57-4791-81fe-4c455b099bc9";
+/** This file's own address: the capture's write budget counts per address. */
+const SPEC_ADDRESS = `2001:db8:1222:1::${Math.floor(Math.random() * 0xffff).toString(16)}`;
+const STORAGE_LEAKS = ["travel-diary-photos", "/sign/", "token=", COVER_OWNER_UID, COVER_KEY];
+
+const referrerOf = (playLink: string) =>
+  new URL(playLink.replace(/&amp;/g, "&")).searchParams.get("referrer") ?? "";
+const ogImageOf = (body: string) =>
+  /<meta property="og:image" content="([^"]+)"/.exec(body)?.[1] ?? "";
+
+async function fingerprintOf(partnerId: string): Promise<unknown> {
+  const res = await fetch(`${MOCK_BASE}/__fingerprints?partner_id=${partnerId}`);
+  return ((await res.json()) as { row: unknown }).row;
+}
+
+/** The share card of a route, fetched the way a preview robot does: the og:image of the page. */
+async function cardOf(request: APIRequestContext, slug: string): Promise<{ url: string; bytes: Buffer }> {
+  const { body } = await html(request, `/r/${slug}`);
+  const url = ogImageOf(body);
+  const res = await request.get(new URL(url).pathname + new URL(url).search);
+  expect(res.status(), url).toBe(200);
+  expect(res.headers()["content-type"]).toBe("image/png");
+  return { url, bytes: await res.body() };
+}
+
+test.describe("BR-ROTA-005 item 8.a: the route's Play link carries the slug and the click (#1222)", () => {
+  test("with a click id, `tuggi_route=<slug>` and `tuggi_click_<uuid>` ride in the same referrer", () => {
+    const referrer = referrerOf(routePlayStoreUrl(CREATOR_ROUTE, CLICK_ID));
+    expect(routePlayStoreUrl(CREATOR_ROUTE, CLICK_ID).startsWith(`${PLAY_STORE_URL}&referrer=`)).toBe(true);
+    expect(new URLSearchParams(referrer).get("tuggi_route")).toBe(CREATOR_ROUTE);
+    // A segment of its own, without `=`: the app finds the token anywhere in
+    // the referrer and its slug reader skips a segment that has no value.
+    expect(referrer.split("&")).toContain(`tuggi_click_${CLICK_ID}`);
+    expect(referrer.split("&").filter((pair) => !pair.includes("="))).toEqual([`tuggi_click_${CLICK_ID}`]);
+  });
+
+  test("without a click id, or with one that is not a UUID, nothing but the slug and the tags", () => {
+    for (const clickId of [null, undefined, "", "not-a-uuid", CREATOR_PARTNER_ID.slice(1)]) {
+      const referrer = referrerOf(routePlayStoreUrl(CREATOR_ROUTE, clickId));
+      expect(referrer).toBe(
+        `utm_source=tuggi_site&utm_medium=route_link&utm_campaign=route&tuggi_route=${CREATOR_ROUTE}`
+      );
+    }
+  });
+});
+
+test.describe("BR-ROTA-005 item 8.b: the preview of a creator's route (#1222)", () => {
+  test("og:image names the site's own card, and nothing of the storage reaches the document", async ({ request }) => {
+    const { body } = await html(request, `/r/${CREATOR_ROUTE}`);
+    expect(ogImageOf(body)).toMatch(
+      new RegExp(`^http://127\\.0\\.0\\.1:3100/pt/r/${CREATOR_ROUTE}/opengraph-image(?:-\\w+)?(?:\\?[\\w-]+)?$`)
+    );
+    expect(body).toContain('<meta property="og:image:type" content="image/png"/>');
+    // The default picture is drawn by the card when it has to be, never named
+    // by the page (JSON-LD keeps its own screenshot, outside the preview).
+    expect(body).not.toMatch(/<meta[^>]+og-image-tuggi\.jpg/);
+    // Next hands the same card to the twitter card, which names no image of its own.
+    expect(/<meta name="twitter:image" content="([^"]+)"/.exec(body)?.[1]).toBe(ogImageOf(body));
+    for (const leak of STORAGE_LEAKS) expect(body, `the document carries ${leak}`).not.toContain(leak);
+  });
+
+  test("the RSC payload carries the author's record for the capture, and no cover key", async ({ request }) => {
+    const res = await request.get(`/r/${CREATOR_ROUTE}`, { headers: { "user-agent": IPHONE_UA, RSC: "1" } });
+    expect(res.headers()["content-type"]).toContain("text/x-component");
+    const payload = await res.text();
+    expect(payload).toContain(CREATOR_PARTNER_ID);
+    for (const leak of STORAGE_LEAKS) expect(payload, `the payload carries ${leak}`).not.toContain(leak);
+  });
+
+  test("the card draws the cover, read with the publishable key, and answers nothing of the storage", async ({ request }) => {
+    const cover = await cardOf(request, CREATOR_ROUTE);
+    const fallback = await cardOf(request, NO_COVER_ROUTE);
+    expect(cover.bytes.subarray(1, 4).toString()).toBe("PNG");
+    expect(cover.bytes.equals(fallback.bytes)).toBe(false);
+
+    const keys = (await (await request.get(`${MOCK_BASE}/__apikeys`)).json()) as { byRoute: Record<string, string> };
+    expect(keys.byRoute["POST /rest/v1/rpc/get_route_share_meta"]).toBe(E2E_PUBLISHABLE_KEY);
+    expect(keys.byRoute[`GET /storage/v1/object/travel-diary-photos/${COVER_KEY}`]).toBe(E2E_PUBLISHABLE_KEY);
+
+    const res = await request.get(new URL(cover.url).pathname + new URL(cover.url).search, { maxRedirects: 0 });
+    expect(res.headers()["location"]).toBeUndefined();
+    expect(JSON.stringify(res.headers())).not.toContain(COVER_OWNER_UID);
+  });
+
+  test("no cover, a refused download, no meta yet (PGRST202), a route in review or unknown: the default card", async ({ request }) => {
+    // Six pages and six cards drawn on the server.
+    test.slow();
+    // The default card of the site, as the partner page without a seal serves it.
+    const generic = await request.get("/pt/d/e2e-sem-logo/opengraph-image");
+    expect(generic.status()).toBe(200);
+    const genericBytes = await generic.body();
+    for (const slug of [NO_COVER_ROUTE, REFUSED_COVER_ROUTE, "litoral-norte", CMS_ROUTE, "em-revisao", "nao-existe"]) {
+      const { bytes } = await cardOf(request, slug);
+      expect(bytes.equals(genericBytes), `${slug} is not the default card`).toBe(true);
+    }
+  });
+});
+
+test.describe("BR-ROTA-005 item 8.a: the page of a creator's route captures for the author (#1222)", () => {
+  test.use({
+    locale: "pt-BR",
+    extraHTTPHeaders: { ...visitorHeaders({ country: "BR", address: SPEC_ADDRESS }), "accept-language": "pt-BR,pt;q=0.9" },
+  });
+
+  function capturesOn(page: Page): string[] {
+    const posts: string[] = [];
+    page.on("request", (req) => {
+      if (req.method() === "POST" && new URL(req.url()).pathname === "/api/attribution") posts.push(req.postData() ?? "");
+    });
+    return posts;
+  }
+
+  test("BR-B2B-002: with an author, the capture of /@nome runs once, for the author", async ({ page, context }) => {
+    // The IPv4 complement that follows a capture goes to the app's Edge
+    // Function; its own spec proves it. Answered here so the page settles.
+    await page.route(`**${ATTRIBUTION_IP_PATH}`, (route) => route.fulfill({ status: 204 }));
+    const posts = capturesOn(page);
+    const captured = page.waitForResponse(
+      (res) => new URL(res.url()).pathname === "/api/attribution" && res.request().method() === "POST"
+    );
+    await page.goto(`/r/${CREATOR_ROUTE}`);
+    const answer = (await (await captured).json()) as { click_id: string | null; first_touch: boolean };
+    expect(answer.first_touch).toBe(true);
+    expect(answer.click_id).toMatch(/^[0-9a-f-]{36}$/);
+    expect(posts).toHaveLength(1);
+    expect(JSON.parse(posts[0]).partner_id).toBe(CREATOR_PARTNER_ID);
+    await expect.poll(() => fingerprintOf(CREATOR_PARTNER_ID)).not.toBeNull();
+    expect((await context.cookies()).some((c) => c.name === ATTRIBUTION_COOKIE)).toBe(true);
+    await page.waitForLoadState("networkidle");
+    expect(posts).toHaveLength(1);
+  });
+
+  for (const [slug, why] of [
+    [CMS_ROUTE, "a CMS route credits nobody"],
+    ["litoral-norte", "PGRST202, the meta not applied yet"],
+  ] as const) {
+    test(`no author, no capture: ${why}, and the page still renders whole`, async ({ page }) => {
+      const posts = capturesOn(page);
+      await page.goto(`/r/${slug}`);
+      await expect(page.getByTestId("route-available")).toBeVisible();
+      await expect(page.getByTestId("route-code")).toBeVisible();
+      await page.waitForLoadState("networkidle");
+      expect(posts).toEqual([]);
+    });
+  }
+
+  test.describe("on Android", () => {
+    test.use({ userAgent: ANDROID_UA });
+
+    test("item 6 and 8.a: after the capture, the Play badge carries the slug and the author's click", async ({ page }) => {
+      const captured = page.waitForResponse(
+        (res) => new URL(res.url()).pathname === "/api/attribution" && res.request().method() === "POST"
+      );
+      await page.goto(`/r/${CREATOR_ROUTE}`);
+      const { click_id: clickId } = (await (await captured).json()) as { click_id: string };
+      const badge = page.getByTestId("route-store-play");
+      await expect(badge).toHaveAttribute("href", /tuggi_click_/);
+      const referrer = referrerOf((await badge.getAttribute("href")) ?? "");
+      expect(new URLSearchParams(referrer).get("tuggi_route")).toBe(CREATOR_ROUTE);
+      expect(referrer.split("&")).toContain(`tuggi_click_${clickId}`);
+    });
+  });
+
+  test("item 8.a: on the iPhone the store tap leaves the route's link in the pasteboard, never the click", async ({ page }) => {
+    await page.context().route(/apps\.apple\.com|play\.google\.com/, (route) =>
+      route.fulfill({ status: 200, contentType: "text/html", body: "<html>store stub</html>" })
+    );
+    const captured = page.waitForResponse(
+      (res) => new URL(res.url()).pathname === "/api/attribution" && res.request().method() === "POST"
+    );
+    await page.goto(`/r/${CREATOR_ROUTE}`);
+    expect(((await (await captured).json()) as { click_id: string | null }).click_id).toBeTruthy();
+    const popup = page.context().waitForEvent("page");
+    await page.getByTestId("route-store-app").click();
+    await (await popup).close();
+    await expect(page.getByTestId("route-copied-note")).not.toBeEmpty();
+    const pasted = await page.evaluate(() => navigator.clipboard.readText());
+    expect(pasted).toBe(`https://tuggi.app/r/${CREATOR_ROUTE}`);
+    expect(pasted).not.toContain("tuggi_click_");
+  });
+});
+
+test.describe("BR-USUARIO-033: a creator's route opened where consent comes first (#1222)", () => {
+  test.use({
+    locale: "pt-BR",
+    userAgent: ANDROID_UA,
+    extraHTTPHeaders: { ...visitorHeaders({ country: "PT", address: SPEC_ADDRESS }), "accept-language": "pt-PT,pt;q=0.9" },
+  });
+
+  test("without consent nothing is captured: the server refuses, no row, no cookie, no click in the Play link", async ({ page, context }) => {
+    const captured = page.waitForResponse(
+      (res) => new URL(res.url()).pathname === "/api/attribution" && res.request().method() === "POST"
+    );
+    await page.goto(`/r/${GATED_ROUTE}`);
+    const answer = (await (await captured).json()) as { click_id: string | null; consent_required?: boolean };
+    expect(answer).toMatchObject({ click_id: null, consent_required: true });
+    await page.waitForLoadState("networkidle");
+
+    expect(await fingerprintOf(GATED_PARTNER_ID)).toBeNull();
+    expect((await context.cookies()).some((c) => c.name === ATTRIBUTION_COOKIE)).toBe(false);
+    const referrer = referrerOf((await page.getByTestId("route-store-play").getAttribute("href")) ?? "");
+    expect(new URLSearchParams(referrer).get("tuggi_route")).toBe(GATED_ROUTE);
+    expect(referrer).not.toContain("tuggi_click_");
   });
 });

@@ -22,7 +22,7 @@ import {
   lookupPartnerSlug,
   PARTNER_CACHE_SECONDS,
 } from "@/lib/partner";
-import { publicAssetDataUrl } from "@/lib/public-asset";
+import { defaultShareCard } from "@/lib/default-share-card";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
@@ -83,10 +83,6 @@ export async function generateStaticParams(): Promise<Params[]> {
 const FONT =
   "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
 
-// Read inside the card and memoised, never at module scope: on the Worker a
-// module-scope read took the whole page down with it (`src/lib/public-asset.ts`).
-const FALLBACK_IMAGE_PATH = "images/og-image-tuggi.jpg";
-
 /**
  * Satori fetches remote images itself, but a failure there throws and the whole
  * card is lost. Fetching here keeps the failure local: no seal, static card.
@@ -105,16 +101,8 @@ async function fetchSealDataUri(url: string): Promise<string | null> {
 }
 
 /** The image the route served before partner seals existed. */
-async function staticCard() {
-  const FALLBACK_IMAGE = await publicAssetDataUrl(FALLBACK_IMAGE_PATH, "image/jpeg");
-  return new ImageResponse(
-    (
-      <div style={{ display: "flex", width: "100%", height: "100%" }}>
-        <img src={FALLBACK_IMAGE} width={size.width} height={size.height} alt="" />
-      </div>
-    ),
-    size
-  );
+function staticCard() {
+  return defaultShareCard(size);
 }
 
 export default async function Image({ params }: { params: Promise<Params> }) {

@@ -1,7 +1,6 @@
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
-import { routeAppSchemeUrl, routeLinkOf, routePlayStoreUrl, type RouteLink } from "@/lib/route-link";
-import { PLAY_STORE_URL } from "@/lib/app-meta";
+import { routeAppSchemeUrl, routeLinkOf, type RouteLink } from "@/lib/route-link";
 import { RouteCopyCode, RouteOpenAppButton, RouteStoreBadge } from "@/components/blocks/RouteLinkClient";
 import { storePlatformOf } from "@/lib/store-platform";
 
@@ -9,6 +8,10 @@ import { storePlatformOf } from "@/lib/store-platform";
  * The body of the route page (`/r/<slug>`, card #946, spec §1.1 and §1.2),
  * shared with `/route/<uuid>` when that one cannot be resolved. Server
  * component: the page arrives ready, there is no skeleton (spec §1.2).
+ *
+ * `partnerId` is the author's creator record of an available route (#1222,
+ * BR-ROTA-005 item 8.a); the store badge captures for it. Nothing else of the
+ * share meta comes in here: the cover key stays on the server.
  */
 
 const H1 = "text-3xl sm:text-4xl font-extrabold text-tuggi-dark tracking-tight leading-tight";
@@ -16,9 +19,11 @@ const H1 = "text-3xl sm:text-4xl font-extrabold text-tuggi-dark tracking-tight l
 export async function RouteLinkView({
   route,
   userAgent,
+  partnerId,
 }: {
   route: RouteLink;
   userAgent: string | null;
+  partnerId?: string;
 }) {
   const t = await getTranslations("RouteLink");
   const tDownload = await getTranslations("Download");
@@ -102,7 +107,7 @@ export async function RouteLinkView({
             platform={platform}
             link={available ? routeLinkOf(route.slug) : undefined}
             slug={available ? route.slug : undefined}
-            playStoreUrl={available ? routePlayStoreUrl(route.slug) : PLAY_STORE_URL}
+            partnerId={available ? partnerId : undefined}
           />
         </section>
 

@@ -5,7 +5,8 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { sendGAEvent } from "@next/third-parties/google";
 import { Check, Copy } from "lucide-react";
-import { useStoreCampaign } from "@/lib/conversionHooks";
+import { usePartnerFirstTouch, useStoreCampaign } from "@/lib/conversionHooks";
+import { buildPlayStoreUrl, routePlayStoreUrl } from "@/lib/app-meta";
 import type { StorePlatform } from "@/lib/store-platform";
 
 /**
@@ -96,27 +97,41 @@ const BADGE_LINK =
  * land on the route without a paid tool (#946 item 3). Refused, the tap goes
  * to the store without the note, and the code box is still there.
  *
- * `/api/attribution` is NOT called: that route only captures a partner click
- * (`partner_id` required), and `drive.click_fingerprints` has no route column
- * yet — contract `link-da-rota.md` §4. The click is counted by `click_store`
- * with `placement: "route_link"`.
+ * THE ROUTE OF A CREATOR CREDITS ITS AUTHOR — BR-ROTA-005 item 8.a, #1222.
+ * With `partnerId` (the author's creator record, `get_route_share_meta`) the
+ * badge runs the capture of `tuggi.app/@nome`, `usePartnerFirstTouch`: the
+ * same function, the same first touch (BR-B2B-002) and the same consent gate,
+ * decided by the server (BR-USUARIO-033). Without it (a CMS route, a creator
+ * whose flag is off, the meta not answering) nothing is captured.
+ *
+ * The click id goes into the Play referrer beside the slug
+ * (`routePlayStoreUrl`), and NEVER into the pasteboard: on the iPhone the tap
+ * keeps writing the route's link, and the author's credit comes from the
+ * device match (BR-ROTA-005 item 8.a, BR-B2B-035). Like every store button of
+ * the site, the referrer also carries this browser's earlier first touch when
+ * there is one, and nothing in a gated territory without consent.
+ *
+ * Mounted once per page: the capture's guard is a ref.
  */
 export function RouteStoreBadge({
   platform,
   link,
-  playStoreUrl,
   slug,
+  partnerId,
 }: {
   platform: StorePlatform;
   /** `https://tuggi.app/r/<slug>`; absent on the unavailable states (no code to carry). */
   link?: string;
-  playStoreUrl: string;
   slug?: string;
+  /** The author's creator record; absent when the route credits nobody. */
+  partnerId?: string;
 }) {
   const t = useTranslations("RouteLink");
   const tHero = useTranslations("Home.Hero");
   const [copiedLink, setCopiedLink] = useState(false);
   const { appStoreUrl, trackStoreClick } = useStoreCampaign();
+  const clickId = usePartnerFirstTouch(partnerId);
+  const playStoreUrl = slug ? routePlayStoreUrl(slug, clickId) : buildPlayStoreUrl(clickId);
 
   const onTap = (store: "app_store" | "play_store") => {
     trackStoreClick(store, "route_link", slug ? { route_slug: slug } : undefined);

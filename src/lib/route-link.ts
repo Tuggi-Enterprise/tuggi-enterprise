@@ -1,7 +1,6 @@
 import { cache } from "react";
 import { getSupabaseClient } from "@/lib/supabase-server";
 import { getDbLang } from "@/lib/partner";
-import { PLAY_STORE_URL } from "@/lib/app-meta";
 import { UUID_PATTERN } from "@/lib/attribution";
 
 /**
@@ -199,13 +198,118 @@ export const getRouteSlugById = cache(async (rawId: string): Promise<string | nu
 });
 
 /**
- * The Play link of the route page. The Play Store hands `referrer` to the app
- * on its first launch, and the app reads `tuggi_route=<slug>` from it
- * (`InstallReferrerService`): on Android the install lands on the route
- * deterministically, with no paid tool (#946 item 3). The partner token is not
- * here: the route page does not run the partner capture (contract §4).
+ * What the link of a route shares besides the page — contract
+ * `link-da-rota.md` §5a, `core.get_route_share_meta` (#1221).
+ *
+ * `authorPartnerId` is the creator record the author's route credits
+ * (BR-B2B-066 item 3, BR-ROTA-005 item 8.a), and it reaches the browser: the
+ * capture runs there, as on `tuggi.app/@nome`. `coverPhotoKey` NEVER leaves
+ * the server. It starts with the author's account id, so nothing the visitor
+ * receives may carry it: not the HTML, not the RSC payload, not `og:image`,
+ * not a log line (security review of #1221).
  */
-export function routePlayStoreUrl(slug: string): string {
-  const referrer = `utm_source=tuggi_site&utm_medium=route_link&utm_campaign=route&tuggi_route=${slug}`;
-  return `${PLAY_STORE_URL}&referrer=${encodeURIComponent(referrer)}`;
+export interface RouteShareMeta {
+  slug: string;
+  authorPartnerId: string | null;
+  coverPhotoKey: string | null;
+}
+
+interface RouteShareMetaRow {
+  slug?: unknown;
+  author_partner_id?: unknown;
+  cover_photo_key?: unknown;
+}
+
+export function parseRouteShareMeta(data: unknown): RouteShareMeta | null {
+  const row = (Array.isArray(data) ? data[0] : data) as RouteShareMetaRow | null | undefined;
+  if (!row || typeof row !== "object") return null;
+  const slug = normalizeRouteSlug(text(row.slug) ?? "");
+  if (!slug) return null;
+  const partner = text(row.author_partner_id);
+  return {
+    slug,
+    authorPartnerId: partner && UUID_PATTERN.test(partner) ? partner.toLowerCase() : null,
+    coverPhotoKey: text(row.cover_photo_key),
+  };
+}
+
+/**
+ * The share meta of a `/r/<slug>` segment, or null. Null is every answer that
+ * is not a row: no row (route in review, removed, switched off, unknown),
+ * `PGRST202`/`42883` (migration `20261120130000` not applied yet) and any
+ * other error. The page does not depend on it to exist: without it, it only
+ * stops crediting the author and showing the cover (§5a).
+ *
+ * Publishable key, no session, like `getRouteLink`: the function is executable
+ * by `anon` and decides on its own what a stranger may know.
+ */
+export const getRouteShareMeta = cache(async (rawSlug: string): Promise<RouteShareMeta | null> => {
+  const slug = normalizeRouteSlug(rawSlug);
+  if (!slug) return null;
+  try {
+    const { data, error } = await getSupabaseClient("publishable")
+      .schema("core")
+      .rpc("get_route_share_meta", { p_slug: slug });
+    if (error) {
+      // The code only, never the slug: a `link_only` route is shared with few
+      // people on purpose.
+      console.error("get_route_share_meta failed:", error.code ?? "unknown");
+      return null;
+    }
+    return parseRouteShareMeta(data);
+  } catch (err) {
+    console.error("get_route_share_meta threw:", (err as Error)?.name ?? "unknown");
+    return null;
+  }
+});
+
+/** Bucket of the route covers (contract `diario-de-bordo.md`, Storage). */
+const ROUTE_COVER_BUCKET = "travel-diary-photos";
+/**
+ * What the share card can draw. The app uploads JPEG (`diaryRpc`, at most
+ * 1600 px a side); PNG is the other format the card renderer decodes.
+ */
+const ROUTE_COVER_TYPES = new Set(["image/jpeg", "image/png"]);
+/**
+ * Far above a 1600 px JPEG. A larger object is not what the app uploads, and
+ * decoding it would spend the Worker's memory on a preview: the card falls back.
+ */
+const ROUTE_COVER_MAX_BYTES = 5 * 1024 * 1024;
+
+/**
+ * The approved cover of the route on the air, as a data URL for the share card
+ * (`r/[slug]/opengraph-image.tsx`), or null — BR-ROTA-005 item 8.b.
+ *
+ * Read on the server with the publishable key: the Storage policy opens the
+ * object to `anon` exactly when `cover_photo_key` came back (§5a). The bytes
+ * are redrawn into the card, so the image the visitor gets is the site's own:
+ * no bucket, no key, no account id, no signed URL that expires inside a chat,
+ * and no EXIF of the author's phone either.
+ *
+ * Null on no meta, no cover, a refused download, a type the card cannot draw
+ * or an object above the ceiling; the card is then the default one.
+ */
+export async function getRouteCoverDataUrl(rawSlug: string): Promise<string | null> {
+  const meta = await getRouteShareMeta(rawSlug);
+  if (!meta?.coverPhotoKey) return null;
+  try {
+    const { data, error } = await getSupabaseClient("publishable")
+      .storage.from(ROUTE_COVER_BUCKET)
+      .download(meta.coverPhotoKey);
+    if (error || !data) {
+      // The error name only: the key carries the author's account id.
+      console.error("route cover: download refused", error?.name ?? "no data");
+      return null;
+    }
+    const type = data.type.split(";")[0].trim().toLowerCase();
+    if (!ROUTE_COVER_TYPES.has(type) || data.size > ROUTE_COVER_MAX_BYTES) {
+      console.error("route cover: not drawable", type || "none", data.size);
+      return null;
+    }
+    const bytes = Buffer.from(await data.arrayBuffer());
+    return `data:${type};base64,${bytes.toString("base64")}`;
+  } catch (err) {
+    console.error("route cover: download threw", (err as Error)?.name ?? "unknown");
+    return null;
+  }
 }
