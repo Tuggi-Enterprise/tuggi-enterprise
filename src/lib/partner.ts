@@ -3,6 +3,7 @@ import { unstable_cache } from "next/cache";
 import { getSupabaseClient } from "@/lib/supabase-server";
 import { isPublicStorageUrl } from "@/lib/storage";
 import { TUGGI_PARTNER_ID } from "@/lib/app-meta";
+import { resolveWelcomePoiId } from "@/lib/partner-welcome";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 export interface PartnerData {
@@ -84,7 +85,8 @@ export function getDbLang(locale: string): string {
 }
 
 /**
- * Fetches the localized welcome audio + description for a POI, with en-us
+ * Fetches the localized welcome audio + description for a POI already chosen
+ * by `resolveWelcomePoiId` (never a raw `welcome_poi_id`), with en-us
  * fallback. `dbLang` is the resolved DB language/dialect (e.g. "pt-pt") — the
  * caller decides it (see src/lib/ptDialect.ts), decoupled from the UI locale.
  */
@@ -126,7 +128,11 @@ async function buildPartnerData(
   dbLang: string
 ): Promise<PartnerData> {
   const isTuggi = client.id === TUGGI_PARTNER_ID;
-  const welcomePoiId = client.welcome_poi_id || client.metadata?.welcome_poi_id;
+  const welcomePoiId = await resolveWelcomePoiId(
+    supabase,
+    client.id,
+    client.welcome_poi_id || client.metadata?.welcome_poi_id
+  );
   const welcome = await fetchLocalizedWelcome(supabase, welcomePoiId, dbLang);
   return {
     id: client.id,
@@ -346,8 +352,10 @@ async function resolveCoupon(
   const coupon = toCouponPreview(result.code, result);
   if (!coupon) return null;
 
-  const welcome = await fetchLocalizedWelcome(supabase, result.owner_poi_id, dbLang);
   const ownerClientId = result.owner_client_id ?? "";
+  // `owner_poi_id` is the owner's `welcome_poi_id`: the same pick as the partner pass.
+  const welcomePoiId = await resolveWelcomePoiId(supabase, ownerClientId, result.owner_poi_id);
+  const welcome = await fetchLocalizedWelcome(supabase, welcomePoiId, dbLang);
   const isTuggi = !ownerClientId || ownerClientId === TUGGI_PARTNER_ID;
 
   const partner: PartnerData = {

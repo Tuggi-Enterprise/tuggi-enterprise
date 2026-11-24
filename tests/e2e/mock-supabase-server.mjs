@@ -654,10 +654,40 @@ const activationScans = [];
  * adds one, so its `/d/<slug>` and share card exist only at runtime, the way a
  * partner approved between two deploys does. The slug starts with `e2e-late-`
  * and is unique per test run, because the Worker preview keeps its R2 between
- * runs. Its welcome POI is the slug itself, and the welcome text names the
- * language asked for, so a spec can tell a pt-pt visit from a pt-br one.
+ * runs. Its welcome POI is a fresh UUID mapped back to the slug
+ * (`LATE_WELCOME_POIS`), and the welcome text names the language asked for, so
+ * a spec can tell a pt-pt visit from a pt-br one.
  */
 const LATE_PREFIX = "e2e-late-";
+const LATE_WELCOME_POIS = new Map();
+
+/**
+ * `core.attractions` as the welcome pick reads it (src/lib/partner-welcome.ts):
+ * id -> owner, approved, active. Only what is listed here is a POI at all. The
+ * welcome POI of `e2e-com-logo` is owned by nobody on purpose, so the coupon
+ * owned by that partner (`E2EPARCEIRO`, no welcome POI) still has no POI of its
+ * own to fall back on and keeps its plain layout.
+ */
+const ATTRACTIONS = {
+  "33333333-3333-4333-8333-333333333333": {
+    partner_client_id: null,
+    approved: true,
+    is_active: true,
+    approved_at: "2026-08-02T00:00:00Z",
+  },
+};
+
+/** `or=(col.eq.value,...)` as supabase-js sends it, into `[column, value]` pairs. */
+function readOrEqTerms(url) {
+  const raw = url.searchParams.get("or");
+  if (!raw?.startsWith("(") || !raw.endsWith(")")) return [];
+  return raw
+    .slice(1, -1)
+    .split(",")
+    .map((term) => term.match(/^([a-z_]+)\.eq\.(.+)$/))
+    .filter(Boolean)
+    .map((m) => [m[1], m[2]]);
+}
 
 /** Database reads made for a `/d/<slug>`, per slug: `GET /__partner-lookups?slug=`. */
 const partnerLookups = new Map();
@@ -928,14 +958,30 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  if (url.pathname === "/rest/v1/attractions" && req.method === "GET") {
+    // Honours only the filters the welcome pick sends; anything else is a
+    // query this double was never taught, and answers no POI.
+    const onAir = readEqFilter(url, "approved") === "true" && readEqFilter(url, "is_active") === "true";
+    const terms = readOrEqTerms(url);
+    const rows = Object.entries(ATTRACTIONS)
+      .filter(([, poi]) => onAir && poi.approved && poi.is_active)
+      .filter(([id, poi]) => terms.some(([col, value]) => (col === "id" ? id : poi[col]) === value))
+      .sort(([idA, a], [idB, b]) => (b.approved_at ?? "").localeCompare(a.approved_at ?? "") || idA.localeCompare(idB))
+      .map(([id]) => ({ id }));
+    for (const [id] of terms.filter(([col]) => col === "id")) countLookup(LATE_WELCOME_POIS.get(id), "welcome");
+    sendJson(res, 200, rows);
+    return;
+  }
+
   if (url.pathname === "/rest/v1/attraction_descriptions" && req.method === "GET") {
     const attractionId = readEqFilter(url, "attraction_id");
     if (!attractionId) {
       sendJson(res, 406, { code: "PGRST116", message: "no rows" });
       return;
     }
-    if (attractionId.startsWith(LATE_PREFIX)) {
-      countLookup(attractionId, "welcome");
+    const lateSlug = LATE_WELCOME_POIS.get(attractionId);
+    if (lateSlug) {
+      countLookup(lateSlug, "welcome");
       const language = readEqFilter(url, "language");
       sendJson(res, 200, {
         audio_url: `http://${HOST}:${APP_PORT}/audio/call_en-us-male.mp3`,
@@ -1206,6 +1252,14 @@ const server = http.createServer((req, res) => {
       sendJson(res, 400, { message: `a late partner slug starts with ${LATE_PREFIX}` });
       return;
     }
+    const welcomePoiId = randomUUID();
+    LATE_WELCOME_POIS.set(welcomePoiId, slug);
+    ATTRACTIONS[welcomePoiId] = {
+      partner_client_id: null,
+      approved: true,
+      is_active: true,
+      approved_at: new Date().toISOString(),
+    };
     CLIENTS_BY_SLUG[slug] = {
       id: randomUUID(),
       slug,
@@ -1213,7 +1267,7 @@ const server = http.createServer((req, res) => {
       updated_at: new Date().toISOString(),
       name: "Late Partner",
       company_name: null,
-      welcome_poi_id: slug,
+      welcome_poi_id: welcomePoiId,
       metadata: null,
       client_type: "restaurant",
       website: null,
