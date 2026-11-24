@@ -101,10 +101,12 @@ export const CookieBanner = () => {
           // it can carry the iOS home-indicator inset. Because the height above
           // is measured rather than assumed, whatever stacks on top of the
           // banner clears the home indicator too.
-          className="fixed bottom-0 left-0 right-0 z-[100] px-4 pt-4 pb-[calc(1rem_+_env(safe-area-inset-bottom))] md:px-6 md:pt-6 md:pb-[calc(1.5rem_+_env(safe-area-inset-bottom))]"
+          className="fixed bottom-0 left-0 right-0 z-[100] px-3 pt-3 pb-[calc(0.75rem_+_env(safe-area-inset-bottom))] md:px-6 md:pt-6 md:pb-[calc(1.5rem_+_env(safe-area-inset-bottom))]"
         >
-          <div className="max-w-7xl mx-auto bg-tuggi-dark text-white p-6 rounded-2xl shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6 border border-white/10">
-            <p className="text-sm md:text-base text-slate-300 max-w-3xl text-center md:text-left leading-relaxed">
+          {/* Compact on a phone (spec onda 1 §1, decision 3): the partner page's
+              store action and its three steps stay visible above it at 390 x 664. */}
+          <div className="max-w-7xl mx-auto bg-tuggi-dark text-white px-4 py-3 md:p-6 rounded-2xl shadow-2xl flex flex-col md:flex-row md:items-center justify-between gap-2 md:gap-6 border border-white/10">
+            <p className="text-xs md:text-base text-slate-300 max-w-3xl text-left leading-snug md:leading-relaxed">
               {t("text")}{" "}
               {/* The policy names each tool this banner switches on — card #818,
                   BR-USUARIO-028 item 1. `cookies` is the id of `s1Item10`. */}
@@ -115,16 +117,16 @@ export const CookieBanner = () => {
                 {t("policyLink")}
               </Link>
             </p>
-            <div className="flex items-center gap-4 shrink-0">
+            <div className="flex items-center justify-end gap-2 md:gap-4 shrink-0">
               <button
                 onClick={handleDecline}
-                className="px-6 py-2.5 text-sm font-semibold text-slate-400 hover:text-white transition-colors"
+                className="px-4 py-2 md:px-6 md:py-2.5 text-sm font-semibold text-slate-300 hover:text-white transition-colors"
               >
                 {t("decline")}
               </button>
               <button
                 onClick={handleAccept}
-                className="px-8 py-2.5 bg-tuggi-primary text-tuggi-dark rounded-full text-sm font-bold hover:bg-tuggi-primary/90 transition-all shadow-lg shadow-tuggi-primary/20"
+                className="px-6 py-2 md:px-8 md:py-2.5 bg-tuggi-primary text-white rounded-full text-sm font-bold hover:bg-tuggi-primary/90 transition-all shadow-lg shadow-tuggi-primary/20"
               >
                 {t("accept")}
               </button>

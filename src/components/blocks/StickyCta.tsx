@@ -81,7 +81,7 @@ export function StickyCta({ text, cta, afterId, untilId, placement }: StickyCtaP
             if (store === "app_store") void writeClipboardToken();
             trackStoreClick(store, placement);
           }}
-          className="shrink-0 rounded-xl bg-tuggi-primary text-tuggi-dark font-bold px-5 py-2.5 text-sm transition-transform active:scale-95 motion-reduce:active:scale-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+          className="shrink-0 rounded-xl bg-tuggi-primary text-white font-bold px-5 py-2.5 text-sm transition-transform active:scale-95 motion-reduce:active:scale-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
         >
           {cta}
         </a>
