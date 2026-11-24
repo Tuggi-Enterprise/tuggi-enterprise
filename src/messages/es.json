@@ -1030,7 +1030,6 @@
     "notFoundHome": "Ir al inicio",
     "badgePartner": "Aliado de Tuggi",
     "partnerLead": "Descarga Tuggi y escucha la historia de los lugares cercanos, a pie o en coche.",
-    "ctaPartner": "Escuchar en la app",
     "storyTitle": "La historia",
     "stopLabel": "Parada {number}",
     "report": "Denunciar este perfil",
@@ -1046,6 +1045,14 @@
     "socialInstagram": "Perfil en Instagram (se abre en una pestaña nueva)",
     "socialTiktok": "Perfil en TikTok (se abre en una pestaña nueva)",
     "socialYoutube": "Canal en YouTube (se abre en una pestaña nueva)",
-    "socialFacebook": "Perfil en Facebook (se abre en una pestaña nueva)"
+    "socialFacebook": "Perfil en Facebook (se abre en una pestaña nueva)",
+    "tutorialStep1": "Descarga Tuggi en la tienda.",
+    "tutorialStep2": "Abre la app.",
+    "tutorialStep3Ios": "En la pantalla “¿Alguien te recomendó Tuggi?”, toca Pegar.",
+    "tutorialStep3Android": "La app se abre ya rellenada. Confirma con un toque.",
+    "handleReserve": "¿No funcionó? En la app, escribe <b>@{handle}</b>.",
+    "handleCopy": "Copiar @",
+    "handleCopyA11y": "Copiar @{handle}",
+    "handleCopied": "Copiado"
   }
 }

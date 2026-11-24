@@ -25,6 +25,8 @@ interface PartnerPageFrameProps {
   children?: ReactNode;
   /** First link of the footer, before Terms and Privacy: "report this profile" on a creator's page. */
   footerAction?: ReactNode;
+  /** The QR of the "how it works" band on a computer; off when the first fold already has it. */
+  qrInBand?: boolean;
 }
 
 /**
@@ -35,7 +37,16 @@ interface PartnerPageFrameProps {
  *
  * Server-rendered: everything that decides is in the HTML (spec §7.2).
  */
-export async function PartnerPageFrame({ locale, kind, path, hero, aside, children, footerAction }: PartnerPageFrameProps) {
+export async function PartnerPageFrame({
+  locale,
+  kind,
+  path,
+  hero,
+  aside,
+  children,
+  footerAction,
+  qrInBand = true,
+}: PartnerPageFrameProps) {
   const t = await getTranslations({ locale, namespace: "PartnerPage" });
   const tFooter = await getTranslations({ locale, namespace: "Footer" });
 
@@ -48,7 +59,7 @@ export async function PartnerPageFrame({ locale, kind, path, hero, aside, childr
           </Link>
           <a
             href={`#${PARTNER_DOWNLOAD_ID}`}
-            className="hidden sm:inline-flex rounded-xl bg-tuggi-secondary px-4 py-2 text-sm font-bold text-tuggi-dark hover:bg-tuggi-secondary-hover transition-colors"
+            className="hidden sm:inline-flex rounded-xl bg-tuggi-primary px-4 py-2 text-sm font-bold text-white hover:bg-tuggi-primary/90 transition-colors"
           >
             {t("download")}
           </a>
@@ -68,7 +79,7 @@ export async function PartnerPageFrame({ locale, kind, path, hero, aside, childr
         <div className="mx-auto grid max-w-6xl gap-8 px-5 py-12 lg:grid-cols-[1fr_1fr_1fr_auto] lg:items-start">
           {([1, 2, 3] as const).map((step) => (
             <div key={step}>
-              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-tuggi-primary font-bold text-tuggi-dark">
+              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-tuggi-primary font-bold text-white">
                 {step}
               </span>
               <h2 className="mt-4 text-lg font-bold">{t(`step${step}Title`)}</h2>
@@ -76,9 +87,11 @@ export async function PartnerPageFrame({ locale, kind, path, hero, aside, childr
             </div>
           ))}
           {/* No QR on a phone: nobody points the camera at their own screen. */}
-          <div className="hidden lg:block rounded-2xl bg-white p-4">
-            <AppPreviewQr url={`${SITE_URL}${path}`} />
-          </div>
+          {qrInBand && (
+            <div className="hidden lg:block rounded-2xl bg-white p-4">
+              <AppPreviewQr url={`${SITE_URL}${path}`} />
+            </div>
+          )}
         </div>
       </section>
 

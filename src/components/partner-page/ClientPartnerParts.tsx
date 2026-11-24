@@ -126,7 +126,7 @@ interface WelcomeAudioCardProps {
 
 /**
  * The welcome audio of a hotel or a restaurant in the frame of the one page
- * (spec §7.2, w02): the right column at 1440, below the action at 390. The
+ * (spec §7.2, w02): below the first fold, first at 390 and beside the text at 1440. The
  * player is `useWelcomeAudio`, the one the download layout plays.
  *
  * The card is in the server HTML at its final size, so the audio loading late
@@ -142,7 +142,7 @@ export function WelcomeAudioCard({ partnerId, audioUrl, audioLang, name, label }
   return (
     <aside
       data-testid="partner-welcome-audio"
-      className="self-start rounded-3xl bg-white p-6 shadow-xl ring-1 ring-slate-200 lg:mt-24"
+      className="self-start rounded-3xl bg-white p-6 shadow-xl ring-1 ring-slate-200"
     >
       <p className="text-xs font-bold uppercase tracking-wider text-tuggi-slate">{label}</p>
       <h2 className="mt-1 text-xl font-extrabold leading-snug">{name}</h2>

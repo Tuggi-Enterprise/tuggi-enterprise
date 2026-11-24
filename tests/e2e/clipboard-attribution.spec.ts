@@ -1,7 +1,7 @@
 import { test, expect, devices, type Page } from "@playwright/test";
 import { APP_STORE_URL } from "../../src/lib/app-meta";
 import { ATTRIBUTION_COOKIE, UUID_PATTERN, serializeAttribution } from "../../src/lib/attribution";
-import { CONSENT_GRANTED, CONSENT_KEY } from "../../src/lib/consent";
+import { ATTRIBUTION_GATE_ENDPOINT, CONSENT_GRANTED, CONSENT_KEY } from "../../src/lib/consent";
 import { writeClickTokenToClipboard } from "../../src/lib/conversionHooks";
 import { appCookieDomain, visitorHeaders } from "./visitor-headers";
 
@@ -282,37 +282,28 @@ test.describe("every App Store CTA writes the token, inside the tap", () => {
     expect(writes).toEqual([{ text: `tuggi_click_${clickId}`, insideTap: true }]);
   });
 
-  test("BR-B2B-002: the partner page's own two exits still write it", async ({ page }) => {
+  test("BR-B2B-002: the partner page's own exit still writes it", async ({ page }) => {
     const writes = await spyOnClipboard(page);
     await stubTheStores(page);
     const clickId = await captureFirstTouch(page);
 
-    // The partner page's App Store badge, and its full action, which on an
-    // iPhone opens the App Store in a new tab (#1060): its two App Store exits.
+    // The partner page's full action, which on an iPhone is the App Store, in
+    // a new tab (#1060). Since #1254 a phone sees that one store and no badges.
+    const verdict = page.waitForResponse((res) => new URL(res.url()).pathname === ATTRIBUTION_GATE_ENDPOINT);
     await page.goto(CAMPAIGN_PATH);
     // Waits for the CONSENT VERDICT, not for the cookie — BR-USUARIO-033. The
     // cookie is already on the device (`captureFirstTouch` planted it), so
     // polling it proves nothing: since the gate landed, the read of that cookie
     // waits on one same-origin GET, and a tap fired before the answer arrives
     // finds no click id and writes nothing. That resting state is deliberate
-    // (fail closed), so the wait belongs in the test. The Play badge's href is
-    // the same verdict made observable, on the same page and out of the same
-    // value.
-    const playHref = page.getByTestId("partner-page-play-store");
-    await expect
-      .poll(async () => (await playHref.getAttribute("href")) ?? "")
-      .toContain(`tuggi_click_${clickId}`);
-    const badgeTab = page.waitForEvent("popup");
-    await page.getByTestId("partner-page-app-store").click();
-    await (await badgeTab).waitForURL(/apps\.apple\.com/);
+    // (fail closed), so the wait belongs in the test. A phone has no Play
+    // badge to read the verdict from since #1254, so the wait is for that GET.
+    await verdict;
     const storeTab = page.waitForEvent("popup");
     await page.getByTestId("partner-page-cta").click();
     await (await storeTab).waitForURL(/apps\.apple\.com/);
 
-    expect(writes.length).toBe(2);
-    for (const write of writes) {
-      expect(write).toEqual({ text: `tuggi_click_${clickId}`, insideTap: true });
-    }
+    expect(writes).toEqual([{ text: `tuggi_click_${clickId}`, insideTap: true }]);
   });
 
   test("BR-B2B-002: it is the real pasteboard, not just the call", async ({ page }) => {

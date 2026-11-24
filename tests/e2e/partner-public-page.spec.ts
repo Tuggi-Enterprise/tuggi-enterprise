@@ -33,6 +33,8 @@ const PHOTO_OWNER_UID = "5f0d3e2a-9b1c-4c7e-a6d2-114100c0ffee";
 /** A person's browser. Playwright's headless one says "HeadlessChrome", which the page counts as a robot. */
 const PERSON_UA =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36";
+const IPHONE_UA =
+  "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1";
 const GOOGLEBOT_UA = "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)";
 
 // Brazil: the page speaks pt and the attribution gate lets the capture through.
@@ -351,7 +353,8 @@ test.describe("DS-COMPONENTE-110, mockup w02: a hotel or a restaurant in the fra
     expect(main).toContain('data-testid="partner-contacts"');
     expect(main).toContain("https://delicias.example");
     expect(main).toContain('data-testid="partner-welcome-audio"');
-    expect(main).toContain('data-testid="partner-page-cta"');
+    // A computer's store action is the two badges, with the QR (#1254).
+    expect(main).toContain('data-testid="partner-page-app-store"');
     expect(main).toContain("tuggi.app/@e2e-com-logo");
   });
 
@@ -361,7 +364,7 @@ test.describe("DS-COMPONENTE-110, mockup w02: a hotel or a restaurant in the fra
     expect(main).not.toContain('data-testid="partner-logo"');
     expect(main).not.toContain('data-testid="partner-welcome-audio"');
     expect(main).not.toContain('data-testid="partner-contacts"');
-    expect(main).toContain('data-testid="partner-page-cta"');
+    expect(main).toContain('data-testid="partner-page-app-store"');
   });
 
   test("BR-B2B-002: the hotel's page captures the first touch for the hotel, from its store action", async ({ page }) => {
@@ -380,6 +383,17 @@ test.describe("DS-COMPONENTE-110, mockup w02: a hotel or a restaurant in the fra
     await expect(page.getByTestId("partner-welcome-audio").locator("button")).toBeVisible();
   });
 
+  test("DS-COMPONENTE-110 edge case: a coupon keeps today's page, with its redeem block", async ({ page }) => {
+    await page.goto("/pt/d/E2EHORAS2");
+    await expect(page.getByRole("button", { name: "Copiar código" })).toBeVisible();
+    await expect(page.getByTestId("partner-page-chip")).toHaveCount(0);
+  });
+});
+
+test.describe("DS-COMPONENTE-110, mockup w02, on a phone", () => {
+  // The page reads the platform from the request (#1254): a phone is a phone's user agent.
+  test.use({ userAgent: IPHONE_UA });
+
   test("criterion 16: at 390 px the sticky bar waits for the action to leave the screen, and there is no QR", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/@e2e-com-logo");
@@ -393,12 +407,6 @@ test.describe("DS-COMPONENTE-110, mockup w02: a hotel or a restaurant in the fra
       window.scrollTo(0, cta.getBoundingClientRect().bottom + window.scrollY + 10);
     });
     await expect(sticky).toHaveAttribute("aria-hidden", "false");
-  });
-
-  test("DS-COMPONENTE-110 edge case: a coupon keeps today's page, with its redeem block", async ({ page }) => {
-    await page.goto("/pt/d/E2EHORAS2");
-    await expect(page.getByRole("button", { name: "Copiar código" })).toBeVisible();
-    await expect(page.getByTestId("partner-page-chip")).toHaveCount(0);
   });
 });
 
