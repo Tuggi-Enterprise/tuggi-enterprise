@@ -592,10 +592,10 @@
     }
   },
   "CookieBanner": {
-    "text": "Usiamo i cookie per misurare il pubblico di questo sito, e anche per sapere quale partner ti ha portato all'app, perché è così che paghiamo quel partner. Cliccando su 'Accetta', dai il consenso a questi due usi.",
+    "text": "Usiamo i cookie per misurare il pubblico del sito e sapere quale partner ti ha portato all'app.",
     "accept": "Accetta",
     "decline": "Rifiuta",
-    "policyLink": "Vedi l'Informativa sulla privacy"
+    "policyLink": "Informativa sulla privacy"
   },
   "Purpose": {
     "Hero": {
