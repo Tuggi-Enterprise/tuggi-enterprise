@@ -126,6 +126,24 @@ const CLIENTS_BY_SLUG = {
     social_handle: "@hotelredes",
     avatar_url: null,
   },
+  // Tuggi's own row (`TUGGI_PARTNER_ID`, src/lib/app-meta.ts): `/@tuggi`, the
+  // download page every "Download" of the site lands on, keeps the download
+  // layout and its floating CTA (#1254). The build-time list leaves it out by
+  // its id, as in production, so it adds no sitemap entry.
+  tuggi: {
+    id: "8be94d35-282d-46bf-bc12-6fcd2f83a432",
+    slug: "tuggi",
+    status: "approved",
+    updated_at: "2026-08-01T00:00:00Z",
+    name: "Tuggi",
+    company_name: null,
+    welcome_poi_id: "33333333-3333-4333-8333-333333333333",
+    metadata: null,
+    client_type: null,
+    website: null,
+    social_handle: null,
+    avatar_url: null,
+  },
   // A client whose contract ended (BR-B2B-067 item 6): the page stays, the
   // capture does not. Not `approved`, so the build-time lists leave it out.
   "e2e-encerrado": {

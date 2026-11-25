@@ -26,6 +26,26 @@ import {
  */
 export const COOKIE_BANNER_HEIGHT_VAR = "--cookie-banner-height";
 
+/**
+ * Whether the cookie notice is on screen, from the height it publishes on
+ * <html> (`COOKIE_BANNER_HEIGHT_VAR`); above zero means open. For a bottom-fixed
+ * bar that steps aside while the notice is up, so two bars never stack over the
+ * content (partner page and Tuggi's own page, #1254). Off, it reads nothing.
+ */
+export function useCookieNoticeOpen(enabled = true): boolean {
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    if (!enabled) return;
+    const root = document.documentElement;
+    const read = () => setOpen((parseFloat(root.style.getPropertyValue(COOKIE_BANNER_HEIGHT_VAR)) || 0) > 0);
+    read();
+    const observer = new MutationObserver(read);
+    observer.observe(root, { attributes: true, attributeFilter: ["style"] });
+    return () => observer.disconnect();
+  }, [enabled]);
+  return open;
+}
+
 export const CookieBanner = () => {
   const [showBanner, setShowBanner] = useState(false);
   const bannerRef = useRef<HTMLDivElement>(null);

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { COOKIE_BANNER_HEIGHT_VAR } from "@/components/global/CookieBanner";
+import { useCookieNoticeOpen } from "@/components/global/CookieBanner";
 import { buildPlayStoreUrl } from "@/lib/app-meta";
 import {
   useAttributionClickId,
@@ -27,21 +27,6 @@ interface StickyCtaProps {
    * on <html> (`COOKIE_BANNER_HEIGHT_VAR`); above zero means open.
    */
   hideWithCookieNotice?: boolean;
-}
-
-/** Whether the cookie notice is on screen, from the height it publishes on <html>. */
-function useCookieNoticeOpen(enabled: boolean): boolean {
-  const [open, setOpen] = useState(false);
-  useEffect(() => {
-    if (!enabled) return;
-    const root = document.documentElement;
-    const read = () => setOpen((parseFloat(root.style.getPropertyValue(COOKIE_BANNER_HEIGHT_VAR)) || 0) > 0);
-    read();
-    const observer = new MutationObserver(read);
-    observer.observe(root, { attributes: true, attributeFilter: ["style"] });
-    return () => observer.disconnect();
-  }, [enabled]);
-  return open;
 }
 
 /**

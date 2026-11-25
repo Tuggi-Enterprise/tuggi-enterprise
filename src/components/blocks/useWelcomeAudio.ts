@@ -20,8 +20,13 @@ export interface WelcomeAudio {
 /**
  * The partner's welcome audio: the first 12 s of it, faded out into the
  * "call" in the visitor's dialect. A Tuggi welcome plays whole, with no call.
- * It tries to start on its own and, when the browser refuses, on the first
- * click or touch anywhere on the page.
+ *
+ * Only Tuggi's own page starts it without being asked: on its own and, when the
+ * browser refuses, on the first click or touch anywhere on the page. A
+ * partner's page plays it only from its own button (`toggle`). There the player
+ * sits below the fold, behind the cookie notice on a phone, and a tap on
+ * "Decline", on Copy or on the store button must not make the phone speak with
+ * no player in sight (#1254, design validation).
  *
  * The one player of the partner page, for the old download layout
  * (`PartnerHero`) and the hotel in the frame of the one page
@@ -114,12 +119,14 @@ export function useWelcomeAudio(
       }
     };
 
-    document.addEventListener("click", playOnInteraction, { capture: true });
-    document.addEventListener("touchstart", playOnInteraction, { capture: true });
+    if (isTuggi) {
+      document.addEventListener("click", playOnInteraction, { capture: true });
+      document.addEventListener("touchstart", playOnInteraction, { capture: true });
+    }
 
     audio.addEventListener("canplaythrough", () => {
       setReady(true);
-      if (currentTrack === "main") tryPlay();
+      if (isTuggi && currentTrack === "main") tryPlay();
     });
 
     audio.addEventListener("ended", () => {

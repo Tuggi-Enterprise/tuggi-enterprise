@@ -12,7 +12,7 @@ import {
   useStoreCampaign,
   writeClickTokenToClipboard,
 } from "@/lib/conversionHooks";
-import { COOKIE_BANNER_HEIGHT_VAR } from "@/components/global/CookieBanner";
+import { COOKIE_BANNER_HEIGHT_VAR, useCookieNoticeOpen } from "@/components/global/CookieBanner";
 import { useWelcomeAudio } from "./useWelcomeAudio";
 import { formatSocial, normalizeUrl, socialHref } from "@/lib/partner-links";
 import { sendPartnerPageEvent } from "@/lib/partner-page-events";
@@ -326,8 +326,12 @@ export function PartnerHero({ partnerId, partnerData, coupon, previewSlot }: Par
      (z-[100]); instead of fighting it with z-index (which would just hide the
      consent choice), the CTA stacks on top of it, reading the banner's own
      published height. No second copy of the consent state lives here: "0px"
-     simply means "no banner showing". */
-  const floatingCta = (
+     simply means "no banner showing".
+     Tuggi's own page is the exception: stacked on the notice at 390 x 664 the
+     CTA covered the player, so there it waits for the notice to be answered,
+     as the bar of a partner's page does (#1254, design validation). */
+  const tuggiNoticeOpen = useCookieNoticeOpen(Boolean(isTuggi));
+  const floatingCta = tuggiNoticeOpen ? null : (
     <motion.div
       // Transform only, on purpose: the resting state is the no-JS state
       // (#191, #204). The CTA button is the page's one job — it cannot be
@@ -345,7 +349,7 @@ export function PartnerHero({ partnerId, partnerData, coupon, previewSlot }: Par
     >
       <button
         onClick={handleRedirect}
-        className="w-full max-w-sm mx-auto flex items-center justify-center gap-2 py-4 bg-tuggi-primary text-tuggi-dark font-black text-base rounded-2xl shadow-[0_8px_32px_rgba(0,168,232,0.3)] hover:shadow-[0_8px_40px_rgba(0,168,232,0.45)] hover:scale-[1.02] active:scale-95 transition-all pointer-events-auto"
+        className="w-full max-w-sm mx-auto flex items-center justify-center gap-2 py-4 bg-tuggi-primary text-white font-black text-base rounded-2xl shadow-[0_8px_32px_rgba(0,168,232,0.3)] hover:shadow-[0_8px_40px_rgba(0,168,232,0.45)] hover:scale-[1.02] active:scale-95 transition-all pointer-events-auto"
       >
         {isRedirecting ? (
           <>
