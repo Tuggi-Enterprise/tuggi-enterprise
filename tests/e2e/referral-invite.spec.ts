@@ -330,17 +330,14 @@ test.describe("invite page /c/ — on a computer, DS-COMPONENTE-117", () => {
  * nothing else — BR-B2B-067 item 3: no benefit on the partner's page.
  */
 test.describe("partner page /d/ — app preview, DS-COMPONENTE-117, BR-B2B-067", () => {
-  test("DS-COMPONENTE-117, BR-B2B-067 item 3: both hero variants show the preview with the partner's @ and no caravan body", async ({
+  test("DS-COMPONENTE-117, #1254: a hotel's page says the app's step once, in the steps, with no preview below", async ({
     page,
   }) => {
     for (const slug of ["e2e-sem-logo", "e2e-com-logo"]) {
       await page.goto(`/d/${slug}?lang=en`);
-      const preview = page.getByTestId("app-preview");
-      await expect(preview).toBeVisible();
-      await expect(preview.getByTestId("app-preview-frame-ios")).toHaveCount(1);
-      await expect(preview.getByTestId("app-preview-frame-android")).toHaveCount(0);
-      await expect(preview.getByTestId("app-preview-result")).toHaveText(`You came through @${slug}`);
-      const text = await preview.innerText();
+      await expect(page.getByTestId("partner-tutorial")).toHaveCount(1);
+      await expect(page.getByTestId("app-preview")).toHaveCount(0);
+      const text = await page.getByTestId("partner-tutorial").innerText();
       expect(text).not.toMatch(/caravan/i);
       expect(text).not.toMatch(GAIN_WORDS);
     }

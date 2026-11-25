@@ -180,7 +180,8 @@ const WAIVED: Waiver[] = [
   { file: "components/blocks/CityOSHero.tsx", texts: ["Tuggi - CITY OS"], reason: BRAND },
   { file: "components/blocks/DrivePricing.tsx", texts: ["Google Play"], reason: BRAND },
   { file: "components/blocks/PartnerHero.tsx", texts: ["TUGGI", "Tuggi"], reason: BRAND },
-  { file: "components/partner-page/PartnerPageFrame.tsx", texts: ["Tuggi"], reason: BRAND },
+  // "by Tuggi" is the lockup of the partner page and is not translated (copy #1254, decision of the operator).
+  { file: "components/partner-page/PartnerPageFrame.tsx", texts: ["Tuggi", "by"], reason: BRAND },
   { file: "components/global/GlobalHeader.tsx", texts: ["TUGGI Logo"], reason: BRAND },
   {
     file: "components/global/FatFooter.tsx",

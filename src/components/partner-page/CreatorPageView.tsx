@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
-import { MapPin } from "lucide-react";
+import { Download, Headphones, Map as MapIcon, MapPin } from "lucide-react";
+import { AppPreviewQr } from "@/components/blocks/AppPreview";
 import { Link } from "@/i18n/routing";
 import { RouteMap } from "@/components/blocks/RouteMap";
 import { RouteStopAudio } from "@/components/blocks/RouteStopAudio";
@@ -7,6 +8,7 @@ import { PageReport } from "@/components/partner-page/PageReport";
 import { PartnerSocialLinks } from "@/components/partner-page/PartnerSocialLinks";
 import { PartnerStoreCta } from "@/components/partner-page/PartnerStoreCta";
 import { PARTNER_DOWNLOAD_ID, PartnerIdentity, PartnerPageFrame } from "@/components/partner-page/PartnerPageFrame";
+import { SITE_URL } from "@/lib/app-meta";
 import { creatorPhotoSrc, creatorTitleOf, pickLang, type CreatorPage, type FeaturedRoute, type PublicRoute } from "@/lib/public-page";
 import { AUDIO_LANG_LABELS, getAllRoutes, type RouteSnapshot } from "@/lib/routes";
 import { formatDistance, formatDuration } from "@/lib/tourFormat";
@@ -68,40 +70,41 @@ export async function CreatorPageView({ page, locale, dbLang }: CreatorPageViewP
     },
   ].filter((s): s is { value: number; label: string; id: string } => Boolean(s));
 
+  const identity = (
+    <PartnerIdentity
+      media={
+        photoUrl ? (
+          // A route of this site that reads a private bucket per request:
+          // next/image would keep its own copy past the removal of the photo.
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={photoUrl}
+            alt={name}
+            width={112}
+            height={112}
+            data-testid="creator-photo"
+            className="h-16 w-16 lg:h-28 lg:w-28 rounded-full object-cover ring-4 ring-white shadow-md"
+          />
+        ) : (
+          <span
+            aria-hidden="true"
+            data-testid="creator-initial"
+            className="flex h-16 w-16 lg:h-28 lg:w-28 items-center justify-center rounded-full bg-gradient-to-br from-amber-500 to-amber-800 text-3xl lg:text-5xl font-bold text-white ring-4 ring-white shadow-md"
+          >
+            {initial}
+          </span>
+        )
+      }
+      name={name}
+      verifiedLabel={page.verified ? t("verifiedA11y") : undefined}
+      subline={page.publishedName ? `@${page.name}` : undefined}
+    />
+  );
+
   const hero = (
     <>
-      <PartnerIdentity
-        media={
-          photoUrl ? (
-            // A route of this site that reads a private bucket per request:
-            // next/image would keep its own copy past the removal of the photo.
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={photoUrl}
-              alt={name}
-              width={96}
-              height={96}
-              data-testid="creator-photo"
-              className="h-16 w-16 sm:h-24 sm:w-24 shrink-0 rounded-full object-cover ring-4 ring-white shadow-md"
-            />
-          ) : (
-            <span
-              aria-hidden="true"
-              data-testid="creator-initial"
-              className="flex h-16 w-16 sm:h-24 sm:w-24 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-amber-500 to-amber-800 text-3xl sm:text-5xl font-bold text-white ring-4 ring-white shadow-md"
-            >
-              {initial}
-            </span>
-          )
-        }
-        chip={t("badgeCreator")}
-        name={name}
-        verifiedLabel={page.verified ? t("verifiedA11y") : undefined}
-        subline={page.publishedName ? `@${page.name}` : undefined}
-      />
-
       {page.bio && (
-        <p data-testid="creator-bio" className="mt-6 max-w-xl whitespace-pre-line text-lg leading-relaxed text-tuggi-dark">
+        <p data-testid="creator-bio" className="max-w-xl whitespace-pre-line text-lg leading-relaxed text-tuggi-dark">
           {page.bio}
         </p>
       )}
@@ -129,6 +132,10 @@ export async function CreatorPageView({ page, locale, dbLang }: CreatorPageViewP
           secondary={hasRoutes ? { href: `#${ROUTES_ID}`, label: t("seeRoutes") } : undefined}
         />
       </div>
+      {/* A computer reads the QR under the badges; no phone points the camera at its own screen (spec #1254 §2). */}
+      <div id={PARTNER_DOWNLOAD_ID} className="mt-6 hidden w-fit rounded-3xl bg-white p-6 ring-1 ring-slate-200 lg:block">
+        <AppPreviewQr url={`${SITE_URL}/@${page.name}`} />
+      </div>
     </>
   );
 
@@ -137,7 +144,15 @@ export async function CreatorPageView({ page, locale, dbLang }: CreatorPageViewP
       locale={locale}
       kind="creator"
       path={`/@${page.name}`}
+      identity={identity}
       hero={hero}
+      facts={{
+        items: [
+          { icon: Download, title: t("step1Title"), text: t("step1TextCreator") },
+          { icon: MapIcon, title: t("step2Title"), text: t("step2Text") },
+          { icon: Headphones, title: t("step3Title"), text: t("step3Text") },
+        ],
+      }}
       footerAction={
         // BR-USUARIO-051 item 5: by the name the page showed; the bio is offered only when there is one.
         <PageReport

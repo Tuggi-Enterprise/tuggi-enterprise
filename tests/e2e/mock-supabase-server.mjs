@@ -77,6 +77,22 @@ const CLIENTS_BY_SLUG = {
     social_handle: "@deliciasdovale",
     avatar_url: `https://${HOST}:${PORT}/storage/v1/object/public/partners/e2e-logo.png`,
   },
+  // A short name with the whole brand (#1254): the approved logo, the colour
+  // pair and the photo of its welcome POI.
+  "e2e-hotel-foto": {
+    id: "88888888-8888-4888-8888-888888888888",
+    slug: "e2e-hotel-foto",
+    status: "approved",
+    updated_at: "2026-11-24T00:00:00Z",
+    name: "Hotel Mar Azul",
+    company_name: null,
+    welcome_poi_id: "89898989-8989-4989-8989-898989898989",
+    metadata: null,
+    client_type: "hotel",
+    website: null,
+    social_handle: null,
+    avatar_url: null,
+  },
   // The two names disagree on purpose: `name` is the trade name on the sign,
   // `company_name` is the legal name on the contract. `/d/{slug}` must show the
   // trade name — the real `Cozi +` row is what exposed the inverted order.
@@ -675,6 +691,38 @@ const ATTRACTIONS = {
     is_active: true,
     approved_at: "2026-08-02T00:00:00Z",
   },
+  "89898989-8989-4989-8989-898989898989": {
+    partner_client_id: null,
+    approved: true,
+    is_active: true,
+    approved_at: "2026-11-24T00:00:00Z",
+  },
+};
+
+/**
+ * `core.attraction_image` of the welcome POIs (#1254), oldest first as the page
+ * asks. The first row of the festival is a Google reference the page must skip;
+ * the public object after it is the photo. "https://" for the reason of the
+ * avatar fixture above: the page only string-matches it.
+ */
+const ATTRACTION_IMAGES = {
+  "33333333-3333-4333-8333-333333333333": [
+    { image_url: "https://maps.googleapis.com/maps/api/place/photo?photo_reference=e2e", created_at: "2026-08-01T00:00:00Z" },
+    { image_url: `https://${HOST}:${PORT}/storage/v1/object/public/attraction-images/e2e-festival.jpg`, created_at: "2026-08-02T00:00:00Z" },
+  ],
+  "89898989-8989-4989-8989-898989898989": [
+    { image_url: `https://${HOST}:${PORT}/storage/v1/object/public/attraction-images/e2e-hotel.jpg`, created_at: "2026-11-24T00:00:00Z" },
+  ],
+};
+
+/**
+ * `drive.resolve_partner_brand_public_v1` (#1253, contract tuggi-do-parceiro.md
+ * §2): one row for a partner with the approved logo, zero rows for every other
+ * input. `e2e-sem-logo` and `e2e-hotel-redes` have no brand, as most partners.
+ */
+const PARTNER_BRANDS = {
+  "e2e-com-logo": { name: "Delícias do Vale do Café", handle: "e2e-com-logo", logo_path: "22222222-2222-4222-8222-222222222222/e2e-logo.png", brand_color: null, brand_ink: null },
+  "e2e-hotel-foto": { name: "Hotel Mar Azul", handle: "e2e-hotel-foto", logo_path: "88888888-8888-4888-8888-888888888888/e2e-logo.png", brand_color: "#0F5A6B", brand_ink: "#FFFFFF" },
 };
 
 /** `or=(col.eq.value,...)` as supabase-js sends it, into `[column, value]` pairs. */
@@ -970,6 +1018,34 @@ const server = http.createServer((req, res) => {
       .map(([id]) => ({ id }));
     for (const [id] of terms.filter(([col]) => col === "id")) countLookup(LATE_WELCOME_POIS.get(id), "welcome");
     sendJson(res, 200, rows);
+    return;
+  }
+
+  if (url.pathname === "/rest/v1/attraction_image" && req.method === "GET") {
+    const attractionId = readEqFilter(url, "attraction_id");
+    const rows = (ATTRACTION_IMAGES[attractionId] ?? []).map(({ image_url }) => ({ image_url }));
+    sendJson(res, 200, rows);
+    return;
+  }
+
+  if (url.pathname === "/rest/v1/rpc/resolve_partner_brand_public_v1" && req.method === "POST") {
+    readBody(req).then((raw) => {
+      let input = "";
+      try {
+        input = String(JSON.parse(raw || "{}").p_input ?? "");
+      } catch {
+        // Malformed body: no brand.
+      }
+      const row = PARTNER_BRANDS[input.replace(/^@/, "")];
+      sendJson(res, 200, row ? [row] : []);
+    });
+    return;
+  }
+
+  // `createSignedUrl` of the private bucket `partner-logos`: the path back, with a token.
+  if (url.pathname.startsWith("/storage/v1/object/sign/partner-logos/") && req.method === "POST") {
+    const key = url.pathname.slice("/storage/v1/object/sign/".length);
+    sendJson(res, 200, { signedURL: `/object/sign/${key}?token=e2e-signed` });
     return;
   }
 

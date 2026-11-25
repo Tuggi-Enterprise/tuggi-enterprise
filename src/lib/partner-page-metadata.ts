@@ -27,9 +27,16 @@ export async function clientPageMetadata(
   canonical: string
 ): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: "Download" });
-  // The root layout title template already appends " | TUGGI", so use the bare name.
-  const title = partner.name && !partner.isTuggi ? partner.name : t("metaTitle");
-  const description = partner.description ? clamp(partner.description) : t("metaDesc", PRODUCT_FACTS);
+  const tPage = await getTranslations({ locale, namespace: "PartnerPage" });
+  const named = Boolean(partner.name) && !partner.isTuggi;
+  // The tab and the link preview on WhatsApp say what the page gives, after the
+  // name (copy #1254 §3). The root layout template appends " | TUGGI".
+  const title = named ? tPage("metaTitlePartner", { partner: partner.name ?? "" }) : t("metaTitle");
+  const description = partner.description
+    ? clamp(partner.description)
+    : named
+      ? tPage("partnerLead")
+      : t("metaDesc", PRODUCT_FACTS);
 
   // A partner with a seal gets the generated card (d/[slug]/opengraph-image.tsx),
   // which draws the seal next to the name. The URL is written out because

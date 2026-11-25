@@ -4,6 +4,8 @@ import { useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 
 const COPIED_FEEDBACK_MS = 2000;
+/** How long the refusal stays on the button (copy #1254 §1.5). */
+const COPY_FAILED_FEEDBACK_MS = 4000;
 
 /**
  * The fallback under the three steps: the partner's @ to type in the app, with
@@ -13,12 +15,13 @@ const COPIED_FEEDBACK_MS = 2000;
  * the visitor sees).
  *
  * `writeText` runs inside the click, the gesture WebKit requires. Refused or
- * missing, the @ is selected instead, one long-press away from the system Copy.
+ * missing, the @ is selected instead, one long-press away from the system Copy,
+ * and the button says for a few seconds that it could not copy and what to type.
  */
 export function PartnerHandleReserve({ handle }: { handle: string }) {
   const t = useTranslations("PartnerPage");
   const handleRef = useRef<HTMLElement>(null);
-  const [copied, setCopied] = useState(false);
+  const [state, setState] = useState<"idle" | "copied" | "failed">("idle");
 
   const select = () => {
     const el = handleRef.current;
@@ -28,23 +31,30 @@ export function PartnerHandleReserve({ handle }: { handle: string }) {
     selection.selectAllChildren(el);
   };
 
+  const show = (next: "copied" | "failed", ms: number) => {
+    setState(next);
+    window.setTimeout(() => setState("idle"), ms);
+  };
+
+  const fail = () => {
+    select();
+    show("failed", COPY_FAILED_FEEDBACK_MS);
+  };
+
   const copy = () => {
     const clipboard = navigator.clipboard;
     if (!clipboard?.writeText) {
-      select();
+      fail();
       return;
     }
-    clipboard.writeText(`@${handle}`).then(
-      () => {
-        setCopied(true);
-        window.setTimeout(() => setCopied(false), COPIED_FEEDBACK_MS);
-      },
-      () => select()
-    );
+    clipboard.writeText(`@${handle}`).then(() => show("copied", COPIED_FEEDBACK_MS), fail);
   };
 
+  const label =
+    state === "copied" ? t("handleCopied") : state === "failed" ? t("handleCopyFailed", { handle }) : t("handleCopy");
+
   return (
-    <div data-testid="partner-handle-reserve" className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-tuggi-slate">
+    <div data-testid="partner-handle-reserve" className="mt-2 flex items-center justify-between gap-3 text-sm leading-[19px] text-tuggi-slate">
       <p className="min-w-0">
         {t.rich("handleReserve", {
           handle,
@@ -58,11 +68,13 @@ export function PartnerHandleReserve({ handle }: { handle: string }) {
       <button
         type="button"
         onClick={copy}
-        aria-label={copied ? t("handleCopied") : t("handleCopyA11y", { handle })}
+        aria-label={state === "idle" ? t("handleCopyA11y", { handle }) : label}
         data-testid="partner-handle-copy"
-        className="min-h-11 rounded-lg px-2 text-sm font-bold text-tuggi-primary-text underline-offset-4 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-dark"
+        className={`min-h-11 min-w-11 shrink-0 rounded-lg px-2 text-sm font-bold text-tuggi-primary-text underline-offset-4 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-tuggi-dark ${
+          state === "failed" ? "max-w-[55%] text-left" : ""
+        }`}
       >
-        <span aria-live="polite">{copied ? t("handleCopied") : t("handleCopy")}</span>
+        <span aria-live="polite">{label}</span>
       </button>
     </div>
   );

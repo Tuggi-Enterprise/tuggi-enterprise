@@ -41,7 +41,9 @@ const LEGAL_NAME = "Cozimais Restaurante e Café";
  * was still resolving its src).
  */
 async function waitForLockup(page: Page) {
-  const lockup = page.locator('img[alt="Tuggi"]').locator("..");
+  // The partner page frame draws the lockup inline since #1254 (a link named
+  // Tuggi, no <img>); the coupon keeps the download layout and its picture.
+  const lockup = page.locator('img[alt="Tuggi"]').locator("..").or(page.locator('a[aria-label="Tuggi"]')).first();
   await expect(lockup).toBeVisible();
   await expect(lockup).toHaveCSS("opacity", "1");
   await lockup.locator("img").evaluateAll((imgs) =>

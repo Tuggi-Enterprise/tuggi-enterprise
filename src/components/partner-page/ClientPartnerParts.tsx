@@ -18,9 +18,27 @@ function usePartnerEvents(partnerId: string | undefined) {
     sendPartnerPageEvent(eventName, { partner_id: partnerId, platform, ...params });
 }
 
+/**
+ * The page view of a partner's page, `partner_download_page_view`, with the
+ * same parameters the download layout sends on `/d/` (`partner_id`,
+ * `platform`). Mounted once in the first fold of the page `@` and of `/d/`,
+ * whatever blocks the partner has: it used to ride on the description, which
+ * a partner without one no longer shows (#1254).
+ */
+export function PartnerPageView({ partnerId }: { partnerId?: string }) {
+  const track = usePartnerEvents(partnerId);
+  useEffect(() => {
+    if (partnerId) track("partner_download_page_view");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [partnerId]);
+  return null;
+}
+
 interface PartnerAboutProps {
   /** The partner the page credits; absent when it does not (BR-B2B-067 items 3 and 6). */
   partnerId?: string;
+  /** The block's title ("About this place"). */
+  title: string;
   description: string;
   website?: string | null;
   social?: string | null;
@@ -39,7 +57,7 @@ interface PartnerAboutProps {
  * The whole description is in the server HTML, collapsed only by CSS, so the
  * text the Google indexes is the partner's whole text.
  */
-export function PartnerAbout({ partnerId, description, website, social, socialLinks }: PartnerAboutProps) {
+export function PartnerAbout({ partnerId, title, description, website, social, socialLinks }: PartnerAboutProps) {
   const t = useTranslations("Download");
   const track = usePartnerEvents(partnerId);
   const [expanded, setExpanded] = useState(false);
@@ -47,39 +65,36 @@ export function PartnerAbout({ partnerId, description, website, social, socialLi
   const legacySocial = socialLinks ? null : social;
   const socialLink = legacySocial ? socialHref(legacySocial) : null;
 
-  // The page view of a partner's page, as the download layout counted it.
-  useEffect(() => {
-    if (partnerId) track("partner_download_page_view");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [partnerId]);
-
   const linkClass =
     "inline-flex items-center gap-1 text-base font-bold text-tuggi-primary-text underline-offset-4 hover:underline";
 
   return (
     <>
-      <div className="mt-6 max-w-xl">
-        <p
-          data-testid="partner-description"
-          className={`whitespace-pre-line text-lg leading-relaxed text-tuggi-dark ${isLong && !expanded ? "line-clamp-4" : ""}`}
-        >
-          {description}
-        </p>
-        {isLong && (
-          <button
-            type="button"
-            aria-expanded={expanded}
-            onClick={() => {
-              const next = !expanded;
-              setExpanded(next);
-              track("download_page_description_toggle", { action: next ? "expand" : "collapse" });
-            }}
-            className="mt-1 text-sm font-bold uppercase tracking-wider text-tuggi-primary-text hover:underline"
+      <h2 className="text-xl font-extrabold leading-[26px]">{title}</h2>
+      {description && (
+        <div className="mt-3 max-w-xl">
+          <p
+            data-testid="partner-description"
+            className={`whitespace-pre-line text-lg leading-relaxed text-tuggi-dark ${isLong && !expanded ? "line-clamp-4" : ""}`}
           >
-            {expanded ? t("readLess") : t("readMore")}
-          </button>
-        )}
-      </div>
+            {description}
+          </p>
+          {isLong && (
+            <button
+              type="button"
+              aria-expanded={expanded}
+              onClick={() => {
+                const next = !expanded;
+                setExpanded(next);
+                track("download_page_description_toggle", { action: next ? "expand" : "collapse" });
+              }}
+              className="mt-1 text-sm font-bold uppercase tracking-wider text-tuggi-primary-text hover:underline"
+            >
+              {expanded ? t("readLess") : t("readMore")}
+            </button>
+          )}
+        </div>
+      )}
 
       {(website || legacySocial || socialLinks) && (
         <div data-testid="partner-contacts" className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2">
@@ -122,6 +137,8 @@ interface WelcomeAudioCardProps {
   /** The place's name, the title of the card. */
   name: string;
   label: string;
+  /** The line under the player: it plays here, before any download. */
+  sub: string;
 }
 
 /**
@@ -132,7 +149,7 @@ interface WelcomeAudioCardProps {
  * The card is in the server HTML at its final size, so the audio loading late
  * moves nothing; the button plays once the clip can.
  */
-export function WelcomeAudioCard({ partnerId, audioUrl, audioLang, name, label }: WelcomeAudioCardProps) {
+export function WelcomeAudioCard({ partnerId, audioUrl, audioLang, name, label, sub }: WelcomeAudioCardProps) {
   const tPlayer = useTranslations("Download.Player");
   const tA11y = useTranslations("A11y");
   const track = usePartnerEvents(partnerId);
@@ -142,7 +159,7 @@ export function WelcomeAudioCard({ partnerId, audioUrl, audioLang, name, label }
   return (
     <aside
       data-testid="partner-welcome-audio"
-      className="self-start rounded-3xl bg-white p-6 shadow-xl ring-1 ring-slate-200"
+      className="self-start rounded-2xl bg-white p-5 ring-1 ring-slate-200"
     >
       <p className="text-xs font-bold uppercase tracking-wider text-tuggi-slate">{label}</p>
       <h2 className="mt-1 text-xl font-extrabold leading-snug">{name}</h2>
@@ -164,6 +181,7 @@ export function WelcomeAudioCard({ partnerId, audioUrl, audioLang, name, label }
           <p aria-live="polite" className="mt-2 text-sm text-tuggi-slate">
             {status}
           </p>
+          <p className="mt-0.5 text-sm text-tuggi-slate">{sub}</p>
         </div>
       </div>
     </aside>

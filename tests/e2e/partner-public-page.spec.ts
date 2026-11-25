@@ -344,8 +344,10 @@ test.describe("DS-COMPONENTE-110, mockup w02: a hotel or a restaurant in the fra
     expect(status).toBe(200);
     const main = mainOf(body);
     expect(main).toContain('data-partner-page="client"');
+    // #1254: the approved logo (BR-B2B-070 item 2) and "by Tuggi" in place of the chip.
     expect(main).toContain('data-testid="partner-logo"');
-    expect(main).toContain('data-testid="partner-page-chip"');
+    expect(main).toContain('data-testid="partner-by-tuggi"');
+    expect(main).not.toContain('data-testid="partner-page-chip"');
     expect(main).toContain("Delícias do Vale do Café");
     expect(main).toContain('data-testid="partner-page-verified"');
     // The whole description, collapsed by CSS only: what the Google reads is the partner's whole text.
@@ -358,9 +360,9 @@ test.describe("DS-COMPONENTE-110, mockup w02: a hotel or a restaurant in the fra
     expect(main).toContain("tuggi.app/@e2e-com-logo");
   });
 
-  test("a block without content does not appear: no logo draws the initial, no audio and no contacts leave no card", async ({ request }) => {
+  test("a block without content does not appear: no logo leaves the name alone, no audio and no contacts leave no card", async ({ request }) => {
     const main = mainOf((await html(request, "/@e2e-sem-logo")).body);
-    expect(main).toContain('data-testid="partner-initial"');
+    expect(main).not.toContain('data-testid="partner-initial"');
     expect(main).not.toContain('data-testid="partner-logo"');
     expect(main).not.toContain('data-testid="partner-welcome-audio"');
     expect(main).not.toContain('data-testid="partner-contacts"');
@@ -396,6 +398,8 @@ test.describe("DS-COMPONENTE-110, mockup w02, on a phone", () => {
 
   test("criterion 16: at 390 px the sticky bar waits for the action to leave the screen, and there is no QR", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
+    // The notice answered: while it is open the bar stays away (#1254 §6 item 7, partner-page-first-fold.spec.ts).
+    await page.addInitScript(() => window.localStorage.setItem("tuggi_cookie_consent", "false"));
     await page.goto("/@e2e-com-logo");
     await expect(page.getByTestId("app-preview-qr")).toBeHidden();
     const sticky = page.locator("div[aria-hidden]", { has: page.locator("a[href]") }).filter({

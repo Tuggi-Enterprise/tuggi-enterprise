@@ -1000,7 +1000,6 @@
   "PartnerPage": {
     "metaTitleCreator": "{name}: itineraries to listen to on Tuggi",
     "metaDescCreator": "Walking and driving itineraries by {name}, with the story of each stop told in the app.",
-    "badgeCreator": "Tuggi Creators",
     "verifiedA11y": "Verified by Tuggi",
     "statRoutes": "{count, plural, one {itinerary} other {itineraries}}",
     "statDiscovered": "{count, plural, one {place discovered} other {places discovered}}",
@@ -1023,12 +1022,11 @@
     "step3Text": "Each place has its story, told while you walk or drive.",
     "download": "Get Tuggi",
     "stickySub": "Free on iPhone and Android",
-    "storeLegal": "Apple and the Apple logo are trademarks of Apple Inc. Google Play and the Google Play logo are trademarks of Google LLC.",
+    "storeLegal": "Apple and the Apple logo are trademarks of Apple Inc. Google Play, the Google Play logo, Google Maps and Waze are trademarks of Google LLC.",
     "notFoundTitle": "We couldn't find @{handle}",
     "notFoundBody": "Check that the name is spelled right. Meanwhile, Tuggi tells the story of the places you pass.",
     "notFoundCta": "Get Tuggi",
     "notFoundHome": "Go to the home page",
-    "badgePartner": "Tuggi partner",
     "partnerLead": "Get Tuggi and listen to the story of places nearby, on foot or by car.",
     "storyTitle": "The story",
     "stopLabel": "Stop {number}",
@@ -1053,6 +1051,16 @@
     "handleReserve": "Didn't work? Type <b>@{handle}</b> in the app.",
     "handleCopy": "Copy @",
     "handleCopyA11y": "Copy @{handle}",
-    "handleCopied": "Copied"
+    "handleCopied": "Copied",
+    "heroTitle": "Hear the story of the places around you",
+    "heroSub": "Audio stories on foot or by car, alongside your Google Maps or Waze.",
+    "brandLockup": "{partner} by Tuggi",
+    "handleCopyFailed": "Couldn't copy. Type @{handle} in the app.",
+    "storySub": "Listen right here, before you download.",
+    "aboutTitle": "About this place",
+    "howTitle": "Once you have the app",
+    "howStep1Title": "See what's nearby",
+    "howStep1Text": "The map shows the places with a story around you.",
+    "metaTitlePartner": "{partner}: audio stories of the places nearby"
   }
 }

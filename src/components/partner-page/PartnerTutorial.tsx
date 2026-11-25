@@ -10,11 +10,16 @@ interface PartnerTutorialProps {
 }
 
 /**
- * The three steps beside the store action on a hotel's or a restaurant's page
- * (spec onda 1 §1, copy onda 1 §1). There is no "copy" step: the App Store tap
- * already writes the link to the pasteboard and the Play carries it in the
- * referrer. Nothing here speaks of days or gifts (BR-B2B-009 item 1,
- * BR-B2B-067 item 3).
+ * The three steps under the store action of a hotel's or a restaurant's page,
+ * said once on the page (spec #1254 §1 and §6 item 5): one region, numbered
+ * circles, nothing else repeats them below the fold. There is no "copy" step:
+ * the App Store tap already writes the link to the pasteboard and the Play
+ * carries it in the referrer. Nothing here speaks of days or gifts
+ * (BR-B2B-009 item 1, BR-B2B-067 item 3).
+ *
+ * Phase A of the copy (#1254): the third step says what the app in the stores
+ * shows today. The drawn "Paste" / "Confirm" pill and the phase B text ship
+ * with the app release of #1258, not before (the app has no OTA).
  *
  * On a computer the first step is the QR beside the list, and the third shows
  * both phones, each under its own label.
@@ -44,16 +49,16 @@ export async function PartnerTutorial({ locale, platform, partner }: PartnerTuto
         ];
 
   return (
-    <ol data-testid="partner-tutorial" className="mt-5 flex flex-col gap-2.5">
+    <ol data-testid="partner-tutorial" className="mt-3 flex flex-col gap-2 rounded-2xl bg-tuggi-bg px-3.5 py-3">
       {steps.map((step, index) => (
         <li key={index} className="flex items-start gap-3 text-base leading-[22px] text-tuggi-dark">
           <span
             aria-hidden="true"
-            className="flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-full bg-tuggi-primary/10 text-sm font-bold text-tuggi-dark"
+            className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-tuggi-primary/10 text-[13px] font-bold text-tuggi-dark"
           >
             {index + 1}
           </span>
-          <span data-testid="partner-tutorial-step" className="min-w-0 pt-0.5">{step}</span>
+          <span data-testid="partner-tutorial-step" className="min-w-0">{step}</span>
         </li>
       ))}
     </ol>

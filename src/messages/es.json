@@ -1000,7 +1000,6 @@
   "PartnerPage": {
     "metaTitleCreator": "{name}: itinerarios para escuchar en Tuggi",
     "metaDescCreator": "Itinerarios a pie y en coche por {name}, con la historia de cada parada contada en la app.",
-    "badgeCreator": "Creadores Tuggi",
     "verifiedA11y": "Verificado por Tuggi",
     "statRoutes": "{count, plural, one {itinerario} other {itinerarios}}",
     "statDiscovered": "{count, plural, one {lugar descubierto} other {lugares descubiertos}}",
@@ -1023,12 +1022,11 @@
     "step3Text": "Cada lugar tiene su historia, contada mientras caminas o conduces.",
     "download": "Descargar Tuggi",
     "stickySub": "Gratis en iPhone y Android",
-    "storeLegal": "Apple y el logotipo de Apple son marcas de Apple Inc. Google Play y el logotipo de Google Play son marcas de Google LLC.",
+    "storeLegal": "Apple y el logotipo de Apple son marcas de Apple Inc. Google Play, el logotipo de Google Play, Google Maps y Waze son marcas de Google LLC.",
     "notFoundTitle": "No encontramos @{handle}",
     "notFoundBody": "Revisa que el nombre esté bien escrito. Mientras tanto, Tuggi cuenta la historia de los lugares por donde pasas.",
     "notFoundCta": "Descargar Tuggi",
     "notFoundHome": "Ir al inicio",
-    "badgePartner": "Aliado de Tuggi",
     "partnerLead": "Descarga Tuggi y escucha la historia de los lugares cercanos, a pie o en coche.",
     "storyTitle": "La historia",
     "stopLabel": "Parada {number}",
@@ -1053,6 +1051,16 @@
     "handleReserve": "¿No funcionó? En la app, escribe <b>@{handle}</b>.",
     "handleCopy": "Copiar @",
     "handleCopyA11y": "Copiar @{handle}",
-    "handleCopied": "Copiado"
+    "handleCopied": "Copiado",
+    "heroTitle": "Escucha la historia de los lugares cercanos",
+    "heroSub": "Historias en audio, a pie o en coche, junto con tu Google Maps o Waze.",
+    "brandLockup": "{partner} by Tuggi",
+    "handleCopyFailed": "No se pudo copiar. En la app, escribe @{handle}.",
+    "storySub": "Escúchala aquí mismo, antes de descargar.",
+    "aboutTitle": "Sobre este lugar",
+    "howTitle": "Después de descargar",
+    "howStep1Title": "Mira qué hay cerca",
+    "howStep1Text": "El mapa muestra los lugares con historia a tu alrededor.",
+    "metaTitlePartner": "{partner}: historias en audio de los lugares cercanos"
   }
 }

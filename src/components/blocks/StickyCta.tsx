@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { COOKIE_BANNER_HEIGHT_VAR } from "@/components/global/CookieBanner";
 import { buildPlayStoreUrl } from "@/lib/app-meta";
 import {
   useAttributionClickId,
@@ -20,6 +21,27 @@ interface StickyCtaProps {
   untilId: string;
   /** GA `placement` value, so each page's bar is measurable on its own. */
   placement: string;
+  /**
+   * Stays hidden while the cookie notice is open, so two bars never stack over
+   * the content (partner page, spec #1254 §1). The notice publishes its height
+   * on <html> (`COOKIE_BANNER_HEIGHT_VAR`); above zero means open.
+   */
+  hideWithCookieNotice?: boolean;
+}
+
+/** Whether the cookie notice is on screen, from the height it publishes on <html>. */
+function useCookieNoticeOpen(enabled: boolean): boolean {
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    if (!enabled) return;
+    const root = document.documentElement;
+    const read = () => setOpen((parseFloat(root.style.getPropertyValue(COOKIE_BANNER_HEIGHT_VAR)) || 0) > 0);
+    read();
+    const observer = new MutationObserver(read);
+    observer.observe(root, { attributes: true, attributeFilter: ["style"] });
+    return () => observer.disconnect();
+  }, [enabled]);
+  return open;
 }
 
 /**
@@ -29,13 +51,14 @@ interface StickyCtaProps {
  * reduced motion. Never shown on desktop, where a long page can keep its CTA in
  * a sticky column instead.
  */
-export function StickyCta({ text, cta, afterId, untilId, placement }: StickyCtaProps) {
+export function StickyCta({ text, cta, afterId, untilId, placement, hideWithCookieNotice = false }: StickyCtaProps) {
   const platform = usePlatform();
   const clickId = useAttributionClickId();
   const writeClipboardToken = useAttributionClipboardWrite();
   const { appStoreUrl, trackStoreClick } = useStoreCampaign();
   const [pastHero, setPastHero] = useState(false);
   const [finalInView, setFinalInView] = useState(false);
+  const noticeOpen = useCookieNoticeOpen(hideWithCookieNotice);
 
   useEffect(() => {
     const observers: IntersectionObserver[] = [];
@@ -53,7 +76,7 @@ export function StickyCta({ text, cta, afterId, untilId, placement }: StickyCtaP
     return () => observers.forEach((o) => o.disconnect());
   }, [afterId, untilId]);
 
-  const visible = pastHero && !finalInView;
+  const visible = pastHero && !finalInView && !noticeOpen;
   const store = platform === "android" ? "play_store" : "app_store";
   // The Android leg carries the first touch in the Play referrer (BR-B2B-002);
   // iOS has no referrer channel, so this bar writes the same token to the
