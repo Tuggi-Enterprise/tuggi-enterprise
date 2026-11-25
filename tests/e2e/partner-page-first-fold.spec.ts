@@ -328,4 +328,16 @@ test.describe("a computer, 1440", () => {
     await expect(steps.nth(2)).toContainText(pt.PartnerPage.tutorialStep3Ios);
     await expect(steps.nth(2)).toContainText(pt.PartnerPage.tutorialStep3Android);
   });
+
+  test("§2: the identity band lines up with the column of the promise, with and without the photo", async ({ page }) => {
+    await noticeAnswered(page);
+    for (const path of [WITH_PHOTO, NO_LOGO_SHORT]) {
+      await page.goto(path);
+      const promise = (await page.getByTestId("partner-promise").boundingBox())!;
+      const first = path === WITH_PHOTO ? page.getByTestId("partner-logo") : page.getByTestId("partner-name");
+      const start = (await first.boundingBox())!;
+      // The plate's padding puts the logo a few pixels in; the name starts at the column.
+      expect(Math.abs(start.x - promise.x), path).toBeLessThanOrEqual(12);
+    }
+  });
 });

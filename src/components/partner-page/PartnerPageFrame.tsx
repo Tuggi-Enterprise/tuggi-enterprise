@@ -175,9 +175,13 @@ export function PartnerIdentity({ media, name, verifiedLabel, subline, color, ph
     >
       {photo}
       <div
-        className={`flex items-center gap-4 px-5 pb-3.5 lg:gap-6 lg:py-8 lg:pl-[max(1.25rem,calc((100vw-72rem)/2+1.25rem))] ${
-          photo ? "" : "pt-4 lg:mx-auto lg:w-full lg:max-w-6xl lg:px-5"
-        } ${photo ? "lg:order-1" : ""}`}
+        // With the photo the band is two cells, and the text lines up with the
+        // 1152 px column by its own padding; without it, the band is the column.
+        className={`flex items-center gap-4 px-5 pb-3.5 lg:gap-6 lg:py-8 ${
+          photo
+            ? "lg:order-1 lg:pl-[max(1.25rem,calc((100vw-72rem)/2+1.25rem))]"
+            : "pt-4 lg:mx-auto lg:w-full lg:max-w-6xl"
+        }`}
       >
         {media && <div className={`shrink-0 ${photo ? "relative z-10 -mt-[26px] lg:mt-0" : ""}`}>{media}</div>}
         <div className={`min-w-0 ${photo && media ? "pt-2.5 lg:pt-0" : photo ? "pt-3.5 lg:pt-0" : ""}`}>
