@@ -221,4 +221,25 @@ for (const locale of LOCALES) {
     expect(new Set(hrefs), `${locale}: the two items must reuse s5ItemLeadEmail, not two strings.`)
       .toEqual(new Set([`mailto:${email}|${email}`]));
   });
+
+  /**
+   * BR-B2B-072 item 7, the store condition of #1258: the purpose of the
+   * partner's "may we send you news?" is an item of the list, `s1Item19`, and
+   * it sits right after `s1Item14`, which points to it by name, and before
+   * `s1Item10`, whose "three items below" must stay true. Read from the `<li>`
+   * nodes, never from the HTML: the RSC payload carries the value either way.
+   */
+  test(`BR-B2B-072: /${locale}/trust-center/privacy-policy lists the partner's message (s1Item19) between s1Item14 and s1Item10`, async ({
+    page,
+  }) => {
+    const privacy = privacyOf(locale);
+    await page.goto(`/${locale}/trust-center/privacy-policy`);
+
+    const items = await page.locator("li").evaluateAll((nodes) => nodes.map((node) => node.textContent ?? ""));
+    const at = (key: string) => items.findIndex((text) => text === plain(privacy[key]));
+
+    expect(at("s1Item19"), `${locale}: s1Item19 is not an item of the list`).toBeGreaterThan(-1);
+    expect(at("s1Item19"), `${locale}: s1Item19 right after s1Item14`).toBe(at("s1Item14") + 1);
+    expect(at("s1Item10"), `${locale}: s1Item10 right after s1Item19`).toBe(at("s1Item19") + 1);
+  });
 }

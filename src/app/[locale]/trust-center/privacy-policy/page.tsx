@@ -155,6 +155,9 @@ export default async function PrivacyPolicyPage({ params }: { params: Promise<{ 
           {/* `s1Item14` is the email to the tourist, card #959, BR-COMUNICACAO-020:
               it sits before `s1Item10` so "the three items below" there stays true. */}
           <li>{t.rich("s1Item14", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
+          {/* `s1Item19` is the partner's message (BR-B2B-072 item 7, BR-COMUNICACAO-026), the item
+              `s1Item14` points to by name; before `s1Item10` for the same reason. */}
+          <li>{t.rich("s1Item19", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
           {/* `s1Item10` to `s1Item13` are the measurement trackers behind the
               consent banner — card #818, BR-USUARIO-028 item 1: the policy names
               each tool, the banner links here (the `cookies` anchor below is
