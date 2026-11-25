@@ -8,12 +8,8 @@ import { visitorHeaders } from "./visitor-headers";
  * On a partner's page the player sits below the fold, behind the cookie notice
  * at 390 x 664. A tap on "Recusar" or on "Copiar @" played the story with no
  * player in sight, because the first touch anywhere on the page started it.
- * Now the partner's story plays only from its own button. Tuggi's own page,
- * `/@tuggi`, still starts on its own: its player is the page.
- *
- * And `/@tuggi`'s floating "DESCUBRA MAIS NO APP" carries white ink on the
- * blue (DS-COR-002) and waits for the notice to be answered, as the bar of a
- * partner's page does: stacked on the notice it covered the player.
+ * Now the partner's story plays only from its own button. Since 2026-11-25
+ * `/@tuggi` renders as a partner page too (operator), so it has no case here.
  *
  * The count is of `HTMLMediaElement.play()` calls, patched before the page
  * runs, so it holds whether or not the browser lets the clip start.
@@ -21,7 +17,6 @@ import { visitorHeaders } from "./visitor-headers";
 
 /** A hotel with a welcome POI, so a player (mock-supabase-server.mjs). */
 const PARTNER_WITH_AUDIO = "/@e2e-hotel-foto";
-const TUGGI = "/@tuggi";
 const SPEC_ADDRESS = `2001:db8:1254:2::${Math.floor(Math.random() * 0xffff).toString(16)}`;
 
 test.use({
@@ -74,29 +69,5 @@ test.describe("a partner's page plays its story only from the player", () => {
     await expect.poll(() => plays(page), { message: "the player's button plays" }).toBeGreaterThan(0);
     await expect(playButton).toHaveAttribute("aria-pressed", "true");
     await expect(playButton).toHaveAccessibleName(pt.A11y.pauseAudio);
-  });
-});
-
-test.describe("/@tuggi", () => {
-  const floatingCta = (page: Page) => page.getByRole("button", { name: pt.Download.cta });
-
-  test("its own story still starts without being asked", async ({ page }) => {
-    await countPlays(page);
-    await page.goto(TUGGI);
-    await declineButton(page).tap();
-    await expect.poll(() => plays(page), { message: "Tuggi's welcome starts on its own or on the first touch" }).toBeGreaterThan(0);
-  });
-
-  test("DS-COR-002: the floating CTA stays away while the notice is open, then shows white ink on Tuggi blue", async ({ page }) => {
-    await page.goto(TUGGI);
-    await expect(declineButton(page)).toBeVisible();
-    // The CTA's entrance waits half a second; past it, it is still not there.
-    await page.waitForTimeout(1200);
-    await expect(floatingCta(page)).toHaveCount(0);
-
-    await declineButton(page).tap();
-    await expect(floatingCta(page)).toBeVisible();
-    await expect(floatingCta(page)).toHaveCSS("color", "rgb(255, 255, 255)");
-    await expect(floatingCta(page)).toHaveClass(/bg-tuggi-primary/);
   });
 });
