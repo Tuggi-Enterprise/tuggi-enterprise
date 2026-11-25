@@ -164,7 +164,9 @@ async function buildPartnerData(
   client: ClientRow,
   dbLang: string
 ): Promise<PartnerData> {
-  const isTuggi = client.id === TUGGI_PARTNER_ID;
+  // The @tuggi page renders like every other partner page (operator, 2026-11-25:
+  // test it end to end). Only a /d/ page with no owner keeps the Tuggi experience.
+  const isTuggi = false;
   const welcomePoiId = await resolveWelcomePoiId(
     supabase,
     client.id,
