@@ -324,6 +324,11 @@ const captureFirstTouch = async (pId: string): Promise<string | null> => {
     // side and the app write the same value for the same language.
     language: navigator.language,
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    // The UTM of the arrival URL, raw (BR-USUARIO-032 item 1): the row keeps
+    // it so the partner learns which campaign brought the attribution, and the
+    // database normalises it. Absent keys are stored as NULL. The cookie the
+    // answer plants never carries it.
+    ...visitUtmOf(window.location.search),
   });
 
   for (let attempt = 0; attempt < 2; attempt++) {

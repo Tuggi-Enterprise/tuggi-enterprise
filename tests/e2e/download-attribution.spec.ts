@@ -204,6 +204,9 @@ test.describe("/api/attribution", () => {
           ip_address_v4: string | null;
           language: string | null;
           timezone: string | null;
+          utm_source?: string | null;
+          utm_medium?: string | null;
+          utm_campaign?: string | null;
         }
       | null;
   }
@@ -361,6 +364,105 @@ test.describe("/api/attribution", () => {
     expect(row!.language).toBe("en");
   });
 
+  test("BR-USUARIO-032: the click keeps the arrival UTM, raw, and nothing else changes", async ({
+    request,
+  }) => {
+    // Item 1 since 2026-11-25: the row carries the UTM of the arrival URL so
+    // the partner can learn which campaign brought the attribution (item 2).
+    // The site sends it as the URL wrote it; the database normalises it.
+    const partnerId = uniquePartnerId();
+    const res = await request.post("/api/attribution", {
+      data: {
+        partner_id: partnerId,
+        user_agent: "e2e-attribution",
+        utm_source: "Instagram",
+        utm_medium: "Bio Link",
+        utm_campaign: "Verao-2026",
+      },
+    });
+    expect(res.status()).toBe(201);
+
+    const body = await res.json();
+    expect(Object.keys(body).sort()).toEqual(["click_id", "first_touch", "partner_id"]);
+    expect(body.click_id).toMatch(UUID_PATTERN);
+    expect(body.partner_id).toBe(partnerId);
+    expect(body.first_touch).toBe(true);
+
+    const row = await storedFingerprint(request, partnerId);
+    expect(row!.id).toBe(body.click_id);
+    expect(row!.utm_source).toBe("Instagram");
+    expect(row!.utm_medium).toBe("Bio Link");
+    expect(row!.utm_campaign).toBe("Verao-2026");
+
+    // The cookie does not carry the UTM: only the row does.
+    const setCookie = decodeURIComponent(res.headers()["set-cookie"] ?? "");
+    expect(setCookie).toContain(`${ATTRIBUTION_COOKIE}=`);
+    expect(setCookie).not.toContain("utm");
+    expect(setCookie).not.toContain("Verao-2026");
+  });
+
+  test("BR-USUARIO-032: an arrival without UTM stores the three columns as NULL", async ({
+    request,
+  }) => {
+    const partnerId = uniquePartnerId();
+    const res = await request.post("/api/attribution", {
+      data: { partner_id: partnerId, user_agent: "e2e-attribution" },
+    });
+    expect(res.status()).toBe(201);
+
+    const row = await storedFingerprint(request, partnerId);
+    expect(row!.utm_source).toBeNull();
+    expect(row!.utm_medium).toBeNull();
+    expect(row!.utm_campaign).toBeNull();
+  });
+
+  test("BR-USUARIO-032: a UTM that is not text, or is blank, is NULL; a long one is capped", async ({
+    request,
+  }) => {
+    const partnerId = uniquePartnerId();
+    const res = await request.post("/api/attribution", {
+      data: {
+        partner_id: partnerId,
+        user_agent: "e2e-attribution",
+        utm_source: { $gt: "" },
+        utm_medium: "   ",
+        utm_campaign: "x".repeat(5000),
+      },
+    });
+    expect(res.status()).toBe(201);
+
+    const row = await storedFingerprint(request, partnerId);
+    expect(row!.utm_source).toBeNull();
+    expect(row!.utm_medium).toBeNull();
+    expect(row!.utm_campaign).toBe("x".repeat(512));
+  });
+
+  test("BR-B2B-002: a campaign the database refuses never costs the click", async ({ request }) => {
+    // The double answers PGRST204 to this campaign, as a database without the
+    // columns of 20261125160000 would (a rollback, contract metricas-do-parceiro
+    // §8). The commission is the click; the campaign only describes it.
+    const partnerId = uniquePartnerId();
+    const res = await request.post("/api/attribution", {
+      data: {
+        partner_id: partnerId,
+        user_agent: "e2e-attribution",
+        utm_source: "tuggi",
+        utm_campaign: "e2e-utm-column-missing",
+      },
+    });
+    expect(res.status()).toBe(201);
+
+    const body = await res.json();
+    expect(body.click_id).toMatch(UUID_PATTERN);
+    expect(body.first_touch).toBe(true);
+    expect(res.headers()["set-cookie"] ?? "").toContain(`${ATTRIBUTION_COOKIE}=`);
+
+    const row = await storedFingerprint(request, partnerId);
+    expect(row!.id).toBe(body.click_id);
+    expect(row!.utm_campaign).toBeUndefined();
+    expect(row!.utm_source).toBeUndefined();
+  });
+
   test("a partner_id that is not a UUID is refused before the write", async ({ request }) => {
     const junk = "'; DROP TABLE click_fingerprints; --";
 
@@ -508,6 +610,60 @@ test.describe("/api/attribution", () => {
     });
     expect(firstTouch.status()).toBe(201);
     expect(await storedFingerprint(request, partnerId)).not.toBeNull();
+  });
+});
+
+test.describe("the partner page sends the arrival UTM with the click", () => {
+  // Its own address, for the same reason as the describe below.
+  test.use({
+    extraHTTPHeaders: visitorHeaders({ address: "198.51.100.212", country: "BR" }),
+  });
+
+  /** The row of a click, by its id: the partner of these pages is a shared fixture. */
+  async function storedClick(request: APIRequestContext, clickId: string) {
+    const res = await request.get(`${MOCK_BASE}/__fingerprints?id=${encodeURIComponent(clickId)}`);
+    expect(res.ok()).toBe(true);
+    return (await res.json()).row as Record<string, unknown> | null;
+  }
+
+  test("BR-USUARIO-032: the row gets the UTM of the URL the QR opened, and the cookie does not", async ({
+    page,
+    request,
+  }) => {
+    await page.goto(
+      `${CAMPAIGN_PATH}&utm_source=Flyer&utm_medium=qr&utm_campaign=Recepcao%20Hotel`
+    );
+    await expect
+      .poll(async () => (await storedAttribution(page)).value?.click_id ?? null)
+      .toMatch(UUID_PATTERN);
+    const { cookie, value } = await storedAttribution(page);
+    expect(value!.partner_id).toBe(CAMPAIGN_PARTNER_ID);
+
+    const row = await storedClick(request, value!.click_id);
+    expect(row).toMatchObject({
+      partner_id: CAMPAIGN_PARTNER_ID,
+      utm_source: "Flyer",
+      utm_medium: "qr",
+      utm_campaign: "Recepcao Hotel",
+    });
+
+    // The first touch stays what it was: partner, click and time, no campaign.
+    expect(Object.keys(value!).sort()).toEqual(["click_id", "partner_id", "ts"]);
+    expect(decodeURIComponent(cookie!.value)).not.toContain("utm");
+  });
+
+  test("BR-USUARIO-032: a QR without UTM stores the click with the three columns NULL", async ({
+    page,
+    request,
+  }) => {
+    await page.goto(CAMPAIGN_PATH);
+    await expect
+      .poll(async () => (await storedAttribution(page)).value?.click_id ?? null)
+      .toMatch(UUID_PATTERN);
+    const { value } = await storedAttribution(page);
+
+    const row = await storedClick(request, value!.click_id);
+    expect(row).toMatchObject({ utm_source: null, utm_medium: null, utm_campaign: null });
   });
 });
 

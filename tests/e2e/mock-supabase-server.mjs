@@ -189,6 +189,15 @@ const CLIENTS_BY_SLUG = {
  * body), and there is no other way to see it from the browser side.
  */
 const fingerprintsByPartner = new Map();
+/** The same rows by id (the click_id), for a page test whose partner is a shared fixture. */
+const fingerprintsById = new Map();
+
+/**
+ * The campaign that makes the double answer like a database without the UTM
+ * columns of 20261125160000 (PGRST204, an unknown column): how a test proves
+ * that the route still writes the click when its campaign is refused.
+ */
+const UTM_COLUMN_MISSING_CAMPAIGN = "e2e-utm-column-missing";
 
 /**
  * Rows the app inserted into campaign.inbound_leads, readable back over
@@ -828,7 +837,15 @@ const server = http.createServer((req, res) => {
       const stored = [];
       try {
         const rows = JSON.parse(raw);
-        for (const row of Array.isArray(rows) ? rows : [rows]) {
+        const list = Array.isArray(rows) ? rows : [rows];
+        if (list.some((row) => row?.utm_campaign === UTM_COLUMN_MISSING_CAMPAIGN)) {
+          sendJson(res, 400, {
+            code: "PGRST204",
+            message: "Could not find the 'utm_campaign' column of 'click_fingerprints' in the schema cache",
+          });
+          return;
+        }
+        for (const row of list) {
           // `ip_address_v4` is spelled out rather than left undefined, as the
           // nullable column in production is: the capture must leave it empty,
           // and only the `attribution-ip` Edge Function fills it (contract §4a).
@@ -839,6 +856,7 @@ const server = http.createServer((req, res) => {
             ...row,
           };
           if (row?.partner_id) fingerprintsByPartner.set(row.partner_id, withId);
+          fingerprintsById.set(withId.id, withId);
           stored.push(withId);
         }
       } catch {
@@ -947,8 +965,9 @@ const server = http.createServer((req, res) => {
 
   if (url.pathname === "/__fingerprints" && req.method === "GET") {
     const partnerId = url.searchParams.get("partner_id");
+    const id = url.searchParams.get("id");
     sendJson(res, 200, {
-      row: (partnerId && fingerprintsByPartner.get(partnerId)) || null,
+      row: (id ? fingerprintsById.get(id) : partnerId && fingerprintsByPartner.get(partnerId)) || null,
     });
     return;
   }

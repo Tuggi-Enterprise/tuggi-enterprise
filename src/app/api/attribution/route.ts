@@ -14,6 +14,7 @@ import {
 import { clientAddressOf, requestCameThroughOurEdge } from "@/lib/rate-limit";
 import { registerCaptureAttempt, registerEchoAttempt } from "@/lib/attribution-limits";
 import { attributionGateOf } from "@/lib/consent";
+import { queryUtmOf, VISIT_UTM_KEYS } from "@/lib/store-click";
 
 /**
  * The capture of a partner click — BR-B2B-002, and the contract is
@@ -54,6 +55,29 @@ function readText(value: unknown, fallback: string): string {
   if (typeof value !== "string") return fallback;
   const trimmed = value.trim();
   return trimmed ? trimmed.slice(0, MAX_FIELD_LENGTH) : fallback;
+}
+
+type ClickUtm = Record<(typeof VISIT_UTM_KEYS)[number], string | null>;
+
+/**
+ * The UTM of the arrival URL, as the page read it — BR-USUARIO-032 item 1,
+ * contract `metricas-do-parceiro.md` §3. Raw on purpose: the database
+ * normalises it (`click_fingerprints_normalize_utm`), so this only keeps the
+ * shape of a string and the length of a row. Absent, it is NULL, never "".
+ * The cookie never carries it: only the row does.
+ */
+function utmColumnsOf(body: unknown): ClickUtm {
+  const fields = (body ?? {}) as Record<string, unknown>;
+  const raw: Record<string, string> = {};
+  for (const key of VISIT_UTM_KEYS) {
+    if (typeof fields[key] === "string") raw[key] = fields[key];
+  }
+  const utm = queryUtmOf(raw);
+  return {
+    utm_source: utm.utm_source?.slice(0, MAX_FIELD_LENGTH) ?? null,
+    utm_medium: utm.utm_medium?.slice(0, MAX_FIELD_LENGTH) ?? null,
+    utm_campaign: utm.utm_campaign?.slice(0, MAX_FIELD_LENGTH) ?? null,
+  };
 }
 
 /** Whether the visitor reached us over TLS — the edge says so in a header. */
@@ -187,28 +211,41 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Invalid partner_id" }, { status: 400 });
     }
 
-    const { data: inserted, error } = await supabase
-      .schema("drive")
-      .from("click_fingerprints")
-      .insert([
-        {
-          partner_id: partnerId,
-          // NO ADDRESS COLUMN AT ALL — see the reading above. `ip_address` was
-          // written here until 2026-09-03 and is left untouched from now on;
-          // it stays in the database only until the Edge Function has moved
-          // onto `ip_address_v4`, and it is `data`'s to drop after that.
-          user_agent: readText(data?.user_agent, "Unknown"),
-          // Normalised on the way in, both fields, because the match compares
-          // stored values: `pt-BR` here against `pt` from the app never fired,
-          // and a literal "Unknown" timezone matched every other unknown.
-          language: normalizeLanguage(data?.language),
-          timezone: normalizeTimezone(data?.timezone),
-        },
-      ])
-      // The id IS the deliverable: without it the site has nothing to put in
-      // the store link, and the download goes out unattributed.
-      .select("id")
-      .single();
+    const row = {
+      partner_id: partnerId,
+      // NO ADDRESS COLUMN AT ALL — see the reading above. `ip_address` was
+      // written here until 2026-09-03 and is left untouched from now on;
+      // it stays in the database only until the Edge Function has moved
+      // onto `ip_address_v4`, and it is `data`'s to drop after that.
+      user_agent: readText(data?.user_agent, "Unknown"),
+      // Normalised on the way in, both fields, because the match compares
+      // stored values: `pt-BR` here against `pt` from the app never fired,
+      // and a literal "Unknown" timezone matched every other unknown.
+      language: normalizeLanguage(data?.language),
+      timezone: normalizeTimezone(data?.timezone),
+    };
+    // The id IS the deliverable: without it the site has nothing to put in
+    // the store link, and the download goes out unattributed.
+    const insertClick = (values: typeof row | (typeof row & ClickUtm)) =>
+      supabase.schema("drive").from("click_fingerprints").insert([values]).select("id").single();
+
+    let { data: inserted, error } = await insertClick({ ...row, ...utmColumnsOf(data) });
+
+    // THE CAMPAIGN NEVER COSTS THE CLICK. The click is the commission
+    // (BR-B2B-002); the campaign only describes it (BR-USUARIO-032 item 2).
+    // A statement the database refused carries a code and wrote nothing, so
+    // writing it again without the three columns is safe, and it is what keeps
+    // a rollback of `20261125160000` (PGRST204, an unknown column) or a value
+    // the column cannot take from silently ending every partner's attribution
+    // (contract `metricas-do-parceiro.md` §8). A failure without a code may
+    // have reached the database, and it is not repeated: that would be a
+    // second row for one visit.
+    if (error?.code) {
+      console.warn("[attribution] click refused with its campaign, written without it", {
+        code: error.code,
+      });
+      ({ data: inserted, error } = await insertClick(row));
+    }
 
     if (error || !inserted?.id || !UUID_PATTERN.test(inserted.id)) {
       // No IP, no user agent: this log is read on an ordinary support
