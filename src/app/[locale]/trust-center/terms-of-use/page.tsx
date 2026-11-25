@@ -43,6 +43,9 @@ export default async function TermsOfUsePage({ params }: { params: Promise<{ loc
           <li>{t.rich("s1Item1", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
           <li>{t.rich("s1Item2", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
           <li>{t.rich("s1Item3", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
+          {/* `s1Item4` is the partner's message (BR-COMUNICACAO-026, card #1287); the detail lives in
+              `Legal.Privacy.s1Item19`. */}
+          <li>{t.rich("s1Item4", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
         </ul>
       </section>
 
