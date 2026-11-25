@@ -157,7 +157,11 @@ export async function ClientPartnerPage({
       <p data-testid="partner-promise" className="text-[17px] font-semibold leading-[23px] lg:text-2xl lg:leading-8">
         {t("heroTitle")}
       </p>
-      {/* Not on a phone: there the fold has room for one line (spec #1254 §1), and "what Tuggi is" says it below. */}
+      {/* On a phone, one short line: the fold has room for no more (spec #1254 §1). From 640 px, the long one.
+          Its tighter leading and gap keep the @ of a two-line name with logo and photo above the notice at 390 x 664. */}
+      <p data-testid="partner-promise-sub-short" className="mt-0.5 text-base leading-5 text-tuggi-slate sm:hidden">
+        {t("heroSubShort")}
+      </p>
       <p data-testid="partner-promise-sub" className="mt-1 hidden text-base leading-6 text-tuggi-slate sm:block">
         {t("heroSub")}
       </p>

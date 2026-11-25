@@ -34,7 +34,7 @@ const ANDROID_UA =
 const MAC_UA =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36";
 const SPEC_ADDRESS = `2001:db8:1254:1::${Math.floor(Math.random() * 0xffff).toString(16)}`;
-const FIRST_FOLD = ["partner-promise", "partner-page-cta", "partner-tutorial", "partner-handle-reserve"];
+const FIRST_FOLD = ["partner-promise", "partner-promise-sub-short", "partner-page-cta", "partner-tutorial", "partner-handle-reserve"];
 
 /** The visitor already answered the notice (declined: no tracker loads), so it is not on screen. */
 async function noticeAnswered(page: Page) {
@@ -86,6 +86,9 @@ test.describe("iPhone, 390 x 664, cookie notice open", () => {
       await expect(cta).toHaveAttribute("href", /apps\.apple\.com/);
       await expect(page.getByTestId("partner-page-play-store")).toHaveCount(0);
       await expect(page.getByTestId("partner-promise")).toHaveText(pt.PartnerPage.heroTitle);
+      // On a phone, the short line under the promise, and not the long one.
+      await expect(page.getByTestId("partner-promise-sub-short")).toHaveText(pt.PartnerPage.heroSubShort);
+      await expect(page.getByTestId("partner-promise-sub")).toBeHidden();
       await expect(page.getByTestId("partner-tutorial-step")).toHaveText([
         pt.PartnerPage.tutorialStep1,
         pt.PartnerPage.tutorialStep2,
@@ -319,6 +322,9 @@ test.describe("a computer, 1440", () => {
     // The header lost its "Baixar o Tuggi".
     await expect(page.getByRole("link", { name: pt.PartnerPage.download })).toHaveCount(0);
     await expect(page.getByTestId("app-preview-qr")).toHaveCount(1);
+    // From 640 px, the long line under the promise, and not the short one.
+    await expect(page.getByTestId("partner-promise-sub")).toHaveText(pt.PartnerPage.heroSub);
+    await expect(page.getByTestId("partner-promise-sub-short")).toBeHidden();
     for (const id of ["partner-hero-qr", "partner-page-app-store", "partner-page-play-store"]) {
       const box = (await page.getByTestId(id).boundingBox())!;
       expect(box.y + box.height, id).toBeLessThanOrEqual(900);
