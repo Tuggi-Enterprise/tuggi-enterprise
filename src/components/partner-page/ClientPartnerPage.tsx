@@ -12,6 +12,7 @@ import { PartnerHandleReserve } from "@/components/partner-page/PartnerHandleRes
 import { PartnerTutorial } from "@/components/partner-page/PartnerTutorial";
 import { SITE_URL } from "@/lib/app-meta";
 import { storePlatformOf } from "@/lib/store-platform";
+import { descriptionAddsToName } from "@/lib/partner-description";
 import type { CouponPreview, PartnerData } from "@/lib/partner";
 import type { PartnerSocial } from "@/lib/partner-links";
 
@@ -168,10 +169,10 @@ export async function ClientPartnerPage({
   );
 
   // DS-COMPONENTE-110: a block without content does not appear. A description
-  // that only repeats the name says nothing, and the generic line no longer
-  // stands in for a missing one (spec #1254 §1).
+  // that only repeats the name, or a piece of it, says nothing, and the generic
+  // line no longer stands in for a missing one (spec #1254 §1).
   const description = partner.description?.trim() ?? "";
-  const hasDescription = description.length > 0 && description.toLocaleLowerCase(locale) !== name.trim().toLocaleLowerCase(locale);
+  const hasDescription = descriptionAddsToName(description, name);
   const hasSocial = Object.keys(social).length > 0;
   const hasAbout = hasDescription || Boolean(partner.website) || hasSocial;
 
