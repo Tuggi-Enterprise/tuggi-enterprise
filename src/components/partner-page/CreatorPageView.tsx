@@ -4,6 +4,7 @@ import { AppPreviewQr } from "@/components/blocks/AppPreview";
 import { Link } from "@/i18n/routing";
 import { RouteMap } from "@/components/blocks/RouteMap";
 import { RouteStopAudio } from "@/components/blocks/RouteStopAudio";
+import { PartnerEventLink } from "@/components/partner-page/ClientPartnerParts";
 import { PageReport } from "@/components/partner-page/PageReport";
 import { PartnerSocialLinks } from "@/components/partner-page/PartnerSocialLinks";
 import { PartnerStoreCta } from "@/components/partner-page/PartnerStoreCta";
@@ -110,7 +111,7 @@ export async function CreatorPageView({ page, locale, dbLang }: CreatorPageViewP
       )}
 
       {/* BR-B2B-061 item 6.d: between the bio and the numbers; without a bio, under the name. */}
-      <PartnerSocialLinks locale={locale} social={page.social} className="mt-4" />
+      <PartnerSocialLinks locale={locale} partnerId={page.clientId} social={page.social} className="mt-4" />
 
       {stats.length > 0 && (
         <dl className="mt-6 flex flex-wrap gap-x-8 gap-y-4">
@@ -144,6 +145,7 @@ export async function CreatorPageView({ page, locale, dbLang }: CreatorPageViewP
       locale={locale}
       kind="creator"
       path={`/@${page.name}`}
+      partnerId={page.clientId}
       identity={identity}
       hero={hero}
       facts={{
@@ -187,7 +189,7 @@ export async function CreatorPageView({ page, locale, dbLang }: CreatorPageViewP
           <ul className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {page.routes.map((route) => (
               <li key={route.id}>
-                <RouteCard route={route} locale={locale} openLabel={t("openInApp")} />
+                <RouteCard route={route} partnerId={page.clientId} locale={locale} openLabel={t("openInApp")} />
               </li>
             ))}
           </ul>
@@ -226,7 +228,17 @@ const snapshotOf = (routeId: string): RouteSnapshot | undefined => getAllRoutes(
  * the itinerary is published there, and are left out when it is not. The
  * snapshot does not carry walk or drive, so the card shows no mode.
  */
-async function RouteCard({ route, locale, openLabel }: { route: PublicRoute; locale: string; openLabel: string }) {
+async function RouteCard({
+  route,
+  partnerId,
+  locale,
+  openLabel,
+}: {
+  route: PublicRoute;
+  partnerId: string;
+  locale: string;
+  openLabel: string;
+}) {
   const snapshot = snapshotOf(route.id);
   const tTours = await getTranslations({ locale, namespace: "Tours" });
   const facts = snapshot
@@ -240,8 +252,12 @@ async function RouteCard({ route, locale, openLabel }: { route: PublicRoute; loc
 
   return (
     // The route link of the app (`/r/<slug>`, #946): the app opens it when
-    // installed, and the page offers the store when not.
-    <a
+    // installed, and the page offers the store when not. The tap is
+    // `partner_route_opened`, the name the app gives the same act (#1289).
+    <PartnerEventLink
+      partnerId={partnerId}
+      event="partner_route_opened"
+      params={{ source: "partner_page", route_slug: route.slug }}
       href={`/r/${encodeURIComponent(route.slug)}`}
       data-testid="creator-route-card"
       className="flex h-full flex-col justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-5 hover:border-tuggi-primary transition-colors"
@@ -262,7 +278,7 @@ async function RouteCard({ route, locale, openLabel }: { route: PublicRoute; loc
       <span className="text-sm font-bold text-tuggi-primary-text">
         {openLabel} <span aria-hidden="true">›</span>
       </span>
-    </a>
+    </PartnerEventLink>
   );
 }
 

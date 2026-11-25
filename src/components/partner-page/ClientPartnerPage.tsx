@@ -167,7 +167,7 @@ export async function ClientPartnerPage({
       </p>
       {platform !== "other" && <div className="mt-3">{storeCta}</div>}
       <PartnerTutorial locale={locale} platform={platform} partner={name} />
-      {handle && <PartnerHandleReserve handle={handle} />}
+      {handle && <PartnerHandleReserve handle={handle} partnerId={partnerId} />}
       {platform === "other" && <div className="mt-6">{storeCta}</div>}
     </>
   );
@@ -185,6 +185,7 @@ export async function ClientPartnerPage({
       locale={locale}
       kind="client"
       path={path}
+      partnerId={partnerId}
       identity={identity}
       hero={hero}
       aside={
@@ -231,7 +232,7 @@ export async function ClientPartnerPage({
                   description={hasDescription ? description : ""}
                   website={partner.website}
                   social={partner.social}
-                  socialLinks={hasSocial ? <PartnerSocialLinks locale={locale} social={social} /> : undefined}
+                  socialLinks={hasSocial ? <PartnerSocialLinks locale={locale} partnerId={partnerId} social={social} /> : undefined}
                 />
               </div>
             )}

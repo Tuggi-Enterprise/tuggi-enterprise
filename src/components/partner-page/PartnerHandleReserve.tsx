@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { useTranslations } from "next-intl";
+import { usePartnerEvents } from "@/components/partner-page/ClientPartnerParts";
 
 const COPIED_FEEDBACK_MS = 2000;
 /** How long the refusal stays on the button (copy #1254 §1.5). */
@@ -17,9 +18,13 @@ const COPY_FAILED_FEEDBACK_MS = 4000;
  * `writeText` runs inside the click, the gesture WebKit requires. Refused or
  * missing, the @ is selected instead, one long-press away from the system Copy,
  * and the button says for a few seconds that it could not copy and what to type.
+ *
+ * The tap sends `partner_handle_copied` with `result: "copied" | "failed"`
+ * (#1289): the @ itself is not sent, `partner_id` already says whose it is.
  */
-export function PartnerHandleReserve({ handle }: { handle: string }) {
+export function PartnerHandleReserve({ handle, partnerId }: { handle: string; partnerId?: string }) {
   const t = useTranslations("PartnerPage");
+  const track = usePartnerEvents(partnerId);
   const handleRef = useRef<HTMLElement>(null);
   const [state, setState] = useState<"idle" | "copied" | "failed">("idle");
 
@@ -39,6 +44,7 @@ export function PartnerHandleReserve({ handle }: { handle: string }) {
   const fail = () => {
     select();
     show("failed", COPY_FAILED_FEEDBACK_MS);
+    track("partner_handle_copied", { result: "failed" });
   };
 
   const copy = () => {
@@ -47,7 +53,10 @@ export function PartnerHandleReserve({ handle }: { handle: string }) {
       fail();
       return;
     }
-    clipboard.writeText(`@${handle}`).then(() => show("copied", COPIED_FEEDBACK_MS), fail);
+    clipboard.writeText(`@${handle}`).then(() => {
+      show("copied", COPIED_FEEDBACK_MS);
+      track("partner_handle_copied", { result: "copied" });
+    }, fail);
   };
 
   const label =

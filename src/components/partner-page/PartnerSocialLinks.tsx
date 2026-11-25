@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+import { PartnerEventLink } from "@/components/partner-page/ClientPartnerParts";
 import { partnerSocialLinks, type PartnerSocial, type PartnerSocialNetwork } from "@/lib/partner-links";
 
 /**
@@ -27,6 +28,8 @@ const LABEL_KEY = {
 
 interface PartnerSocialLinksProps {
   locale: string;
+  /** The partner the page credits, for the tap's `partner_contact_click`; absent when it does not. */
+  partnerId?: string;
   social: PartnerSocial;
   className?: string;
 }
@@ -35,9 +38,11 @@ interface PartnerSocialLinksProps {
  * The partner's networks on `tuggi.app/@nome`, BR-B2B-061 item 6.d and
  * DS-COMPONENTE-124: the official glyph in the ink of the text, Instagram,
  * TikTok, YouTube, Facebook, a network without a name left out. Rendered on
- * the server, with no script. No network, nothing in the HTML.
+ * the server, with no script. No network, nothing in the HTML. A tap sends
+ * `partner_contact_click` with `kind: "social"` and the network (#1289), as
+ * the free-text link of the CMS does.
  */
-export async function PartnerSocialLinks({ locale, social, className = "" }: PartnerSocialLinksProps) {
+export async function PartnerSocialLinks({ locale, partnerId, social, className = "" }: PartnerSocialLinksProps) {
   const links = partnerSocialLinks(social);
   if (!links.length) return null;
   const t = await getTranslations({ locale, namespace: "PartnerPage" });
@@ -46,7 +51,10 @@ export async function PartnerSocialLinks({ locale, social, className = "" }: Par
     <ul aria-label={t("socialList")} data-testid="partner-social-links" className={`flex items-center gap-2 ${className}`}>
       {links.map(({ network, url }) => (
         <li key={network}>
-          <a
+          <PartnerEventLink
+            partnerId={partnerId}
+            event="partner_contact_click"
+            params={{ kind: "social", network }}
             href={url}
             target="_blank"
             rel="noopener noreferrer"
@@ -57,7 +65,7 @@ export async function PartnerSocialLinks({ locale, social, className = "" }: Par
             <svg viewBox="0 0 24 24" width={32} height={32} fill="currentColor" aria-hidden="true" focusable="false">
               <path d={GLYPHS[network]} />
             </svg>
-          </a>
+          </PartnerEventLink>
         </li>
       ))}
     </ul>

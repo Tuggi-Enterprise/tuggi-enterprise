@@ -3,6 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import type { PartnerEventParams } from "@/lib/partner-page-events";
 
+/** A listen of the story, under the name the app gives it (#1289). */
+const STORY_PLAYED_EVENT = "partner_story_played";
+
 /** The "call" clips in `public/audio/`, one per welcome dialect. */
 const KNOWN_CALLS = ["en-us", "es-es", "pt-br", "pt-pt", "it-it", "de-de", "fr-fr"];
 
@@ -33,6 +36,12 @@ export interface WelcomeAudio {
  * (`WelcomeAudioCard`). `audioLang` is the dialect resolved on the server
  * (`pt-pt`, `pt-br`, `en-us`…), not the UI locale, so a visitor in Portugal
  * hears the pt-pt call.
+ *
+ * A listen sends `partner_story_played`, the name the app gives it (#1289):
+ * `completion: "started"` when the story starts from its beginning, by the
+ * button or on its own, and `"finished"` when its last clip ends. A resume
+ * after a pause is not a new listen; the button's own tap stays
+ * `download_page_play_button_click`.
  */
 export function useWelcomeAudio(
   audioUrl: string | undefined,
@@ -74,6 +83,7 @@ export function useWelcomeAudio(
         .then(() => {
           setIsPlaying(true);
           setAutoplayBlocked(false);
+          onEventRef.current(STORY_PLAYED_EVENT, { completion: "started" });
         })
         .catch(() => {
           setAutoplayBlocked(true);
@@ -88,6 +98,7 @@ export function useWelcomeAudio(
         return;
       }
 
+      const fromStart = trackToPlay === audio && audio.currentTime === 0;
       const playPromise = trackToPlay.play();
       if (playPromise !== undefined) {
         playPromise
@@ -108,6 +119,7 @@ export function useWelcomeAudio(
             }
 
             onEventRef.current("download_page_audio_auto_played");
+            if (fromStart) onEventRef.current(STORY_PLAYED_EVENT, { completion: "started" });
 
             // Only remove listeners after successful playback
             document.removeEventListener("click", playOnInteraction, true);
@@ -134,6 +146,7 @@ export function useWelcomeAudio(
         setIsPlaying(false);
         setProgress(100);
         currentTrack = "ended";
+        onEventRef.current(STORY_PLAYED_EVENT, { completion: "finished" });
       }
     });
 
@@ -178,6 +191,7 @@ export function useWelcomeAudio(
       setIsPlaying(false);
       setProgress(100);
       currentTrack = "ended";
+      onEventRef.current(STORY_PLAYED_EVENT, { completion: "finished" });
     });
 
     return () => {
@@ -210,12 +224,14 @@ export function useWelcomeAudio(
         current = audio;
         setProgress(0);
       }
+      const fromStart = current === audio && audio.currentTime === 0;
       current
         .play()
         .then(() => {
           setIsPlaying(true);
           setAutoplayBlocked(false);
           onEventRef.current("download_page_play_button_click", { action: "play" });
+          if (fromStart) onEventRef.current(STORY_PLAYED_EVENT, { completion: "started" });
         })
         .catch((e) => {
           console.warn("Audio play failed:", e);

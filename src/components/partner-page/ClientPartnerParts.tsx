@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState, type AnchorHTMLAttributes, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { Pause, Play } from "lucide-react";
 import { useWelcomeAudio } from "@/components/blocks/useWelcomeAudio";
@@ -11,11 +11,38 @@ import { sendPartnerPageEvent, type PartnerEventParams } from "@/lib/partner-pag
 /** Past this length the description opens collapsed, as it did on the download layout. */
 const DESCRIPTION_COLLAPSE_AT = 220;
 
-/** The GA4 events of a hotel's page, with the partner (when the page credits one) and the platform. */
-function usePartnerEvents(partnerId: string | undefined) {
+/**
+ * The GA4 events of a partner's page, with the partner (when the page credits
+ * one) and the platform. Every tap of the page `@` and of `/d/` that is not a
+ * store button goes through here; a store button sends `click_store`
+ * (`store-click.ts`), with the same `partner_id` (#1289).
+ */
+export function usePartnerEvents(partnerId: string | undefined) {
   const platform = usePlatform();
   return (eventName: string, params?: PartnerEventParams) =>
     sendPartnerPageEvent(eventName, { partner_id: partnerId, platform, ...params });
+}
+
+interface PartnerEventLinkProps extends Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "onClick"> {
+  partnerId?: string;
+  /** The event the tap sends, through `usePartnerEvents`. */
+  event: string;
+  /** Its parameters, beside `partner_id` and `platform`. No personal data, no free text. */
+  params?: PartnerEventParams;
+}
+
+/**
+ * A link of a server-rendered block (the networks, an itinerary) that sends
+ * one partner event on the tap. The link is in the server HTML as it was; only
+ * the tap is measured (#1289).
+ */
+export function PartnerEventLink({ partnerId, event, params, children, ...anchor }: PartnerEventLinkProps) {
+  const track = usePartnerEvents(partnerId);
+  return (
+    <a {...anchor} onClick={() => track(event, params)}>
+      {children}
+    </a>
+  );
 }
 
 /**

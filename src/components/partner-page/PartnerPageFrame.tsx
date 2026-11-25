@@ -41,6 +41,8 @@ interface PartnerPageFrameProps {
   facts: { title?: string; items: PartnerFact[] };
   /** First link of the footer, before Terms and Privacy: "report this profile" on a creator's page. */
   footerAction?: ReactNode;
+  /** The partner the page credits, for the sticky bar's store click; absent when it does not. */
+  partnerId?: string;
 }
 
 /**
@@ -63,6 +65,7 @@ export async function PartnerPageFrame({
   children,
   facts,
   footerAction,
+  partnerId,
 }: PartnerPageFrameProps) {
   const t = await getTranslations({ locale, namespace: "PartnerPage" });
   const tFooter = await getTranslations({ locale, namespace: "Footer" });
@@ -137,6 +140,7 @@ export async function PartnerPageFrame({
         untilId={PARTNER_FOOTER_ID}
         placement="partner_page_sticky"
         hideWithCookieNotice
+        partnerId={partnerId}
       />
     </main>
   );

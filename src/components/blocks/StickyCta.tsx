@@ -27,6 +27,8 @@ interface StickyCtaProps {
    * on <html> (`COOKIE_BANNER_HEIGHT_VAR`); above zero means open.
    */
   hideWithCookieNotice?: boolean;
+  /** The partner the page credits: its `click_store` carries `partner_id`, as the page's own store button does (#1289). */
+  partnerId?: string;
 }
 
 /**
@@ -36,7 +38,15 @@ interface StickyCtaProps {
  * reduced motion. Never shown on desktop, where a long page can keep its CTA in
  * a sticky column instead.
  */
-export function StickyCta({ text, cta, afterId, untilId, placement, hideWithCookieNotice = false }: StickyCtaProps) {
+export function StickyCta({
+  text,
+  cta,
+  afterId,
+  untilId,
+  placement,
+  hideWithCookieNotice = false,
+  partnerId,
+}: StickyCtaProps) {
   const platform = usePlatform();
   const clickId = useAttributionClickId();
   const writeClipboardToken = useAttributionClipboardWrite();
@@ -85,9 +95,10 @@ export function StickyCta({ text, cta, afterId, untilId, placement, hideWithCook
           target="_blank"
           rel="noopener noreferrer"
           tabIndex={visible ? undefined : -1}
+          data-testid="sticky-cta-store"
           onClick={() => {
             if (store === "app_store") void writeClipboardToken();
-            trackStoreClick(store, placement);
+            trackStoreClick(store, placement, partnerId ? { partner_id: partnerId } : undefined);
           }}
           className="shrink-0 rounded-xl bg-tuggi-primary text-white font-bold px-5 py-2.5 text-sm transition-transform active:scale-95 motion-reduce:active:scale-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
         >
