@@ -152,6 +152,11 @@ export default async function PrivacyPolicyPage({ params }: { params: Promise<{ 
               `s3Item2`, and the legal basis of the use in `s2Item2`
               (BR-USUARIO-049 items 1.i, 5 and 6). */}
           <li>{t.rich("s1Item17", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
+          {/* `s1Item20` is the upcoming trips and the place the person would love to visit
+              (BR-USUARIO-055 items 1, 6, 8 and 11; BR-USUARIO-041, amendments of 2026-11-23 and
+              2026-11-24, card #1286). The phone, the contact email and the reminder channels
+              join this item with #1234. */}
+          <li>{t.rich("s1Item20", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
           {/* `s1Item14` is the email to the tourist, card #959, BR-COMUNICACAO-020:
               it sits before `s1Item10` so "the three items below" there stays true. */}
           <li>{t.rich("s1Item14", { strong: (chunks) => <strong>{chunks}</strong> })}</li>
