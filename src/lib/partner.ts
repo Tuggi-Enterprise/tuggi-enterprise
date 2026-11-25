@@ -4,6 +4,7 @@ import { getSupabaseClient } from "@/lib/supabase-server";
 import { isPublicStorageUrl } from "@/lib/storage";
 import { TUGGI_PARTNER_ID } from "@/lib/app-meta";
 import { resolveWelcomePoiId } from "@/lib/partner-welcome";
+import { fetchPartnerBrand, type PartnerBrand } from "@/lib/partner-brand";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 export interface PartnerData {
@@ -27,6 +28,18 @@ export interface PartnerData {
    * is a public object in our own Storage — see isPublicStorageUrl.
    */
   logoUrl?: string | null;
+  /**
+   * The approved logo and colour pair of the partner page (#1254, BR-B2B-070
+   * item 2), from `drive.resolve_partner_brand_public_v1`. Null for every
+   * partner without the brand; read only for the partner of a `/d/` or `/@` page.
+   */
+  brand?: PartnerBrand | null;
+  /**
+   * The first photo of the welcome POI (`core.attraction_image`, BR-B2B-067
+   * item 2.a), only when it is a public object of our own Storage, the set
+   * next/image renders. Null: the page shows no photo.
+   */
+  photoUrl?: string | null;
 }
 
 type ClientRow = {
@@ -121,6 +134,30 @@ async function fetchLocalizedWelcome(
     : {};
 }
 
+/**
+ * The first photo of the welcome POI, the same POI that gives the page its
+ * audio and text (BR-B2B-067 item 2.a). Oldest first: the photo the place was
+ * published with. A photo outside our public Storage (a Google reference, a
+ * typed URL) is skipped, as next/image would refuse it. Fails soft, like the
+ * welcome: on a failed read the page shows no photo.
+ */
+async function fetchWelcomePhoto(supabase: SupabaseClient, poiId: string | null | undefined): Promise<string | null> {
+  if (!poiId) return null;
+  const { data, error } = await supabase
+    .schema("core")
+    .from("attraction_image")
+    .select("image_url")
+    .eq("attraction_id", poiId)
+    .order("created_at", { ascending: true })
+    .limit(10);
+  if (error) {
+    console.warn(`core.attraction_image: ${error.code} ${error.message}`);
+    return null;
+  }
+  const rows = (data ?? []) as { image_url: string | null }[];
+  return rows.map((row) => row.image_url?.trim() ?? "").find((url) => isPublicStorageUrl(url)) ?? null;
+}
+
 /** Builds the partner view-model from a client row, fetching the localized welcome audio/text. */
 async function buildPartnerData(
   supabase: SupabaseClient,
@@ -133,7 +170,10 @@ async function buildPartnerData(
     client.id,
     client.welcome_poi_id || client.metadata?.welcome_poi_id
   );
-  const welcome = await fetchLocalizedWelcome(supabase, welcomePoiId, dbLang);
+  const [welcome, photoUrl] = await Promise.all([
+    fetchLocalizedWelcome(supabase, welcomePoiId, dbLang),
+    isTuggi ? null : fetchWelcomePhoto(supabase, welcomePoiId),
+  ]);
   return {
     id: client.id,
     // The TRADE NAME first (`name`), the legal name (`company_name`) only as fallback.
@@ -151,6 +191,7 @@ async function buildPartnerData(
     website: isTuggi ? null : client.website,
     social: isTuggi ? null : client.social_handle,
     logoUrl: isTuggi ? null : toLogoUrl(client.avatar_url),
+    photoUrl,
     ...welcome,
   };
 }
@@ -454,7 +495,12 @@ async function resolvePartnerOrCoupon(
   }
 
   const partner = await getPartnerBySlug(slug, dbLang);
-  if (partner) return { kind: "partner", partner, coupon: null };
+  if (partner) {
+    // The brand of the page (#1254) is read here, inside the cached read, so the
+    // public lookup and its rate limit see one call per slug every few minutes.
+    const brand = partner.isTuggi ? null : await fetchPartnerBrand(getSupabaseClient("publishable"), slug);
+    return { kind: "partner", partner: { ...partner, brand }, coupon: null };
+  }
 
   return null;
 }

@@ -1,6 +1,7 @@
 import createNextIntlPlugin from 'next-intl/plugin';
 import type { NextConfig } from "next";
-import { getStorageHost, STORAGE_PUBLIC_PATH } from "./src/lib/storage";
+import { getStorageHost, STORAGE_PUBLIC_PATH, STORAGE_SIGNED_PATH } from "./src/lib/storage";
+import { PARTNER_LOGO_BUCKET } from "./src/lib/partner-brand";
 import { DEFAULT_LOCALE, LOCALES } from "./src/i18n/locales";
 import { EXTERNAL_ROUTES, MOVED_ROUTES, localizedPathname } from "./src/i18n/pathnames";
 
@@ -32,6 +33,13 @@ const nextConfig: NextConfig = {
             // `search` stays unset (Next implies `**`) on purpose: a cache-busting
             // query on our own object must not turn a partner logo into a 400.
             pathname: `${STORAGE_PUBLIC_PATH}**`,
+          },
+          {
+            // The approved partner logo (#1254) is a signed URL of a private
+            // bucket: only that bucket's signed objects, with their token.
+            protocol: "https",
+            hostname: storageHost,
+            pathname: `${STORAGE_SIGNED_PATH}${PARTNER_LOGO_BUCKET}/**`,
           },
         ]
       : [],

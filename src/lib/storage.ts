@@ -16,6 +16,9 @@
 /** Public Storage objects live under this path. Signed and private ones do not. */
 export const STORAGE_PUBLIC_PATH = "/storage/v1/object/public/";
 
+/** Signed objects of a private bucket: `createSignedUrl` answers under this path, with a `token` query. */
+export const STORAGE_SIGNED_PATH = "/storage/v1/object/sign/";
+
 /** Hostname of the Supabase project, or null when SUPABASE_URL is missing or malformed. */
 export function getStorageHost(): string | null {
   const raw = process.env.SUPABASE_URL;
