@@ -1,15 +1,18 @@
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { headers } from "next/headers";
+import type { ReactNode } from "react";
 import { notFound, permanentRedirect } from "next/navigation";
 import { PartnerHeroWrapper } from "@/components/blocks/PartnerHeroWrapper";
 import { ClientPartnerPage } from "@/components/partner-page/ClientPartnerPage";
 import { CreatorPageView } from "@/components/partner-page/CreatorPageView";
+import { DownloadTapScope } from "@/components/global/DownloadTapScope";
 import { kitPieceOf, recordActivationScan } from "@/lib/activation-scan";
 import { lookupPartnerSlug } from "@/lib/partner";
 import { clientPageMetadata, creatorPageMetadata, notFoundPageMetadata } from "@/lib/partner-page-metadata";
 import { recordPageVisit, resolvePublicPage } from "@/lib/public-page";
 import { requestWelcomeLang } from "@/lib/request-welcome-lang";
+import { queryUtmOf } from "@/lib/store-click";
 
 /**
  * `tuggi.app/@nome` — the partner page, BR-B2B-037 and BR-B2B-067, for a
@@ -22,8 +25,9 @@ import { requestWelcomeLang } from "@/lib/request-welcome-lang";
  * parallel-route slot. This internal path redirects to `/@nome` if asked for.
  *
  * Rendered on every request and never stored (#987 for `/d/`): each opening
- * counts (`recordPageVisit`), and a photo removed or a flag turned off leaves
- * the page on the next read.
+ * counts with the UTM of its URL (`recordPageVisit`, BR-B2B-068 item 2.e), a
+ * tap on its download button counts inside `DownloadTapScope` (2.f), and a
+ * photo removed or a flag turned off leaves the page on the next read.
  *
  * The kit QR is printed with this address since #1147, so `?k={piece}` counts
  * here exactly as on `/d/` (BR-B2B-050 item 4): under the name the QR carries,
@@ -91,11 +95,16 @@ export default async function PublicPartnerPage({ params, searchParams }: { para
   }
 
   const dbLang = await requestWelcomeLang(locale, langOf(query));
-  const visit = recordPageVisit(page.clientId, "at_name", requestHeaders);
+  const visit = recordPageVisit(page.clientId, "at_name", queryUtmOf(query), requestHeaders);
+  const counted = (view: ReactNode) => (
+    <DownloadTapScope clientId={page.clientId} via="at_name">
+      {view}
+    </DownloadTapScope>
+  );
 
   if (page.kind === "creator") {
     await visit;
-    return <CreatorPageView page={page} locale={locale} dbLang={dbLang} />;
+    return counted(<CreatorPageView page={page} locale={locale} dbLang={dbLang} />);
   }
 
   // A place or a client: the blocks come from the read `/d/{slug}` makes.
@@ -103,13 +112,13 @@ export default async function PublicPartnerPage({ params, searchParams }: { para
   // The resolver knows the page and the read of its blocks failed: the plain
   // download page, as `/d/{slug}` does, and never a 404 for a real partner.
   if (resolved?.kind !== "partner") {
-    return (
+    return counted(
       <main>
         <PartnerHeroWrapper partnerData={null} />
       </main>
     );
   }
-  return (
+  return counted(
     <ClientPartnerPage
       locale={locale}
       partner={resolved.partner}

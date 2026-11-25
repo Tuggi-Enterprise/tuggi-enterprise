@@ -6,6 +6,8 @@ import { sendStoreClick, visitUtmOf, type StoreId } from "@/lib/store-click";
 import { resolvePricing, type BaseMarketPricing } from "@/lib/pricing";
 import { attributionIpEndpoint, clickToken, readStoredAttribution } from "@/lib/attribution";
 import { useAttributionAllowed } from "@/components/global/AttributionGateProvider";
+import { useDownloadTapTarget } from "@/components/global/DownloadTapScope";
+import { sendDownloadTap } from "@/lib/download-tap";
 
 export type Platform = "ios" | "android" | "desktop";
 
@@ -124,20 +126,27 @@ const serverSearch = (): string => "";
  * cached by the CDN. The server snapshot is the bare link, and the campaign
  * lands on hydration. The Play link is not built here: its referrer is the
  * partner attribution token and stays as `buildPlayStoreUrl` makes it.
+ *
+ * Inside a partner page (`DownloadTapScope`) the same tap is also counted on
+ * the server, with the same UTM (BR-B2B-068 item 2.f): with or without
+ * analytics consent, since the count has no person.
  */
 export function useStoreCampaign(): {
   appStoreUrl: string;
   trackStoreClick: (store: StoreId, placement: string, extra?: Record<string, string>) => void;
 } {
   const search = useSyncExternalStore(noopSubscribe, clientSearch, serverSearch);
+  const tapTarget = useDownloadTapTarget();
   return useMemo(() => {
     const utm = visitUtmOf(search);
     return {
       appStoreUrl: buildAppStoreUrl(utm.utm_campaign),
-      trackStoreClick: (store: StoreId, placement: string, extra?: Record<string, string>) =>
-        sendStoreClick({ store, placement, utm, extra }),
+      trackStoreClick: (store: StoreId, placement: string, extra?: Record<string, string>) => {
+        sendStoreClick({ store, placement, utm, extra });
+        if (tapTarget) sendDownloadTap(tapTarget, utm);
+      },
     };
-  }, [search]);
+  }, [search, tapTarget]);
 }
 
 /**

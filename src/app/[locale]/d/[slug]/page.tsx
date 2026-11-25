@@ -5,6 +5,7 @@ import { permanentRedirect } from "next/navigation";
 import { PartnerHeroWrapper } from "@/components/blocks/PartnerHeroWrapper";
 import { ClientPartnerPage } from "@/components/partner-page/ClientPartnerPage";
 import { CreatorPageView } from "@/components/partner-page/CreatorPageView";
+import { DownloadTapScope } from "@/components/global/DownloadTapScope";
 import { lookupPartnerSlug, type PartnerSlugResult } from "@/lib/partner";
 import { kitPieceOf, recordActivationScan } from "@/lib/activation-scan";
 import { clientPageMetadata, creatorPageMetadata } from "@/lib/partner-page-metadata";
@@ -15,6 +16,7 @@ import {
   type PublicPage,
 } from "@/lib/public-page";
 import { requestWelcomeLang } from "@/lib/request-welcome-lang";
+import { queryUtmOf } from "@/lib/store-click";
 
 /**
  * What the one resolver of the partner page says about this slug (BR-B2B-037
@@ -127,8 +129,12 @@ export default async function PartnerSlugPage({
   // One resolver, two doors (BR-B2B-037 item 2): a creator's name after `/d/`
   // shows the creator's page, counted as a `/d/` opening.
   if (!isCoupon(resolved) && page?.state === "page" && page.kind === "creator") {
-    await recordPageVisit(page.clientId, "d_slug", requestHeaders);
-    return <CreatorPageView page={page} locale={locale} dbLang={dbLang} />;
+    await recordPageVisit(page.clientId, "d_slug", queryUtmOf(query), requestHeaders);
+    return (
+      <DownloadTapScope clientId={page.clientId} via="d_slug">
+        <CreatorPageView page={page} locale={locale} dbLang={dbLang} />
+      </DownloadTapScope>
+    );
   }
 
   // An old @ or another spelling the resolver knows and `/d/` does not: the
@@ -186,11 +192,13 @@ export default async function PartnerSlugPage({
 
   // The resolver's answer decides the capture (BR-B2B-067 items 3 and 6: a
   // client whose contract ended stops attributing) and counts the opening
-  // (item 7). A slug it does not know, and a coupon, keep today's behaviour.
+  // (item 7), with the UTM of the URL (BR-B2B-068 item 2.e), and its download
+  // button counts its taps (2.f). A slug it does not know, and a coupon, keep
+  // today's behaviour: no count of either.
   const client = clientPageOf(page, resolved);
-  if (client) await recordPageVisit(client.clientId, "d_slug", requestHeaders);
+  if (client) await recordPageVisit(client.clientId, "d_slug", queryUtmOf(query), requestHeaders);
 
-  return (
+  const view = (
     <ClientPartnerPage
       locale={locale}
       partner={partner}
@@ -201,5 +209,12 @@ export default async function PartnerSlugPage({
       verified={client?.verified ?? false}
       social={client?.social ?? {}}
     />
+  );
+  return client ? (
+    <DownloadTapScope clientId={client.clientId} via="d_slug">
+      {view}
+    </DownloadTapScope>
+  ) : (
+    view
   );
 }

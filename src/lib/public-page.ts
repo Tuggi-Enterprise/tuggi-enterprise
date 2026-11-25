@@ -1,8 +1,10 @@
 import { createHash } from "node:crypto";
 import { cache } from "react";
+import type { DownloadTap, PartnerPageVia } from "@/lib/download-tap";
 import { partnerSocialOf, type PartnerSocial } from "@/lib/partner-links";
 import { clientAddressOf, registerAttempt } from "@/lib/rate-limit";
 import { getSupabaseClient } from "@/lib/supabase-server";
+import type { VisitUtm } from "@/lib/store-click";
 
 /**
  * The one resolver of the partner page — `partner.resolve_public_page`,
@@ -372,7 +374,7 @@ export function isDeclaredRobot(userAgent: string | null | undefined): boolean {
   return !ua || DECLARED_ROBOT.test(ua);
 }
 
-export type PageVisitVia = "at_name" | "d_slug";
+export type PageVisitVia = PartnerPageVia;
 
 export const PAGE_VISIT_BUCKET = "page-visit";
 export const PAGE_VISIT_WINDOW_SECONDS = 60 * 60;
@@ -385,36 +387,95 @@ export const PAGE_VISIT_WINDOW_SECONDS = 60 * 60;
 export const PAGE_VISIT_LIMIT_PER_WINDOW = 30;
 
 /**
+ * Taps on the download button of one page counted per address per hour
+ * (BR-B2B-068 item 2.f), in a bucket of their own: the ceiling and the window
+ * of the opening, since a tap never outnumbers the openings of a person.
+ */
+export const DOWNLOAD_TAP_BUCKET = "download-tap";
+export const DOWNLOAD_TAP_LIMIT_PER_WINDOW = PAGE_VISIT_LIMIT_PER_WINDOW;
+
+/** What became of one count: `ignored` is a robot or an address above the ceiling. */
+export type PartnerPageCount = "recorded" | "ignored" | "unknown_client" | "failed";
+
+/**
+ * The one way the partner page counts something (2.e and 2.f): never a robot,
+ * at most the ceiling per address and page in the window, then the function
+ * with the UTM of the arrival, raw (the database normalizes it), null when
+ * absent. Nothing about the person is sent: the counter keeps only a keyed
+ * digest of the address, and the row has no person, address nor agent
+ * (BR-B2B-068 item 11).
+ */
+async function countOnPartnerPage(
+  fn: "record_page_visit_v2" | "record_download_tap_v1",
+  bucket: string,
+  limit: number,
+  { clientId, via, utm }: DownloadTap,
+  requestHeaders: Headers
+): Promise<PartnerPageCount> {
+  if (isDeclaredRobot(requestHeaders.get("user-agent"))) return "ignored";
+  try {
+    const decision = await registerAttempt({
+      bucket: `${bucket}:${clientId}`,
+      clientAddress: clientAddressOf(requestHeaders),
+      windowSeconds: PAGE_VISIT_WINDOW_SECONDS,
+      maxAttempts: limit,
+    });
+    if (!decision.allowed) return decision.reason === "limit" ? "ignored" : "failed";
+
+    const { data, error } = await getSupabaseClient("serviceRole")
+      .schema("partner")
+      .rpc(fn, {
+        p_client_id: clientId,
+        p_via: via,
+        p_utm_source: utm.utm_source ?? null,
+        p_utm_medium: utm.utm_medium ?? null,
+        p_utm_campaign: utm.utm_campaign ?? null,
+      });
+    if (error) {
+      console.error(`partner.${fn}:`, error.code, error.message);
+      return "failed";
+    }
+    return data === false ? "unknown_client" : "recorded";
+  } catch (err) {
+    console.error(`partner.${fn} failed:`, err);
+    return "failed";
+  }
+}
+
+/**
  * Counts one opening of the page, for "visitaram o perfil" (BR-B2B-067 item 7,
- * BR-B2B-068 item 2.e): every render, never a robot, and at most
- * `PAGE_VISIT_LIMIT_PER_WINDOW` per address and page in the window. The bucket
- * names the page, so browsing many pages spends nobody's budget. Nothing
- * about the person is sent (contract: no person, IP or user agent; the
- * counter keeps only a keyed digest of the address). A failure costs one
- * count and never the page.
+ * BR-B2B-068 item 2.e): every render, with the UTM of the URL opened. The
+ * bucket names the page, so browsing many pages spends nobody's budget. A
+ * failure costs one count and never the page.
  */
 export async function recordPageVisit(
   clientId: string,
   via: PageVisitVia,
+  utm: VisitUtm,
   requestHeaders: Headers
 ): Promise<void> {
-  if (isDeclaredRobot(requestHeaders.get("user-agent"))) return;
-  try {
-    const decision = await registerAttempt({
-      bucket: `${PAGE_VISIT_BUCKET}:${clientId}`,
-      clientAddress: clientAddressOf(requestHeaders),
-      windowSeconds: PAGE_VISIT_WINDOW_SECONDS,
-      maxAttempts: PAGE_VISIT_LIMIT_PER_WINDOW,
-    });
-    if (!decision.allowed) return;
+  await countOnPartnerPage(
+    "record_page_visit_v2",
+    PAGE_VISIT_BUCKET,
+    PAGE_VISIT_LIMIT_PER_WINDOW,
+    { clientId, via, utm },
+    requestHeaders
+  );
+}
 
-    const { error } = await getSupabaseClient("serviceRole")
-      .schema("partner")
-      .rpc("record_page_visit", { p_client_id: clientId, p_via: via });
-    if (error) console.error("partner.record_page_visit:", error.code, error.message);
-  } catch (err) {
-    console.error("partner.record_page_visit failed:", err);
-  }
+/**
+ * Counts one tap on the download button of the page (BR-B2B-068 item 2.f),
+ * posted by the browser (`sendDownloadTap`) with the UTM of the page where it
+ * was tapped. Never an install.
+ */
+export function recordDownloadTap(tap: DownloadTap, requestHeaders: Headers): Promise<PartnerPageCount> {
+  return countOnPartnerPage(
+    "record_download_tap_v1",
+    DOWNLOAD_TAP_BUCKET,
+    DOWNLOAD_TAP_LIMIT_PER_WINDOW,
+    tap,
+    requestHeaders
+  );
 }
 
 /**

@@ -27,6 +27,16 @@ export function visitUtmOf(search: string): VisitUtm {
   return utm;
 }
 
+/** The same tags from the `searchParams` of a server page, read as the address bar reads them. */
+export function queryUtmOf(query: Record<string, string | string[] | undefined>): VisitUtm {
+  const params = new URLSearchParams();
+  for (const [key, value] of Object.entries(query)) {
+    if (value === undefined) continue;
+    for (const item of Array.isArray(value) ? value : [value]) params.append(key, item);
+  }
+  return visitUtmOf(params.toString());
+}
+
 export interface StoreClick {
   store: StoreId;
   /** Where the button sits (`home_hero`, `footer`, `partner_cta`...). */

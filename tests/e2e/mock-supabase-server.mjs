@@ -678,8 +678,17 @@ const REPORT_FAILS = new Set(["e2e-criador-instavel"]);
 const pageReports = [];
 const reportCounts = new Map();
 
-/** Every `partner.record_page_visit` call, in order: `{ client_id, via }`. */
+/**
+ * Every `partner.record_page_visit_v2` call, in order:
+ * `{ client_id, via, utm_source, utm_medium, utm_campaign }`, the UTM as sent.
+ */
 const pageVisits = [];
+
+/** Every `partner.record_download_tap_v1` call, in order, in the shape of `pageVisits`. */
+const downloadTaps = [];
+
+/** The client the functions answer `false` for, as the database does for an id without a client. */
+const UNKNOWN_CLIENT_ID = "00000000-0000-4000-8000-0000000000aa";
 
 const activationScans = [];
 
@@ -1278,7 +1287,11 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  if (url.pathname === "/rest/v1/rpc/record_page_visit" && req.method === "POST") {
+  const partnerCounts = {
+    "/rest/v1/rpc/record_page_visit_v2": pageVisits,
+    "/rest/v1/rpc/record_download_tap_v1": downloadTaps,
+  };
+  if (partnerCounts[url.pathname] && req.method === "POST") {
     readBody(req).then((raw) => {
       let body = {};
       try {
@@ -1286,7 +1299,17 @@ const server = http.createServer((req, res) => {
       } catch {
         // Malformed body: recorded as-is so the spec sees it.
       }
-      pageVisits.push({ client_id: body.p_client_id, via: body.p_via });
+      if (body.p_client_id === UNKNOWN_CLIENT_ID) {
+        sendJson(res, 200, false);
+        return;
+      }
+      partnerCounts[url.pathname].push({
+        client_id: body.p_client_id,
+        via: body.p_via,
+        utm_source: body.p_utm_source,
+        utm_medium: body.p_utm_medium,
+        utm_campaign: body.p_utm_campaign,
+      });
       sendJson(res, 200, true);
     });
     return;
@@ -1307,6 +1330,12 @@ const server = http.createServer((req, res) => {
   if (url.pathname === "/__page-visits" && req.method === "GET") {
     const clientId = url.searchParams.get("client_id");
     sendJson(res, 200, { rows: clientId ? pageVisits.filter((v) => v.client_id === clientId) : pageVisits });
+    return;
+  }
+
+  if (url.pathname === "/__download-taps" && req.method === "GET") {
+    const clientId = url.searchParams.get("client_id");
+    sendJson(res, 200, { rows: clientId ? downloadTaps.filter((v) => v.client_id === clientId) : downloadTaps });
     return;
   }
 

@@ -1,6 +1,8 @@
 import { test, expect, type APIRequestContext, type Page } from "@playwright/test";
 import { MOCK_SUPABASE_PORT } from "../../playwright.config";
-import { PAGE_VISIT_LIMIT_PER_WINDOW } from "../../src/lib/public-page";
+import { DOWNLOAD_TAP_LIMIT_PER_WINDOW, PAGE_VISIT_LIMIT_PER_WINDOW } from "../../src/lib/public-page";
+import { CONSENT_KEY } from "../../src/lib/consent";
+import pt from "../../src/messages/pt.json";
 import { visitorHeaders } from "./visitor-headers";
 
 /**
@@ -47,9 +49,22 @@ test.use({
   extraHTTPHeaders: visitorHeaders({ country: "BR", address: SPEC_ADDRESS }),
 });
 
-async function visitsOf(clientId: string): Promise<{ client_id: string; via: string }[]> {
+interface CountRow {
+  client_id: string;
+  via: string;
+  utm_source: string | null;
+  utm_medium: string | null;
+  utm_campaign: string | null;
+}
+
+async function visitsOf(clientId: string): Promise<CountRow[]> {
   const res = await fetch(`${MOCK}/__page-visits?client_id=${clientId}`);
-  return ((await res.json()) as { rows: { client_id: string; via: string }[] }).rows;
+  return ((await res.json()) as { rows: CountRow[] }).rows;
+}
+
+async function tapsOf(clientId: string): Promise<CountRow[]> {
+  const res = await fetch(`${MOCK}/__download-taps?client_id=${clientId}`);
+  return ((await res.json()) as { rows: CountRow[] }).rows;
 }
 
 async function fingerprintOf(partnerId: string): Promise<unknown> {
@@ -333,6 +348,151 @@ test.describe("BR-B2B-067 item 7: each opening counts, and never a robot's", () 
     expect(status).toBe(200);
     await html(request, "/@e2e-criador-vazio", "facebookexternalhit/1.1");
     expect((await visitsOf(EMPTY_CREATOR_ID)).length).toBe(before);
+  });
+});
+
+test.describe("BR-B2B-068 item 2.e: each opening keeps the UTM of its URL", () => {
+  test("the raw tags of the URL, by either door, and the partner's message as any other", async ({ request }) => {
+    const before = (await visitsOf(EMPTY_CREATOR_ID)).length;
+    await html(request, "/@e2e-criador-vazio?utm_source=Instagram&utm_medium=bio&utm_campaign=Verao%201292");
+    await html(request, "/d/e2e-criador-vazio?utm_source=tuggi&utm_medium=partner_message");
+    expect((await visitsOf(EMPTY_CREATOR_ID)).slice(before)).toEqual([
+      { client_id: EMPTY_CREATOR_ID, via: "at_name", utm_source: "Instagram", utm_medium: "bio", utm_campaign: "Verao 1292" },
+      { client_id: EMPTY_CREATOR_ID, via: "d_slug", utm_source: "tuggi", utm_medium: "partner_message", utm_campaign: null },
+    ]);
+  });
+
+  test("without UTM the three go as null, on a client's page too", async ({ request }) => {
+    const before = (await visitsOf(CLIENT_ID)).length;
+    await html(request, "/@e2e-sem-logo");
+    await html(request, "/d/e2e-sem-logo?utm_source=tuggi_app&utm_medium=share&utm_campaign=");
+    expect((await visitsOf(CLIENT_ID)).slice(before)).toEqual([
+      { client_id: CLIENT_ID, via: "at_name", utm_source: null, utm_medium: null, utm_campaign: null },
+      { client_id: CLIENT_ID, via: "d_slug", utm_source: "tuggi_app", utm_medium: "share", utm_campaign: null },
+    ]);
+  });
+});
+
+test.describe("BR-B2B-068 item 2.f: a tap on the download button counts on the server, and the store opens as before", () => {
+  /** Every host outside the site answers empty, and the cookie notice is answered so it covers no button. */
+  async function prepare(page: Page) {
+    await page.context().route(/^https?:\/\/(?!127\.0\.0\.1)/, (route) => route.fulfill({ status: 204, body: "" }));
+    await page.addInitScript((key) => window.localStorage.setItem(key, "true"), CONSENT_KEY);
+  }
+
+  /** The URL the tap sent the visitor to: the first request that left the site after it. */
+  async function storeRequestOf(page: Page, tap: () => Promise<void>): Promise<string> {
+    const [request] = await Promise.all([
+      page.context().waitForEvent("request", (req) => /^https:\/\/(play\.google|apps\.apple)\.com\//.test(req.url())),
+      tap(),
+    ]);
+    return request.url();
+  }
+
+  async function tapAndFollow(page: Page, path: string, selector: string) {
+    await prepare(page);
+    await page.goto(path);
+    const link = page.locator(selector).first();
+    await expect(link).toBeVisible();
+    return storeRequestOf(page, () => link.click());
+  }
+
+  test("the Play badge of the creator's @ counts by at_name with the UTM, and goes to the Play Store", async ({ page }) => {
+    const before = (await tapsOf(EMPTY_CREATOR_ID)).length;
+    const storeUrl = await tapAndFollow(
+      page,
+      "/@e2e-criador-vazio?utm_source=tuggi&utm_medium=partner_message&utm_campaign=teste-1292",
+      '[data-testid="partner-page-play-store"]'
+    );
+    // The link is the one it was: the Play referrer carries the first touch (BR-B2B-002).
+    expect(storeUrl).toMatch(/^https:\/\/play\.google\.com\/store\/apps\/details\?id=[^&]+&referrer=tuggi_click_[0-9a-f-]{36}$/);
+    await expect.poll(async () => (await tapsOf(EMPTY_CREATOR_ID)).length).toBe(before + 1);
+    expect((await tapsOf(EMPTY_CREATOR_ID)).slice(before)).toEqual([
+      { client_id: EMPTY_CREATOR_ID, via: "at_name", utm_source: "tuggi", utm_medium: "partner_message", utm_campaign: "teste-1292" },
+    ]);
+  });
+
+  test("the App Store badge of a client's /d/ counts by d_slug without UTM, and goes to the App Store", async ({ page }) => {
+    const before = (await tapsOf(CLIENT_ID)).length;
+    const storeUrl = await tapAndFollow(page, "/d/e2e-sem-logo", '[data-testid="partner-page-app-store"]');
+    expect(storeUrl).toMatch(/^https:\/\/apps\.apple\.com\//);
+    await expect.poll(async () => (await tapsOf(CLIENT_ID)).length).toBe(before + 1);
+    expect((await tapsOf(CLIENT_ID)).slice(before)).toEqual([
+      { client_id: CLIENT_ID, via: "d_slug", utm_source: null, utm_medium: null, utm_campaign: null },
+    ]);
+  });
+
+  test("a page that is not a partner's sends no tap", async ({ page }) => {
+    const posts: string[] = [];
+    page.on("request", (req) => {
+      if (req.url().includes("/api/download-tap")) posts.push(req.url());
+    });
+    await prepare(page);
+    // The plain download page a dead slug gets: its one button opens the store.
+    await page.goto("/d/e2e-slug-que-nao-existe");
+    const cta = page.getByRole("button", { name: pt.Download.cta });
+    await expect(cta).toBeVisible();
+    expect(await storeRequestOf(page, () => cta.click())).toMatch(/^https:\/\/play\.google\.com\//);
+    await page.waitForTimeout(500);
+    expect(posts).toEqual([]);
+  });
+});
+
+test.describe("BR-B2B-068 item 2.f: the tap route is the only barrier of a public write", () => {
+  const tap = (body: unknown, ua = PERSON_UA, address = SPEC_ADDRESS) => ({
+    data: typeof body === "string" ? body : JSON.stringify(body),
+    headers: { ...visitorHeaders({ country: "BR", address }), "user-agent": ua, "content-type": "text/plain;charset=UTF-8" },
+  });
+
+  test("a declared robot is answered and not counted", async ({ request }) => {
+    const before = (await tapsOf(EMPTY_CREATOR_ID)).length;
+    const body = { clientId: EMPTY_CREATOR_ID, via: "at_name", utm: {} };
+    expect((await request.post("/api/download-tap", tap(body, GOOGLEBOT_UA))).status()).toBe(204);
+    expect((await request.post("/api/download-tap", tap(body, "facebookexternalhit/1.1"))).status()).toBe(204);
+    expect((await request.post("/api/download-tap", tap(body, ""))).status()).toBe(204);
+    expect((await tapsOf(EMPTY_CREATOR_ID)).length).toBe(before);
+  });
+
+  test("anything but a client uuid, at_name or d_slug and three UTM strings is a 400 that counts nothing", async ({ request }) => {
+    const before = (await tapsOf(EMPTY_CREATOR_ID)).length;
+    for (const body of [
+      "not json",
+      [],
+      { clientId: "not-a-uuid", via: "at_name" },
+      { clientId: EMPTY_CREATOR_ID, via: "home" },
+      { clientId: EMPTY_CREATOR_ID, via: "at_name", utm: { utm_campaign: 42 } },
+      { clientId: EMPTY_CREATOR_ID, via: "at_name", utm: { utm_campaign: "x".repeat(501) } },
+      { clientId: EMPTY_CREATOR_ID, via: "at_name", utm: { utm_source: "x".repeat(2100) } },
+    ]) {
+      const res = await request.post("/api/download-tap", tap(body));
+      expect(res.status(), JSON.stringify(body).slice(0, 80)).toBe(400);
+    }
+    expect((await tapsOf(EMPTY_CREATOR_ID)).length).toBe(before);
+  });
+
+  test("a client the database does not know is a 404", async ({ request }) => {
+    const res = await request.post(
+      "/api/download-tap",
+      tap({ clientId: "00000000-0000-4000-8000-0000000000aa", via: "d_slug" })
+    );
+    expect(res.status()).toBe(404);
+  });
+
+  test("above the ceiling an address stops counting taps of that page, and the visit has its own budget", async ({ request }) => {
+    const address = `2001:db8:1292::${Math.floor(Math.random() * 0xffff).toString(16)}`;
+    const before = (await tapsOf(EMPTY_CREATOR_ID)).length;
+    const body = { clientId: EMPTY_CREATOR_ID, via: "at_name", utm: { utm_campaign: "Teto" } };
+    for (let i = 0; i < DOWNLOAD_TAP_LIMIT_PER_WINDOW + 3; i += 1) {
+      expect((await request.post("/api/download-tap", tap(body, PERSON_UA, address))).status()).toBe(204);
+    }
+    expect((await tapsOf(EMPTY_CREATOR_ID)).length - before).toBe(DOWNLOAD_TAP_LIMIT_PER_WINDOW);
+
+    const visitsBefore = (await visitsOf(EMPTY_CREATOR_ID)).length;
+    const res = await request.get("/@e2e-criador-vazio", {
+      headers: { ...visitorHeaders({ country: "BR", address }), "user-agent": PERSON_UA },
+    });
+    expect(res.status()).toBe(200);
+    expect((await visitsOf(EMPTY_CREATOR_ID)).length - visitsBefore).toBe(1);
   });
 });
 
