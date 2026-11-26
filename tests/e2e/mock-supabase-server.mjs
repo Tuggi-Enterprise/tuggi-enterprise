@@ -585,6 +585,22 @@ const PUBLIC_PAGE_FIXTURES = {
     routes: [],
     discovered_pois: [],
   },
+  // BR-B2B-070 item 2 (#1303): a creator with the approved logo and the colour
+  // pair (PARTNER_BRANDS), and a photo the logo takes the place of.
+  "e2e-criador-marca": {
+    state: "page",
+    kind: "creator",
+    client_id: "13031303-1303-4303-8303-130313031303",
+    name: "e2e-criador-marca",
+    display_name: "Duda Falcão",
+    photo_key: PHOTO_KEY,
+    verified: true,
+    bio: null,
+    routes: [],
+    discovered_pois: [],
+    listeners_total: null,
+    featured_route: null,
+  },
   // A photo: only the moderated copy, by its key in the private bucket.
   "e2e-criador-foto": {
     state: "page",
@@ -761,6 +777,7 @@ const ATTRACTION_IMAGES = {
 const PARTNER_BRANDS = {
   "e2e-com-logo": { name: "Delícias do Vale do Café", handle: "e2e-com-logo", logo_path: "22222222-2222-4222-8222-222222222222/e2e-logo.png", brand_color: null, brand_ink: null },
   "e2e-hotel-foto": { name: "Hotel Mar Azul", handle: "e2e-hotel-foto", logo_path: "88888888-8888-4888-8888-888888888888/e2e-logo.png", brand_color: "#0F5A6B", brand_ink: "#FFFFFF" },
+  "e2e-criador-marca": { name: "Duda Falcão", handle: "e2e-criador-marca", logo_path: "13031303-1303-4303-8303-130313031303/e2e-logo.png", brand_color: "#5B2A86", brand_ink: "#FFFFFF" },
 };
 
 /** `or=(col.eq.value,...)` as supabase-js sends it, into `[column, value]` pairs. */

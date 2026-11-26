@@ -218,6 +218,32 @@ test.describe("BR-B2B-067 item 2.b: the creator's page", () => {
   });
 });
 
+test.describe("BR-B2B-070 item 2 (#1303): a creator with the approved logo has the brand, as a place has", () => {
+  /** The identity band, from its opening tag to the end of its name. */
+  const bandOf = (main: string) => /<section[^>]*data-testid="partner-identity"[\s\S]*?data-testid="partner-name"/.exec(main)?.[0] ?? "";
+
+  test("the logo plate in the photo's place and the server's colour pair, by either door", async ({ request }) => {
+    for (const path of ["/@e2e-criador-marca", "/d/e2e-criador-marca"]) {
+      const { status, body: doc } = await html(request, path);
+      expect(status).toBe(200);
+      const band = bandOf(mainOf(doc));
+      expect(band, path).toContain('data-testid="partner-logo"');
+      expect(band, path).toMatch(/partner-logos(?:\/|%2F)13031303-1303-4303-8303-130313031303(?:\/|%2F)e2e-logo\.png/);
+      expect(band, path).not.toContain('data-testid="creator-photo"');
+      expect(band, path).not.toContain('data-testid="creator-initial"');
+      // DS-MARCA-002: the pair as the server sent it, never recomputed.
+      expect(band, path).toMatch(/style="background-color:#5B2A86;color:#FFFFFF"/i);
+    }
+  });
+
+  test("without the brand the creator keeps the initial and the neutral band", async ({ request }) => {
+    const band = bandOf(mainOf((await html(request, "/@e2e.criadora")).body));
+    expect(band).toContain('data-testid="creator-initial"');
+    expect(band).not.toContain('data-testid="partner-logo"');
+    expect(band).not.toContain("background-color");
+  });
+});
+
 test.describe("BR-B2B-037 item 2: /d/{slug} and /@nome are the same page", () => {
   test("a creator: same content, canonical at /@", async ({ page, request }) => {
     const at = await pageText(page, "/@e2e.criadora");

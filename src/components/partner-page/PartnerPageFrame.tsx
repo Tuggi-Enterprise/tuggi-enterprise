@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
+import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { BadgeCheck, type LucideIcon } from "lucide-react";
 import { Link } from "@/i18n/routing";
@@ -158,6 +159,27 @@ interface PartnerIdentityProps {
   color?: { background: string; ink: string } | null;
   /** The photo of the place, above the band on a phone and at the right of it on a computer. */
   photo?: ReactNode;
+}
+
+/**
+ * The white plate of the approved logo (BR-B2B-070 item 2), the media of the
+ * identity band for every partner with the brand: a place and, since #1303, a
+ * creator. `logoUrl` is the signed URL `fetchPartnerBrand` made.
+ */
+export function PartnerLogoPlate({ logoUrl, alt }: { logoUrl: string; alt: string }) {
+  return (
+    <span className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl bg-white shadow-md lg:h-28 lg:w-28 lg:rounded-[26px]">
+      <Image
+        src={logoUrl}
+        alt={alt}
+        width={112}
+        height={112}
+        sizes="(min-width: 1024px) 112px, 64px"
+        data-testid="partner-logo"
+        className="h-full w-full object-contain p-1.5 lg:p-2.5"
+      />
+    </span>
+  );
 }
 
 /**

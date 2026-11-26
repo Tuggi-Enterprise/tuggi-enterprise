@@ -6,7 +6,7 @@ import { AppPreview, AppPreviewQr } from "@/components/blocks/AppPreview";
 import { PartnerSocialLinks } from "@/components/partner-page/PartnerSocialLinks";
 import { PartnerStoreCta } from "@/components/partner-page/PartnerStoreCta";
 import { Headphones, Map as MapIcon, MapPin } from "lucide-react";
-import { PARTNER_DOWNLOAD_ID, PartnerIdentity, PartnerPageFrame } from "@/components/partner-page/PartnerPageFrame";
+import { PARTNER_DOWNLOAD_ID, PartnerIdentity, PartnerLogoPlate, PartnerPageFrame } from "@/components/partner-page/PartnerPageFrame";
 import { PartnerAbout, PartnerPageView, WelcomeAudioCard } from "@/components/partner-page/ClientPartnerParts";
 import { PartnerHandleReserve } from "@/components/partner-page/PartnerHandleReserve";
 import { PartnerTutorial } from "@/components/partner-page/PartnerTutorial";
@@ -103,19 +103,7 @@ export async function ClientPartnerPage({
 
   // BR-B2B-070 item 2: the plate exists only with the approved logo; without
   // it, the name alone, larger, and no initial.
-  const plate = brand ? (
-    <span className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl bg-white shadow-md lg:h-28 lg:w-28 lg:rounded-[26px]">
-      <Image
-        src={brand.logoUrl}
-        alt={t("brandLockup", { partner: name })}
-        width={112}
-        height={112}
-        sizes="(min-width: 1024px) 112px, 64px"
-        data-testid="partner-logo"
-        className="h-full w-full object-contain p-1.5 lg:p-2.5"
-      />
-    </span>
-  ) : undefined;
+  const plate = brand ? <PartnerLogoPlate logoUrl={brand.logoUrl} alt={t("brandLockup", { partner: name })} /> : undefined;
 
   // The photo of the place is the LCP of the page. A long name takes two
   // lines, so its photo is lower, decided here so the first fold fits at

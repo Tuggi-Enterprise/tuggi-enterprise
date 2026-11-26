@@ -8,7 +8,8 @@ import { PartnerEventLink } from "@/components/partner-page/ClientPartnerParts";
 import { PageReport } from "@/components/partner-page/PageReport";
 import { PartnerSocialLinks } from "@/components/partner-page/PartnerSocialLinks";
 import { PartnerStoreCta } from "@/components/partner-page/PartnerStoreCta";
-import { PARTNER_DOWNLOAD_ID, PartnerIdentity, PartnerPageFrame } from "@/components/partner-page/PartnerPageFrame";
+import { PARTNER_DOWNLOAD_ID, PartnerIdentity, PartnerLogoPlate, PartnerPageFrame } from "@/components/partner-page/PartnerPageFrame";
+import { lookupPartnerBrand } from "@/lib/partner";
 import { SITE_URL } from "@/lib/app-meta";
 import { creatorPhotoSrc, creatorTitleOf, pickLang, type CreatorPage, type FeaturedRoute, type PublicRoute } from "@/lib/public-page";
 import { AUDIO_LANG_LABELS, getAllRoutes, type RouteSnapshot } from "@/lib/routes";
@@ -56,6 +57,10 @@ export async function CreatorPageView({ page, locale, dbLang }: CreatorPageViewP
   const hasRoutes = page.routes.length > 0;
   // The moderated photo by the public @, never a storage address; null draws the initial.
   const photoUrl = creatorPhotoSrc(page);
+  // BR-B2B-070 items 2 and 4 (#1303): the creator is a partner, and with an
+  // approved logo the band is the brand, as a place's: the logo plate in the
+  // photo's place and the colour pair the server sent (DS-MARCA-002).
+  const brand = await lookupPartnerBrand(page.name);
 
   const stats = [
     hasRoutes && { value: page.routes.length, label: t("statRoutes", { count: page.routes.length }), id: "routes" },
@@ -74,7 +79,9 @@ export async function CreatorPageView({ page, locale, dbLang }: CreatorPageViewP
   const identity = (
     <PartnerIdentity
       media={
-        photoUrl ? (
+        brand ? (
+          <PartnerLogoPlate logoUrl={brand.logoUrl} alt={t("brandLockup", { partner: name })} />
+        ) : photoUrl ? (
           // A route of this site that reads a private bucket per request:
           // next/image would keep its own copy past the removal of the photo.
           // eslint-disable-next-line @next/next/no-img-element
@@ -99,6 +106,7 @@ export async function CreatorPageView({ page, locale, dbLang }: CreatorPageViewP
       name={name}
       verifiedLabel={page.verified ? t("verifiedA11y") : undefined}
       subline={page.publishedName ? `@${page.name}` : undefined}
+      color={brand?.color}
     />
   );
 

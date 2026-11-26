@@ -584,3 +584,43 @@ export const lookupPartnerSlug = cache(
     }
   }
 );
+
+/** The cached brand of an @, stamped with when the database gave it. */
+type CachedBrand = { readAt: number; brand: PartnerBrand | null };
+
+/**
+ * The brand of a creator's page (#1303), in the data cache like the client's
+ * (`resolvePartnerOrCoupon` reads it inside `readSlugThroughCache`). The
+ * creator's page itself is rendered on every request and never stored
+ * (`resolvePublicPage`), so without this each opening would spend one lookup
+ * of the public read, whose limit counts by the address that calls it: the
+ * site's, for every visitor at once (contract `tuggi-do-parceiro.md` §2).
+ *
+ * The key is the @ the resolver answered, never something a visitor typed: a
+ * name without a page does not get this far. `fetchPartnerBrand` fails soft,
+ * so a refused read is kept as "no brand" for at most `PARTNER_CACHE_SECONDS`,
+ * the same ceiling a client's page has.
+ */
+const readBrandThroughCache = unstable_cache(
+  async (handle: string): Promise<CachedBrand> => ({
+    readAt: Date.now(),
+    brand: await fetchPartnerBrand(getSupabaseClient("publishable"), handle),
+  }),
+  ["partner-brand-lookup"],
+  { revalidate: PARTNER_CACHE_SECONDS }
+);
+
+/**
+ * The approved brand of the partner whose @ is `handle`, or null (BR-B2B-070
+ * item 2). As in `lookupPartnerSlug`, an answer older than the ceiling is read
+ * again in the same request: the logo's signed URL must not outlive its day.
+ */
+export const lookupPartnerBrand = cache(async (handle: string): Promise<PartnerBrand | null> => {
+  try {
+    const entry = await readBrandThroughCache(handle);
+    if (Date.now() - entry.readAt < PARTNER_CACHE_SECONDS * 1000) return entry.brand;
+  } catch (err) {
+    console.error("Error reading the cached partner brand:", err);
+  }
+  return fetchPartnerBrand(getSupabaseClient("publishable"), handle);
+});
