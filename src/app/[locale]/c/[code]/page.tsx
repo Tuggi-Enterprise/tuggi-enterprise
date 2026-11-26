@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getReferralInvite, invitePath, invitePlayStoreUrl } from "@/lib/referral";
+import { resolvePublicPage } from "@/lib/public-page";
 import { PRODUCT_FACTS } from "@/lib/product-facts";
 import { buildTwitterCard } from "@/lib/seo";
 import { SITE_URL } from "@/lib/app-meta";
@@ -27,7 +29,9 @@ import { AppPreview, AppPreviewQr } from "@/components/blocks/AppPreview";
  * user agent of the request. Two states only — valid, or the same page without
  * the invite and the preview; an unknown @, an @ without an owner and an
  * invalid code all get that one (item 2.b). There is no "exhausted" state for
- * the friend (#836, update of 2026-10-04).
+ * the friend (#836, update of 2026-10-04). One exception, #1305: an explicit
+ * `@` that is no invite but has a public page (a creator, a partner) goes to
+ * that page instead.
  *
  * Like `/d/<slug>`, the URL carries no locale: `middleware.ts` rewrites
  * `/c/<code>` to `/<locale>/c/<code>` from the visitor's language, because
@@ -74,12 +78,55 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   };
 }
 
+/**
+ * The name of a segment that carries an explicit `@`, decoded, or null. A
+ * segment without one is a code and nothing else: the page never turns a code
+ * into somebody's @ (BR-MONETIZACAO-085 item 2.b), so a code that happens to be
+ * a slug is not looked up as a page.
+ */
+function explicitNameOf(segment: string): string | null {
+  try {
+    const decoded = decodeURIComponent(segment).trim();
+    return decoded.startsWith("@") ? decoded : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Where `/c/@nome` goes when the @ is no invite of this programme but has a
+ * public page: a creator or a partner (#1305). The partner's @ only
+ * attributes (BR-MONETIZACAO-085 item 15), so the page that welcomes the
+ * friend is the partner's own. Temporary, because both answers are the
+ * database's at the time of the visit. Null keeps the inactive page.
+ */
+async function partnerPageHrefOf(segment: string): Promise<string | null> {
+  const name = explicitNameOf(segment);
+  if (!name) return null;
+  try {
+    const page = await resolvePublicPage(name);
+    if (page.state === "page") return `/@${encodeURIComponent(page.name)}`;
+    if (page.state === "redirect") return `/@${encodeURIComponent(page.to)}`;
+    return null;
+  } catch (error) {
+    // The resolver failing must not take the invite page down with it: the
+    // friend still gets the inactive page and the stores. The name is not
+    // logged, it is a per-user identifier.
+    console.error("invite page: resolve_public_page failed", error instanceof Error ? error.message : error);
+    return null;
+  }
+}
+
 export default async function ReferralInvitePage({ params }: { params: Params }) {
   const { locale, code } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("Referral");
   const [invite, requestHeaders] = await Promise.all([getReferralInvite(code), headers()]);
   const isValid = invite.status === "valid";
+  if (!isValid) {
+    const partnerHref = await partnerPageHrefOf(code);
+    if (partnerHref) redirect(partnerHref);
+  }
   const shared = isValid ? invite.shared : undefined;
   // Decides what the page shows, never what goes to the pasteboard.
   const platform = storePlatformOf(requestHeaders.get("user-agent"));

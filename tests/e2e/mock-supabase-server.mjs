@@ -363,6 +363,8 @@ const REFERRAL_NAME_FIXTURES = {
 const referralNameKey = (name) => name.toLowerCase().replace(/[._-]/g, "");
 /** Every `p_code` the invite page asked about, in order. */
 const referralLookups = [];
+/** Every `p_name` `partner.resolve_public_page` was asked about, in order. */
+const publicPageLookups = [];
 
 /**
  * Routes of `/r/<slug>` (card #946), shaped as `core.get_custom_route_by_slug`
@@ -1232,6 +1234,7 @@ const server = http.createServer((req, res) => {
       } catch {
         // Malformed body: an unknown name.
       }
+      publicPageLookups.push(name);
       const key = name.replace(/^@/, "");
       // An approved client without a fixture of its own has its page, as in
       // production: the sitemap lists its `/@` address.
@@ -1428,6 +1431,11 @@ const server = http.createServer((req, res) => {
 
   if (url.pathname === "/__activation-scans" && req.method === "GET") {
     sendJson(res, 200, activationScans);
+    return;
+  }
+
+  if (url.pathname === "/__public-page-lookups" && req.method === "GET") {
+    sendJson(res, 200, publicPageLookups);
     return;
   }
 

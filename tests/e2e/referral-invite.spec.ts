@@ -148,6 +148,44 @@ test.describe("invite page /c/ — BR-MONETIZACAO-085 item 2, BR-USUARIO-042", (
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("We couldn't find this invite");
   });
 
+  test("#1305, BR-MONETIZACAO-085 item 15: an @ that is no invite but has a public page goes to that page, temporarily", async ({
+    request,
+  }) => {
+    // A creator's page: the @ she shares lands on `/@nome`, not on "we couldn't find".
+    const creator = await request.get("/c/@e2e.criadora", { maxRedirects: 0 });
+    expect(creator.status()).toBe(307);
+    expect(creator.headers()["location"]).toBe("/@e2e.criadora");
+
+    // An old @ of hers goes straight to the recorded one, in one hop.
+    const old = await request.get("/c/%40e2e-antiga", { maxRedirects: 0 });
+    expect(old.status()).toBe(307);
+    expect(old.headers()["location"]).toBe("/@e2e.criadora");
+  });
+
+  test("#1305, BR-MONETIZACAO-085 2.b: an @ with no invite and no page keeps the inactive page", async ({ page }) => {
+    const response = await page.goto("/c/@ninguem_tem_este_1305");
+    expect(response?.status()).toBe(200);
+    expect(page.url()).toContain("/c/@ninguem_tem_este_1305");
+    await expect(page.getByTestId("referral-inactive")).toBeVisible();
+  });
+
+  test("#1305, BR-MONETIZACAO-085 2.b: a code is never looked up as somebody's page, and a valid @ invite stays", async ({
+    page,
+    request,
+  }) => {
+    await page.goto("/c/ZZZZZZ");
+    await expect(page.getByTestId("referral-inactive")).toBeVisible();
+    await page.goto(`/c/${VALID}`);
+    await expect(page.getByTestId("referral-valid")).toBeVisible();
+    await page.goto(`/c/${AT}`);
+    await expect(page.getByTestId("referral-valid")).toBeVisible();
+
+    const asked = (await (await request.get(`${MOCK_BASE}/__public-page-lookups`)).json()) as string[];
+    expect(asked.map((name) => name.toUpperCase())).not.toContain("ZZZZZZ");
+    expect(asked.map((name) => name.toUpperCase())).not.toContain(VALID);
+    expect(asked).not.toContain(AT);
+  });
+
   test("a segment that can never be a code or an @ is not forwarded to the database", async ({
     page,
     request,
